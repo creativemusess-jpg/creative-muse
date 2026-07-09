@@ -2,7 +2,7 @@ import { supabase } from "../supabase";
 import { storefrontSupabase } from "../supabase-storefront";
 
 const db = () => supabase as any;
-const sdb = () => storefrontSupabase as any;
+const adb = () => storefrontSupabase as any;
 
 export interface ValidatedCoupon {
   id: string;
@@ -104,7 +104,38 @@ export function calculateTotals(
   return { subtotal, discountAmount, shipping, tax, total, couponCode: null };
 }
 
-export async function createOrder(params: {
+async function generateOrderNumber(): Promise<string> {
+  try {
+    const { data, error } = await adb().rpc("generate_order_number");
+    if (data && !error) return data;
+  } catch {}
+  const year = new Date().getFullYear();
+  const rand = crypto.randomUUID().replace(/-/g, "").slice(0, 8).toUpperCase();
+  return `CM-${year}-${rand}`;
+}
+
+function buildOrderPayload(orderNumber: string, checkoutAttemptId: string, params: CreateOrderParams) {
+  return {
+    order_number: orderNumber,
+    checkout_attempt_id: checkoutAttemptId,
+    customer_id: params.customerId,
+    customer_name: params.customerName,
+    customer_email: params.customerEmail,
+    customer_phone: params.customerPhone,
+    delivery_address: params.deliveryAddress,
+    subtotal: params.subtotal,
+    discount_amount: params.discountAmount,
+    coupon_code: params.couponCode,
+    shipping_amount: params.shipping,
+    tax_amount: params.tax,
+    total_amount: params.total,
+    payment_method: params.paymentMethod,
+    payment_status: params.paymentMethod === "cod" ? "pending" : "paid",
+    order_status: "confirmed",
+  };
+}
+
+interface CreateOrderParams {
   customerId: string;
   customerName: string;
   customerEmail: string;
@@ -128,46 +159,40 @@ export async function createOrder(params: {
     landmark?: string;
     addressType?: string;
   };
-}): Promise<{ orderNumber: string; orderId: string; error: string | null }> {
-  try {
-    const now = new Date();
-    const yearStr = now.getFullYear().toString();
-    const { count } = await db()
-      .from("orders")
-      .select("*", { count: "exact", head: true });
-    const seq = ((count || 0) + 1).toString().padStart(6, "0");
-    const orderNumber = `CM-${yearStr}-${seq}`;
+  checkoutAttemptId?: string;
+}
 
+export async function createOrder(params: CreateOrderParams): Promise<{ orderNumber: string; orderId: string; error: string | null }> {
+  try {
+    const checkoutAttemptId = params.checkoutAttemptId || crypto.randomUUID();
     const txRef = `DEMO-CM-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
 
-    const { data: order, error: orderErr } = await db()
+    let orderNumber = await generateOrderNumber();
+    let { data: order, error: orderErr } = await adb()
       .from("orders")
-      .insert({
-        order_number: orderNumber,
-        customer_id: params.customerId,
-        customer_name: params.customerName,
-        customer_email: params.customerEmail,
-        customer_phone: params.customerPhone,
-        delivery_address: params.deliveryAddress,
-        subtotal: params.subtotal,
-        discount_amount: params.discountAmount,
-        coupon_code: params.couponCode,
-        shipping_amount: params.shipping,
-        tax_amount: params.tax,
-        total_amount: params.total,
-        payment_method: params.paymentMethod,
-        payment_status: params.paymentMethod === "cod" ? "pending" : "paid",
-        order_status: "confirmed",
-      })
+      .insert(buildOrderPayload(orderNumber, checkoutAttemptId, params))
       .select()
       .single();
 
-    if (orderErr || !order) {
+    if (orderErr?.code === "23505" && orderErr.message?.includes("orders_order_number")) {
+      orderNumber = await generateOrderNumber();
+      const retry = await adb()
+        .from("orders")
+        .insert(buildOrderPayload(orderNumber, checkoutAttemptId, params))
+        .select()
+        .single();
+      if (retry.error || !retry.data) {
+        console.error("Order creation retry failed:", retry.error);
+        return { orderNumber: "", orderId: "", error: "Your order could not be created. Please try again." };
+      }
+      order = retry.data;
+    } else if (orderErr || !order) {
+      console.error("Order creation failed:", orderErr);
       return { orderNumber: "", orderId: "", error: orderErr?.message || "Failed to create order" };
     }
 
     const slugs = [...new Set(params.items.map((i) => i.productId))];
-    const { data: productRows } = await db()
+    const { data: productRows } = await adb()
       .from("products")
       .select("id, slug")
       .in("slug", slugs);
@@ -187,12 +212,12 @@ export async function createOrder(params: {
       total_price: item.lineTotal,
     }));
 
-    const { error: itemsErr } = await db()
+    const { error: itemsErr } = await adb()
       .from("order_items")
       .insert(orderItems);
     if (itemsErr) throw new Error(`Failed to create order items: ${itemsErr.message}`);
 
-    const { error: payErr } = await db()
+    const { error: payErr } = await adb()
       .from("payments")
       .insert({
         order_id: order.id,
@@ -208,7 +233,7 @@ export async function createOrder(params: {
     if (payErr) throw new Error(`Failed to create payment: ${payErr.message}`);
 
     if (params.couponId && params.couponCode) {
-      const { error: usageErr } = await db()
+      const { error: usageErr } = await adb()
         .from("coupon_usage")
         .insert({
           coupon_id: params.couponId,
@@ -217,33 +242,33 @@ export async function createOrder(params: {
           discount_amount: params.discountAmount,
         });
       if (!usageErr) {
-        await db()
+        await adb()
           .from("coupons")
-          .update({ usage_count: (supabase as any).rpc ? undefined : undefined })
+          .update({ usage_count: (storefrontSupabase as any).rpc ? undefined : undefined })
           .eq("id", params.couponId);
       }
     }
 
     for (const item of params.items) {
       const pid = slugToUuid.get(item.productId) || item.productId;
-      const { data: product } = await db()
+      const { data: product } = await adb()
         .from("products")
         .select("stock_quantity")
         .eq("id", pid)
         .single();
       if (product && product.stock_quantity != null) {
         const newStock = Math.max(0, product.stock_quantity - item.qty);
-        await db()
+        await adb()
           .from("products")
           .update({ stock_quantity: newStock })
           .eq("id", pid);
       }
     }
 
-    const { error: custErr } = await db()
+    const { error: custErr } = await adb()
       .from("customers")
       .update({
-        total_orders: (supabase as any).rpc("increment") ? undefined : undefined,
+        total_orders: (storefrontSupabase as any).rpc ? undefined : undefined,
         updated_at: new Date().toISOString(),
       })
       .eq("id", params.customerId);

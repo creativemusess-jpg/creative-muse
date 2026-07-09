@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { CreditCard, DollarSign, Building2, Wallet, Truck, Loader2, ShieldCheck, CheckCircle } from "lucide-react";
 import { PageShell } from "@/components/site/PageHeader";
 import { useAuth } from "@/lib/auth";
@@ -29,6 +29,7 @@ function PaymentPage() {
   const { cartSubtotal, clearCart, cart } = useStore();
   const navigate = useNavigate();
 
+  const checkoutAttemptRef = useRef<string>(crypto.randomUUID());
   const [method, setMethod] = useState<PaymentMethod>("upi");
   const [upiId, setUpiId] = useState("");
   const [cardNumber, setCardNumber] = useState("");
@@ -81,6 +82,7 @@ function PaymentPage() {
 
     try {
     const result = await createOrder({
+      checkoutAttemptId: checkoutAttemptRef.current,
       customerId: user.id,
       customerName: user.fullName,
       customerEmail: user.email,
