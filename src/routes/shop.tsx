@@ -100,7 +100,7 @@ function ShopPage() {
                 Live products could not be loaded. Showing the preserved seed catalogue.
               </div>
             )}
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-2 gap-3 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {sorted.map((p, i) => (
                 <ProductCard key={p.id} product={p} index={i} />
               ))}

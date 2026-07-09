@@ -106,6 +106,7 @@ export function calculateTotals(
 
 export async function createOrder(params: {
   customerId: string;
+  customerName: string;
   customerEmail: string;
   customerPhone: string;
   items: Array<{ productId: string; name: string; image: string; sku: string; qty: number; unitPrice: number; lineTotal: number }>;
@@ -144,6 +145,7 @@ export async function createOrder(params: {
       .insert({
         order_number: orderNumber,
         customer_id: params.customerId,
+        customer_name: params.customerName,
         customer_email: params.customerEmail,
         customer_phone: params.customerPhone,
         delivery_address: params.deliveryAddress,

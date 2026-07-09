@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion, AnimatePresence } from "framer-motion";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import {
   Sparkles,
   Award,
@@ -27,6 +27,12 @@ import { formatPrice, type Product, useStorefrontProducts } from "@/lib/products
 import { categoriesApi } from "@/lib/api/categories";
 import { ProductCard } from "@/components/site/ProductCard";
 import { useStore } from "@/lib/store";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  type CarouselApi,
+} from "@/components/ui/carousel";
 import heroRing from "@/assets/hero-ring.jpg";
 import catRings from "@/assets/cat-rings.png";
 import catNecklaces from "@/assets/cat-necklaces.png";
@@ -426,15 +432,15 @@ function BestSellers() {
       <div className="mx-auto max-w-[1280px] px-6">
         <SectionHeading eyebrow="Our Jewellery" title="Handpicked Best Sellers" />
 
-        <div className="mb-10 flex justify-center">
-          <div className="inline-flex flex-wrap justify-center gap-1 rounded-full bg-white p-1.5 shadow-[0_4px_16px_rgba(0,0,0,0.06)]">
+        <div className="mb-8 flex justify-center md:mb-10">
+          <div className="w-[calc(100%-32px)] max-w-[430px] grid-cols-2 gap-1.5 rounded-[28px] bg-white p-2 shadow-[0_4px_16px_rgba(0,0,0,0.06)] md:inline-flex md:w-auto md:max-w-none md:flex-wrap md:justify-center md:gap-1 md:rounded-full md:p-1.5">
             {tabs.map((t) => (
               <button
                 key={t}
                 onClick={() => setActive(t)}
-                className={`rounded-full px-5 py-2.5 text-[12px] font-semibold tracking-[0.1em] uppercase transition-all duration-300 ${
+                className={`flex h-[52px] w-full items-center justify-center rounded-[22px] text-[clamp(11px,3.3vw,15px)] font-semibold tracking-[0.08em] uppercase transition-all duration-300 md:h-auto md:w-auto md:rounded-full md:px-5 md:py-2.5 md:text-[12px] md:tracking-[0.1em] ${
                   active === t
-                    ? "bg-gradient-to-r from-[#C9A96E] to-[#B8860B] text-white shadow-[0_8px_20px_rgba(201,169,110,0.35)]"
+                    ? "bg-gradient-to-r from-[#C9A96E] to-[#B8860B] text-white shadow-[0_6px_16px_rgba(201,169,110,0.35)]"
                     : "text-[#7a6e64] hover:text-[#1a1a2e]"
                 }`}
               >
@@ -444,7 +450,7 @@ function BestSellers() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-3 sm:gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {filtered.length === 0 ? (
             <p className="col-span-full text-center text-[#7a6e64]">No products in this tab yet.</p>
           ) : (
@@ -594,10 +600,31 @@ function ReelCard({
    ========================================================= */
 function NewArrivals() {
   const { products } = useStorefrontProducts();
-  const list = products.filter((product) => product.badge === "New").concat(products).slice(0, 6);
-  const [idx, setIdx] = useState(0);
-  const visible = 4;
-  const max = Math.max(0, list.length - visible);
+  const list = useMemo(
+    () => products.filter((p) => p.badge === "New").concat(products).slice(0, 6),
+    [products],
+  );
+  const [api, setApi] = useState<CarouselApi>();
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
+  const pointerStart = useRef({ x: 0, y: 0 });
+
+  const onSelect = useCallback((carouselApi: CarouselApi) => {
+    if (!carouselApi) return;
+    setSelectedIndex(carouselApi.selectedScrollSnap());
+    setScrollSnaps(carouselApi.scrollSnapList());
+  }, []);
+
+  useEffect(() => {
+    if (!api) return;
+    onSelect(api);
+    api.on("select", onSelect);
+    api.on("reInit", onSelect);
+    return () => {
+      api.off("select", onSelect);
+      api.off("reInit", onSelect);
+    };
+  }, [api, onSelect]);
 
   return (
     <section className="bg-[#fdf8f3] py-20">
@@ -612,34 +639,72 @@ function NewArrivals() {
           </div>
           <div className="hidden gap-2 sm:flex">
             <button
-              onClick={() => setIdx(Math.max(0, idx - 1))}
-              disabled={idx === 0}
+              onClick={() => api?.scrollPrev()}
+              disabled={!api?.canScrollPrev()}
               className="flex h-11 w-11 items-center justify-center rounded-full bg-[#1a1a2e] text-white shadow-md transition-opacity disabled:opacity-30"
+              aria-label="Previous products"
             >
               <ChevronLeft className="h-5 w-5" />
             </button>
             <button
-              onClick={() => setIdx(Math.min(max, idx + 1))}
-              disabled={idx >= max}
+              onClick={() => api?.scrollNext()}
+              disabled={!api?.canScrollNext()}
               className="flex h-11 w-11 items-center justify-center rounded-full bg-[#1a1a2e] text-white shadow-md transition-opacity disabled:opacity-30"
+              aria-label="Next products"
             >
               <ChevronRight className="h-5 w-5" />
             </button>
           </div>
         </div>
 
-        <div className="mt-10 overflow-hidden">
-          <div
-            className="grid gap-6 transition-transform duration-500"
-            style={{
-              gridTemplateColumns: `repeat(${list.length}, minmax(0, 1fr))`,
-              transform: `translateX(calc(-${idx} * (100% / ${visible})))`,
+        <div className="mt-10">
+          <Carousel
+            setApi={setApi}
+            opts={{
+              align: "start",
+              loop: false,
+              dragFree: false,
+              duration: 25,
             }}
           >
-            {list.map((p, i) => (
-              <div key={p.id} style={{ width: `calc((100vw - 3rem) / 1.2)`, maxWidth: `calc(1232px / ${visible})` }}>
-                <ProductCard product={p} index={i} />
-              </div>
+            <CarouselContent
+              onPointerDown={(e) => {
+                pointerStart.current = { x: e.clientX, y: e.clientY };
+              }}
+            >
+              {list.map((p, i) => (
+                <CarouselItem
+                  key={p.id}
+                  className="basis-[84%] sm:basis-[46%] md:basis-[44%] lg:basis-1/3 xl:basis-1/4"
+                >
+                  <div
+                    className={`h-full transition-transform duration-400 ${
+                      i === selectedIndex
+                        ? "scale-100 opacity-100"
+                        : "scale-[0.96] opacity-80"
+                    }`}
+                  >
+                    <ProductCard
+                      product={p}
+                      index={i}
+                      pointerStart={pointerStart}
+                    />
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+          </Carousel>
+
+          <div className="mt-6 flex items-center justify-center gap-2 sm:hidden" aria-hidden="true">
+            {scrollSnaps.length > 1 && scrollSnaps.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => api?.scrollTo(i)}
+                className={`h-1.5 rounded-full transition-all duration-300 ${
+                  i === selectedIndex ? "w-6 bg-[#1a1a2e]" : "w-1.5 bg-[#c9a96e]/40"
+                }`}
+                aria-label={`Go to product ${i + 1} of ${scrollSnaps.length}`}
+              />
             ))}
           </div>
         </div>
@@ -1008,7 +1073,7 @@ function GiftFinder() {
               <h3 className="font-display mt-2 text-center text-2xl font-semibold text-[#1a1a2e]">
                 Perfect Matches
               </h3>
-              <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 {recommendations.length === 0 ? (
                   <p className="col-span-full text-center text-[#7a6e64]">
                     No matches in that budget — try widening it.

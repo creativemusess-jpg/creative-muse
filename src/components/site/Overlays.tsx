@@ -417,14 +417,14 @@ function QuickViewModal() {
           aria-labelledby="qv-title"
         >
           <div className="absolute inset-0 bg-black/60 backdrop-blur-md" onClick={closeQuickView} />
-          <motion.div
-            ref={containerRef}
-            key={product.id}
-            initial={{ scale: 0.96, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.96, opacity: 0 }}
-            transition={{ duration: 0.25 }}
-            className="relative grid max-h-[88vh] w-full max-w-5xl grid-cols-1 overflow-y-auto scrollbar-thin rounded-[28px] bg-[#fdf8f3] shadow-[0_24px_64px_rgba(0,0,0,0.3)] md:max-h-none md:h-[90vh] md:grid-cols-2 md:grid-rows-[1fr] md:overflow-hidden"
+            <motion.div
+              ref={containerRef}
+              key={product.id}
+              initial={{ scale: 0.96, opacity: 0, y: 16 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.96, opacity: 0, y: 16 }}
+              transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
+              className="relative grid max-h-[88vh] w-full max-w-5xl grid-cols-1 overflow-y-auto scrollbar-thin rounded-[28px] bg-[#fdf8f3] shadow-[0_24px_64px_rgba(0,0,0,0.3)] md:max-h-none md:h-[90vh] md:grid-cols-2 md:grid-rows-[1fr] md:overflow-hidden"
           >
             <button
               aria-label="Close"

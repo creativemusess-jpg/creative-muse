@@ -4,6 +4,8 @@ import { Package, ChevronLeft } from "lucide-react";
 import { PageShell } from "@/components/site/PageHeader";
 import { useAuth } from "@/lib/auth";
 import { storefrontSupabase } from "@/lib/supabase-storefront";
+import { normalizeOrderItems } from "@/lib/api/order-items";
+import type { NormalizedOrderItem } from "@/lib/api/order-items";
 
 export const Route = createFileRoute("/account/orders/$orderNumber")({
   head: ({ params }) => ({ meta: [{ title: `Order #${params.orderNumber} — Creative Muse` }] }),
@@ -25,7 +27,7 @@ function AccountOrderDetailPage() {
   const navigate = useNavigate();
   const { orderNumber } = useParams({ from: "/account/orders/$orderNumber" });
   const [order, setOrder] = useState<any>(null);
-  const [items, setItems] = useState<any[]>([]);
+  const [items, setItems] = useState<NormalizedOrderItem[]>([]);
   const [pageLoading, setPageLoading] = useState(true);
 
   useEffect(() => {
@@ -50,7 +52,7 @@ function AccountOrderDetailPage() {
           .from("order_items")
           .select("*")
           .eq("order_id", orderData.id);
-        setItems(itemsData || []);
+        setItems(normalizeOrderItems(itemsData || []));
       }
       setPageLoading(false);
     })();
@@ -116,15 +118,15 @@ function AccountOrderDetailPage() {
                 {items.map((item: any) => (
                   <div key={item.id} className="flex gap-4">
                     <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-[12px] bg-[#fdf8f3]">
-                      {item.product_image && (
-                        <img src={item.product_image} alt={item.product_name} className="h-full w-full object-contain p-1" />
+                      {item.productImage && (
+                        <img src={item.productImage} alt={item.productName} className="h-full w-full object-contain p-1" />
                       )}
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="font-display text-sm font-semibold text-[#1a1a2e]">{item.product_name}</p>
-                      <p className="text-xs text-[#7a6e64]">SKU: {item.product_sku || "—"}</p>
-                      <p className="mt-1 text-xs text-[#7a6e64]">Qty: {item.quantity} × {formatPrice(item.unit_price)}</p>
-                      <p className="font-semibold text-[#1a1a2e]">{formatPrice(item.total_price)}</p>
+                      <p className="font-display text-sm font-semibold text-[#1a1a2e]">{item.productName}</p>
+                      <p className="text-xs text-[#7a6e64]">SKU: {item.sku || "—"}</p>
+                      <p className="mt-1 text-xs text-[#7a6e64]">Qty: {item.quantity} × {formatPrice(item.unitPrice)}</p>
+                      <p className="font-semibold text-[#1a1a2e]">{formatPrice(item.lineTotal)}</p>
                     </div>
                   </div>
                 ))}

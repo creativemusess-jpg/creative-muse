@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate, Outlet, useMatchRoute } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { User, Package, LogOut, Mail, Phone, ShieldCheck } from "lucide-react";
 import { PageShell } from "@/components/site/PageHeader";
@@ -9,9 +9,71 @@ export const Route = createFileRoute("/account")({
   component: AccountPage,
 });
 
+function AccountProfile() {
+  const { user } = useAuth();
+  if (!user) return null;
+
+  return (
+    <>
+      <div className="mb-8">
+        <p className="eyebrow text-[10px]">Account</p>
+        <h1 className="font-display text-3xl font-semibold text-[#1a1a2e]">My Account</h1>
+        <p className="mt-1 text-sm text-[#7a6e64]">Manage your profile and orders.</p>
+      </div>
+
+      <div className="grid gap-6 md:grid-cols-3">
+        <div className="rounded-[24px] bg-white p-6 shadow-[0_4px_24px_rgba(0,0,0,0.05)] md:col-span-2">
+          <h2 className="font-display text-lg font-semibold text-[#1a1a2e]">Profile</h2>
+          <div className="mt-4 space-y-3 text-sm">
+            <div className="flex items-center gap-3">
+              <User className="h-4 w-4 text-[#C9A96E]" />
+              <span className="text-[#7a6e64]">Name:</span>
+              <span className="font-medium text-[#1a1a2e]">{user.fullName}</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <Mail className="h-4 w-4 text-[#C9A96E]" />
+              <span className="text-[#7a6e64]">Email:</span>
+              <span className="font-medium text-[#1a1a2e]">{user.email}</span>
+            </div>
+            {user.phone && (
+              <div className="flex items-center gap-3">
+                <Phone className="h-4 w-4 text-[#C9A96E]" />
+                <span className="text-[#7a6e64]">Phone:</span>
+                <span className="font-medium text-[#1a1a2e]">{user.phone}</span>
+              </div>
+            )}
+            <div className="flex items-center gap-3">
+              <ShieldCheck className="h-4 w-4 text-[#C9A96E]" />
+              <span className="text-[#7a6e64]">Sign-in method:</span>
+              <span className="font-medium capitalize text-[#1a1a2e]">{user.provider}</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          <Link
+            to="/account/orders"
+            className="flex items-center gap-3 rounded-[24px] bg-white p-5 shadow-[0_4px_24px_rgba(0,0,0,0.05)] transition-colors hover:bg-[#f5efe8]"
+          >
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#fdf8f3]">
+              <Package className="h-5 w-5 text-[#C9A96E]" />
+            </div>
+            <div>
+              <p className="font-display text-sm font-semibold text-[#1a1a2e]">My Orders</p>
+              <p className="text-[11px] text-[#7a6e64]">View order history</p>
+            </div>
+          </Link>
+        </div>
+      </div>
+    </>
+  );
+}
+
 function AccountPage() {
   const { user, loading, signOut } = useAuth();
   const navigate = useNavigate();
+  const matchRoute = useMatchRoute();
+  const isRootAccount = matchRoute({ to: "/account", fuzzy: false });
 
   useEffect(() => {
     if (!loading && !user) {
@@ -37,55 +99,10 @@ function AccountPage() {
   return (
     <PageShell>
       <section className="mx-auto max-w-[900px] px-6 py-16">
-        <div className="mb-8">
-          <p className="eyebrow text-[10px]">Account</p>
-          <h1 className="font-display text-3xl font-semibold text-[#1a1a2e]">My Account</h1>
-          <p className="mt-1 text-sm text-[#7a6e64]">Manage your profile and orders.</p>
-        </div>
-
-        <div className="grid gap-6 md:grid-cols-3">
-          <div className="rounded-[24px] bg-white p-6 shadow-[0_4px_24px_rgba(0,0,0,0.05)] md:col-span-2">
-            <h2 className="font-display text-lg font-semibold text-[#1a1a2e]">Profile</h2>
-            <div className="mt-4 space-y-3 text-sm">
-              <div className="flex items-center gap-3">
-                <User className="h-4 w-4 text-[#C9A96E]" />
-                <span className="text-[#7a6e64]">Name:</span>
-                <span className="font-medium text-[#1a1a2e]">{user.fullName}</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <Mail className="h-4 w-4 text-[#C9A96E]" />
-                <span className="text-[#7a6e64]">Email:</span>
-                <span className="font-medium text-[#1a1a2e]">{user.email}</span>
-              </div>
-              {user.phone && (
-                <div className="flex items-center gap-3">
-                  <Phone className="h-4 w-4 text-[#C9A96E]" />
-                  <span className="text-[#7a6e64]">Phone:</span>
-                  <span className="font-medium text-[#1a1a2e]">{user.phone}</span>
-                </div>
-              )}
-              <div className="flex items-center gap-3">
-                <ShieldCheck className="h-4 w-4 text-[#C9A96E]" />
-                <span className="text-[#7a6e64]">Sign-in method:</span>
-                <span className="font-medium capitalize text-[#1a1a2e]">{user.provider}</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="space-y-4">
-            <Link
-              to="/account/orders"
-              className="flex items-center gap-3 rounded-[24px] bg-white p-5 shadow-[0_4px_24px_rgba(0,0,0,0.05)] transition-colors hover:bg-[#f5efe8]"
-            >
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#fdf8f3]">
-                <Package className="h-5 w-5 text-[#C9A96E]" />
-              </div>
-              <div>
-                <p className="font-display text-sm font-semibold text-[#1a1a2e]">My Orders</p>
-                <p className="text-[11px] text-[#7a6e64]">View order history</p>
-              </div>
-            </Link>
-
+        {isRootAccount && <AccountProfile />}
+        <Outlet />
+        {isRootAccount && (
+          <div className="mt-6">
             <button
               onClick={handleSignOut}
               className="flex w-full items-center gap-3 rounded-[24px] bg-white p-5 shadow-[0_4px_24px_rgba(0,0,0,0.05)] transition-colors hover:bg-red-50"
@@ -99,7 +116,7 @@ function AccountPage() {
               </div>
             </button>
           </div>
-        </div>
+        )}
       </section>
     </PageShell>
   );

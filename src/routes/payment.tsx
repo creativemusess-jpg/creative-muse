@@ -82,6 +82,7 @@ function PaymentPage() {
     try {
     const result = await createOrder({
       customerId: user.id,
+      customerName: user.fullName,
       customerEmail: user.email,
       customerPhone: checkoutData.phone || user.email,
       items: checkoutData.items,
