@@ -1,0 +1,284 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ============================================
+   Creative Muse Fine Jewellery — Design System
+   ============================================ */
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* Brand tokens */
+  --color-navy: #1a1a2e;
+  --color-navy-light: #2d1b4e;
+  --color-gold: #c9a96e;
+  --color-gold-dark: #b8860b;
+  --color-gold-light: #e8c98a;
+  --color-rose: #e8b4a0;
+  --color-cream: #fdf8f3;
+  --color-cream-alt: #f5efe8;
+  --color-warm: #3a3028;
+  --color-warm-muted: #7a6e64;
+  --color-warm-border: #e0d8cc;
+  --color-footer: #0d0d1a;
+
+  --font-display: "Cinzel", "Playfair Display", serif;
+  --font-body: "Montserrat", system-ui, sans-serif;
+
+  --radius-pill: 9999px;
+  --radius-card: 28px;
+  --radius-cat: 24px;
+  --radius-section: 40px;
+
+  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.06);
+  --shadow-card-hover: 0 20px 60px rgba(0, 0, 0, 0.12);
+  --shadow-gold: 0 12px 32px rgba(201, 169, 110, 0.35);
+  --shadow-float: 0 24px 64px rgba(0, 0, 0, 0.1);
+  --shadow-glass: 0 8px 32px rgba(201, 169, 110, 0.15);
+  --shadow-header: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+:root {
+  --radius: 0.625rem;
+  --background: oklch(0.985 0.012 78); /* cream */
+  --foreground: oklch(0.27 0.025 50); /* warm */
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.27 0.025 50);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.27 0.025 50);
+  --primary: oklch(0.18 0.04 280); /* navy */
+  --primary-foreground: oklch(0.985 0.012 78);
+  --secondary: oklch(0.78 0.09 80); /* gold */
+  --secondary-foreground: oklch(0.18 0.04 280);
+  --muted: oklch(0.94 0.015 75);
+  --muted-foreground: oklch(0.5 0.02 60);
+  --accent: oklch(0.78 0.09 80);
+  --accent-foreground: oklch(0.18 0.04 280);
+  --destructive: oklch(0.6 0.22 25);
+  --destructive-foreground: oklch(0.985 0 0);
+  --border: oklch(0.87 0.018 75);
+  --input: oklch(0.87 0.018 75);
+  --ring: oklch(0.78 0.09 80);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-warm-border);
+  }
+  html,
+  body {
+    background-color: var(--color-cream);
+    color: var(--color-warm);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+  }
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-display);
+    color: var(--color-navy);
+    letter-spacing: -0.01em;
+  }
+}
+
+/* ============================================
+   Brand utilities
+   ============================================ */
+
+@utility font-display {
+  font-family: var(--font-display);
+}
+@utility font-body {
+  font-family: var(--font-body);
+}
+
+@utility btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background-image: linear-gradient(90deg, #c9a96e, #b8860b);
+  color: #fff;
+  border-radius: 9999px;
+  padding: 0.875rem 2rem;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  transition: all 0.3s ease;
+  &:hover {
+    box-shadow: 0 12px 32px rgba(201, 169, 110, 0.4);
+    transform: translateY(-2px);
+  }
+}
+
+@utility btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border: 1px solid #c9a96e;
+  color: #c9a96e;
+  background: transparent;
+  border-radius: 9999px;
+  padding: 0.75rem 1.75rem;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  transition: all 0.3s ease;
+  &:hover {
+    background: #c9a96e;
+    color: #fff;
+  }
+}
+
+@utility btn-dark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: #1a1a2e;
+  color: #e8c98a;
+  border-radius: 9999px;
+  padding: 0.875rem 2rem;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  transition: all 0.3s ease;
+  &:hover {
+    background: #2d1b4e;
+  }
+}
+
+@utility shimmer-text {
+  background: linear-gradient(90deg, #c9a96e, #e8c98a, #c9a96e, #b8860b);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: cm-shimmer 3s linear infinite;
+}
+
+@utility gold-divider {
+  display: inline-block;
+  width: 48px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #c9a96e, transparent);
+}
+
+@utility eyebrow {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: #c9a96e;
+}
+
+@utility glass-panel {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(201, 169, 110, 0.3);
+}
+
+@utility scrollbar-hide {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@utility scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: #c89b3c transparent;
+  &::-webkit-scrollbar {
+    width: 7px;
+    height: 7px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: rgba(190, 145, 55, 0.65);
+    border-radius: 999px;
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background: rgba(160, 115, 30, 0.85);
+  }
+}
+
+@keyframes cm-shimmer {
+  0% {
+    background-position: 0% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+@keyframes cm-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-14px);
+  }
+}
+
+@keyframes cm-pulse-ring {
+  0% {
+    box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.5);
+  }
+  70% {
+    box-shadow: 0 0 0 18px rgba(37, 211, 102, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(37, 211, 102, 0);
+  }
+}
+
+@keyframes cm-marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-cm-float {
+  animation: cm-float 5s ease-in-out infinite;
+}
+.animate-cm-pulse-ring {
+  animation: cm-pulse-ring 2s infinite;
+}
+.animate-cm-marquee {
+  animation: cm-marquee 32s linear infinite;
+}
