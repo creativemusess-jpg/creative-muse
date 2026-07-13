@@ -32,6 +32,16 @@ export const contentApi = {
     if (error) throw error;
   },
 
+  async getCarouselSettings(key: string): Promise<any | null> {
+    const { data, error } = await db()
+      .from("homepage_sections")
+      .select("auto_scroll_enabled, scroll_direction, scroll_speed, pause_on_hover, auto_resume_enabled, auto_resume_delay_seconds")
+      .eq("section_key", key)
+      .maybeSingle();
+    if (error) return null;
+    return data as any;
+  },
+
   async getBanners(activeOnly = false): Promise<any[]> {
     let query = db().from("banners").select("*").order("sort_order");
     if (activeOnly) query = query.eq("active", true);

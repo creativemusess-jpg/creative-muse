@@ -226,8 +226,33 @@ INSERT INTO homepage_sections (section_key, title, content, is_published, sort_o
     "phone": "+91 98765 43210",
     "email": "hello@creativemuse.in",
     "timings": "Mon–Sat: 10:30 AM – 8:30 PM\nSunday: 11:00 AM – 5:00 PM"
-  }', true, 9)
+  }', true, 9),
+  ('premium_arrivals', 'Premium Jewellery', '{}', true, 10)
 ON CONFLICT (section_key) DO NOTHING;
+
+-- Set default auto-scroll on new_arrivals
+UPDATE homepage_sections
+SET
+  auto_scroll_enabled = true,
+  scroll_direction = 'left',
+  scroll_speed = 30,
+  pause_on_hover = true,
+  auto_resume_enabled = true,
+  auto_resume_delay_seconds = 3
+WHERE section_key = 'new_arrivals'
+  AND auto_scroll_enabled IS NULL;
+
+-- Set default auto-scroll on premium_arrivals
+UPDATE homepage_sections
+SET
+  auto_scroll_enabled = true,
+  scroll_direction = 'right',
+  scroll_speed = 25,
+  pause_on_hover = true,
+  auto_resume_enabled = true,
+  auto_resume_delay_seconds = 3
+WHERE section_key = 'premium_arrivals'
+  AND auto_scroll_enabled IS NULL;
 
 -- Seed testimonials
 INSERT INTO testimonials (customer_name, city, rating, review, is_published, sort_order) VALUES

@@ -4,6 +4,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { AdminLayout, AdminPageHeader, AdminLoading } from "@/components/admin/AdminLayout";
 import { productsApi, type ProductWithImages, type ProductFormData } from "@/lib/api/products";
 import { categoriesApi } from "@/lib/api/categories";
+import { subcategoriesApi } from "@/lib/api/subcategories";
 import { uploadImage } from "@/lib/api/upload";
 import { Upload, X, Loader2, ImageOff } from "lucide-react";
 
@@ -16,6 +17,7 @@ function EditProductPage() {
   const [product, setProduct] = useState<ProductWithImages | null>(null);
   const [form, setForm] = useState<ProductFormData | null>(null);
   const [categories, setCategories] = useState<any[]>([]);
+  const [subcategories, setSubcategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -57,8 +59,13 @@ function EditProductPage() {
           wedding: p.wedding,
           seo_title: p.seo_title || "",
           seo_description: p.seo_description || "",
+          focus_keyword: p.focus_keyword || "",
+          canonical_url: p.canonical_url || "",
+          social_image: p.social_image || "",
+          image_alt_text: p.image_alt_text || "",
           tags: p.tags || [],
           category_ids: p.category_ids || [],
+          subcategory_id: p.subcategory_id || null,
           main_image_url: p.main_image?.url || "",
           gallery_images: (p.images || []).filter((img) => !img.is_main).map((img) => img.url),
         });
@@ -67,6 +74,15 @@ function EditProductPage() {
       setLoading(false);
     });
   }, [id]);
+
+  useEffect(() => {
+    const catId = form?.category_ids?.[0];
+    if (catId) {
+      subcategoriesApi.listByCategory(catId, true).then(setSubcategories).catch(() => {});
+    } else {
+      setSubcategories([]);
+    }
+  }, [form?.category_ids]);
 
   const handleChange = (field: keyof ProductFormData, value: any) => {
     setForm((prev) => prev ? { ...prev, [field]: value } : prev);
@@ -155,12 +171,28 @@ function EditProductPage() {
             <Field label="Category">
               <select
                 value={form.category_ids?.[0] || ""}
-                onChange={(e) => handleChange("category_ids", e.target.value ? [e.target.value] : [])}
+                onChange={(e) => {
+                  handleChange("category_ids", e.target.value ? [e.target.value] : []);
+                  handleChange("subcategory_id", null);
+                }}
                 className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#c9a96e]"
               >
                 <option value="">Select category</option>
                 {categories.map((c: any) => (
                   <option key={c.id} value={c.id}>{c.name}</option>
+                ))}
+              </select>
+            </Field>
+            <Field label="Subcategory">
+              <select
+                value={form.subcategory_id || ""}
+                onChange={(e) => handleChange("subcategory_id", e.target.value || null)}
+                className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#c9a96e]"
+                disabled={!form.category_ids?.[0]}
+              >
+                <option value="">{form.category_ids?.[0] ? "Select subcategory" : "Select a category first"}</option>
+                {subcategories.map((s: any) => (
+                  <option key={s.id} value={s.id}>{s.name}</option>
                 ))}
               </select>
             </Field>
@@ -311,7 +343,19 @@ function EditProductPage() {
               <input type="text" value={form.seo_title || ""} onChange={(e) => handleChange("seo_title", e.target.value)} className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#c9a96e]" />
             </Field>
             <Field label="SEO Description">
-              <textarea value={form.seo_description || ""} onChange={(e) => handleChange("seo_description", e.target.value)} rows={3} className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#c9a96e]" />
+              <textarea value={form.seo_description || ""} onChange={(e) => handleChange("seo_description", e.target.value)} rows={2} className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#c9a96e]" />
+            </Field>
+            <Field label="Focus Keyword">
+              <input type="text" value={form.focus_keyword || ""} onChange={(e) => handleChange("focus_keyword", e.target.value)} className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#c9a96e]" placeholder="e.g. gold necklace" />
+            </Field>
+            <Field label="Canonical URL">
+              <input type="text" value={form.canonical_url || ""} onChange={(e) => handleChange("canonical_url", e.target.value)} className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#c9a96e]" placeholder="https://example.com/product/slug" />
+            </Field>
+            <Field label="Social Image URL">
+              <input type="text" value={form.social_image || ""} onChange={(e) => handleChange("social_image", e.target.value)} className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#c9a96e]" placeholder="Open Graph image URL" />
+            </Field>
+            <Field label="Image Alt Text">
+              <input type="text" value={form.image_alt_text || ""} onChange={(e) => handleChange("image_alt_text", e.target.value)} className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#c9a96e]" placeholder="Descriptive alt text for main image" />
             </Field>
           </Section>
 

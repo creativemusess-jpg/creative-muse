@@ -33,6 +33,11 @@ export interface ProductWithImages {
   wedding: boolean;
   seo_title: string | null;
   seo_description: string | null;
+  focus_keyword: string | null;
+  canonical_url: string | null;
+  social_image: string | null;
+  image_alt_text: string | null;
+  subcategory_id: string | null;
   tags: string[];
   published_at: string | null;
   created_at: string;
@@ -44,12 +49,14 @@ export interface ProductWithImages {
   images_360?: { id: string; url: string; frame_order: number }[];
   category_ids?: string[];
   category_name?: string;
+  subcategory_name?: string;
   collection_ids?: string[];
 }
 
 export interface ProductFilters {
   search?: string;
   category?: string;
+  subcategory?: string;
   collection?: string;
   status?: string;
   badge?: string;
@@ -96,6 +103,11 @@ export interface ProductFormData {
   wedding?: boolean;
   seo_title?: string;
   seo_description?: string;
+  focus_keyword?: string;
+  canonical_url?: string;
+  social_image?: string;
+  image_alt_text?: string;
+  subcategory_id?: string | null;
   tags?: string[];
   category_ids?: string[];
   collection_ids?: string[];
@@ -113,7 +125,8 @@ const productSelect = `
   certification_type, certification_number,
   rating_average, review_count,
   featured, best_seller, new_arrival, trending, wedding,
-  seo_title, seo_description, tags,
+  seo_title, seo_description, focus_keyword, canonical_url, social_image, image_alt_text,
+  subcategory_id, tags,
   published_at, created_at, updated_at,
   created_by, updated_by
 `;
@@ -135,6 +148,11 @@ function mapProduct(row: any): ProductWithImages {
     new_arrival: row.new_arrival ?? false,
     trending: row.trending ?? false,
     wedding: row.wedding ?? false,
+    focus_keyword: row.focus_keyword ?? null,
+    canonical_url: row.canonical_url ?? null,
+    social_image: row.social_image ?? null,
+    image_alt_text: row.image_alt_text ?? null,
+    subcategory_id: row.subcategory_id ?? null,
   };
 }
 
@@ -164,6 +182,15 @@ export const productsApi = {
         const pids = (links || []).map((l: any) => l.product_id);
         if (pids.length > 0) query = query.in("id", pids);
         else query = query.eq("id", "__none__");
+      } else {
+        query = query.eq("id", "__none__");
+      }
+    }
+
+    if (filters.subcategory) {
+      const { data: subcat } = await supabase.from("subcategories").select("id").eq("slug", filters.subcategory).maybeSingle();
+      if (subcat) {
+        query = query.eq("subcategory_id", subcat.id);
       } else {
         query = query.eq("id", "__none__");
       }
@@ -206,6 +233,15 @@ export const productsApi = {
         products.forEach((p) => {
           const cid = p.category_ids?.[0];
           if (cid) p.category_name = catMap.get(cid) || null;
+        });
+      }
+
+      const allSubIds = [...new Set(products.map((p) => p.subcategory_id).filter(Boolean))] as string[];
+      if (allSubIds.length > 0) {
+        const { data: subData } = await supabase.from("subcategories").select("id, name").in("id", allSubIds);
+        const subMap = new Map((subData as any[] || []).map((s: any) => [s.id, s.name]));
+        products.forEach((p) => {
+          if (p.subcategory_id) p.subcategory_name = subMap.get(p.subcategory_id) || null;
         });
       }
     }
@@ -329,6 +365,11 @@ export const productsApi = {
       wedding: data.wedding || false,
       seo_title: data.seo_title || null,
       seo_description: data.seo_description || null,
+      focus_keyword: data.focus_keyword || null,
+      canonical_url: data.canonical_url || null,
+      social_image: data.social_image || null,
+      image_alt_text: data.image_alt_text || null,
+      subcategory_id: data.subcategory_id || null,
       tags: data.tags || [],
       published_at: data.status === "active" ? new Date().toISOString() : null,
     };

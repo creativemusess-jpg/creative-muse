@@ -28,6 +28,11 @@ export interface Database {
         Insert: CategoryInsert;
         Update: CategoryUpdate;
       };
+      subcategories: {
+        Row: SubcategoryRow;
+        Insert: SubcategoryInsert;
+        Update: SubcategoryUpdate;
+      };
       collections: {
         Row: CollectionRow;
         Insert: CollectionInsert;
@@ -304,6 +309,42 @@ export interface CollectionRow {
   updated_at: string;
 }
 
+export interface SubcategoryRow {
+  id: string;
+  category_id: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  image: string | null;
+  sort_order: number;
+  active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface SubcategoryInsert {
+  id?: string;
+  category_id: string;
+  name: string;
+  slug: string;
+  description?: string | null;
+  image?: string | null;
+  sort_order?: number;
+  active?: boolean;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface SubcategoryUpdate {
+  name?: string;
+  slug?: string;
+  description?: string | null;
+  image?: string | null;
+  sort_order?: number;
+  active?: boolean;
+  updated_at?: string;
+}
+
 export interface ProductRow {
   id: string;
   name: string;
@@ -337,6 +378,11 @@ export interface ProductRow {
   wedding: boolean;
   seo_title: string | null;
   seo_description: string | null;
+  focus_keyword: string | null;
+  canonical_url: string | null;
+  social_image: string | null;
+  image_alt_text: string | null;
+  subcategory_id: string | null;
   tags: string[];
   published_at: string | null;
   created_at: string;
@@ -378,6 +424,11 @@ export interface ProductInsert {
   wedding?: boolean;
   seo_title?: string | null;
   seo_description?: string | null;
+  focus_keyword?: string | null;
+  canonical_url?: string | null;
+  social_image?: string | null;
+  image_alt_text?: string | null;
+  subcategory_id?: string | null;
   tags?: string[];
   published_at?: string | null;
   created_at?: string;
@@ -418,6 +469,11 @@ export interface ProductUpdate {
   wedding?: boolean;
   seo_title?: string | null;
   seo_description?: string | null;
+  focus_keyword?: string | null;
+  canonical_url?: string | null;
+  social_image?: string | null;
+  image_alt_text?: string | null;
+  subcategory_id?: string | null;
   tags?: string[];
   published_at?: string | null;
   updated_at?: string;
@@ -470,6 +526,15 @@ export interface ProductCollectionRow {
   collection_id: string;
 }
 
+export interface AutoScrollSettings {
+  autoScrollEnabled?: boolean;
+  scrollDirection?: 'left' | 'right';
+  scrollSpeed?: number;
+  pauseOnHover?: boolean;
+  autoResumeEnabled?: boolean;
+  autoResumeDelaySeconds?: number;
+}
+
 export interface HomepageSectionRow {
   id: string;
   section_key: string;
@@ -479,6 +544,12 @@ export interface HomepageSectionRow {
   is_published: boolean;
   sort_order: number;
   updated_at: string;
+  auto_scroll_enabled: boolean;
+  scroll_direction: string;
+  scroll_speed: number;
+  pause_on_hover: boolean;
+  auto_resume_enabled: boolean;
+  auto_resume_delay_seconds: number;
 }
 
 export interface BannerRow {
@@ -716,6 +787,12 @@ export interface HomepageSectionInsert {
   is_published?: boolean;
   sort_order?: number;
   updated_at?: string;
+  auto_scroll_enabled?: boolean;
+  scroll_direction?: string;
+  scroll_speed?: number;
+  pause_on_hover?: boolean;
+  auto_resume_enabled?: boolean;
+  auto_resume_delay_seconds?: number;
 }
 
 export interface HomepageSectionUpdate {
@@ -725,6 +802,12 @@ export interface HomepageSectionUpdate {
   is_published?: boolean;
   sort_order?: number;
   updated_at?: string;
+  auto_scroll_enabled?: boolean;
+  scroll_direction?: string;
+  scroll_speed?: number;
+  pause_on_hover?: boolean;
+  auto_resume_enabled?: boolean;
+  auto_resume_delay_seconds?: number;
 }
 
 export interface BannerInsert {

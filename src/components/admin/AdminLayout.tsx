@@ -5,7 +5,7 @@ import {
   LayoutDashboard, Package, ShoppingCart, Users,
   Mail, Tag, Settings, LogOut,
   Menu, X, ChevronDown, PackageOpen, Megaphone, Clock,
-  ChevronRight, Home, MessageSquare,
+  ChevronRight, Home, MessageSquare, Layers,
 } from "lucide-react";
 
 interface NavItem {
@@ -19,6 +19,7 @@ const navItems: NavItem[] = [
   { label: "Dashboard", href: "/admin", icon: <LayoutDashboard className="h-4 w-4" /> },
   { label: "Products", href: "/admin/products", icon: <Package className="h-4 w-4" />, permission: "products" },
   { label: "Categories", href: "/admin/categories", icon: <PackageOpen className="h-4 w-4" />, permission: "categories" },
+  { label: "Subcategories", href: "/admin/subcategories", icon: <Layers className="h-4 w-4" />, permission: "categories" },
   { label: "Orders", href: "/admin/orders", icon: <ShoppingCart className="h-4 w-4" />, permission: "orders" },
   { label: "Customers", href: "/admin/customers", icon: <Users className="h-4 w-4" />, permission: "customers" },
   { label: "Homepage", href: "/admin/homepage", icon: <Home className="h-4 w-4" />, permission: "homepage" },

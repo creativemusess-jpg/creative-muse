@@ -34,9 +34,11 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as ProductProductIdRouteImport } from './routes/product.$productId'
 import { Route as OrderSuccessOrderNumberRouteImport } from './routes/order-success.$orderNumber'
+import { Route as CollectionsSlugRouteImport } from './routes/collections.$slug'
 import { Route as CategorySlugRouteImport } from './routes/category.$slug'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
+import { Route as AdminSubcategoriesRouteImport } from './routes/admin.subcategories'
 import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
 import { Route as AdminProductsRouteImport } from './routes/admin.products'
 import { Route as AdminOrdersRouteImport } from './routes/admin.orders'
@@ -50,6 +52,7 @@ import { Route as AdminCouponsRouteImport } from './routes/admin.coupons'
 import { Route as AdminCategoriesRouteImport } from './routes/admin.categories'
 import { Route as AdminAuditLogsRouteImport } from './routes/admin.audit-logs'
 import { Route as AccountOrdersRouteImport } from './routes/account.orders'
+import { Route as CollectionsSlugSubslugRouteImport } from './routes/collections.$slug.$subslug'
 import { Route as AdminProductsNewRouteImport } from './routes/admin.products.new'
 import { Route as AdminProductsIdRouteImport } from './routes/admin.products.$id'
 import { Route as AccountOrdersOrderNumberRouteImport } from './routes/account.orders.$orderNumber'
@@ -179,6 +182,11 @@ const OrderSuccessOrderNumberRoute = OrderSuccessOrderNumberRouteImport.update({
   path: '/order-success/$orderNumber',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CollectionsSlugRoute = CollectionsSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => CollectionsRoute,
+} as any)
 const CategorySlugRoute = CategorySlugRouteImport.update({
   id: '/category/$slug',
   path: '/category/$slug',
@@ -192,6 +200,11 @@ const BlogSlugRoute = BlogSlugRouteImport.update({
 const AuthCallbackRoute = AuthCallbackRouteImport.update({
   id: '/auth/callback',
   path: '/auth/callback',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminSubcategoriesRoute = AdminSubcategoriesRouteImport.update({
+  id: '/admin/subcategories',
+  path: '/admin/subcategories',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminSettingsRoute = AdminSettingsRouteImport.update({
@@ -259,6 +272,11 @@ const AccountOrdersRoute = AccountOrdersRouteImport.update({
   path: '/orders',
   getParentRoute: () => AccountRoute,
 } as any)
+const CollectionsSlugSubslugRoute = CollectionsSlugSubslugRouteImport.update({
+  id: '/$subslug',
+  path: '/$subslug',
+  getParentRoute: () => CollectionsSlugRoute,
+} as any)
 const AdminProductsNewRoute = AdminProductsNewRouteImport.update({
   id: '/new',
   path: '/new',
@@ -283,7 +301,7 @@ export interface FileRoutesByFullPath {
   '/blog': typeof BlogRouteWithChildren
   '/cart': typeof CartRoute
   '/checkout': typeof CheckoutRoute
-  '/collections': typeof CollectionsRoute
+  '/collections': typeof CollectionsRouteWithChildren
   '/contact': typeof ContactRoute
   '/faq': typeof FaqRoute
   '/forgot-password': typeof ForgotPasswordRoute
@@ -312,15 +330,18 @@ export interface FileRoutesByFullPath {
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/products': typeof AdminProductsRouteWithChildren
   '/admin/settings': typeof AdminSettingsRoute
+  '/admin/subcategories': typeof AdminSubcategoriesRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/category/$slug': typeof CategorySlugRoute
+  '/collections/$slug': typeof CollectionsSlugRouteWithChildren
   '/order-success/$orderNumber': typeof OrderSuccessOrderNumberRoute
   '/product/$productId': typeof ProductProductIdRoute
   '/admin/': typeof AdminIndexRoute
   '/account/orders/$orderNumber': typeof AccountOrdersOrderNumberRoute
   '/admin/products/$id': typeof AdminProductsIdRoute
   '/admin/products/new': typeof AdminProductsNewRoute
+  '/collections/$slug/$subslug': typeof CollectionsSlugSubslugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -329,7 +350,7 @@ export interface FileRoutesByTo {
   '/blog': typeof BlogRouteWithChildren
   '/cart': typeof CartRoute
   '/checkout': typeof CheckoutRoute
-  '/collections': typeof CollectionsRoute
+  '/collections': typeof CollectionsRouteWithChildren
   '/contact': typeof ContactRoute
   '/faq': typeof FaqRoute
   '/forgot-password': typeof ForgotPasswordRoute
@@ -358,15 +379,18 @@ export interface FileRoutesByTo {
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/products': typeof AdminProductsRouteWithChildren
   '/admin/settings': typeof AdminSettingsRoute
+  '/admin/subcategories': typeof AdminSubcategoriesRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/category/$slug': typeof CategorySlugRoute
+  '/collections/$slug': typeof CollectionsSlugRouteWithChildren
   '/order-success/$orderNumber': typeof OrderSuccessOrderNumberRoute
   '/product/$productId': typeof ProductProductIdRoute
   '/admin': typeof AdminIndexRoute
   '/account/orders/$orderNumber': typeof AccountOrdersOrderNumberRoute
   '/admin/products/$id': typeof AdminProductsIdRoute
   '/admin/products/new': typeof AdminProductsNewRoute
+  '/collections/$slug/$subslug': typeof CollectionsSlugSubslugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -376,7 +400,7 @@ export interface FileRoutesById {
   '/blog': typeof BlogRouteWithChildren
   '/cart': typeof CartRoute
   '/checkout': typeof CheckoutRoute
-  '/collections': typeof CollectionsRoute
+  '/collections': typeof CollectionsRouteWithChildren
   '/contact': typeof ContactRoute
   '/faq': typeof FaqRoute
   '/forgot-password': typeof ForgotPasswordRoute
@@ -405,15 +429,18 @@ export interface FileRoutesById {
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/products': typeof AdminProductsRouteWithChildren
   '/admin/settings': typeof AdminSettingsRoute
+  '/admin/subcategories': typeof AdminSubcategoriesRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/category/$slug': typeof CategorySlugRoute
+  '/collections/$slug': typeof CollectionsSlugRouteWithChildren
   '/order-success/$orderNumber': typeof OrderSuccessOrderNumberRoute
   '/product/$productId': typeof ProductProductIdRoute
   '/admin/': typeof AdminIndexRoute
   '/account/orders/$orderNumber': typeof AccountOrdersOrderNumberRoute
   '/admin/products/$id': typeof AdminProductsIdRoute
   '/admin/products/new': typeof AdminProductsNewRoute
+  '/collections/$slug/$subslug': typeof CollectionsSlugSubslugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -453,15 +480,18 @@ export interface FileRouteTypes {
     | '/admin/orders'
     | '/admin/products'
     | '/admin/settings'
+    | '/admin/subcategories'
     | '/auth/callback'
     | '/blog/$slug'
     | '/category/$slug'
+    | '/collections/$slug'
     | '/order-success/$orderNumber'
     | '/product/$productId'
     | '/admin/'
     | '/account/orders/$orderNumber'
     | '/admin/products/$id'
     | '/admin/products/new'
+    | '/collections/$slug/$subslug'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -499,15 +529,18 @@ export interface FileRouteTypes {
     | '/admin/orders'
     | '/admin/products'
     | '/admin/settings'
+    | '/admin/subcategories'
     | '/auth/callback'
     | '/blog/$slug'
     | '/category/$slug'
+    | '/collections/$slug'
     | '/order-success/$orderNumber'
     | '/product/$productId'
     | '/admin'
     | '/account/orders/$orderNumber'
     | '/admin/products/$id'
     | '/admin/products/new'
+    | '/collections/$slug/$subslug'
   id:
     | '__root__'
     | '/'
@@ -545,15 +578,18 @@ export interface FileRouteTypes {
     | '/admin/orders'
     | '/admin/products'
     | '/admin/settings'
+    | '/admin/subcategories'
     | '/auth/callback'
     | '/blog/$slug'
     | '/category/$slug'
+    | '/collections/$slug'
     | '/order-success/$orderNumber'
     | '/product/$productId'
     | '/admin/'
     | '/account/orders/$orderNumber'
     | '/admin/products/$id'
     | '/admin/products/new'
+    | '/collections/$slug/$subslug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -563,7 +599,7 @@ export interface RootRouteChildren {
   BlogRoute: typeof BlogRouteWithChildren
   CartRoute: typeof CartRoute
   CheckoutRoute: typeof CheckoutRoute
-  CollectionsRoute: typeof CollectionsRoute
+  CollectionsRoute: typeof CollectionsRouteWithChildren
   ContactRoute: typeof ContactRoute
   FaqRoute: typeof FaqRoute
   ForgotPasswordRoute: typeof ForgotPasswordRoute
@@ -591,6 +627,7 @@ export interface RootRouteChildren {
   AdminOrdersRoute: typeof AdminOrdersRoute
   AdminProductsRoute: typeof AdminProductsRouteWithChildren
   AdminSettingsRoute: typeof AdminSettingsRoute
+  AdminSubcategoriesRoute: typeof AdminSubcategoriesRoute
   AuthCallbackRoute: typeof AuthCallbackRoute
   CategorySlugRoute: typeof CategorySlugRoute
   OrderSuccessOrderNumberRoute: typeof OrderSuccessOrderNumberRoute
@@ -775,6 +812,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OrderSuccessOrderNumberRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/collections/$slug': {
+      id: '/collections/$slug'
+      path: '/$slug'
+      fullPath: '/collections/$slug'
+      preLoaderRoute: typeof CollectionsSlugRouteImport
+      parentRoute: typeof CollectionsRoute
+    }
     '/category/$slug': {
       id: '/category/$slug'
       path: '/category/$slug'
@@ -794,6 +838,13 @@ declare module '@tanstack/react-router' {
       path: '/auth/callback'
       fullPath: '/auth/callback'
       preLoaderRoute: typeof AuthCallbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/subcategories': {
+      id: '/admin/subcategories'
+      path: '/admin/subcategories'
+      fullPath: '/admin/subcategories'
+      preLoaderRoute: typeof AdminSubcategoriesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/settings': {
@@ -887,6 +938,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AccountOrdersRouteImport
       parentRoute: typeof AccountRoute
     }
+    '/collections/$slug/$subslug': {
+      id: '/collections/$slug/$subslug'
+      path: '/$subslug'
+      fullPath: '/collections/$slug/$subslug'
+      preLoaderRoute: typeof CollectionsSlugSubslugRouteImport
+      parentRoute: typeof CollectionsSlugRoute
+    }
     '/admin/products/new': {
       id: '/admin/products/new'
       path: '/new'
@@ -944,6 +1002,30 @@ const BlogRouteChildren: BlogRouteChildren = {
 
 const BlogRouteWithChildren = BlogRoute._addFileChildren(BlogRouteChildren)
 
+interface CollectionsSlugRouteChildren {
+  CollectionsSlugSubslugRoute: typeof CollectionsSlugSubslugRoute
+}
+
+const CollectionsSlugRouteChildren: CollectionsSlugRouteChildren = {
+  CollectionsSlugSubslugRoute: CollectionsSlugSubslugRoute,
+}
+
+const CollectionsSlugRouteWithChildren = CollectionsSlugRoute._addFileChildren(
+  CollectionsSlugRouteChildren,
+)
+
+interface CollectionsRouteChildren {
+  CollectionsSlugRoute: typeof CollectionsSlugRouteWithChildren
+}
+
+const CollectionsRouteChildren: CollectionsRouteChildren = {
+  CollectionsSlugRoute: CollectionsSlugRouteWithChildren,
+}
+
+const CollectionsRouteWithChildren = CollectionsRoute._addFileChildren(
+  CollectionsRouteChildren,
+)
+
 interface AdminProductsRouteChildren {
   AdminProductsIdRoute: typeof AdminProductsIdRoute
   AdminProductsNewRoute: typeof AdminProductsNewRoute
@@ -965,7 +1047,7 @@ const rootRouteChildren: RootRouteChildren = {
   BlogRoute: BlogRouteWithChildren,
   CartRoute: CartRoute,
   CheckoutRoute: CheckoutRoute,
-  CollectionsRoute: CollectionsRoute,
+  CollectionsRoute: CollectionsRouteWithChildren,
   ContactRoute: ContactRoute,
   FaqRoute: FaqRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
@@ -993,6 +1075,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminOrdersRoute: AdminOrdersRoute,
   AdminProductsRoute: AdminProductsRouteWithChildren,
   AdminSettingsRoute: AdminSettingsRoute,
+  AdminSubcategoriesRoute: AdminSubcategoriesRoute,
   AuthCallbackRoute: AuthCallbackRoute,
   CategorySlugRoute: CategorySlugRoute,
   OrderSuccessOrderNumberRoute: OrderSuccessOrderNumberRoute,

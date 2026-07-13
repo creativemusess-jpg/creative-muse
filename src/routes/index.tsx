@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion, AnimatePresence } from "framer-motion";
-import { useEffect, useMemo, useRef, useState, useCallback } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Sparkles,
   Award,
@@ -25,14 +25,10 @@ import {
 } from "lucide-react";
 import { formatPrice, type Product, useStorefrontProducts } from "@/lib/products";
 import { categoriesApi } from "@/lib/api/categories";
+import { contentApi } from "@/lib/api/content";
 import { ProductCard } from "@/components/site/ProductCard";
 import { useStore } from "@/lib/store";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  type CarouselApi,
-} from "@/components/ui/carousel";
+import { ProductCarouselSection, type AutoScrollSettings } from "@/components/site/ProductCarouselSection";
 import heroRing from "@/assets/hero-ring.jpg";
 import catRings from "@/assets/cat-rings.png";
 import catNecklaces from "@/assets/cat-necklaces.png";
@@ -83,6 +79,7 @@ function HomePage() {
       <BestSellers />
       <ShoppableReels />
       <NewArrivals />
+      <PremiumArrivals />
       <Offers />
       <WhyChoose />
       <Testimonials />
@@ -279,7 +276,7 @@ function ShopByCategory() {
   const [catLoaded, setCatLoaded] = useState(false);
 
   useEffect(() => {
-    categoriesApi.listWithCounts(true).then((data) => {
+    categoriesApi.list(true).then((data) => {
       setDbCategories(data);
       setCatLoaded(true);
     }).catch(() => setCatLoaded(true));
@@ -302,9 +299,9 @@ function ShopByCategory() {
               transition={{ duration: 0.4, delay: i * 0.05 }}
               className="h-full"
             >
-              <Link
+               <Link
                 to={`/category/${cat.slug}`}
-                className="group flex h-full flex-col items-center rounded-[24px] border border-transparent bg-white p-4 pb-5 text-center shadow-[0_4px_24px_rgba(0,0,0,0.04)] transition-all duration-500 hover:-translate-y-2 hover:border-[#C9A96E]/50 hover:shadow-[0_20px_60px_rgba(201,169,110,0.22)]"
+                className="group flex h-full flex-col items-center rounded-[24px] border border-transparent bg-white p-3 pb-4 text-center shadow-[0_4px_24px_rgba(0,0,0,0.04)] transition-all duration-500 hover:-translate-y-2 hover:border-[#C9A96E]/50 hover:shadow-[0_20px_60px_rgba(201,169,110,0.22)] active:scale-[0.97] md:p-4 md:pb-5"
               >
                 <div className="relative aspect-square w-full overflow-hidden rounded-[18px] bg-gradient-to-br from-[#fdf8f3] to-[#f0e4cd]">
                   {cat.imageUrl ? (
@@ -314,7 +311,7 @@ function ShopByCategory() {
                       loading="lazy"
                       width={768}
                       height={768}
-                      className="absolute inset-0 h-full w-full object-contain p-3 transition-transform duration-700 ease-out group-hover:scale-110"
+                      className="absolute inset-0 h-full w-full object-contain p-2 transition-transform duration-700 ease-out group-hover:scale-110 md:p-3"
                       onError={(e) => {
                         const t = e.currentTarget;
                         if (t.dataset.fallback) { t.style.display = "none"; return; }
@@ -329,15 +326,9 @@ function ShopByCategory() {
                     </div>
                   )}
                 </div>
-                <p className="font-display mt-4 text-[15px] font-semibold text-[#1a1a2e]">
+                <p className="font-display mt-3 text-[14px] font-semibold text-[#1a1a2e] md:mt-4 md:text-[15px]">
                   {cat.name}
                 </p>
-                <p className="mt-1 text-[11px] tracking-[0.14em] text-[#8a6a2a] uppercase">
-                  {cat.productCount} {cat.productCount === 1 ? "product" : "products"}
-                </p>
-                <span className="mt-2 inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#8a6a2a] opacity-0 transition-all duration-300 group-hover:opacity-100">
-                  Shop <ChevronRight className="h-3 w-3 transition-transform duration-300 group-hover:translate-x-1" />
-                </span>
               </Link>
             </motion.div>
           ))}
@@ -600,116 +591,70 @@ function ReelCard({
    ========================================================= */
 function NewArrivals() {
   const { products } = useStorefrontProducts();
+  const [scrollSettings, setScrollSettings] = useState<AutoScrollSettings | undefined>();
+
+  useEffect(() => {
+    contentApi.getSection('new_arrivals').then((section) => {
+      if (section) {
+        setScrollSettings({
+          autoScrollEnabled: section.auto_scroll_enabled ?? false,
+          scrollDirection: section.scroll_direction ?? 'left',
+          scrollSpeed: section.scroll_speed ?? 30,
+          pauseOnHover: section.pause_on_hover ?? true,
+          autoResumeEnabled: section.auto_resume_enabled ?? true,
+          autoResumeDelaySeconds: section.auto_resume_delay_seconds ?? 3,
+        });
+      }
+    });
+  }, []);
+
   const list = useMemo(
     () => products.filter((p) => p.badge === "New").concat(products).slice(0, 6),
     [products],
   );
-  const [api, setApi] = useState<CarouselApi>();
-  const [selectedIndex, setSelectedIndex] = useState(0);
-  const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
-  const pointerStart = useRef({ x: 0, y: 0 });
+  return (
+    <ProductCarouselSection
+      eyebrow="Just Arrived"
+      title="New This Season"
+      products={list}
+      autoScroll={scrollSettings}
+    />
+  );
+}
 
-  const onSelect = useCallback((carouselApi: CarouselApi) => {
-    if (!carouselApi) return;
-    setSelectedIndex(carouselApi.selectedScrollSnap());
-    setScrollSnaps(carouselApi.scrollSnapList());
-  }, []);
+/* =========================================================
+   7b. PREMIUM JEWELLERY CAROUSEL
+   ========================================================= */
+function PremiumArrivals() {
+  const { products } = useStorefrontProducts();
+  const [scrollSettings, setScrollSettings] = useState<AutoScrollSettings | undefined>();
 
   useEffect(() => {
-    if (!api) return;
-    onSelect(api);
-    api.on("select", onSelect);
-    api.on("reInit", onSelect);
-    return () => {
-      api.off("select", onSelect);
-      api.off("reInit", onSelect);
-    };
-  }, [api, onSelect]);
+    contentApi.getSection('premium_arrivals').then((section) => {
+      if (section) {
+        setScrollSettings({
+          autoScrollEnabled: section.auto_scroll_enabled ?? false,
+          scrollDirection: section.scroll_direction ?? 'left',
+          scrollSpeed: section.scroll_speed ?? 30,
+          pauseOnHover: section.pause_on_hover ?? true,
+          autoResumeEnabled: section.auto_resume_enabled ?? true,
+          autoResumeDelaySeconds: section.auto_resume_delay_seconds ?? 3,
+        });
+      }
+    });
+  }, []);
 
+  const list = useMemo(
+    () => products.filter((p) => p.badge === "New").concat(products).slice(0, 6),
+    [products],
+  );
   return (
-    <section className="bg-[#fdf8f3] py-20">
-      <div className="mx-auto max-w-[1280px] px-6">
-        <div className="flex items-end justify-between gap-6">
-          <div>
-            <p className="eyebrow">Just Arrived</p>
-            <h2 className="font-display mt-3 text-[32px] leading-tight font-semibold text-[#1a1a2e] sm:text-[40px]">
-              New This Season
-            </h2>
-            <span className="gold-divider mt-4 inline-block" />
-          </div>
-          <div className="hidden gap-2 sm:flex">
-            <button
-              onClick={() => api?.scrollPrev()}
-              disabled={!api?.canScrollPrev()}
-              className="flex h-11 w-11 items-center justify-center rounded-full bg-[#1a1a2e] text-white shadow-md transition-opacity disabled:opacity-30"
-              aria-label="Previous products"
-            >
-              <ChevronLeft className="h-5 w-5" />
-            </button>
-            <button
-              onClick={() => api?.scrollNext()}
-              disabled={!api?.canScrollNext()}
-              className="flex h-11 w-11 items-center justify-center rounded-full bg-[#1a1a2e] text-white shadow-md transition-opacity disabled:opacity-30"
-              aria-label="Next products"
-            >
-              <ChevronRight className="h-5 w-5" />
-            </button>
-          </div>
-        </div>
-
-        <div className="mt-10">
-          <Carousel
-            setApi={setApi}
-            opts={{
-              align: "start",
-              loop: false,
-              dragFree: false,
-              duration: 25,
-            }}
-          >
-            <CarouselContent
-              onPointerDown={(e) => {
-                pointerStart.current = { x: e.clientX, y: e.clientY };
-              }}
-            >
-              {list.map((p, i) => (
-                <CarouselItem
-                  key={p.id}
-                  className="basis-[84%] sm:basis-[46%] md:basis-[44%] lg:basis-1/3 xl:basis-1/4"
-                >
-                  <div
-                    className={`h-full transition-transform duration-400 ${
-                      i === selectedIndex
-                        ? "scale-100 opacity-100"
-                        : "scale-[0.96] opacity-80"
-                    }`}
-                  >
-                    <ProductCard
-                      product={p}
-                      index={i}
-                      pointerStart={pointerStart}
-                    />
-                  </div>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-          </Carousel>
-
-          <div className="mt-6 flex items-center justify-center gap-2 sm:hidden" aria-hidden="true">
-            {scrollSnaps.length > 1 && scrollSnaps.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => api?.scrollTo(i)}
-                className={`h-1.5 rounded-full transition-all duration-300 ${
-                  i === selectedIndex ? "w-6 bg-[#1a1a2e]" : "w-1.5 bg-[#c9a96e]/40"
-                }`}
-                aria-label={`Go to product ${i + 1} of ${scrollSnaps.length}`}
-              />
-            ))}
-          </div>
-        </div>
-      </div>
-    </section>
+    <ProductCarouselSection
+      eyebrow="PREMIUM JEWELLERY"
+      title="YOUR EVERYDAY STATEMENT"
+      products={list}
+      autoScroll={scrollSettings}
+    />
   );
 }
 
