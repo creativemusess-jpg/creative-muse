@@ -12,11 +12,9 @@ import {
   MessageCircle,
   Search,
 } from "lucide-react";
-import logo from "@/assets/cm-logo-v2.png.asset.json";
 import { useStore } from "@/lib/store";
 import { useAuth } from "@/lib/auth";
 import { NAV_ITEMS } from "@/lib/navigation";
-import { BrandLogo } from "./BrandLogo";
 
 export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -40,7 +38,9 @@ export function Header() {
             <div className="hidden lg:block" />
 
             <Link to="/" className="flex items-center justify-center" aria-label="Creative Muse — Home">
-              <BrandLogo src={logo.url} className="h-[38px] w-auto object-contain md:h-[46px] lg:h-[54px]" />
+              <span className="flex h-[48px] w-[48px] items-center justify-center rounded-full border-2 border-[#C9A96E]/45 bg-white font-display text-[17px] font-semibold text-[#1a1a2e] md:h-[56px] md:w-[56px] md:text-[19px] lg:h-[62px] lg:w-[62px] lg:text-[21px]">
+                CM
+              </span>
             </Link>
 
             <div className="flex items-center justify-end gap-1 md:gap-2 lg:gap-4">
@@ -113,7 +113,9 @@ function MobileDrawer({ onClose }: { onClose: () => void }) {
         <style>{`@keyframes cmDrawerIn{from{transform:translateX(100%)}to{transform:translateX(0)}}`}</style>
 
         <div className="mb-6 flex items-center justify-between">
-          <BrandLogo src={logo.url} className="h-12 w-auto" />
+          <span className="flex h-[48px] w-[48px] items-center justify-center rounded-full border-2 border-[#C9A96E]/45 bg-white font-display text-[17px] font-semibold text-[#1a1a2e]">
+            CM
+          </span>
           <button
             onClick={onClose}
             className="flex h-12 w-12 items-center justify-center rounded-full bg-[#f5efe8]"

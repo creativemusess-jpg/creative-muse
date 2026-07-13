@@ -1,7 +1,5 @@
 import { Link } from "@tanstack/react-router";
 import { Instagram, Facebook, Youtube, MapPin, Phone, Mail } from "lucide-react";
-import logo from "@/assets/cm-logo.png.asset.json";
-import { BrandLogo } from "./BrandLogo";
 
 export function Footer() {
   return (
@@ -9,7 +7,9 @@ export function Footer() {
       <div className="mx-auto grid max-w-[1280px] gap-12 lg:grid-cols-4">
         {/* Brand */}
         <div className="lg:col-span-1">
-          <BrandLogo src={logo.url} dark className="h-12 w-auto object-contain" />
+          <span className="flex h-[64px] w-[64px] items-center justify-center rounded-full border-2 border-[#C9A96E]/55 bg-white font-display text-[22px] font-semibold text-[#1a1a2e] md:h-[76px] md:w-[76px] md:text-[26px]">
+            CM
+          </span>
           <p className="mt-5 max-w-xs text-sm leading-relaxed text-[#9b9082]">
             Where every gem tells your story. Handcrafted fine jewellery from Vadodara.
           </p>
