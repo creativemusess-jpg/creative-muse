@@ -7,8 +7,21 @@ export function Footer() {
       <div className="mx-auto grid max-w-[1280px] gap-12 lg:grid-cols-4">
         {/* Brand */}
         <div className="lg:col-span-1">
-          <span className="flex h-[64px] w-[64px] items-center justify-center rounded-full border-2 border-[#C9A96E]/55 bg-white font-display text-[22px] font-semibold text-[#1a1a2e] md:h-[76px] md:w-[76px] md:text-[26px]">
-            CM
+          <span className="flex items-center gap-4">
+            <img
+              src="/favicon.ico"
+              alt=""
+              aria-hidden="true"
+              className="h-[64px] w-[64px] object-contain md:h-[80px] md:w-[80px]"
+            />
+            <span className="leading-tight">
+              <span className="block font-display text-[20px] font-semibold text-white md:text-[24px]">
+                Creative Muse
+              </span>
+              <span className="block text-[10px] font-semibold uppercase tracking-[0.22em] text-[#C9A96E] md:text-[11px]">
+                Fine Jewellery
+              </span>
+            </span>
           </span>
           <p className="mt-5 max-w-xs text-sm leading-relaxed text-[#9b9082]">
             Where every gem tells your story. Handcrafted fine jewellery from Vadodara.

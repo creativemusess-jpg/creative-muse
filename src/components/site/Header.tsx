@@ -38,8 +38,21 @@ export function Header() {
             <div className="hidden lg:block" />
 
             <Link to="/" className="flex items-center justify-center" aria-label="Creative Muse — Home">
-              <span className="flex h-[48px] w-[48px] items-center justify-center rounded-full border-2 border-[#C9A96E]/45 bg-white font-display text-[17px] font-semibold text-[#1a1a2e] md:h-[56px] md:w-[56px] md:text-[19px] lg:h-[62px] lg:w-[62px] lg:text-[21px]">
-                CM
+              <span className="flex items-center gap-3">
+                <img
+                  src="/favicon.ico"
+                  alt=""
+                  aria-hidden="true"
+                  className="h-[52px] w-[52px] object-contain md:h-[68px] md:w-[68px] lg:h-[72px] lg:w-[72px]"
+                />
+                <span className="leading-tight">
+                  <span className="block font-display text-[16px] font-semibold text-[#1a1a2e] md:text-[19px] lg:text-[21px]">
+                    Creative Muse
+                  </span>
+                  <span className="block text-[9px] font-semibold uppercase tracking-[0.22em] text-[#C9A96E] md:text-[10px]">
+                    Fine Jewellery
+                  </span>
+                </span>
               </span>
             </Link>
 
@@ -113,8 +126,21 @@ function MobileDrawer({ onClose }: { onClose: () => void }) {
         <style>{`@keyframes cmDrawerIn{from{transform:translateX(100%)}to{transform:translateX(0)}}`}</style>
 
         <div className="mb-6 flex items-center justify-between">
-          <span className="flex h-[48px] w-[48px] items-center justify-center rounded-full border-2 border-[#C9A96E]/45 bg-white font-display text-[17px] font-semibold text-[#1a1a2e]">
-            CM
+          <span className="flex items-center gap-3">
+            <img
+              src="/favicon.ico"
+              alt=""
+              aria-hidden="true"
+              className="h-[48px] w-[48px] object-contain"
+            />
+            <span className="leading-tight">
+              <span className="block font-display text-[16px] font-semibold text-[#1a1a2e]">
+                Creative Muse
+              </span>
+              <span className="block text-[9px] font-semibold uppercase tracking-[0.22em] text-[#C9A96E]">
+                Fine Jewellery
+              </span>
+            </span>
           </span>
           <button
             onClick={onClose}
