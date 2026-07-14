@@ -15,29 +15,24 @@ ALTER TABLE customers ADD COLUMN IF NOT EXISTS total_orders INT NOT NULL DEFAULT
 ALTER TABLE customers ADD COLUMN IF NOT EXISTS total_spent DECIMAL(12,2) NOT NULL DEFAULT 0;
 
 -- First ensure test customers exist
-INSERT INTO customers (email, full_name, phone, shipping_address, total_orders, total_spent)
-SELECT 'priya.sharma@example.com', 'Priya Sharma', '+91-98765-43210',
-  '{}'::jsonb, 0, 0
+INSERT INTO customers (email, full_name, phone, total_orders, total_spent)
+SELECT 'priya.sharma@example.com', 'Priya Sharma', '+91-98765-43210', 0, 0
 WHERE NOT EXISTS (SELECT 1 FROM customers WHERE email = 'priya.sharma@example.com');
 
-INSERT INTO customers (email, full_name, phone, shipping_address, total_orders, total_spent)
-SELECT 'ananya.gupta@example.com', 'Ananya Gupta', '+91-99887-76655',
-  '{}'::jsonb, 0, 0
+INSERT INTO customers (email, full_name, phone, total_orders, total_spent)
+SELECT 'ananya.gupta@example.com', 'Ananya Gupta', '+91-99887-76655', 0, 0
 WHERE NOT EXISTS (SELECT 1 FROM customers WHERE email = 'ananya.gupta@example.com');
 
-INSERT INTO customers (email, full_name, phone, shipping_address, total_orders, total_spent)
-SELECT 'rohit.verma@example.com', 'Rohit Verma', '+91-87654-32109',
-  '{}'::jsonb, 0, 0
+INSERT INTO customers (email, full_name, phone, total_orders, total_spent)
+SELECT 'rohit.verma@example.com', 'Rohit Verma', '+91-87654-32109', 0, 0
 WHERE NOT EXISTS (SELECT 1 FROM customers WHERE email = 'rohit.verma@example.com');
 
-INSERT INTO customers (email, full_name, phone, shipping_address, total_orders, total_spent)
-SELECT 'neha.patel@example.com', 'Neha Patel', '+91-76543-21098',
-  '{}'::jsonb, 0, 0
+INSERT INTO customers (email, full_name, phone, total_orders, total_spent)
+SELECT 'neha.patel@example.com', 'Neha Patel', '+91-76543-21098', 0, 0
 WHERE NOT EXISTS (SELECT 1 FROM customers WHERE email = 'neha.patel@example.com');
 
-INSERT INTO customers (email, full_name, phone, shipping_address, total_orders, total_spent)
-SELECT 'arjun.singh@example.com', 'Arjun Singh', '+91-88990-01122',
-  '{}'::jsonb, 0, 0
+INSERT INTO customers (email, full_name, phone, total_orders, total_spent)
+SELECT 'arjun.singh@example.com', 'Arjun Singh', '+91-88990-01122', 0, 0
 WHERE NOT EXISTS (SELECT 1 FROM customers WHERE email = 'arjun.singh@example.com');
 
 -- Generate order numbers using sequence
