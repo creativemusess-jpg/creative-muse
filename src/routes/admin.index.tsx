@@ -5,7 +5,7 @@ import { analyticsApi, type DashboardMetrics } from "@/lib/api/analytics";
 import { StatusBadge } from "@/components/admin/AdminTable";
 import {
   Package, ShoppingCart, Users, Mail, TrendingUp, DollarSign,
-  AlertTriangle, ArrowUpRight, PackageOpen, Clock, Eye,
+  AlertTriangle, ArrowUpRight, PackageOpen, Clock, Eye, Tag, Home,
 } from "lucide-react";
 
 export const Route = createFileRoute("/admin/")({

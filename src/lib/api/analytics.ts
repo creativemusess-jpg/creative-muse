@@ -39,21 +39,21 @@ export const analyticsApi = {
       productsRes, activeRes, draftRes, oosRes,
       customersRes, subsRes, topProductsRes, todayRes, weekRes, monthRes,
     ] = await Promise.all([
-      supabase.from("orders").select("total_amount").not("status", "eq", "cancelled"),
+      supabase.from("orders").select("total_amount").not("order_status", "eq", "cancelled"),
       supabase.from("orders").select("id", { count: "exact", head: true }),
-      supabase.from("orders").select("id", { count: "exact", head: true }).eq("status", "pending"),
+      supabase.from("orders").select("id", { count: "exact", head: true }).eq("order_status", "pending"),
       supabase.from("orders").select("id", { count: "exact", head: true }).eq("payment_status", "paid"),
       supabase.from("orders").select("id", { count: "exact", head: true }).eq("fulfillment_status", "unfulfilled"),
       supabase.from("orders").select("id", { count: "exact", head: true }).eq("fulfillment_status", "fulfilled"),
-      supabase.from("orders").select("id", { count: "exact", head: true }).eq("status", "delivered"),
-      supabase.from("orders").select("id", { count: "exact", head: true }).eq("status", "cancelled"),
-      supabase.from("orders").select("id", { count: "exact", head: true }).eq("status", "refunded"),
+      supabase.from("orders").select("id", { count: "exact", head: true }).eq("order_status", "delivered"),
+      supabase.from("orders").select("id", { count: "exact", head: true }).eq("order_status", "cancelled"),
+      supabase.from("orders").select("id", { count: "exact", head: true }).eq("order_status", "refunded"),
       supabase.from("products").select("id", { count: "exact", head: true }),
       supabase.from("products").select("id", { count: "exact", head: true }).eq("status", "active"),
       supabase.from("products").select("id", { count: "exact", head: true }).eq("status", "draft"),
-      supabase.from("products").select("id", { count: "exact", head: true }).eq("stock_status", "out_of_stock"),
+      supabase.from("products").select("id", { count: "exact", head: true }).eq("status", "out_of_stock"),
       supabase.from("customers").select("id", { count: "exact", head: true }),
-      supabase.from("newsletter_subscribers").select("id", { count: "exact", head: true }).eq("status", "subscribed"),
+      supabase.from("newsletter_subscribers").select("id", { count: "exact", head: true }).eq("subscriber_status", "subscribed"),
       supabase.from("order_items").select("product_name, quantity, total_price").limit(10),
       supabase.from("orders").select("total_amount").gte("created_at", todayStart),
       supabase.from("orders").select("total_amount").gte("created_at", weekStart),
@@ -83,12 +83,12 @@ export const analyticsApi = {
 
     const ordersRes_full = await supabase
       .from("orders")
-      .select("id, order_number, total_amount, status, payment_status, created_at, customer_name")
+      .select("id, order_number, total_amount, order_status, payment_status, created_at, customer_name")
       .order("created_at", { ascending: false })
       .limit(5);
     const recentOrders = (ordersRes_full.data ?? []).map((o: any) => ({
       id: o.id, order_number: o.order_number, total_amount: o.total_amount,
-      status: o.status, payment_status: o.payment_status,
+      status: o.order_status, payment_status: o.payment_status,
       created_at: o.created_at, customer_name: o.customer_name,
     }));
 
