@@ -1,4 +1,4 @@
-import { useState, useEffect, type ReactNode } from "react";
+import { useState, useEffect, useRef, type ReactNode } from "react";
 import { Link, useLocation, useNavigate } from "@tanstack/react-router";
 import { adminApi, type AdminSession } from "@/lib/api/admin";
 import {
@@ -9,6 +9,8 @@ import {
   Percent, UserCog, FileText, Image,
 } from "lucide-react";
 import { GlobalSearch } from "./GlobalSearch";
+
+let cachedSessionPromise: Promise<AdminSession | null> | null = null;
 
 interface NavItem {
   label: string;
@@ -52,7 +54,10 @@ export function AdminLayout({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    adminApi.getCurrentUser().then((s) => {
+    if (!cachedSessionPromise) {
+      cachedSessionPromise = adminApi.getCurrentUser();
+    }
+    cachedSessionPromise.then((s) => {
       setSession(s);
       setLoading(false);
       if (!s) navigate({ to: "/admin/login" });
