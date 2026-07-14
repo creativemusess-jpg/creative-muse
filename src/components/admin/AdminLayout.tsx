@@ -11,6 +11,7 @@ import {
 import { GlobalSearch } from "./GlobalSearch";
 
 let cachedSessionPromise: Promise<AdminSession | null> | null = null;
+let cachedSessionValue: AdminSession | null | undefined = undefined;
 
 interface NavItem {
   label: string;
@@ -55,7 +56,16 @@ export function AdminLayout({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!cachedSessionPromise) {
-      cachedSessionPromise = adminApi.getCurrentUser();
+      cachedSessionPromise = adminApi.getCurrentUser().then((s) => {
+        cachedSessionValue = s;
+        return s;
+      });
+    }
+    if (cachedSessionValue !== undefined) {
+      setSession(cachedSessionValue);
+      setLoading(false);
+      if (!cachedSessionValue) navigate({ to: "/admin/login" });
+      return;
     }
     cachedSessionPromise.then((s) => {
       setSession(s);
@@ -77,6 +87,8 @@ export function AdminLayout({ children }: { children: ReactNode }) {
 
   const handleLogout = async () => {
     await adminApi.logout();
+    cachedSessionPromise = null;
+    cachedSessionValue = undefined;
     navigate({ to: "/admin/login" });
   };
 
