@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { AdminLayout, AdminPageHeader, AdminTable, AdminLoading, AdminEmpty } from "@/components/admin/AdminLayout";
 import { customersApi } from "@/lib/api/customers";
 import { Search } from "lucide-react";
@@ -44,7 +44,9 @@ function AdminCustomers() {
         <AdminTable headers={["Name", "Email", "Phone", "Provider", "Orders", "Total Spent", "Last Order", "Joined"]}>
           {customers.map((c) => (
             <tr key={c.id} className="hover:bg-gray-50">
-              <td className="px-4 py-3 font-medium text-[#1a1a2e]">{c.full_name || "—"}</td>
+              <td className="px-4 py-3 font-medium text-[#1a1a2e]">
+  <Link to="/admin/customers/$id" params={{ id: c.id }} className="hover:text-[#c9a96e]">{c.full_name || "—"}</Link>
+</td>
               <td className="px-4 py-3 text-gray-500">{c.email}</td>
               <td className="px-4 py-3 text-gray-500">{c.phone || "—"}</td>
               <td className="px-4 py-3">

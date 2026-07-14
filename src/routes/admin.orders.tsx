@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { AdminLayout, AdminPageHeader, AdminTable, AdminLoading, AdminEmpty } from "@/components/admin/AdminLayout";
 import { ordersApi } from "@/lib/api/orders";
 import type { OrderRow } from "@/lib/db/types";
@@ -116,7 +116,9 @@ function AdminOrders() {
             <tbody className="divide-y divide-gray-100">
               {orders.map((order) => (
                 <tr key={order.id} className="hover:bg-gray-50">
-                  <td className="px-4 py-3 font-medium text-[#1a1a2e]">#{order.order_number}</td>
+                  <td className="px-4 py-3 font-medium text-[#1a1a2e]">
+  <Link to="/admin/orders/$id" params={{ id: order.id }} className="hover:text-[#c9a96e]">#{order.order_number}</Link>
+</td>
                     <td className="px-4 py-3">
                       <p className="font-medium text-gray-900">{order.customer_name || order.customer_email?.split("@")[0] || "—"}</p>
                       <p className="text-xs text-gray-500">{order.customer_email}</p>
@@ -173,9 +175,9 @@ function AdminOrders() {
                     {new Date(order.created_at).toLocaleDateString()}
                   </td>
                   <td className="px-4 py-3">
-                    <button onClick={() => openOrderDetail(order.id)} className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100" aria-label="View order details">
+                    <Link to="/admin/orders/$id" params={{ id: order.id }} className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-[#c9a96e]" aria-label="View order details">
                       <Eye className="h-4 w-4" />
-                    </button>
+                    </Link>
                   </td>
                 </tr>
               ))}
