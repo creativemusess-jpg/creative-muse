@@ -1,8 +1,10 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { AdminLayout, AdminPageHeader, AdminLoading } from "@/components/admin/AdminLayout";
 import { contentApi } from "@/lib/api/content";
+import { uploadImage } from "@/lib/api/upload";
 import type { HomepageSectionRow } from "@/lib/db/types";
+import { Upload, X, Loader2 } from "lucide-react";
 
 const CAROUSEL_SECTION_KEYS = ["new_arrivals", "premium_arrivals", "best_sellers"];
 
@@ -50,9 +52,26 @@ function AdminHomepage() {
         }
       }
       setFormState((prev) => ({ ...prev, carousel }));
+      const banner = data.find((s) => s.section_key === "featured_banner");
+      if (banner?.content?.cta_images) {
+        const imgs = banner.content.cta_images;
+        setCtaImages([
+          { src: imgs[0]?.src || "", alt: imgs[0]?.alt || "" },
+          { src: imgs[1]?.src || "", alt: imgs[1]?.alt || "" },
+          { src: imgs[2]?.src || "", alt: imgs[2]?.alt || "" },
+        ]);
+      }
       setLoading(false);
     });
   }, []);
+
+  const [ctaImages, setCtaImages] = useState<{ src: string; alt: string }[]>([
+    { src: "", alt: "" },
+    { src: "", alt: "" },
+    { src: "", alt: "" },
+  ]);
+  const [ctaUploading, setCtaUploading] = useState<number | null>(null);
+  const ctaFileInputs = useRef<(HTMLInputElement | null)[]>([null, null, null]);
 
   const handleHeroFieldChange = useCallback((field: string, value: string) => {
     setFormState((prev) => ({
@@ -133,6 +152,35 @@ function AdminHomepage() {
     }
   };
 
+  const handleCtaImageUpload = async (index: number) => {
+    const file = ctaFileInputs.current[index]?.files?.[0];
+    if (!file) return;
+    setCtaUploading(index);
+    try {
+      const url = await uploadImage(file, "cta", "cta-images");
+      setCtaImages((prev) => prev.map((img, i) => i === index ? { ...img, src: url } : img));
+    } catch (err: any) {
+      alert(err.message);
+    } finally {
+      setCtaUploading(null);
+    }
+  };
+
+  const handleCtaSave = async () => {
+    try {
+      await contentApi.upsertSection("featured_banner", {
+        title: "Featured Banner",
+        content: { cta_images: ctaImages },
+        is_published: true,
+      });
+      const updated = await contentApi.getAllSections();
+      setSections(updated);
+      alert("CTA banner images saved");
+    } catch (err: any) {
+      alert(err.message);
+    }
+  };
+
   if (loading) return <AdminLayout><AdminLoading /></AdminLayout>;
 
   const currentCarouselSettings =
@@ -147,7 +195,10 @@ function AdminHomepage() {
       <div className="grid gap-6 lg:grid-cols-2">
         <div className="space-y-3">
           <h3 className="text-sm font-bold uppercase tracking-wider text-gray-500">Sections</h3>
-          {sections.map((section) => {
+          {(() => {
+            const hasFeatured = sections.some((s) => s.section_key === "featured_banner");
+            const allSections = hasFeatured ? sections : [...sections, { id: "featured_banner", section_key: "featured_banner", title: "Bridal CTA Images", is_published: true } as any];
+            return allSections.map((section) => {
             const isCarousel = CAROUSEL_SECTION_KEYS.includes(section.section_key);
             return (
               <div key={section.id} className="rounded-xl border border-gray-200 bg-white p-4">
@@ -167,7 +218,7 @@ function AdminHomepage() {
                     >
                       {section.is_published ? "Published" : "Draft"}
                     </button>
-                    {(section.section_key === "hero" || isCarousel) && (
+                    {(section.section_key === "hero" || isCarousel || section.section_key === "featured_banner") && (
                       <button
                         onClick={() => toggleEdit(section.section_key)}
                         className="text-xs text-[#c9a96e] hover:underline"
@@ -179,7 +230,7 @@ function AdminHomepage() {
                 </div>
               </div>
             );
-          })}
+          }); })()}
         </div>
 
         {editingSection === "hero" && (
@@ -220,7 +271,7 @@ function AdminHomepage() {
           </div>
         )}
 
-        {currentCarouselSettings && editingSection && (
+        {currentCarouselSettings && editingSection && editingSection !== "featured_banner" && (
           <div className="rounded-xl border border-gray-200 bg-white p-5">
             <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-gray-500">
               Auto-Scroll Settings — {editingSection.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase())}
@@ -326,6 +377,59 @@ function AdminHomepage() {
                 className="rounded-lg bg-[#1a1a2e] px-6 py-2 text-sm font-semibold text-white hover:bg-[#2d1b4e]"
               >
                 Save Auto-Scroll Settings
+              </button>
+            </div>
+          </div>
+        )}
+
+        {editingSection === "featured_banner" && (
+          <div className="rounded-xl border border-gray-200 bg-white p-5">
+            <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-gray-500">Featured Banner — CTA Images</h3>
+            <p className="mb-4 text-xs text-gray-500">Replace the three decorative images in the Bridal CTA banner. Leave empty to use default product images.</p>
+            <div className="space-y-5">
+              {ctaImages.map((img, i) => (
+                <div key={i}>
+                  <label className="mb-1 block text-xs font-medium text-gray-600">
+                    CTA Image {i + 1} {i === 0 ? "(Bridal Necklace/Choker)" : i === 1 ? "(Bridal Earrings)" : "(Bridal Ring)"}
+                  </label>
+                  <div className="flex items-center gap-3">
+                    {img.src ? (
+                      <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-gray-100">
+                        <img src={img.src} alt={img.alt || `CTA image ${i + 1}`} className="h-full w-full object-cover" onError={(e) => { e.currentTarget.style.display = "none"; }} />
+                        <button
+                          onClick={() => setCtaImages((prev) => prev.map((x, j) => j === i ? { src: "", alt: "" } : x))}
+                          className="absolute -top-1.5 -right-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      </div>
+                    ) : (
+                      <label className="flex h-20 w-20 cursor-pointer items-center justify-center rounded-xl border border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100">
+                        {ctaUploading === i ? <Loader2 className="h-5 w-5 animate-spin text-gray-400" /> : <Upload className="h-5 w-5 text-gray-400" />}
+                        <input
+                          ref={(el) => { ctaFileInputs.current[i] = el; }}
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={() => handleCtaImageUpload(i)}
+                        />
+                      </label>
+                    )}
+                    <input
+                      type="text"
+                      value={img.alt}
+                      onChange={(e) => setCtaImages((prev) => prev.map((x, j) => j === i ? { ...x, alt: e.target.value } : x))}
+                      placeholder="Alt text for image"
+                      className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#c9a96e]"
+                    />
+                  </div>
+                </div>
+              ))}
+              <button
+                onClick={handleCtaSave}
+                className="rounded-lg bg-[#1a1a2e] px-6 py-2 text-sm font-semibold text-white hover:bg-[#2d1b4e]"
+              >
+                Save CTA Images
               </button>
             </div>
           </div>

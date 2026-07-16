@@ -1,8 +1,8 @@
-import { useState, useEffect, useMemo } from "react";
-import { Link } from "@tanstack/react-router";
+import { useState, useEffect } from "react";
 import { Instagram } from "lucide-react";
 import { reelsApi } from "@/lib/api/reels";
 import { productsApi } from "@/lib/api/products";
+import { useStorefrontProducts } from "@/lib/products";
 import { ShoppableReelCard } from "./ShoppableReelCard";
 import {
   Carousel,
@@ -10,6 +10,8 @@ import {
   CarouselItem,
   type CarouselApi,
 } from "@/components/ui/carousel";
+
+const SAMPLE_VIDEO = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4";
 
 function SectionHeading({
   eyebrow,
@@ -40,6 +42,7 @@ export function ShoppableReelsSection() {
   const [reels, setReels] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [api, setApi] = useState<CarouselApi>();
+  const { products } = useStorefrontProducts();
 
   useEffect(() => {
     let cancelled = false;
@@ -47,14 +50,14 @@ export function ShoppableReelsSection() {
       try {
         const activeReels = await reelsApi.listActive();
         const productIds = activeReels.map((r) => r.product_id).filter(Boolean);
-        let products: any[] = [];
+        let dbProducts: any[] = [];
         if (productIds.length > 0) {
           const { data } = await productsApi.list({ per_page: 100 });
-          products = data || [];
+          dbProducts = data || [];
         }
         if (cancelled) return;
         const enriched = activeReels.map((reel) => {
-          const product = products.find(
+          const product = dbProducts.find(
             (p: any) => p.id === reel.product_id && p.status === "active",
           );
           const mapped = product
@@ -67,26 +70,41 @@ export function ShoppableReelsSection() {
             : null;
           return { reel, product: mapped };
         });
-        setReels(enriched);
+        if (enriched.length > 0) {
+          setReels(enriched);
+          if (!cancelled) setLoading(false);
+          return;
+        }
       } catch (err) {
-        console.error("Failed to load shoppable reels:", err);
-      } finally {
-        if (!cancelled) setLoading(false);
+        console.warn("DB reels unavailable, using hardcoded fallback:", err);
       }
+      if (cancelled) return;
+      // Hardcoded fallback using local products
+      const fallbackReels = products.slice(0, 5).map((p, i) => ({
+        reel: {
+          id: `fallback-${p.id}`,
+          video_url: SAMPLE_VIDEO,
+          poster_url: p.image,
+          product_id: p.id,
+          sort_order: i,
+          is_active: true,
+          alt_text: `${p.name} — shoppable reel`,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        },
+        product: { id: p.id, name: p.name, image: p.image, slug: p.id },
+      }));
+      setReels(fallbackReels);
+      if (!cancelled) setLoading(false);
     })();
     return () => { cancelled = true; };
-  }, []);
-
-  const hasReels = reels.length > 0;
+  }, [products]);
 
   if (loading) {
     return (
       <section className="bg-[#fdf8f3] py-12 sm:py-16">
         <div className="mx-auto max-w-[1280px] px-6">
-          <SectionHeading
-            eyebrow="Shop the Look"
-            title="As Seen on Instagram"
-          />
+          <SectionHeading eyebrow="Shop the Look" title="As Seen on Instagram" />
           <div className="flex gap-5 overflow-hidden">
             {[1, 2, 3, 4].map((i) => (
               <div key={i} className="min-w-0 shrink-0 basis-[84%] sm:basis-[46%] lg:basis-1/4">
@@ -103,7 +121,7 @@ export function ShoppableReelsSection() {
     );
   }
 
-  if (!hasReels) return null;
+  if (reels.length === 0) return null;
 
   return (
     <section className="bg-[#fdf8f3] py-12 sm:py-16">
@@ -116,12 +134,7 @@ export function ShoppableReelsSection() {
 
         <Carousel
           setApi={setApi}
-          opts={{
-            align: "start",
-            loop: false,
-            dragFree: true,
-            containScroll: "trimSnaps",
-          }}
+          opts={{ align: "start", loop: false, dragFree: true, containScroll: "trimSnaps" }}
         >
           <CarouselContent className="-ml-4">
             {reels.map((item) => (

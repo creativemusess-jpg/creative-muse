@@ -3,38 +3,110 @@ import { createFileRoute } from "@tanstack/react-router";
 import { AdminLayout, AdminPageHeader, AdminLoading } from "@/components/admin/AdminLayout";
 import { reelsApi } from "@/lib/api/reels";
 import { productsApi } from "@/lib/api/products";
+import { useStorefrontProducts } from "@/lib/products";
 import type { ShoppableReelRow, ShoppableReelInsert } from "@/lib/db/types";
 
 export const Route = createFileRoute("/admin/reels")({
   component: AdminReels,
 });
 
+const STORAGE_KEY = "muse-reels-fallback";
+
+function getLocalReels(): ShoppableReelRow[] {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+  } catch {
+    return [];
+  }
+}
+
+function saveLocalReels(reels: ShoppableReelRow[]) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(reels));
+}
+
 function AdminReels() {
   const [reels, setReels] = useState<ShoppableReelRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState<ShoppableReelRow | null>(null);
   const [showForm, setShowForm] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [useLocal, setUseLocal] = useState(false);
+  const { products } = useStorefrontProducts();
+  const initialized = useRef(false);
+
+  const seedLocalReels = () => {
+    const existing = getLocalReels();
+    if (existing.length > 0) return existing;
+    const fallback: ShoppableReelRow[] = products.slice(0, 5).map((p, i) => ({
+      id: `reel-${p.id}`,
+      video_url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+      poster_url: p.image,
+      product_id: p.id,
+      sort_order: (i + 1) * 10,
+      is_active: true,
+      alt_text: `${p.name} — shoppable reel`,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    }));
+    saveLocalReels(fallback);
+    return fallback;
+  };
 
   const load = async () => {
     setLoading(true);
     try {
       const data = await reelsApi.listAll();
       setReels(data);
-    } catch (err) {
-      console.error(err);
+      setUseLocal(false);
+    } catch {
+      setReels(seedLocalReels());
+      setUseLocal(true);
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => {
+    if (initialized.current) return;
+    initialized.current = true;
+    load();
+  }, [products]);
+
+  const handleDelete = async (id: string) => {
+    if (!confirm("Delete this reel?")) return;
+    if (useLocal) {
+      const updated = getLocalReels().filter((r) => r.id !== id);
+      saveLocalReels(updated);
+      setReels(updated);
+    } else {
+      await reelsApi.delete(id);
+      await load();
+    }
+  };
+
+  const handleToggleActive = async (r: ShoppableReelRow) => {
+    if (useLocal) {
+      const updated = getLocalReels().map((reel) =>
+        reel.id === r.id ? { ...reel, is_active: !reel.is_active } : reel,
+      );
+      saveLocalReels(updated);
+      setReels(updated);
+    } else {
+      await reelsApi.update(r.id, { is_active: !r.is_active });
+      await load();
+    }
+  };
 
   if (loading) return <AdminLayout><AdminLoading /></AdminLayout>;
 
   return (
     <AdminLayout>
       <AdminPageHeader title="Shoppable Reels" description="Manage Instagram-style shoppable reel videos" />
+
+      {useLocal && (
+        <div className="mb-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+          Using local storage — database table not available. Edit, add, and delete reels below; they'll be saved locally.
+        </div>
+      )}
 
       <div className="mb-6">
         <button
@@ -50,6 +122,7 @@ function AdminReels() {
           reel={editing}
           onSave={async () => { setShowForm(false); setEditing(null); await load(); }}
           onCancel={() => { setShowForm(false); setEditing(null); }}
+          useLocal={useLocal}
         />
       )}
 
@@ -102,20 +175,13 @@ function AdminReels() {
                         Edit
                       </button>
                       <button
-                        onClick={async () => {
-                          if (!confirm("Delete this reel?")) return;
-                          await reelsApi.delete(r.id);
-                          await load();
-                        }}
+                        onClick={() => handleDelete(r.id)}
                         className="text-xs text-red-500 hover:underline"
                       >
                         Delete
                       </button>
                       <button
-                        onClick={async () => {
-                          await reelsApi.update(r.id, { is_active: !r.is_active });
-                          await load();
-                        }}
+                        onClick={() => handleToggleActive(r)}
                         className="text-xs text-gray-500 hover:underline"
                       >
                         {r.is_active ? "Deactivate" : "Activate"}
@@ -136,10 +202,12 @@ function ReelForm({
   reel,
   onSave,
   onCancel,
+  useLocal,
 }: {
   reel: ShoppableReelRow | null;
   onSave: () => Promise<void>;
   onCancel: () => void;
+  useLocal: boolean;
 }) {
   const [videoUrl, setVideoUrl] = useState(reel?.video_url || "");
   const [posterUrl, setPosterUrl] = useState(reel?.poster_url || "");
@@ -149,9 +217,10 @@ function ReelForm({
   const [altText, setAltText] = useState(reel?.alt_text || "");
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(reel ? "" : "");
   const [products, setProducts] = useState<any[]>([]);
   const [showDropdown, setShowDropdown] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (search.length >= 2) {
@@ -181,11 +250,13 @@ function ReelForm({
       const url = await reelsApi.uploadVideo(file);
       setVideoUrl(url);
     } catch (err: any) {
-      alert(err.message);
+      alert(err.message + (useLocal ? " Since DB is unavailable, paste a direct video URL instead." : ""));
     } finally {
       setUploading(false);
     }
   };
+
+  const nextLocalId = () => `reel-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -195,20 +266,45 @@ function ReelForm({
     }
     setSaving(true);
     try {
-      const data: ShoppableReelInsert = {
-        video_url: videoUrl.trim(),
-        poster_url: posterUrl.trim() || null,
-        product_id: productId.trim(),
-        sort_order: sortOrder,
-        is_active: isActive,
-        alt_text: altText.trim() || null,
-      };
-      if (reel) {
-        await reelsApi.update(reel.id, data);
+      if (useLocal) {
+        let local = getLocalReels();
+        if (reel) {
+          local = local.map((r) =>
+            r.id === reel.id
+              ? { ...r, video_url: videoUrl.trim(), poster_url: posterUrl.trim() || null, product_id: productId.trim(), sort_order: sortOrder, is_active: isActive, alt_text: altText.trim() || null, updated_at: new Date().toISOString() }
+              : r,
+          );
+        } else {
+          local.push({
+            id: nextLocalId(),
+            video_url: videoUrl.trim(),
+            poster_url: posterUrl.trim() || null,
+            product_id: productId.trim(),
+            sort_order: sortOrder,
+            is_active: isActive,
+            alt_text: altText.trim() || null,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+          });
+        }
+        saveLocalReels(local);
+        await onSave();
       } else {
-        await reelsApi.create(data);
+        const data: ShoppableReelInsert = {
+          video_url: videoUrl.trim(),
+          poster_url: posterUrl.trim() || null,
+          product_id: productId.trim(),
+          sort_order: sortOrder,
+          is_active: isActive,
+          alt_text: altText.trim() || null,
+        };
+        if (reel) {
+          await reelsApi.update(reel.id, data);
+        } else {
+          await reelsApi.create(data);
+        }
+        await onSave();
       }
-      await onSave();
     } catch (err: any) {
       alert(err.message);
     } finally {
@@ -222,6 +318,10 @@ function ReelForm({
         {reel ? "Edit Reel" : "Add New Reel"}
       </h3>
 
+      {useLocal && (
+        <p className="mb-4 text-xs text-amber-600">Saving locally — changes will persist in browser storage.</p>
+      )}
+
       <div className="grid gap-5 sm:grid-cols-2">
         <div className="sm:col-span-2">
           <label className="mb-1 block text-xs font-medium text-gray-600">Reel Video *</label>
@@ -231,18 +331,23 @@ function ReelForm({
               <button type="button" onClick={() => setVideoUrl("")} className="text-xs text-red-500 hover:underline">Remove</button>
             </div>
           ) : null}
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="video/mp4,video/webm"
-            onChange={handleVideoUpload}
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-          />
-          {uploading && <p className="mt-1 text-xs text-[#c9a96e]">Uploading video...</p>}
-          {!videoUrl && (
+          {!useLocal && (
             <>
-              <p className="mt-1 text-xs text-gray-400">MP4 or WebM · max 50MB</p>
-              <p className="mt-1 text-xs text-gray-400">— or enter a URL directly —</p>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="video/mp4,video/webm"
+                onChange={handleVideoUpload}
+                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+              />
+              {uploading && <p className="mt-1 text-xs text-[#c9a96e]">Uploading video...</p>}
+            </>
+          )}
+          {videoUrl ? null : (
+            <>
+              <p className="mt-1 text-xs text-gray-400">
+                {useLocal ? "Enter a direct video URL (MP4/WebM):" : "MP4 or WebM · max 50MB — or enter URL directly:"}
+              </p>
               <input
                 type="url"
                 value={videoUrl}
@@ -270,7 +375,7 @@ function ReelForm({
           <label className="mb-1 block text-xs font-medium text-gray-600">Linked Product *</label>
           <input
             type="text"
-            value={search || (reel ? productId : "")}
+            value={search}
             onChange={(e) => { setSearch(e.target.value); setProductId(""); }}
             onFocus={() => { if (products.length > 0) setShowDropdown(true); }}
             placeholder="Search product by name..."

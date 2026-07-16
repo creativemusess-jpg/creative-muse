@@ -35,6 +35,11 @@ import catMangalsutra from "@/assets/cat-mangalsutra.png";
 import catPendants from "@/assets/cat-pendants.png";
 import catBangles from "@/assets/cat-bangles.png";
 import catWedding from "@/assets/cat-wedding.png";
+import prodAarav from "@/assets/prod-aarav-ring.jpg";
+import prodPriya from "@/assets/prod-priya-necklace.jpg";
+import prodPolki from "@/assets/prod-polki-choker.jpg";
+import prodCelestia from "@/assets/prod-celestia-earrings.jpg";
+import prodJhumka from "@/assets/prod-jhumka.jpg";
 
 const CATEGORY_IMAGES: Record<string, string> = {
   Rings: catRings,
@@ -45,6 +50,15 @@ const CATEGORY_IMAGES: Record<string, string> = {
   Pendants: catPendants,
   Bangles: catBangles,
   "Wedding Sets": catWedding,
+  Ring: catRings,
+  Necklace: catNecklaces,
+  Earring: catEarrings,
+  Bracelet: catBracelets,
+  Pendant: catPendants,
+  Bangle: catBangles,
+  Hoops: catEarrings,
+  Earcuffs: catEarrings,
+  Kada: catBangles,
 };
 
 export const Route = createFileRoute("/")({
@@ -286,7 +300,9 @@ function ShopByCategory() {
         <SectionHeading eyebrow="Browse" title="Shop by Category" />
 
         <div className="mt-10 grid grid-cols-2 gap-4 sm:gap-5 md:grid-cols-4">
-          {dbCategories.map((cat, i) => (
+          {dbCategories.map((cat, i) => {
+            const categoryImg = cat.imageUrl || CATEGORY_IMAGES[cat.name] || null;
+            return (
             <motion.div
               key={cat.id}
               initial={{ opacity: 0, y: 20 }}
@@ -300,25 +316,19 @@ function ShopByCategory() {
                 className="group flex h-full flex-col items-center rounded-[24px] border border-transparent bg-white p-3 pb-4 text-center shadow-[0_4px_24px_rgba(0,0,0,0.04)] transition-all duration-500 hover:-translate-y-2 hover:border-[#C9A96E]/50 hover:shadow-[0_20px_60px_rgba(201,169,110,0.22)] active:scale-[0.97] md:p-4 md:pb-5"
               >
                 <div className="relative aspect-square w-full overflow-hidden rounded-[18px] bg-gradient-to-br from-[#fdf8f3] to-[#f0e4cd]">
-                  {cat.imageUrl ? (
+                  {categoryImg ? (
                     <img
-                      src={cat.imageUrl}
+                      src={categoryImg}
                       alt={cat.name}
                       loading="lazy"
                       width={768}
                       height={768}
                       className="absolute inset-0 h-full w-full object-contain p-2 transition-transform duration-700 ease-out group-hover:scale-110 md:p-3"
-                      onError={(e) => {
-                        const t = e.currentTarget;
-                        if (t.dataset.fallback) { t.style.display = "none"; return; }
-                        const png = CATEGORY_IMAGES[cat.name];
-                        if (png && png !== t.src) { t.src = png; t.dataset.fallback = "1"; }
-                        else { t.style.display = "none"; }
-                      }}
+                      onError={(e) => { e.currentTarget.style.display = "none"; }}
                     />
                   ) : (
                     <div className="flex h-full w-full items-center justify-center bg-[#f5efe8] p-3">
-                      <svg className="h-12 w-12 text-[#c9a96e]/30" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z" /></svg>
+                      <svg className="h-8 w-8 text-[#c9a96e]/20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z" /></svg>
                     </div>
                   )}
                 </div>
@@ -327,7 +337,8 @@ function ShopByCategory() {
                 </p>
               </Link>
             </motion.div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>
@@ -337,7 +348,35 @@ function ShopByCategory() {
 /* =========================================================
    4. FEATURED BANNER
    ========================================================= */
+const CTA_FALLBACK_IMAGES = [
+  { src: prodPolki, alt: "Royal Polki Bridal Choker" },
+  { src: prodCelestia, alt: "Celestia Drop Bridal Earrings" },
+  { src: prodAarav, alt: "Aarav Solitaire Bridal Ring" },
+];
+
+const CTA_CARD_STYLES = [
+  { top: "0%", left: "10%", rot: -6, delay: 0 },
+  { top: "20%", left: "40%", rot: 4, delay: 0.4 },
+  { top: "45%", left: "5%", rot: -3, delay: 0.8 },
+];
+
 function FeaturedBanner() {
+  const [ctaImages, setCtaImages] = useState<{ src: string; alt: string }[] | null>(null);
+  const [ctaLoaded, setCtaLoaded] = useState(false);
+
+  useEffect(() => {
+    contentApi.getSection("featured_banner").then((section) => {
+      if (section?.content?.cta_images) {
+        setCtaImages(section.content.cta_images);
+      }
+      setCtaLoaded(true);
+    }).catch(() => setCtaLoaded(true));
+  }, []);
+
+  const images = ctaImages && ctaImages.length === 3 ? ctaImages : CTA_FALLBACK_IMAGES;
+
+  if (!ctaLoaded) return null;
+
   return (
     <section className="px-4 sm:px-6">
       <div className="relative mx-auto max-w-[1320px] overflow-hidden rounded-[40px] bg-[#1a1a2e] px-8 py-16 sm:px-14 sm:py-20">
@@ -369,21 +408,22 @@ function FeaturedBanner() {
           </motion.div>
 
           <div className="relative hidden h-[420px] lg:block">
-            {[
-              { emoji: "👑", bg: "from-[#fdf2e0] to-[#c9a96e]", top: "0%", left: "10%", rot: -6, delay: 0 },
-              { emoji: "📿", bg: "from-[#f7ede0] to-[#a87038]", top: "20%", left: "40%", rot: 4, delay: 0.4 },
-              { emoji: "💍", bg: "from-[#fdf8f3] to-[#e8c98a]", top: "45%", left: "5%", rot: -3, delay: 0.8 },
-            ].map((c, i) => (
+            {CTA_CARD_STYLES.map((c, i) => (
               <motion.div
                 key={i}
                 initial={{ opacity: 0, y: 30, rotate: c.rot - 6 }}
                 whileInView={{ opacity: 1, y: 0, rotate: c.rot }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.7, delay: c.delay }}
-                className={`absolute flex h-56 w-44 items-center justify-center rounded-[28px] bg-gradient-to-br ${c.bg} text-[80px] shadow-[0_24px_64px_rgba(0,0,0,0.3)]`}
+                className="absolute h-56 w-44 overflow-hidden rounded-[28px] bg-[#fdf8f3] shadow-[0_24px_64px_rgba(0,0,0,0.3)]"
                 style={{ top: c.top, left: c.left }}
               >
-                {c.emoji}
+                <img
+                  src={images[i].src}
+                  alt={images[i].alt}
+                  className="h-full w-full object-cover"
+                  onError={(e) => { e.currentTarget.style.display = "none"; }}
+                />
               </motion.div>
             ))}
           </div>
