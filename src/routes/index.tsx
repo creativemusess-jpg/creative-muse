@@ -17,14 +17,13 @@ import {
   Hand,
   Leaf,
   Package,
-  Heart as HeartIcon,
   Check,
-  Instagram,
 } from "lucide-react";
-import { formatPrice, type Product, useStorefrontProducts } from "@/lib/products";
+import { type Product, useStorefrontProducts } from "@/lib/products";
 import { categoriesApi } from "@/lib/api/categories";
 import { contentApi } from "@/lib/api/content";
 import { ProductCard } from "@/components/site/ProductCard";
+import { ShoppableReelsSection } from "@/components/site/ShoppableReelsSection";
 import { useStore } from "@/lib/store";
 import { ProductCarouselSection, type AutoScrollSettings } from "@/components/site/ProductCarouselSection";
 import heroRing from "@/assets/hero-ring.jpg";
@@ -75,7 +74,7 @@ function HomePage() {
       <ShopByCategory />
       <FeaturedBanner />
       <BestSellers />
-      <ShoppableReels />
+      <ShoppableReelsSection />
       <NewArrivals />
       <PremiumArrivals />
       <Offers />
@@ -453,136 +452,6 @@ function BestSellers() {
 /* =========================================================
    6. SHOPPABLE INSTAGRAM REELS
    ========================================================= */
-const REEL_META = [
-  { likes: "3.2K", comments: 128, caption: "The ring that started it all", time: "2d" },
-  { likes: "1.8K", comments: 94, caption: "Pearl drop elegance", time: "4d" },
-  { likes: "5.1K", comments: 212, caption: "For the forever kind of love", time: "1w" },
-  { likes: "2.7K", comments: 156, caption: "Traditional soul, modern heart", time: "1w" },
-  { likes: "1.4K", comments: 73, caption: "Wear the moon", time: "2w" },
-];
-
-function ShoppableReels() {
-  const { openQuickView } = useStore();
-  const { products } = useStorefrontProducts();
-  const reels = products.slice(0, REEL_META.length).map((product, index) => ({
-    product,
-    ...REEL_META[index],
-  }));
-
-  return (
-    <section className="bg-[#fdf8f3] py-20">
-      <div className="mx-auto max-w-[1320px] px-6">
-        <SectionHeading
-          eyebrow="Shop the Look"
-          title="As Seen on Instagram"
-          subtitle="Tap any reel to discover the jewellery and add it to your cart."
-        />
-
-        <div className="scrollbar-hide -mx-6 flex snap-x snap-mandatory gap-5 overflow-x-auto px-6 pb-4">
-          {reels.map((reel, i) => (
-            <ReelCard
-              key={reel.product.id}
-              reel={reel}
-              index={i}
-              onOpen={() => openQuickView(reel.product.id)}
-            />
-          ))}
-        </div>
-
-        <div className="mt-10 flex justify-center">
-          <a
-            href="https://instagram.com"
-            target="_blank"
-            rel="noreferrer"
-            className="btn-secondary inline-flex items-center gap-2"
-          >
-            <Instagram className="h-4 w-4" />
-            Follow @creativemuse_ on Instagram
-          </a>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function ReelCard({
-  reel,
-  index,
-  onOpen,
-}: {
-  reel: { product: Product; likes: string; comments: number; caption: string; time: string };
-  index: number;
-  onOpen: () => void;
-}) {
-  return (
-    <motion.button
-      onClick={onOpen}
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-50px" }}
-      transition={{ duration: 0.4, delay: index * 0.06 }}
-      whileHover={{ scale: 1.02 }}
-      className="group relative aspect-[9/16] w-[200px] shrink-0 snap-start overflow-hidden rounded-[24px] text-left shadow-[0_8px_32px_rgba(0,0,0,0.12)] transition-shadow duration-400 hover:shadow-[0_20px_60px_rgba(0,0,0,0.2)] sm:w-[220px]"
-    >
-      {/* video bg */}
-      <div className={`absolute inset-0 bg-gradient-to-br ${reel.product.bg}`} />
-      <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/70" />
-
-      {/* product image */}
-      <div className="absolute inset-0 flex items-center justify-center p-8 transition-transform duration-700 group-hover:scale-110">
-        <img
-          src={reel.product.image}
-          alt={reel.product.name}
-          loading="lazy"
-          className="h-full w-full object-contain drop-shadow-[0_8px_24px_rgba(0,0,0,0.35)]"
-        />
-      </div>
-
-      {/* Reel header */}
-      <div className="absolute top-3 right-3 left-3 flex items-center gap-2 text-white">
-        <div className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-[#C9A96E] to-[#8B1A4A] text-[10px] font-bold">
-          CM
-        </div>
-        <div className="flex-1 leading-tight">
-          <p className="text-[11px] font-semibold">creativemuse_</p>
-          <p className="text-[9px] text-white/70">{reel.time}</p>
-        </div>
-      </div>
-
-      {/* Play icon center */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/25 backdrop-blur-md">
-          <Play className="ml-0.5 h-5 w-5 fill-white text-white" />
-        </div>
-      </div>
-
-      {/* Stats */}
-      <div className="absolute right-3 bottom-32 left-3 flex items-center gap-3 text-[10px] font-medium text-white">
-        <span className="flex items-center gap-1">
-          <HeartIcon className="h-3 w-3 fill-white" /> {reel.likes}
-        </span>
-        <span>💬 {reel.comments}</span>
-      </div>
-
-      {/* Product card overlay */}
-      <div className="absolute right-3 bottom-3 left-3 rounded-[20px] bg-white/95 p-3 backdrop-blur-md transition-transform duration-400 group-hover:-translate-y-1">
-        <p className="font-display line-clamp-1 text-[12px] font-semibold text-[#1a1a2e]">
-          {reel.product.name}
-        </p>
-        <div className="mt-1 flex items-center justify-between">
-          <span className="text-[13px] font-bold text-[#C9A96E]">
-            {formatPrice(reel.product.price)}
-          </span>
-          <span className="rounded-full bg-gradient-to-r from-[#C9A96E] to-[#B8860B] px-3 py-1 text-[9px] font-bold tracking-wide text-white uppercase">
-            Shop
-          </span>
-        </div>
-      </div>
-    </motion.button>
-  );
-}
-
-
 /* =========================================================
    7. NEW ARRIVALS CAROUSEL
    ========================================================= */

@@ -40,6 +40,7 @@ import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
 import { Route as AdminSubcategoriesRouteImport } from './routes/admin.subcategories'
 import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
+import { Route as AdminReelsRouteImport } from './routes/admin.reels'
 import { Route as AdminProductsRouteImport } from './routes/admin.products'
 import { Route as AdminOrdersRouteImport } from './routes/admin.orders'
 import { Route as AdminNewsletterRouteImport } from './routes/admin.newsletter'
@@ -217,6 +218,11 @@ const AdminSettingsRoute = AdminSettingsRouteImport.update({
   path: '/admin/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminReelsRoute = AdminReelsRouteImport.update({
+  id: '/admin/reels',
+  path: '/admin/reels',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminProductsRoute = AdminProductsRouteImport.update({
   id: '/admin/products',
   path: '/admin/products',
@@ -362,6 +368,7 @@ export interface FileRoutesByFullPath {
   '/admin/newsletter': typeof AdminNewsletterRoute
   '/admin/orders': typeof AdminOrdersRouteWithChildren
   '/admin/products': typeof AdminProductsRouteWithChildren
+  '/admin/reels': typeof AdminReelsRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/subcategories': typeof AdminSubcategoriesRoute
   '/auth/callback': typeof AuthCallbackRoute
@@ -416,6 +423,7 @@ export interface FileRoutesByTo {
   '/admin/newsletter': typeof AdminNewsletterRoute
   '/admin/orders': typeof AdminOrdersRouteWithChildren
   '/admin/products': typeof AdminProductsRouteWithChildren
+  '/admin/reels': typeof AdminReelsRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/subcategories': typeof AdminSubcategoriesRoute
   '/auth/callback': typeof AuthCallbackRoute
@@ -471,6 +479,7 @@ export interface FileRoutesById {
   '/admin/newsletter': typeof AdminNewsletterRoute
   '/admin/orders': typeof AdminOrdersRouteWithChildren
   '/admin/products': typeof AdminProductsRouteWithChildren
+  '/admin/reels': typeof AdminReelsRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/subcategories': typeof AdminSubcategoriesRoute
   '/auth/callback': typeof AuthCallbackRoute
@@ -527,6 +536,7 @@ export interface FileRouteTypes {
     | '/admin/newsletter'
     | '/admin/orders'
     | '/admin/products'
+    | '/admin/reels'
     | '/admin/settings'
     | '/admin/subcategories'
     | '/auth/callback'
@@ -581,6 +591,7 @@ export interface FileRouteTypes {
     | '/admin/newsletter'
     | '/admin/orders'
     | '/admin/products'
+    | '/admin/reels'
     | '/admin/settings'
     | '/admin/subcategories'
     | '/auth/callback'
@@ -635,6 +646,7 @@ export interface FileRouteTypes {
     | '/admin/newsletter'
     | '/admin/orders'
     | '/admin/products'
+    | '/admin/reels'
     | '/admin/settings'
     | '/admin/subcategories'
     | '/auth/callback'
@@ -689,6 +701,7 @@ export interface RootRouteChildren {
   AdminNewsletterRoute: typeof AdminNewsletterRoute
   AdminOrdersRoute: typeof AdminOrdersRouteWithChildren
   AdminProductsRoute: typeof AdminProductsRouteWithChildren
+  AdminReelsRoute: typeof AdminReelsRoute
   AdminSettingsRoute: typeof AdminSettingsRoute
   AdminSubcategoriesRoute: typeof AdminSubcategoriesRoute
   AuthCallbackRoute: typeof AuthCallbackRoute
@@ -915,6 +928,13 @@ declare module '@tanstack/react-router' {
       path: '/admin/settings'
       fullPath: '/admin/settings'
       preLoaderRoute: typeof AdminSettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/reels': {
+      id: '/admin/reels'
+      path: '/admin/reels'
+      fullPath: '/admin/reels'
+      preLoaderRoute: typeof AdminReelsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/products': {
@@ -1199,6 +1219,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminNewsletterRoute: AdminNewsletterRoute,
   AdminOrdersRoute: AdminOrdersRouteWithChildren,
   AdminProductsRoute: AdminProductsRouteWithChildren,
+  AdminReelsRoute: AdminReelsRoute,
   AdminSettingsRoute: AdminSettingsRoute,
   AdminSubcategoriesRoute: AdminSubcategoriesRoute,
   AuthCallbackRoute: AuthCallbackRoute,

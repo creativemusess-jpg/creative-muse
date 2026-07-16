@@ -1099,3 +1099,37 @@ export interface MediaUpdate {
   width?: number | null;
   height?: number | null;
 }
+
+export interface ShoppableReelRow {
+  id: string;
+  video_url: string;
+  poster_url: string | null;
+  product_id: string;
+  sort_order: number;
+  is_active: boolean;
+  alt_text: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ShoppableReelInsert {
+  id?: string;
+  video_url: string;
+  poster_url?: string | null;
+  product_id: string;
+  sort_order?: number;
+  is_active?: boolean;
+  alt_text?: string | null;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface ShoppableReelUpdate {
+  video_url?: string;
+  poster_url?: string | null;
+  product_id?: string;
+  sort_order?: number;
+  is_active?: boolean;
+  alt_text?: string | null;
+  updated_at?: string;
+}

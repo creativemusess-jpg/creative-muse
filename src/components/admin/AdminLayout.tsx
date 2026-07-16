@@ -6,7 +6,7 @@ import {
   Mail, Tag, Settings, LogOut, Menu, X, Clock,
   ChevronRight, Home, MessageSquare, Layers,
   Search, ExternalLink, Bell, PackageOpen, BarChart3,
-  Percent, UserCog, FileText, Image,
+  Percent, UserCog, FileText, Image, Video,
 } from "lucide-react";
 import { GlobalSearch } from "./GlobalSearch";
 
@@ -35,6 +35,7 @@ const navItems: NavItem[] = [
   { label: "Enquiries", href: "/admin/enquiries", icon: <MessageSquare className="h-4 w-4" />, permission: "enquiries" },
   { label: "Newsletter", href: "/admin/newsletter", icon: <Mail className="h-4 w-4" />, permission: "newsletter" },
   { label: "Media", href: "/admin/media", icon: <Image className="h-4 w-4" />, permission: "media" },
+  { label: "Shoppable Reels", href: "/admin/reels", icon: <Video className="h-4 w-4" />, permission: "homepage" },
   { label: "Staff", href: "/admin/staff", icon: <UserCog className="h-4 w-4" />, permission: "*" },
   { label: "Settings", href: "/admin/settings", icon: <Settings className="h-4 w-4" />, permission: "*" },
   { label: "Audit Logs", href: "/admin/audit-logs", icon: <Clock className="h-4 w-4" />, permission: "*" },
