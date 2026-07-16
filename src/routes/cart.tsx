@@ -69,7 +69,7 @@ function CartPage() {
         subtitle={`${lines.length} piece${lines.length === 1 ? "" : "s"} curated for you.`}
       />
 
-      <section className="mx-auto grid max-w-[1200px] gap-8 px-6 py-16 lg:grid-cols-[1fr_380px]">
+      <section className="mx-auto grid max-w-[1200px] gap-8 overflow-hidden px-6 py-16 lg:grid-cols-[1fr_380px]">
         <div className="space-y-4">
           {lines.length === 0 && (
             <div className="rounded-[28px] bg-white p-10 text-center shadow-[0_4px_24px_rgba(0,0,0,0.05)]">

@@ -11,7 +11,6 @@ import {
   ChevronLeft,
   ChevronRight,
   ZoomIn,
-  RotateCw,
   Tag,
   Loader2,
 } from "lucide-react";
@@ -459,16 +458,14 @@ function QuickViewModal() {
   );
 }
 
-/* ---------------- Quick View: Media (gallery + 360°) ---------------- */
+/* ---------------- Quick View: Media (gallery only) ---------------- */
 function QuickViewMedia({ product }: { product: Product }) {
   const gallery = [product.image, ...(product.gallery ?? [])];
-  const [tab, setTab] = useState<"gallery" | "360">("gallery");
   const [idx, setIdx] = useState(0);
   const [zoom, setZoom] = useState(false);
 
   // Reset on product change
   useEffect(() => {
-    setTab("gallery");
     setIdx(0);
     setZoom(false);
   }, [product.id]);
@@ -488,100 +485,59 @@ function QuickViewMedia({ product }: { product: Product }) {
     touchX.current = null;
   };
 
-  const has360 = !!product.view360Images && product.view360Images.length >= 8;
-
   return (
     <div className="flex flex-col gap-3 p-4 md:p-5">
-      {/* Tabs */}
-      <div className="flex items-center gap-1 self-start rounded-full bg-white p-1 shadow-[0_2px_10px_rgba(0,0,0,0.05)]">
-        <button
-          type="button"
-          onClick={() => setTab("gallery")}
-          className={`rounded-full px-3 py-1.5 text-[10px] font-semibold tracking-[0.14em] uppercase transition-colors ${
-            tab === "gallery" ? "bg-[#1a1a2e] text-white" : "text-[#7a6e64]"
-          }`}
-        >
-          Gallery
-        </button>
-        <button
-          type="button"
-          onClick={() => setTab("360")}
-          className={`flex items-center gap-1 rounded-full px-3 py-1.5 text-[10px] font-semibold tracking-[0.14em] uppercase transition-colors ${
-            tab === "360" ? "bg-[#1a1a2e] text-white" : "text-[#7a6e64]"
-          }`}
-        >
-          <RotateCw className="h-3 w-3" /> 360°
-        </button>
-      </div>
-
       {/* Stage */}
       <div
         className={`relative flex aspect-square w-full items-center justify-center overflow-hidden rounded-[20px] bg-gradient-to-br ${product.bg}`}
-        onTouchStart={tab === "gallery" ? onTouchStart : undefined}
-        onTouchEnd={tab === "gallery" ? onTouchEnd : undefined}
+        onTouchStart={onTouchStart}
+        onTouchEnd={onTouchEnd}
       >
-        {tab === "gallery" ? (
-          <>
-            <img
-              key={gallery[idx]}
-              src={gallery[idx]}
-              alt={`${product.name} — view ${idx + 1}`}
-              onClick={() => setZoom(true)}
-              className="h-full w-full cursor-zoom-in object-contain p-6 transition-opacity duration-300"
-              loading="eager"
-            />
-            {gallery.length > 1 && (
-              <>
-                <button
-                  type="button"
-                  aria-label="Previous image"
-                  onClick={prev}
-                  className="absolute top-1/2 left-3 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 shadow-md hover:bg-white"
-                >
-                  <ChevronLeft className="h-4 w-4" />
-                </button>
-                <button
-                  type="button"
-                  aria-label="Next image"
-                  onClick={next}
-                  className="absolute top-1/2 right-3 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 shadow-md hover:bg-white"
-                >
-                  <ChevronRight className="h-4 w-4" />
-                </button>
-                <span className="absolute bottom-3 left-1/2 -translate-x-1/2 rounded-full bg-black/60 px-2.5 py-1 text-[10px] font-semibold tracking-wider text-white">
-                  {idx + 1} / {gallery.length}
-                </span>
-              </>
-            )}
-            <button
-              type="button"
-              aria-label="Zoom"
-              onClick={() => setZoom(true)}
-              className="absolute top-3 right-3 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 shadow-md hover:bg-white"
-            >
-              <ZoomIn className="h-4 w-4" />
-            </button>
-          </>
-        ) : has360 ? (
-          <View360 frames={product.view360Images!} alt={product.name} bg="" />
-        ) : (
-          <div className="flex flex-col items-center gap-2 px-8 text-center">
-            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white/80 shadow-sm">
-              <RotateCw className="h-6 w-6 text-[#C9A96E]" />
-            </div>
-            <p className="font-display text-base font-semibold text-[#1a1a2e]">
-              360° view coming soon
-            </p>
-            <p className="max-w-xs text-xs text-[#7a6e64]">
-              We're photographing this piece from every angle. In the meantime, explore the gallery
-              for a closer look.
-            </p>
-          </div>
-        )}
+        <>
+          <img
+            key={gallery[idx]}
+            src={gallery[idx]}
+            alt={`${product.name} — view ${idx + 1}`}
+            onClick={() => setZoom(true)}
+            className="h-full w-full cursor-zoom-in object-contain p-6 transition-opacity duration-300"
+            loading="eager"
+          />
+          {gallery.length > 1 && (
+            <>
+              <button
+                type="button"
+                aria-label="Previous image"
+                onClick={prev}
+                className="absolute top-1/2 left-3 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 shadow-md hover:bg-white"
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </button>
+              <button
+                type="button"
+                aria-label="Next image"
+                onClick={next}
+                className="absolute top-1/2 right-3 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 shadow-md hover:bg-white"
+              >
+                <ChevronRight className="h-4 w-4" />
+              </button>
+              <span className="absolute bottom-3 left-1/2 -translate-x-1/2 rounded-full bg-black/60 px-2.5 py-1 text-[10px] font-semibold tracking-wider text-white">
+                {idx + 1} / {gallery.length}
+              </span>
+            </>
+          )}
+          <button
+            type="button"
+            aria-label="Zoom"
+            onClick={() => setZoom(true)}
+            className="absolute top-3 right-3 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 shadow-md hover:bg-white"
+          >
+            <ZoomIn className="h-4 w-4" />
+          </button>
+        </>
       </div>
 
       {/* Thumbnails */}
-      {tab === "gallery" && gallery.length > 1 && (
+      {gallery.length > 1 && (
         <div className="flex gap-2 overflow-x-auto pb-1">
           {gallery.map((src, i) => (
             <button
@@ -625,50 +581,6 @@ function QuickViewMedia({ product }: { product: Product }) {
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
-  );
-}
-
-/* Simple drag/swipe 360° frame viewer */
-function View360({ frames, alt }: { frames: string[]; alt: string; bg?: string }) {
-  const [frame, setFrame] = useState(0);
-  const dragging = useRef(false);
-  const startX = useRef(0);
-  const startFrame = useRef(0);
-
-  const onDown = (x: number) => {
-    dragging.current = true;
-    startX.current = x;
-    startFrame.current = frame;
-  };
-  const onMove = (x: number) => {
-    if (!dragging.current) return;
-    const step = Math.round((x - startX.current) / 12);
-    const next = (((startFrame.current + step) % frames.length) + frames.length) % frames.length;
-    setFrame(next);
-  };
-  const onUp = () => (dragging.current = false);
-
-  return (
-    <div
-      className="relative flex h-full w-full cursor-grab items-center justify-center select-none active:cursor-grabbing"
-      onMouseDown={(e) => onDown(e.clientX)}
-      onMouseMove={(e) => onMove(e.clientX)}
-      onMouseUp={onUp}
-      onMouseLeave={onUp}
-      onTouchStart={(e) => onDown(e.touches[0].clientX)}
-      onTouchMove={(e) => onMove(e.touches[0].clientX)}
-      onTouchEnd={onUp}
-    >
-      <img
-        src={frames[frame]}
-        alt={alt}
-        className="h-full w-full object-contain p-6"
-        draggable={false}
-      />
-      <span className="absolute bottom-3 left-1/2 -translate-x-1/2 rounded-full bg-black/60 px-3 py-1 text-[10px] font-semibold tracking-wider text-white">
-        Drag to rotate · {frame + 1} / {frames.length}
-      </span>
     </div>
   );
 }

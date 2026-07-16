@@ -12,7 +12,7 @@ export function Footer() {
               src="/favicon.ico"
               alt=""
               aria-hidden="true"
-              className="h-[64px] w-[64px] object-contain md:h-[80px] md:w-[80px]"
+              className="h-[64px] w-[64px] object-contain brightness-0 invert md:h-[80px] md:w-[80px]"
             />
             <span className="leading-tight">
               <span className="block font-display text-[20px] font-semibold text-white md:text-[24px]">
@@ -89,16 +89,26 @@ export function Footer() {
       </div>
 
       <div className="mx-auto mt-16 flex max-w-[1280px] flex-col items-center justify-between gap-4 border-t border-white/10 pt-6 sm:flex-row">
-        <p className="text-xs text-[#7a6e64]">© 2025 Creative Muse Fine Jewellery · Vadodara, India</p>
+        <p className="text-xs text-[#7a6e64]">© 2025 Creative Muse. All rights reserved. Built by MysticMuse.</p>
         <div className="flex gap-2">
-          {["Razorpay", "UPI", "Visa", "Mastercard"].map((p) => (
-            <span
-              key={p}
-              className="rounded-[8px] border border-white/10 bg-white/5 px-2.5 py-1 text-[10px] font-medium tracking-wider text-[#cfc6b6] uppercase"
-            >
-              {p}
+          <span className="flex items-center gap-1.5 rounded-[8px] bg-[#0a0a2e] px-3 py-1.5 text-[10px] font-semibold tracking-wider text-[#8a8aff] uppercase">
+            <svg viewBox="0 0 24 24" className="h-3.5 w-3.5"><text x="12" y="17" textAnchor="middle" fill="currentColor" fontSize="14" fontWeight="bold">R</text></svg>
+            Razorpay
+          </span>
+          <span className="flex items-center gap-1.5 rounded-[8px] bg-[#097b3a] px-3 py-1.5 text-[10px] font-semibold tracking-wider text-white uppercase">
+            <svg viewBox="0 0 24 24" className="h-3.5 w-3.5"><text x="12" y="17" textAnchor="middle" fill="currentColor" fontSize="14" fontWeight="bold">U</text></svg>
+            UPI
+          </span>
+          <span className="flex items-center gap-1.5 rounded-[8px] bg-[#1a1f71] px-3 py-1.5 text-[10px] font-semibold tracking-wider text-[#f7b600] uppercase">
+            VISA
+          </span>
+          <span className="relative flex items-center gap-1.5 rounded-[8px] bg-[#1a1a2e] px-3 py-1.5 text-[10px] font-semibold tracking-wider text-[#cfc6b6] uppercase">
+            <span className="relative flex h-3.5 w-3.5">
+              <span className="absolute left-0 h-3.5 w-2 rounded-full bg-[#eb001b] opacity-70" />
+              <span className="absolute right-0 h-3.5 w-2 rounded-full bg-[#f79e1b] opacity-70" />
             </span>
-          ))}
+            MC
+          </span>
         </div>
       </div>
     </footer>

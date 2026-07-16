@@ -2,7 +2,6 @@ import type { ReactNode } from "react";
 import { AnnouncementBar } from "./AnnouncementBar";
 import { Header } from "./Header";
 import { Footer } from "./Footer";
-import { WhatsAppFloat } from "./WhatsAppFloat";
 import { StoreProvider } from "@/lib/store";
 import { Overlays } from "./Overlays";
 
@@ -14,7 +13,6 @@ export function SiteChrome({ children }: { children: ReactNode }) {
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />
-        <WhatsAppFloat />
         <Overlays />
       </div>
     </StoreProvider>

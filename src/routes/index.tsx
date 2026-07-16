@@ -18,10 +18,8 @@ import {
   Leaf,
   Package,
   Heart as HeartIcon,
-  Star,
   Check,
   Instagram,
-  Quote,
 } from "lucide-react";
 import { formatPrice, type Product, useStorefrontProducts } from "@/lib/products";
 import { categoriesApi } from "@/lib/api/categories";
@@ -82,7 +80,6 @@ function HomePage() {
       <PremiumArrivals />
       <Offers />
       <WhyChoose />
-      <Testimonials />
       <VideoBanner />
       <StoreLocation />
       <GiftFinder />
@@ -761,61 +758,7 @@ function WhyChoose() {
 }
 
 /* =========================================================
-   10. TESTIMONIALS
-   ========================================================= */
-function Testimonials() {
-  const reviews = [
-    {
-      name: "Priya Mehta",
-      city: "Vadodara",
-      text: "My wedding jewellery from Creative Muse was extraordinary. Every piece felt handcrafted just for me.",
-    },
-    {
-      name: "Ananya Shah",
-      city: "Surat",
-      text: "The Celestia earrings are stunning. Quality surpasses larger brands. The packaging felt like a luxury gift.",
-    },
-    {
-      name: "Ritu Agarwal",
-      city: "Ahmedabad",
-      text: "The staff is knowledgeable, never pushy. My solitaire ring has received so many compliments — worth every rupee.",
-    },
-  ];
-  return (
-    <section className="px-4 sm:px-6">
-      <div className="relative mx-auto max-w-[1320px] overflow-hidden rounded-[40px] bg-[#1a1a2e] px-6 py-20 sm:px-10">
-        <div className="pointer-events-none absolute -top-32 left-1/2 h-[400px] w-[400px] -translate-x-1/2 rounded-full bg-[#C9A96E]/15 blur-[120px]" />
-        <SectionHeading eyebrow="Stories" title="Worn with Love" light />
-
-        <div className="relative grid gap-6 md:grid-cols-3">
-          {reviews.map((r, i) => (
-            <motion.div
-              key={r.name}
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-30px" }}
-              transition={{ duration: 0.5, delay: i * 0.1 }}
-              className="rounded-[24px] border border-white/10 bg-white/5 p-7 backdrop-blur-sm"
-            >
-              <Quote className="h-7 w-7 text-[#C9A96E]" />
-              <p className="mt-4 text-[15px] leading-relaxed text-white/85">"{r.text}"</p>
-              <div className="mt-5 flex gap-0.5">
-                {Array.from({ length: 5 }).map((_, k) => (
-                  <Star key={k} className="h-3.5 w-3.5 fill-[#C9A96E] text-[#C9A96E]" />
-                ))}
-              </div>
-              <p className="font-display mt-3 text-base text-white">{r.name}</p>
-              <p className="text-[11px] tracking-[0.18em] text-[#C9A96E] uppercase">{r.city}</p>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* =========================================================
-   11. VIDEO BANNER
+   10. VIDEO BANNER
    ========================================================= */
 function VideoBanner() {
   return (
@@ -850,7 +793,7 @@ function VideoBanner() {
 }
 
 /* =========================================================
-   12. STORE LOCATION
+   11. STORE LOCATION
    ========================================================= */
 function StoreLocation() {
   return (
@@ -919,7 +862,7 @@ function StoreLocation() {
 }
 
 /* =========================================================
-   13. GIFT FINDER
+   12. GIFT FINDER
    ========================================================= */
 function GiftFinder() {
   const groups = [
@@ -1038,7 +981,7 @@ function GiftFinder() {
 }
 
 /* =========================================================
-   14. FAQ
+   13. FAQ
    ========================================================= */
 const FAQS = [
   ["What certifications do your diamonds carry?", "All Creative Muse diamonds are IGI or GIA certified, with a unique grading report detailing the 4Cs. Certificates are included with every purchase."],
@@ -1105,7 +1048,7 @@ function FAQ() {
 import { newsletterApi } from "@/lib/api/newsletter";
 
 /* =========================================================
-   15. NEWSLETTER
+   14. NEWSLETTER
    ========================================================= */
 function Newsletter() {
   const [email, setEmail] = useState("");

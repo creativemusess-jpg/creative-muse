@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Heart, ShoppingBag, Star, ChevronRight, RotateCw, ZoomIn, Plus } from "lucide-react";
+import { Heart, ShoppingBag, Star, ChevronRight, ZoomIn, Plus } from "lucide-react";
 import { PageShell } from "@/components/site/PageHeader";
 import { ProductCard } from "@/components/site/ProductCard";
 import { formatPrice, getRecommendedProducts, type Product, useStorefrontProduct, useStorefrontProducts } from "@/lib/products";
@@ -168,14 +168,7 @@ function ProductContent({ product }: { product: Product }) {
                   <img src={safeSrc(src)} alt="" className="h-full w-full object-contain p-1.5" />
                 </button>
               ))}
-              {product.view360Images && product.view360Images.length >= 8 && (
-                <button
-                  type="button"
-                  className="flex h-16 w-16 shrink-0 items-center justify-center gap-1 rounded-[12px] border-2 border-dashed border-[#e0d8cc] bg-[#fdf8f3] text-[10px] font-semibold text-[#7a6e64]"
-                >
-                  <RotateCw className="h-3 w-3" /> 360°
-                </button>
-              )}
+
             </div>
           )}
         </div>

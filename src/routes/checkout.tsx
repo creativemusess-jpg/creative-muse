@@ -67,7 +67,7 @@ function CheckoutPage() {
         <p className="text-[11px] font-semibold tracking-[0.24em] text-[#c9a96e] uppercase">Checkout</p>
         <h1 className="font-display mt-2 text-[32px] font-semibold text-[#1a1a2e]">Delivery Details</h1>
 
-        <form onSubmit={handleContinue} className="mt-10 grid gap-10 lg:grid-cols-[1fr_400px]">
+        <form onSubmit={handleContinue} className="mt-10 grid gap-10 overflow-hidden lg:grid-cols-[1fr_400px]">
           <div className="space-y-8">
             <div className="rounded-[28px] bg-white p-6 shadow-[0_4px_24px_rgba(0,0,0,0.05)]">
               <h2 className="font-display text-lg font-semibold text-[#1a1a2e] flex items-center gap-2"><MapPin className="h-4 w-4 text-[#c9a96e]" /> Delivery Address</h2>
