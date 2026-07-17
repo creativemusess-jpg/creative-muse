@@ -1,6 +1,5 @@
 import { supabase } from "../supabase";
-import { normalizeOrderItems } from "./order-items";
-import type { NormalizedOrderItem } from "./order-items";
+import { normalizeOrderItems, type NormalizedOrderItem } from "./order-items";
 
 const db = () => supabase as any;
 
@@ -63,22 +62,78 @@ export const ordersApi = {
         }
       }
     }
+    const normalizedByOrder = new Map<string, NormalizedOrderItem[]>();
+    for (const [orderId, rawItems] of itemsByOrder) {
+      normalizedByOrder.set(orderId, normalizeOrderItems(rawItems));
+    }
+
+    const missingImageIds = [...new Set(
+      [...normalizedByOrder.values()].flat().filter(i => !i.productImage && i.productId).map(i => i.productId!)
+    )];
+    if (missingImageIds.length > 0) {
+      const { data: fallbackImages } = await db()
+        .from("product_images")
+        .select("product_id, url, is_main")
+        .in("product_id", missingImageIds);
+      if (fallbackImages) {
+        const imageMap = new Map<string, string>();
+        for (const pi of fallbackImages) {
+          if (imageMap.has(pi.product_id)) {
+            if (pi.is_main) imageMap.set(pi.product_id, pi.url);
+          } else {
+            imageMap.set(pi.product_id, pi.url);
+          }
+        }
+        for (const items of normalizedByOrder.values()) {
+          for (const item of items) {
+            if (!item.productImage && item.productId) {
+              item.productImage = imageMap.get(item.productId) || null;
+            }
+          }
+        }
+      }
+    }
+
     return {
       data: orders.map((o: any) => ({
         ...o,
-        _items: normalizeOrderItems(itemsByOrder.get(o.id) || []),
+        _items: normalizedByOrder.get(o.id) || [],
       })),
       count: count || 0,
     };
   },
 
-  async getById(id: string): Promise<{ order: any; items: any[] } | null> {
+  async getById(id: string): Promise<{ order: any; items: NormalizedOrderItem[] } | null> {
     const { data: order, error: orderError } = await db().from("orders").select("*").eq("id", id).maybeSingle();
     if (orderError || !order) return null;
 
     const { data: items } = await db().from("order_items").select("*").eq("order_id", id);
+    const normalized = normalizeOrderItems(items || []);
 
-    return { order: order as any, items: normalizeOrderItems(items || []) };
+    const missingImageIds = [...new Set(normalized.filter(i => !i.productImage && i.productId).map(i => i.productId!))];
+    if (missingImageIds.length > 0) {
+      const { data: fallbackImages } = await db()
+        .from("product_images")
+        .select("product_id, url, is_main")
+        .in("product_id", missingImageIds);
+      if (fallbackImages) {
+        const imageMap = new Map<string, string>();
+        for (const pi of fallbackImages) {
+          if (imageMap.has(pi.product_id)) {
+            if (pi.is_main) imageMap.set(pi.product_id, pi.url);
+          } else {
+            imageMap.set(pi.product_id, pi.url);
+          }
+        }
+        for (const item of normalized) {
+          if (!item.productImage && item.productId) {
+            item.productImage = imageMap.get(item.productId) || null;
+          }
+        }
+      }
+    }
+
+    return { order: order as any, items: normalized };
   },
 
   async updateStatus(id: string, status: string, trackingId?: string, courier?: string): Promise<void> {
