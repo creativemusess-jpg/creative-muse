@@ -91,7 +91,7 @@ function OrderDetailPage() {
   if (!data) return <AdminLayout><div className="text-center py-20 text-gray-500">Order not found</div></AdminLayout>;
 
   const { order, items } = data;
-  const subtotal = items.reduce((s: number, i: any) => s + (i.total_price || 0), 0);
+  const subtotal = items.reduce((s: number, i: any) => s + (i.lineTotal || 0), 0);
   const total = order.total_amount || subtotal;
 
   return (
@@ -140,18 +140,23 @@ function OrderDetailPage() {
             <div className="divide-y divide-gray-100">
               {items.map((item: any, i: number) => (
                 <div key={i} className="flex items-center gap-4 px-5 py-4">
-                  <div className="h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-gray-100">
-                    {item.product_image ? (
-                      <img src={item.product_image} alt={item.product_name} className="h-full w-full object-cover" />
+                  <div className="h-16 w-16 shrink-0 overflow-hidden rounded-lg border border-gray-100 bg-gray-50">
+                    {item.productImage ? (
+                      <img src={item.productImage} alt={item.productName || "Order item"} className="h-full w-full object-contain p-0.5" loading="lazy" />
                     ) : (
-                      <div className="flex h-full items-center justify-center text-gray-400"><Package className="h-5 w-5" /></div>
+                      <div className="flex h-full items-center justify-center text-gray-300"><Package className="h-6 w-6" /></div>
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-[#1a1a2e]">{item.product_name || "Product"}</p>
-                    <p className="text-xs text-gray-400">SKU: {item.product_sku || "—"} · Qty: {item.quantity || 1}</p>
+                    <p className="text-sm font-medium text-[#1a1a2e]">{item.productName || "Unavailable product"}</p>
+                    <p className="text-xs text-gray-400">
+                      {item.sku ? <>SKU: {item.sku} · </> : null}
+                      Qty: {item.quantity}
+                      {item.unitPrice > 0 ? <> · ₹{item.unitPrice.toLocaleString("en-IN")} ea.</> : null}
+                    </p>
+                    {item.selectedVariant && <p className="text-[11px] text-gray-400 mt-0.5">{item.selectedVariant}{item.selectedSize ? `, ${item.selectedSize}` : ""}</p>}
                   </div>
-                  <p className="text-sm font-medium">₹{(item.total_price || 0).toLocaleString("en-IN")}</p>
+                  <p className="text-sm font-medium text-right">₹{(item.lineTotal || 0).toLocaleString("en-IN")}</p>
                 </div>
               ))}
             </div>
