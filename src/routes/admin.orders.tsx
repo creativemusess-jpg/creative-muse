@@ -5,7 +5,10 @@ import { ordersApi } from "@/lib/api/orders";
 import type { OrderRow } from "@/lib/db/types";
 import { Search, Eye, Package, X } from "lucide-react";
 
+import { requireAdmin } from "@/lib/auth-guard";
+
 export const Route = createFileRoute("/admin/orders")({
+  beforeLoad: requireAdmin,
   component: AdminOrders,
 });
 
@@ -154,9 +157,9 @@ function AdminOrders() {
                       <span className={`inline-block rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase ${order.payment_status === "paid" ? "bg-green-100 text-green-700" : "bg-yellow-100 text-yellow-700"}`}>
                         {order.payment_status}
                       </span>
-                      <span className="inline-block rounded-full bg-purple-100 px-2 py-0.5 text-[10px] font-semibold text-purple-700 uppercase">
-                        Demo
-                      </span>
+                      {order.payment_method === "test" && (
+                        <span className="inline-block rounded-full bg-purple-100 px-2 py-0.5 text-[10px] font-semibold text-purple-700 uppercase">Test</span>
+                      )}
                     </div>
                   </td>
                   <td className="px-4 py-3 text-xs capitalize text-gray-500">{order.payment_method || "—"}</td>

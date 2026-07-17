@@ -9,6 +9,11 @@ import {
 } from "lucide-react";
 
 export const Route = createFileRoute("/admin/")({
+  beforeLoad: async () => {
+    const { adminApi } = await import("@/lib/api/admin");
+    const session = await adminApi.getSession();
+    if (!session) throw new (await import("@tanstack/react-router")).redirect({ to: "/admin/login" });
+  },
   component: AdminDashboard,
 });
 

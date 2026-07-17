@@ -5,6 +5,11 @@ import { auditLogsApi } from "@/lib/api/audit-logs";
 import { Clock } from "lucide-react";
 
 export const Route = createFileRoute("/admin/audit-logs")({
+  beforeLoad: async () => {
+    const { adminApi } = await import("@/lib/api/admin");
+    const session = await adminApi.getSession();
+    if (!session) throw new (await import("@tanstack/react-router")).redirect({ to: "/admin/login" });
+  },
   component: AdminAuditLogs,
 });
 

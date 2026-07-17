@@ -4,7 +4,10 @@ import { AdminLayout, AdminPageHeader, AdminLoading, AdminEmpty } from "@/compon
 import { mediaApi } from "@/lib/api/media";
 import { Search, Trash2, ImageOff } from "lucide-react";
 
+import { requireAdmin } from "@/lib/auth-guard";
+
 export const Route = createFileRoute("/admin/media")({
+  beforeLoad: requireAdmin,
   component: AdminMedia,
 });
 

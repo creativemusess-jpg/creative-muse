@@ -90,4 +90,16 @@ export const ordersApi = {
     }).eq("id", id);
     if (error) throw error;
   },
+
+  async addNote(id: string, note: string): Promise<void> {
+    const { data: order } = await db().from("orders").select("notes").eq("id", id).maybeSingle();
+    const existingNotes = order?.notes || "";
+    const newNote = `[${new Date().toLocaleString()}] ${note}`;
+    const updatedNotes = existingNotes ? `${existingNotes}\n${newNote}` : newNote;
+    const { error } = await db().from("orders").update({
+      notes: updatedNotes,
+      updated_at: new Date().toISOString(),
+    }).eq("id", id);
+    if (error) throw error;
+  },
 };

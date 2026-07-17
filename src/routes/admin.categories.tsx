@@ -7,7 +7,10 @@ import { uploadImage, deleteImage } from "@/lib/api/upload";
 import type { CategoryRow } from "@/lib/db/types";
 import { Plus, Edit3, Trash2, Upload, X, ImageOff, Loader2, Star } from "lucide-react";
 
+import { requireAdmin } from "@/lib/auth-guard";
+
 export const Route = createFileRoute("/admin/categories")({
+  beforeLoad: requireAdmin,
   component: AdminCategories,
 });
 

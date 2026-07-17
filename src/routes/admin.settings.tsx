@@ -4,7 +4,10 @@ import { AdminLayout, AdminPageHeader, AdminLoading } from "@/components/admin/A
 import { settingsApi } from "@/lib/api/settings";
 import { Save } from "lucide-react";
 
+import { requireAdmin } from "@/lib/auth-guard";
+
 export const Route = createFileRoute("/admin/settings")({
+  beforeLoad: requireAdmin,
   component: AdminSettings,
 });
 

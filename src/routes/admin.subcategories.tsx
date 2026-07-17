@@ -5,7 +5,10 @@ import { categoriesApi } from "@/lib/api/categories";
 import { subcategoriesApi } from "@/lib/api/subcategories";
 import { Plus, Edit3, Trash2, X, Loader2, ChevronDown, ChevronRight } from "lucide-react";
 
+import { requireAdmin } from "@/lib/auth-guard";
+
 export const Route = createFileRoute("/admin/subcategories")({
+  beforeLoad: requireAdmin,
   component: AdminSubcategories,
 });
 

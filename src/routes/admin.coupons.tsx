@@ -4,7 +4,10 @@ import { AdminLayout, AdminPageHeader, AdminLoading, AdminEmpty } from "@/compon
 import { couponsApi } from "@/lib/api/coupons";
 import { Plus, Edit3, Trash2, Tag } from "lucide-react";
 
+import { requireAdmin } from "@/lib/auth-guard";
+
 export const Route = createFileRoute("/admin/coupons")({
+  beforeLoad: requireAdmin,
   component: AdminCoupons,
 });
 

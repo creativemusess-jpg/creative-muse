@@ -5,7 +5,10 @@ import { collectionsApi } from "@/lib/api/collections";
 import { DataTable, ConfirmDialog, StatusBadge } from "@/components/admin/AdminTable";
 import { Plus, Edit, Trash2 } from "lucide-react";
 
+import { requireAdmin } from "@/lib/auth-guard";
+
 export const Route = createFileRoute("/admin/collections")({
+  beforeLoad: requireAdmin,
   component: CollectionsPage,
 });
 

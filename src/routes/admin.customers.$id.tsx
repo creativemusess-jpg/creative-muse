@@ -6,7 +6,10 @@ import { ordersApi } from "@/lib/api/orders";
 import { StatusBadge } from "@/components/admin/AdminTable";
 import { ArrowLeft, ShoppingCart, DollarSign, Calendar, Mail, Phone, MapPin } from "lucide-react";
 
+import { requireAdmin } from "@/lib/auth-guard";
+
 export const Route = createFileRoute("/admin/customers/$id")({
+  beforeLoad: requireAdmin,
   component: CustomerDetailPage,
 });
 

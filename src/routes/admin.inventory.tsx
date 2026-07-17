@@ -5,7 +5,10 @@ import { inventoryApi } from "@/lib/api/inventory";
 import { DataTable, StatusBadge, ConfirmDialog } from "@/components/admin/AdminTable";
 import { Minus, History } from "lucide-react";
 
+import { requireAdmin } from "@/lib/auth-guard";
+
 export const Route = createFileRoute("/admin/inventory")({
+  beforeLoad: requireAdmin,
   component: InventoryPage,
 });
 

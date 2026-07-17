@@ -8,7 +8,10 @@ import { Upload, X, Loader2 } from "lucide-react";
 
 const CAROUSEL_SECTION_KEYS = ["new_arrivals", "premium_arrivals", "best_sellers"];
 
+import { requireAdmin } from "@/lib/auth-guard";
+
 export const Route = createFileRoute("/admin/homepage")({
+  beforeLoad: requireAdmin,
   component: AdminHomepage,
 });
 

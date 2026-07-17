@@ -8,7 +8,10 @@ import { subcategoriesApi } from "@/lib/api/subcategories";
 import { uploadImage } from "@/lib/api/upload";
 import { Upload, X, Loader2, ImageOff } from "lucide-react";
 
+import { requireAdmin } from "@/lib/auth-guard";
+
 export const Route = createFileRoute("/admin/products/$id")({
+  beforeLoad: requireAdmin,
   component: EditProductPage,
 });
 

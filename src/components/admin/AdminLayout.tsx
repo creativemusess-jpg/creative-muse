@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, type ReactNode } from "react";
 import { Link, useLocation, useNavigate } from "@tanstack/react-router";
 import { adminApi, type AdminSession } from "@/lib/api/admin";
+import { clearGuardCache } from "@/lib/auth-guard";
 import {
   LayoutDashboard, Package, ShoppingCart, Users,
   Mail, Tag, Settings, LogOut, Menu, X, Clock,
@@ -90,6 +91,7 @@ export function AdminLayout({ children }: { children: ReactNode }) {
     await adminApi.logout();
     cachedSessionPromise = null;
     cachedSessionValue = undefined;
+    clearGuardCache();
     navigate({ to: "/admin/login" });
   };
 

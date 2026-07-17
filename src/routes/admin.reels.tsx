@@ -6,7 +6,10 @@ import { productsApi } from "@/lib/api/products";
 import { useStorefrontProducts } from "@/lib/products";
 import type { ShoppableReelRow, ShoppableReelInsert } from "@/lib/db/types";
 
+import { requireAdmin } from "@/lib/auth-guard";
+
 export const Route = createFileRoute("/admin/reels")({
+  beforeLoad: requireAdmin,
   component: AdminReels,
 });
 

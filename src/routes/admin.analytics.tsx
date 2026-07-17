@@ -5,7 +5,10 @@ import { analyticsApi } from "@/lib/api/analytics";
 import { StatusBadge } from "@/components/admin/AdminTable";
 import { TrendingUp, TrendingDown, DollarSign, ShoppingCart, Users, Package, AlertTriangle } from "lucide-react";
 
+import { requireAdmin } from "@/lib/auth-guard";
+
 export const Route = createFileRoute("/admin/analytics")({
+  beforeLoad: requireAdmin,
   component: AnalyticsPage,
 });
 

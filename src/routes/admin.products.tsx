@@ -6,7 +6,10 @@ import { DataTable, StatusBadge, ConfirmDialog } from "@/components/admin/AdminT
 import { productsApi, type ProductWithImages } from "@/lib/api/products";
 import { Plus, Eye, Edit3, Trash2, ImageOff, CheckCircle, XCircle } from "lucide-react";
 
+import { requireAdmin } from "@/lib/auth-guard";
+
 export const Route = createFileRoute("/admin/products")({
+  beforeLoad: requireAdmin,
   component: AdminProducts,
 });
 

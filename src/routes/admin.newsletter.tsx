@@ -4,7 +4,10 @@ import { AdminLayout, AdminPageHeader, AdminLoading, AdminEmpty } from "@/compon
 import { newsletterApi, getSourceLabel } from "@/lib/api/newsletter";
 import { Search, Trash2, Download } from "lucide-react";
 
+import { requireAdmin } from "@/lib/auth-guard";
+
 export const Route = createFileRoute("/admin/newsletter")({
+  beforeLoad: requireAdmin,
   component: AdminNewsletter,
 });
 

@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { adminApi } from "@/lib/api/admin";
+import { clearGuardCache } from "@/lib/auth-guard";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 
 export const Route = createFileRoute("/admin/login")({
@@ -26,6 +27,7 @@ function AdminLoginPage() {
 
     setLoading(true);
     try {
+      clearGuardCache();
       await adminApi.login(email, password);
       navigate({ to: "/admin" });
     } catch (err: any) {
@@ -95,9 +97,9 @@ function AdminLoginPage() {
                 <input type="checkbox" className="rounded border-gray-300" />
                 <span className="text-sm text-gray-600">Remember me</span>
               </label>
-              <button type="button" className="text-sm text-[#c9a96e] hover:underline">
+              <Link to="/forgot-password" className="text-sm text-[#c9a96e] hover:underline">
                 Forgot password?
-              </button>
+              </Link>
             </div>
 
             <button

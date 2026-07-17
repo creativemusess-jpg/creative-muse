@@ -5,7 +5,10 @@ import { ordersApi } from "@/lib/api/orders";
 import { StatusBadge, ConfirmDialog } from "@/components/admin/AdminTable";
 import { ArrowLeft, Package, Truck, CreditCard, User, Clock, MessageSquare, Send } from "lucide-react";
 
+import { requireAdmin } from "@/lib/auth-guard";
+
 export const Route = createFileRoute("/admin/orders/$id")({
+  beforeLoad: requireAdmin,
   component: OrderDetailPage,
 });
 
@@ -53,15 +56,20 @@ function OrderDetailPage() {
     } catch (err) { console.error(err); }
   };
 
-  const handleAddNote = () => {
+  const handleAddNote = async () => {
     if (!note.trim()) return;
-    setTimeline((prev) => [...prev, {
-      event: "Admin comment",
-      description: note,
-      date: new Date().toISOString(),
-      isSystem: false,
-    }]);
-    setNote("");
+    try {
+      await ordersApi.addNote(id, note);
+      setTimeline((prev) => [...prev, {
+        event: "Admin comment",
+        description: note,
+        date: new Date().toISOString(),
+        isSystem: false,
+      }]);
+      setNote("");
+    } catch (err) {
+      console.error("Failed to save note:", err);
+    }
   };
 
   if (loading) return <AdminLayout><AdminLoading /></AdminLayout>;
