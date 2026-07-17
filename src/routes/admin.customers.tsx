@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, useLocation } from "@tanstack/react-router";
 import { AdminLayout, AdminPageHeader, AdminTable, AdminLoading, AdminEmpty } from "@/components/admin/AdminLayout";
 import { customersApi } from "@/lib/api/customers";
 import { Search } from "lucide-react";
@@ -12,6 +12,7 @@ export const Route = createFileRoute("/admin/customers")({
 });
 
 function AdminCustomers() {
+  const location = useLocation();
   const [customers, setCustomers] = useState<any[]>([]);
   const [count, setCount] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -31,6 +32,8 @@ function AdminCustomers() {
   };
 
   useEffect(() => { fetch(); }, [search]);
+
+  if (location.pathname !== "/admin/customers") return <Outlet />;
 
   return (
     <AdminLayout>
