@@ -68,6 +68,7 @@ export interface ProductFilters {
   new_arrival?: boolean;
   min_price?: number;
   max_price?: number;
+  material?: string | string[];
   sort_by?: string;
   sort_order?: "asc" | "desc";
   page?: number;
@@ -175,6 +176,15 @@ export const productsApi = {
     if (filters.min_price) query = query.gte("current_price", filters.min_price);
     if (filters.max_price) query = query.lte("current_price", filters.max_price);
 
+    if (filters.material) {
+      const materials = Array.isArray(filters.material) ? filters.material : [filters.material];
+      if (materials.length === 1) {
+        query = query.eq("material", materials[0]);
+      } else if (materials.length > 1) {
+        query = query.in("material", materials);
+      }
+    }
+
     if (filters.category) {
       const { data: cat } = await supabase.from("categories").select("id").eq("slug", filters.category).maybeSingle();
       if (cat) {
@@ -255,6 +265,47 @@ export const productsApi = {
 
   async getPublished(filters: Omit<ProductFilters, "status"> = {}): Promise<ProductWithImages[]> {
     return productsApi.list({ ...filters, status: "active" }).then((r) => r.data);
+  },
+
+  async getFacets(categorySlug?: string): Promise<{ metals: string[]; minPrice: number; maxPrice: number }> {
+    let query = supabase.from("products").select("material, current_price").eq("status", "active");
+
+    if (categorySlug) {
+      const { data: cat } = await supabase.from("categories").select("id").eq("slug", categorySlug).maybeSingle();
+      if (cat) {
+        const { data: links } = await supabase.from("product_categories").select("product_id").eq("category_id", cat.id);
+        const pids = (links || []).map((l: any) => l.product_id);
+        if (pids.length > 0) query = query.in("id", pids);
+        else query = query.eq("id", "__none__");
+      } else {
+        query = query.eq("id", "__none__");
+      }
+    }
+
+    const { data, error } = await query;
+    if (error) throw error;
+    const rows = (data as any[]) || [];
+
+    const metalSet = new Set<string>();
+    let minPrice = Infinity;
+    let maxPrice = -Infinity;
+
+    for (const row of rows) {
+      const m = row.material;
+      if (m && typeof m === "string") metalSet.add(m);
+      const p = Number(row.current_price);
+      if (!isNaN(p) && p > 0) {
+        if (p < minPrice) minPrice = p;
+        if (p > maxPrice) maxPrice = p;
+      }
+    }
+
+    const metals = [...metalSet].sort();
+    return {
+      metals,
+      minPrice: minPrice === Infinity ? 0 : minPrice,
+      maxPrice: maxPrice === -Infinity ? 0 : maxPrice,
+    };
   },
 
   async getById(id: string): Promise<ProductWithImages | null> {
