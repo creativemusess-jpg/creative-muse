@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, useLocation } from "@tanstack/react-router";
 import { AdminLayout, AdminPageHeader, AdminLoading, AdminEmpty } from "@/components/admin/AdminLayout";
 import { ordersApi } from "@/lib/api/orders";
 import type { OrderRow } from "@/lib/db/types";
@@ -25,6 +25,7 @@ const statusColors: Record<string, string> = {
 };
 
 function AdminOrders() {
+  const location = useLocation();
   const [orders, setOrders] = useState<OrderRow[]>([]);
   const [count, setCount] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -56,6 +57,8 @@ function AdminOrders() {
   };
 
   const formatPrice = (n: number) => "₹" + n.toLocaleString("en-IN");
+
+  if (location.pathname !== "/admin/orders") return <Outlet />;
 
   return (
     <AdminLayout>
