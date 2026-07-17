@@ -1,9 +1,9 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { AdminLayout, AdminPageHeader, AdminTable, AdminLoading, AdminEmpty } from "@/components/admin/AdminLayout";
+import { AdminLayout, AdminPageHeader, AdminLoading, AdminEmpty } from "@/components/admin/AdminLayout";
 import { ordersApi } from "@/lib/api/orders";
 import type { OrderRow } from "@/lib/db/types";
-import { Search, Eye, Package, X } from "lucide-react";
+import { Search, Eye } from "lucide-react";
 
 import { requireAdmin } from "@/lib/auth-guard";
 
@@ -30,9 +30,6 @@ function AdminOrders() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
-  const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
-  const [orderDetail, setOrderDetail] = useState<{ order: any; items: any[] } | null>(null);
-  const [detailLoading, setDetailLoading] = useState(false);
 
   const fetchOrders = async () => {
     setLoading(true);
@@ -48,25 +45,6 @@ function AdminOrders() {
   };
 
   useEffect(() => { fetchOrders(); }, [search, statusFilter]);
-
-  const openOrderDetail = useCallback(async (id: string) => {
-    setSelectedOrderId(id);
-    setDetailLoading(true);
-    try {
-      const result = await ordersApi.getById(id);
-      setOrderDetail(result);
-    } catch (err) {
-      console.error(err);
-      setOrderDetail(null);
-    } finally {
-      setDetailLoading(false);
-    }
-  }, []);
-
-  const closeOrderDetail = useCallback(() => {
-    setSelectedOrderId(null);
-    setOrderDetail(null);
-  }, []);
 
   const handleStatusUpdate = async (id: string, status: string) => {
     try {
@@ -186,93 +164,6 @@ function AdminOrders() {
               ))}
             </tbody>
           </table>
-        </div>
-      )}
-
-      {selectedOrderId && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={closeOrderDetail}>
-          <div className="max-h-[85vh] w-full max-w-3xl overflow-y-auto rounded-2xl bg-white p-6" onClick={(e) => e.stopPropagation()}>
-            <div className="flex items-center justify-between">
-              <h3 className="font-display text-lg font-bold text-[#1a1a2e]">
-                Order #{orderDetail?.order?.order_number || "..."}
-              </h3>
-              <button onClick={closeOrderDetail} className="rounded-lg p-1 text-gray-400 hover:bg-gray-100">
-                <X className="h-5 w-5" />
-              </button>
-            </div>
-
-            {detailLoading ? (
-              <div className="flex justify-center py-12">
-                <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#C9A96E] border-t-transparent" />
-              </div>
-            ) : orderDetail ? (
-              <>
-                <div className="mt-4 space-y-4 text-sm">
-                  <div className="grid grid-cols-2 gap-3 rounded-lg bg-gray-50 p-4">
-                    <div><span className="text-gray-500">Customer:</span> <span className="font-medium">{orderDetail.order.customer_name || orderDetail.order.customer_email}</span></div>
-                    <div><span className="text-gray-500">Phone:</span> <span className="font-medium">{orderDetail.order.customer_phone || "—"}</span></div>
-                    <div><span className="text-gray-500">Payment:</span> <span className={`font-medium capitalize ${orderDetail.order.payment_status === "paid" ? "text-green-700" : "text-yellow-700"}`}>{orderDetail.order.payment_status}</span></div>
-                    <div><span className="text-gray-500">Method:</span> <span className="font-medium capitalize">{orderDetail.order.payment_method || "—"}</span></div>
-                    <div><span className="text-gray-500">Status:</span> <span className="font-medium capitalize">{orderDetail.order.order_status.replace(/_/g, " ")}</span></div>
-                    <div><span className="text-gray-500">Date:</span> <span className="font-medium">{new Date(orderDetail.order.created_at).toLocaleString()}</span></div>
-                  </div>
-
-                  {orderDetail.items.length > 0 && (
-                    <div>
-                      <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-gray-500">
-                        Purchased Products ({orderDetail.items.length})
-                      </p>
-                      <div className="divide-y divide-gray-200 rounded-lg bg-gray-50">
-                        {orderDetail.items.map((item: any) => (
-                          <div key={item.id} className="flex gap-3 p-3 first:rounded-t-lg last:rounded-b-lg">
-                            <div className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-white">
-                              {item.productImage ? (
-                                <img src={item.productImage} alt={item.productName} className="h-full w-full object-contain p-1" />
-                              ) : (
-                                <Package className="h-6 w-6 text-gray-300" />
-                              )}
-                            </div>
-                            <div className="min-w-0 flex-1">
-                              <p className="font-medium text-gray-900">{item.productName}</p>
-                              <p className="text-xs text-gray-500">SKU: {item.sku || "—"}</p>
-                              <div className="mt-1 flex items-center justify-between">
-                                <span className="text-xs text-gray-500">Qty: {item.quantity} × {formatPrice(item.unitPrice)}</span>
-                                <span className="font-semibold text-[#1a1a2e]">{formatPrice(item.lineTotal)}</span>
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  <div className="space-y-1 rounded-lg bg-gray-50 p-4">
-                    <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-gray-500">Pricing Breakdown</p>
-                    <div className="space-y-1">
-                      <div className="flex justify-between text-xs"><span>Subtotal</span><span>{formatPrice(orderDetail.order.subtotal || 0)}</span></div>
-                      {orderDetail.order.discount_amount > 0 && (
-                        <div className="flex justify-between text-xs text-green-700"><span>Discount ({orderDetail.order.coupon_code || ""})</span><span>-{formatPrice(orderDetail.order.discount_amount)}</span></div>
-                      )}
-                      <div className="flex justify-between text-xs"><span>Shipping</span><span>{orderDetail.order.shipping_amount === 0 || !orderDetail.order.shipping_amount ? "Free" : formatPrice(orderDetail.order.shipping_amount)}</span></div>
-                      {orderDetail.order.tax_amount > 0 && (
-                        <div className="flex justify-between text-xs"><span>Tax</span><span>{formatPrice(orderDetail.order.tax_amount)}</span></div>
-                      )}
-                      <div className="flex justify-between border-t border-dashed border-gray-200 pt-1 text-sm font-bold"><span>Total</span><span>{formatPrice(orderDetail.order.total_amount)}</span></div>
-                    </div>
-                  </div>
-
-                  {orderDetail.order.tracking_id && (
-                    <div className="rounded-lg bg-gray-50 p-3">
-                      <span className="text-gray-500">Tracking:</span> <span className="font-medium">{orderDetail.order.tracking_id}</span>
-                      {orderDetail.order.courier && <span className="ml-2 text-xs text-gray-500">via {orderDetail.order.courier}</span>}
-                    </div>
-                  )}
-                </div>
-              </>
-            ) : (
-              <div className="py-8 text-center text-sm text-gray-500">Failed to load order details.</div>
-            )}
-          </div>
         </div>
       )}
     </AdminLayout>

@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import { createFileRoute, Link, useParams, useNavigate } from "@tanstack/react-router";
-import { AdminLayout, AdminPageHeader, AdminLoading } from "@/components/admin/AdminLayout";
+import { createFileRoute, Link, useParams } from "@tanstack/react-router";
+import { AdminLayout, AdminLoading } from "@/components/admin/AdminLayout";
 import { ordersApi } from "@/lib/api/orders";
 import { StatusBadge, ConfirmDialog } from "@/components/admin/AdminTable";
-import { ArrowLeft, Package, Truck, CreditCard, User, Clock, MessageSquare, Send } from "lucide-react";
+import { ArrowLeft, Package, Truck, CreditCard, User, Clock, Send } from "lucide-react";
 
 import { requireAdmin } from "@/lib/auth-guard";
 
@@ -14,10 +14,9 @@ export const Route = createFileRoute("/admin/orders/$id")({
 
 function OrderDetailPage() {
   const { id } = useParams({ from: "/admin/orders/$id" });
-  const navigate = useNavigate();
   const [data, setData] = useState<{ order: any; items: any[] } | null>(null);
   const [loading, setLoading] = useState(true);
-  const [statusConfirm, setStatusConfirm] = useState<string | null>(null);
+  const [statusConfirm, setStatusConfirm] = useState<{ type: 'order' | 'payment'; value: string } | null>(null);
   const [note, setNote] = useState("");
   const [timeline, setTimeline] = useState<any[]>([]);
 
@@ -33,13 +32,13 @@ function OrderDetailPage() {
     const events: any[] = [
       { event: "Order created", description: "Order was placed", date: order.created_at, isSystem: true },
     ];
-    if (order.fulfillment_status === "fulfilled") {
+    if (order.order_status === "shipped" || order.order_status === "delivered") {
       events.push({ event: "Order fulfilled", description: `Fulfilled via ${order.courier || "standard"}`, date: order.updated_at, isSystem: true });
     }
-    if (order.status === "delivered") {
+    if (order.order_status === "delivered") {
       events.push({ event: "Order delivered", description: "Delivered to customer", date: order.updated_at, isSystem: true });
     }
-    if (order.status === "cancelled") {
+    if (order.order_status === "cancelled") {
       events.push({ event: "Order cancelled", description: "Cancelled by admin", date: order.updated_at, isSystem: true });
     }
     setTimeline(events);
@@ -52,6 +51,22 @@ function OrderDetailPage() {
       const updated = await ordersApi.getById(id);
       setData(updated);
       if (updated) buildTimeline(updated.order);
+      setStatusConfirm(null);
+    } catch (err) { console.error(err); }
+  };
+
+  const handlePaymentUpdate = async (newStatus: string) => {
+    if (!data) return;
+    try {
+      await ordersApi.updatePaymentStatus(id, newStatus);
+      setTimeline((prev) => [...prev, {
+        event: `Payment ${newStatus}`,
+        description: `Payment status changed to ${newStatus}`,
+        date: new Date().toISOString(),
+        isSystem: true,
+      }]);
+      const updated = await ordersApi.getById(id);
+      setData(updated);
       setStatusConfirm(null);
     } catch (err) { console.error(err); }
   };
@@ -84,8 +99,15 @@ function OrderDetailPage() {
       <ConfirmDialog
         open={!!statusConfirm}
         onClose={() => setStatusConfirm(null)}
-        onConfirm={() => handleStatusUpdate(statusConfirm!)}
-        title={`Change status to "${statusConfirm?.replace(/_/g, " ")}"?`}
+        onConfirm={() => {
+          if (!statusConfirm) return;
+          if (statusConfirm.type === 'payment') {
+            handlePaymentUpdate(statusConfirm.value);
+          } else {
+            handleStatusUpdate(statusConfirm.value);
+          }
+        }}
+        title={`Change status to "${statusConfirm?.value.replace(/_/g, " ")}"?`}
         message="This will update the order status"
         confirmLabel="Update"
       />
@@ -103,9 +125,8 @@ function OrderDetailPage() {
             <p className="text-sm text-gray-500">{new Date(order.created_at).toLocaleString()}</p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
-            <StatusBadge status={order.status || "pending"} size="md" />
+            <StatusBadge status={order.order_status || "pending"} size="md" />
             {order.payment_status && <StatusBadge status={order.payment_status} size="md" />}
-            {order.fulfillment_status && <StatusBadge status={order.fulfillment_status} size="md" />}
           </div>
         </div>
       </div>
@@ -145,10 +166,10 @@ function OrderDetailPage() {
                   <span className="font-medium text-green-600">-₹{order.discount_amount.toLocaleString("en-IN")}</span>
                 </div>
               )}
-              {order.shipping_cost > 0 && (
+              {order.shipping_amount > 0 && (
                 <div className="flex justify-between text-sm mt-1">
                   <span className="text-gray-500">Shipping</span>
-                  <span className="font-medium">₹{order.shipping_cost.toLocaleString("en-IN")}</span>
+                  <span className="font-medium">₹{order.shipping_amount.toLocaleString("en-IN")}</span>
                 </div>
               )}
               <div className="flex justify-between text-base font-bold mt-2 pt-2 border-t border-gray-100">
@@ -204,7 +225,7 @@ function OrderDetailPage() {
             <div className="p-5 space-y-3">
               <div className="flex justify-between text-sm">
                 <span className="text-gray-500">Status</span>
-                <StatusBadge status={order.fulfillment_status || "unfulfilled"} />
+                <StatusBadge status={order.order_status === "delivered" ? "fulfilled" : order.order_status} />
               </div>
               {order.tracking_id && (
                 <div className="flex justify-between text-sm">
@@ -237,10 +258,10 @@ function OrderDetailPage() {
                 <span className="font-bold">₹{total.toLocaleString("en-IN")}</span>
               </div>
               {order.payment_status !== "paid" && (
-                <button onClick={() => setStatusConfirm("paid")} className="w-full rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-blue-700">Mark Paid</button>
+                <button onClick={() => { setStatusConfirm({ type: "payment", value: "paid" }); }} className="w-full rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-blue-700">Mark Paid</button>
               )}
-              {order.status !== "cancelled" && (
-                <button onClick={() => setStatusConfirm("cancelled")} className="w-full rounded-lg border border-red-200 px-3 py-1.5 text-xs font-semibold text-red-600 hover:bg-red-50">Cancel Order</button>
+              {order.order_status !== "cancelled" && (
+                <button onClick={() => setStatusConfirm({ type: "order", value: "cancelled" })} className="w-full rounded-lg border border-red-200 px-3 py-1.5 text-xs font-semibold text-red-600 hover:bg-red-50">Cancel Order</button>
               )}
             </div>
           </div>
@@ -256,7 +277,11 @@ function OrderDetailPage() {
               {order.shipping_address && (
                 <div className="mt-3">
                   <p className="text-xs font-semibold text-gray-500 uppercase">Shipping</p>
-                  <p className="mt-1 text-sm text-gray-600 whitespace-pre-line">{order.shipping_address}</p>
+                  <p className="mt-1 text-sm text-gray-600 whitespace-pre-line">
+                    {typeof order.shipping_address === 'string'
+                      ? order.shipping_address
+                      : Object.values(order.shipping_address as Record<string, any>).filter(Boolean).join(', ')}
+                  </p>
                 </div>
               )}
             </div>

@@ -91,6 +91,14 @@ export const ordersApi = {
     if (error) throw error;
   },
 
+  async updatePaymentStatus(id: string, status: string): Promise<void> {
+    const { error } = await db().from("orders").update({
+      payment_status: status,
+      updated_at: new Date().toISOString(),
+    }).eq("id", id);
+    if (error) throw error;
+  },
+
   async addNote(id: string, note: string): Promise<void> {
     const { data: order } = await db().from("orders").select("notes").eq("id", id).maybeSingle();
     const existingNotes = order?.notes || "";
