@@ -90,7 +90,7 @@ export function Footer() {
 
       <div className="mx-auto mt-16 flex max-w-[1280px] flex-col items-center justify-between gap-4 border-t border-white/10 pt-6 sm:flex-row">
         <p className="text-xs text-[#7a6e64]">
-          © 2025 Creative Muse. All rights reserved. Built by{" "}
+          © 2025 Creative Muse. All rights reserved. Designed and Developed by{" "}
           <a href="https://apfpuniversal.com" target="_blank" rel="noopener noreferrer" className="text-[#C9A96E] hover:underline">
             APFP Universal
           </a>.
