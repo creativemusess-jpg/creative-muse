@@ -571,21 +571,21 @@ function Offers() {
   const cards = [
     {
       bg: "from-[#1a1a2e] via-[#2d1b4e] to-[#1a1a2e]",
-      emoji: "💎",
+      image: prodAarav,
       title: "Diamond Sale",
       copy: "Up to 30% off this weekend",
       cta: "Shop Diamonds",
     },
     {
       bg: "from-[#8B1A4A] via-[#a8326b] to-[#5e0e33]",
-      emoji: "👑",
+      image: prodPolki,
       title: "Bridal Bundle",
       copy: "Complete sets + free gift wrap",
       cta: "View Sets",
     },
     {
       bg: "from-[#3a3028] via-[#5a4a3c] to-[#1a1a1a]",
-      emoji: "🎁",
+      image: prodJhumka,
       title: "Gift Collection",
       copy: "Free luxury packaging above ₹10,000",
       cta: "Shop Gifts",
@@ -604,9 +604,10 @@ function Offers() {
               transition={{ duration: 0.5, delay: i * 0.1 }}
               className={`relative overflow-hidden rounded-[28px] bg-gradient-to-br p-8 text-white shadow-[0_12px_40px_rgba(0,0,0,0.15)] ${c.bg}`}
             >
-              <div className="absolute -top-10 -right-10 text-[160px] opacity-15">{c.emoji}</div>
+              <div className="absolute inset-0 opacity-10">
+                <img src={c.image} alt="" className="h-full w-full object-contain p-4" />
+              </div>
               <div className="relative">
-                <span className="text-4xl">{c.emoji}</span>
                 <h3 className="font-display mt-4 text-2xl font-semibold text-white">{c.title}</h3>
                 <p className="mt-2 text-sm text-white/75">{c.copy}</p>
                 <Link

@@ -3,7 +3,8 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { collectionsApi } from "@/lib/api/collections";
 import { DataTable, ConfirmDialog, StatusBadge } from "@/components/admin/AdminTable";
-import { Plus, Edit, Trash2 } from "lucide-react";
+import { uploadImage } from "@/lib/api/upload";
+import { Plus, Edit, Trash2, Upload, X, ImageOff, Loader2 } from "lucide-react";
 
 import { requireAdmin } from "@/lib/auth-guard";
 
@@ -19,7 +20,8 @@ function CollectionsPage() {
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState<any | null>(null);
-  const [form, setForm] = useState({ name: "", slug: "", description: "" });
+  const [uploading, setUploading] = useState(false);
+  const [form, setForm] = useState({ name: "", slug: "", description: "", image: "" });
 
   const load = async () => {
     setLoading(true);
@@ -32,6 +34,20 @@ function CollectionsPage() {
 
   useEffect(() => { load(); }, []);
 
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    try {
+      const url = await uploadImage(file, "collection-images");
+      setForm((f) => ({ ...f, image: url }));
+    } catch (err: any) {
+      alert("Upload failed: " + err.message);
+    } finally {
+      setUploading(false);
+    }
+  };
+
   const handleSave = async () => {
     try {
       if (editing) {
@@ -41,7 +57,7 @@ function CollectionsPage() {
       }
       setShowForm(false);
       setEditing(null);
-      setForm({ name: "", slug: "", description: "" });
+      setForm({ name: "", slug: "", description: "", image: "" });
       load();
     } catch (e: any) { alert(e.message); }
   };
@@ -57,7 +73,7 @@ function CollectionsPage() {
 
   const openEdit = (item: any) => {
     setEditing(item);
-    setForm({ name: item.name, slug: item.slug || "", description: item.description || "" });
+    setForm({ name: item.name, slug: item.slug || "", description: item.description || "", image: item.image || "" });
     setShowForm(true);
   };
 
@@ -85,6 +101,9 @@ function CollectionsPage() {
             item.name?.toLowerCase().includes(term) || item.slug?.toLowerCase().includes(term)
           }
           columns={[
+            { key: "image", label: "Image", render: (val) => (
+              val ? <img src={val} alt="" className="h-10 w-10 rounded-lg object-cover" /> : <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100 text-gray-300"><ImageOff className="h-4 w-4" /></span>
+            )},
             { key: "name", label: "Name", sortable: true, render: (val, row) => (
               <Link to="/" className="text-sm font-medium text-[#1a1a2e] hover:text-[#c9a96e]">{val}</Link>
             )},
@@ -119,6 +138,22 @@ function CollectionsPage() {
                 <label className="block text-xs font-semibold text-gray-500 uppercase">Slug (optional)</label>
                 <input type="text" value={form.slug} onChange={(e) => setForm({ ...form, slug: e.target.value })}
                   className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#c9a96e]" />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-gray-500 uppercase">Image</label>
+                <div className="mt-1 flex items-start gap-3">
+                  {form.image ? (
+                    <div className="relative">
+                      <img src={form.image} alt="Collection preview" className="h-20 w-20 rounded-lg object-cover shadow-sm" />
+                      <button onClick={() => setForm({ ...form, image: "" })} className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white hover:bg-red-600" type="button" aria-label="Remove image"><X className="h-3 w-3" /></button>
+                    </div>
+                  ) : (
+                    <label className="flex h-20 w-20 cursor-pointer items-center justify-center rounded-lg border-2 border-dashed border-gray-200 bg-gray-50 text-gray-400 hover:border-[#c9a96e] hover:text-[#c9a96e]">
+                      <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
+                      {uploading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Upload className="h-5 w-5" />}
+                    </label>
+                  )}
+                </div>
               </div>
               <div>
                 <label className="block text-xs font-semibold text-gray-500 uppercase">Description</label>
