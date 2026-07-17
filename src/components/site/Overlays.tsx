@@ -17,6 +17,7 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { formatPrice, type Product, useStorefrontProducts } from "@/lib/products";
 import { useCartLines, useStore, useWishlistProducts } from "@/lib/store";
+import { productLink } from "@/lib/product-link";
 import { validateCoupon } from "@/lib/api/checkout";
 
 /* Cart drawer + Wishlist drawer + Quick View modal — global overlays */
@@ -130,9 +131,19 @@ function CartDrawer() {
                         </div>
                         <div className="min-w-0 flex-1">
                           <p className="eyebrow text-[9px]">{p.metal}</p>
-                          <p className="font-display truncate text-sm font-semibold text-[#1a1a2e]">
-                            {p.name}
-                          </p>
+                          {productLink(p) ? (
+                            <Link
+                              to={productLink(p)!.to}
+                              params={productLink(p)!.params}
+                              className="font-display truncate text-sm font-semibold text-[#1a1a2e] transition-colors hover:text-[#C9A96E]"
+                            >
+                              {p.name}
+                            </Link>
+                          ) : (
+                            <p className="font-display truncate text-sm font-semibold text-[#1a1a2e]">
+                              {p.name}
+                            </p>
+                          )}
                           <p className="mt-0.5 text-sm font-bold text-[#1a1a2e]">
                             {formatPrice(p.price)}
                           </p>
@@ -308,9 +319,19 @@ function WishlistDrawer() {
                       </div>
                       <div className="min-w-0 flex-1">
                         <p className="eyebrow text-[9px]">{p.metal}</p>
-                        <p className="font-display truncate text-sm font-semibold text-[#1a1a2e]">
-                          {p.name}
-                        </p>
+                        {productLink(p) ? (
+                          <Link
+                            to={productLink(p)!.to}
+                            params={productLink(p)!.params}
+                            className="font-display truncate text-sm font-semibold text-[#1a1a2e] transition-colors hover:text-[#C9A96E]"
+                          >
+                            {p.name}
+                          </Link>
+                        ) : (
+                          <p className="font-display truncate text-sm font-semibold text-[#1a1a2e]">
+                            {p.name}
+                          </p>
+                        )}
                         <p className="mt-0.5 text-sm font-bold text-[#1a1a2e]">
                           {formatPrice(p.price)}
                         </p>
@@ -626,12 +647,22 @@ function QuickViewInfo({
         <p className="eyebrow text-[10px]">{product.category}</p>
       </div>
 
-      <h3
-        id="qv-title"
-        className="font-display mt-2 text-2xl leading-tight font-semibold text-[#1a1a2e]"
-      >
-        {product.name}
-      </h3>
+      {productLink(product) ? (
+        <Link
+          to={productLink(product)!.to}
+          params={productLink(product)!.params}
+          className="font-display mt-2 text-2xl leading-tight font-semibold text-[#1a1a2e] transition-colors hover:text-[#C9A96E]"
+        >
+          {product.name}
+        </Link>
+      ) : (
+        <h3
+          id="qv-title"
+          className="font-display mt-2 text-2xl leading-tight font-semibold text-[#1a1a2e]"
+        >
+          {product.name}
+        </h3>
+      )}
 
       <div className="mt-2 flex items-center gap-2">
         {Array.from({ length: 5 }).map((_, i) => (
@@ -707,12 +738,12 @@ function QuickViewInfo({
       </div>
 
       <Link
-        to="/product/$productId"
-        params={{ productId: product.id }}
+        to={productLink(product)?.to ?? "/product/$productId"}
+        params={productLink(product)?.params ?? { productId: product.id }}
+        className="font-display text-xs font-semibold tracking-[0.14em] text-[#C9A96E] transition-colors hover:text-[#8a6a2a] uppercase"
         onClick={onClose}
-        className="mt-3 block text-center text-[11px] font-semibold tracking-[0.14em] text-[#7a6e64] uppercase hover:text-[#1a1a2e] focus:text-[#1a1a2e] focus:outline-none"
       >
-        View Full Details →
+        View Full Details
       </Link>
 
       {/* Details accordions */}

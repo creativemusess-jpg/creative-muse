@@ -7,22 +7,11 @@ export function Footer() {
       <div className="mx-auto grid max-w-[1280px] gap-12 lg:grid-cols-4">
         {/* Brand */}
         <div className="lg:col-span-1">
-          <span className="flex items-center gap-4">
-            <img
-              src="/favicon.ico"
-              alt=""
-              aria-hidden="true"
-              className="h-[64px] w-[64px] object-contain brightness-0 invert md:h-[80px] md:w-[80px]"
-            />
-            <span className="leading-tight">
-              <span className="block font-display text-[20px] font-semibold text-white md:text-[24px]">
-                Creative Muse
-              </span>
-              <span className="block text-[10px] font-semibold uppercase tracking-[0.22em] text-[#C9A96E] md:text-[11px]">
-                Fine Jewellery
-              </span>
-            </span>
-          </span>
+          <img
+            src="/favicon.ico"
+            alt="Creative Muse"
+            className="h-[64px] w-[64px] object-contain brightness-0 invert md:h-[80px] md:w-[80px]"
+          />
           <p className="mt-5 max-w-xs text-sm leading-relaxed text-[#9b9082]">
             Where every gem tells your story. Handcrafted fine jewellery from Vadodara.
           </p>
@@ -89,30 +78,41 @@ export function Footer() {
       </div>
 
       <div className="mx-auto mt-16 flex max-w-[1280px] flex-col items-center justify-between gap-4 border-t border-white/10 pt-6 sm:flex-row">
-        <p className="text-xs text-[#7a6e64]">
-          © 2025 Creative Muse. All rights reserved. Designed and Developed by{" "}
-          <a href="https://apfpuniversal.com" target="_blank" rel="noopener noreferrer" className="text-[#C9A96E] hover:underline">
-            APFP Universal
-          </a>.
-        </p>
-        <div className="flex gap-2">
-          <span className="flex items-center gap-1.5 rounded-[8px] bg-[#0a0a2e] px-3 py-1.5 text-[10px] font-semibold tracking-wider text-[#8a8aff] uppercase">
-            <svg viewBox="0 0 24 24" className="h-3.5 w-3.5"><text x="12" y="17" textAnchor="middle" fill="currentColor" fontSize="14" fontWeight="bold">R</text></svg>
-            Razorpay
+        <div className="text-xs text-[#7a6e64]">
+          <p>© 2026 All Rights Reserved By Creative Muse</p>
+          <p className="mt-1">
+            Designed &amp; Developed By{" "}
+            <a href="https://apfpuniversal.com" target="_blank" rel="noopener noreferrer" className="text-[#C9A96E] hover:underline">
+              APFP UNIVERSAL
+            </a>
+          </p>
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="flex items-center rounded-[6px] bg-[#0a0a2e] px-2.5 py-1.5">
+            <svg viewBox="0 0 72 18" className="h-[18px] w-[72px]" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="0" y="0" width="18" height="18" rx="4" fill="#7c7cf8"/>
+              <path d="M5 13V5h3.2c1.2 0 2 .6 2 1.8 0 .8-.4 1.3-1 1.5.8.2 1.3.8 1.3 1.7C10.5 11.6 9.5 13 8 13H5zm1.5-4.5h1.2c.7 0 1.1-.4 1.1-1s-.4-.9-1.1-.9H6.5v1.9zm0 3h1.4c.8 0 1.3-.5 1.3-1.3 0-.7-.5-1.1-1.3-1.1H6.5v2.4z" fill="white"/>
+              <text x="22" y="13" fill="white" fontFamily="system-ui" fontWeight="600" fontSize="10">Razorpay</text>
+            </svg>
           </span>
-          <span className="flex items-center gap-1.5 rounded-[8px] bg-[#097b3a] px-3 py-1.5 text-[10px] font-semibold tracking-wider text-white uppercase">
-            <svg viewBox="0 0 24 24" className="h-3.5 w-3.5"><text x="12" y="17" textAnchor="middle" fill="currentColor" fontSize="14" fontWeight="bold">U</text></svg>
-            UPI
+          <span className="flex items-center rounded-[6px] bg-[#097b3a] px-2.5 py-1.5">
+            <svg viewBox="0 0 72 18" className="h-[18px] w-[72px]" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="0" y="0" width="18" height="18" rx="4" fill="white"/>
+              <text x="9" y="13" textAnchor="middle" fill="#097b3a" fontFamily="system-ui" fontWeight="bold" fontSize="11">U</text>
+              <text x="22" y="13" fill="white" fontFamily="system-ui" fontWeight="600" fontSize="10">UPI</text>
+            </svg>
           </span>
-          <span className="flex items-center gap-1.5 rounded-[8px] bg-[#1a1f71] px-3 py-1.5 text-[10px] font-semibold tracking-wider text-[#f7b600] uppercase">
-            VISA
+          <span className="flex items-center rounded-[6px] bg-[#1a1f71] px-2.5 py-1.5">
+            <svg viewBox="0 0 48 18" className="h-[18px] w-[48px]" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <text x="2" y="14" fill="#f7b600" fontFamily="system-ui" fontWeight="bold" fontSize="12" letterSpacing="1.5">VISA</text>
+            </svg>
           </span>
-          <span className="relative flex items-center gap-1.5 rounded-[8px] bg-[#1a1a2e] px-3 py-1.5 text-[10px] font-semibold tracking-wider text-[#cfc6b6] uppercase">
-            <span className="relative flex h-3.5 w-3.5">
-              <span className="absolute left-0 h-3.5 w-2 rounded-full bg-[#eb001b] opacity-70" />
-              <span className="absolute right-0 h-3.5 w-2 rounded-full bg-[#f79e1b] opacity-70" />
-            </span>
-            MC
+          <span className="flex items-center rounded-[6px] bg-[#1a1a2e] px-2.5 py-1.5">
+            <svg viewBox="0 0 52 18" className="h-[18px] w-[52px]" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="7" cy="9" r="6" fill="#eb001b" opacity="0.7"/>
+              <circle cx="13" cy="9" r="6" fill="#f79e1b" opacity="0.7"/>
+              <text x="24" y="14" fill="#cfc6b6" fontFamily="system-ui" fontWeight="bold" fontSize="10" letterSpacing="1.5">MC</text>
+            </svg>
           </span>
         </div>
       </div>

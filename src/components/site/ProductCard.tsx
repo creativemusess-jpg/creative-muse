@@ -1,8 +1,10 @@
 import { memo, useRef } from "react";
 import { motion, useReducedMotion } from "framer-motion";
+import { Link } from "@tanstack/react-router";
 import { Heart, Star, ShoppingBag, Eye } from "lucide-react";
 import { type Product, formatPrice } from "@/lib/products";
 import { useStore } from "@/lib/store";
+import { productLink } from "@/lib/product-link";
 
 const BADGE_STYLE: Record<NonNullable<Product["badge"]>, string> = {
   New: "bg-[#0f4c3a] text-white",
@@ -114,9 +116,19 @@ export const ProductCard = memo(function ProductCard({
         <p className="text-[9px] tracking-[0.08em] text-[#7a6e64] uppercase md:text-[10px] md:tracking-[0.1em]">
           {product.metal} · {product.stone}
         </p>
-        <h3 className="font-display mt-1 line-clamp-2 min-h-[2.4em] text-[13px] leading-snug font-semibold text-[#1a1a2e] md:mt-1.5 md:min-h-[38px] md:text-[14px]">
-          {product.name}
-        </h3>
+        {(productLink(product) ? (
+          <Link
+            to={productLink(product)!.to}
+            params={productLink(product)!.params}
+            className="font-display mt-1 line-clamp-2 min-h-[2.4em] text-[13px] leading-snug font-semibold text-[#1a1a2e] transition-colors hover:text-[#C9A96E] md:mt-1.5 md:min-h-[38px] md:text-[14px]"
+          >
+            {product.name}
+          </Link>
+        ) : (
+          <h3 className="font-display mt-1 line-clamp-2 min-h-[2.4em] text-[13px] leading-snug font-semibold text-[#1a1a2e] md:mt-1.5 md:min-h-[38px] md:text-[14px]">
+            {product.name}
+          </h3>
+        ))}
         <div className="mt-1 flex items-center gap-1 md:mt-1.5 md:gap-1.5">
           <div className="flex">
             {Array.from({ length: 5 }).map((_, i) => (
