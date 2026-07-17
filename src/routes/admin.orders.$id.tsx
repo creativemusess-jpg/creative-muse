@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { createFileRoute, Link, useParams } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { AdminLayout, AdminLoading } from "@/components/admin/AdminLayout";
 import { ordersApi } from "@/lib/api/orders";
 import { StatusBadge, ConfirmDialog } from "@/components/admin/AdminTable";
@@ -13,7 +13,7 @@ export const Route = createFileRoute("/admin/orders/$id")({
 });
 
 function OrderDetailPage() {
-  const { id } = useParams({ from: "/admin/orders/$id" });
+  const { id } = Route.useParams();
   const [data, setData] = useState<{ order: any; items: any[] } | null>(null);
   const [loading, setLoading] = useState(true);
   const [statusConfirm, setStatusConfirm] = useState<{ type: 'order' | 'payment'; value: string } | null>(null);
