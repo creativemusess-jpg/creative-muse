@@ -108,7 +108,7 @@ export function Footer() {
             </svg>
           </span>
           <span className="flex items-center rounded-[6px] bg-[#1a1a2e] px-2.5 py-1.5">
-            <svg viewBox="0 0 88 18" className="h-[18px] w-[88px]" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg viewBox="0 0 110 18" className="h-[18px] w-[110px]" fill="none" xmlns="http://www.w3.org/2000/svg">
               <circle cx="7" cy="9" r="6" fill="#eb001b" opacity="0.7"/>
               <circle cx="13" cy="9" r="6" fill="#f79e1b" opacity="0.7"/>
               <text x="24" y="14" fill="#cfc6b6" fontFamily="system-ui" fontWeight="bold" fontSize="10" letterSpacing="1.5">MASTERCARD</text>
