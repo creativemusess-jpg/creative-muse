@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { Instagram } from "lucide-react";
 import { reelsApi } from "@/lib/api/reels";
 import { productsApi } from "@/lib/api/products";
@@ -12,6 +12,9 @@ import {
 } from "@/components/ui/carousel";
 
 const SAMPLE_VIDEO = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4";
+
+const SPEED_SECONDS = 4;
+const INACTIVITY_RESUME_SECONDS = 3;
 
 function SectionHeading({
   eyebrow,
@@ -41,9 +44,99 @@ function SectionHeading({
 export function ShoppableReelsSection() {
   const [reels, setReels] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [api, setApi] = useState<CarouselApi>();
   const { products } = useStorefrontProducts();
+  const [api, setApi] = useState<CarouselApi>();
 
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const inactivityRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const sectionRef = useRef<HTMLElement>(null);
+  const pointerStart = useRef({ x: 0, y: 0 });
+
+  const prefersReducedMotion =
+    typeof window !== "undefined"
+      ? window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      : false;
+
+  const canAuto = !prefersReducedMotion && reels.length > 1;
+
+  const stopAutoScroll = useCallback(() => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+  }, []);
+
+  const clearInactivity = useCallback(() => {
+    if (inactivityRef.current) {
+      clearTimeout(inactivityRef.current);
+      inactivityRef.current = null;
+    }
+  }, []);
+
+  const startAutoScroll = useCallback(() => {
+    if (!api || !canAuto) return;
+    stopAutoScroll();
+    intervalRef.current = setInterval(() => {
+      api.scrollNext();
+    }, SPEED_SECONDS * 1000);
+  }, [api, canAuto, stopAutoScroll]);
+
+  const pauseAutoScroll = useCallback(() => {
+    stopAutoScroll();
+    clearInactivity();
+  }, [stopAutoScroll, clearInactivity]);
+
+  const resumeAutoScroll = useCallback(() => {
+    if (canAuto) startAutoScroll();
+  }, [canAuto, startAutoScroll]);
+
+  const handlePointerDown = useCallback(() => {
+    pauseAutoScroll();
+  }, [pauseAutoScroll]);
+
+  const handlePointerUp = useCallback(() => {
+    clearInactivity();
+    inactivityRef.current = setTimeout(() => {
+      resumeAutoScroll();
+    }, INACTIVITY_RESUME_SECONDS * 1000);
+  }, [clearInactivity, resumeAutoScroll]);
+
+  // Auto-scroll: start when api is ready, restart on every settle
+  useEffect(() => {
+    if (!api || !canAuto) return;
+
+    const onSettle = () => startAutoScroll();
+    startAutoScroll();
+    api.on("settle", onSettle);
+
+    return () => {
+      stopAutoScroll();
+      api.off("settle", onSettle);
+    };
+  }, [api, canAuto, startAutoScroll, stopAutoScroll]);
+
+  // Visibility change: pause when tab hidden, resume when visible
+  useEffect(() => {
+    const handleVisibility = () => {
+      if (document.hidden) {
+        pauseAutoScroll();
+      } else {
+        resumeAutoScroll();
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibility);
+    return () => document.removeEventListener("visibilitychange", handleVisibility);
+  }, [pauseAutoScroll, resumeAutoScroll]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      stopAutoScroll();
+      clearInactivity();
+    };
+  }, [stopAutoScroll, clearInactivity]);
+
+  // Fetch reels
   useEffect(() => {
     let cancelled = false;
     (async () => {
@@ -79,8 +172,11 @@ export function ShoppableReelsSection() {
         console.warn("DB reels unavailable, using hardcoded fallback:", err);
       }
       if (cancelled) return;
-      // Hardcoded fallback using local products
-      const fallbackReels = products.slice(0, 5).map((p, i) => ({
+      if (products.length === 0) {
+        if (!cancelled) setLoading(true);
+        return;
+      }
+      const fallbackReels = products.slice(0, 8).map((p, i) => ({
         reel: {
           id: `fallback-${p.id}`,
           video_url: SAMPLE_VIDEO,
@@ -124,7 +220,7 @@ export function ShoppableReelsSection() {
   if (reels.length === 0) return null;
 
   return (
-    <section className="bg-[#fdf8f3] py-12 sm:py-16">
+    <section ref={sectionRef} className="bg-[#fdf8f3] py-12 sm:py-16">
       <div className="mx-auto max-w-[1280px] px-6">
         <SectionHeading
           eyebrow="Shop the Look"
@@ -134,9 +230,23 @@ export function ShoppableReelsSection() {
 
         <Carousel
           setApi={setApi}
-          opts={{ align: "start", loop: false, dragFree: true, containScroll: "trimSnaps" }}
+          opts={{
+            align: "start",
+            loop: true,
+            dragFree: true,
+            containScroll: "trimSnaps",
+            duration: 25,
+          }}
         >
-          <CarouselContent className="-ml-4">
+          <CarouselContent
+            className="-ml-4"
+            onPointerDown={(e) => {
+              pointerStart.current = { x: e.clientX, y: e.clientY };
+              handlePointerDown();
+            }}
+            onPointerUp={handlePointerUp}
+            onPointerLeave={handlePointerUp}
+          >
             {reels.map((item) => (
               <CarouselItem
                 key={item.reel.id}
