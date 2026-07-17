@@ -55,8 +55,6 @@ BEGIN
     '{"line1":"42, Seaside Apartments","city":"Mumbai","state":"Maharashtra","pincode":"400001","phone":"+91-98765-43210"}'::jsonb,
     'TRACK-IND-12345678', 'India Post', 'Left at reception. Signature received.', now() - interval '14 days', now() - interval '2 days');
 
-  v_order_id := currval(pg_get_serial_sequence('orders', 'id'));
-  -- Actually, UUIDs don't use sequences. Let me get the order id differently.
   SELECT id INTO v_order_id FROM orders WHERE order_number = v_order_num;
 
   INSERT INTO order_items (order_id, product_id, product_name, product_sku, product_image, quantity, unit_price, total_price)

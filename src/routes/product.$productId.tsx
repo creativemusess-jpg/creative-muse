@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Heart, ShoppingBag, Star, ChevronRight, ZoomIn, Plus } from "lucide-react";
+import { Heart, ShoppingBag, ChevronRight, ZoomIn, Plus } from "lucide-react";
 import { PageShell } from "@/components/site/PageHeader";
 import { ProductCard } from "@/components/site/ProductCard";
 import { formatPrice, getRecommendedProducts, type Product, useStorefrontProduct, useStorefrontProducts } from "@/lib/products";
@@ -117,9 +117,7 @@ function ProductContent({ product }: { product: Product }) {
         {/* Left — Gallery */}
         <div>
           {/* Main image */}
-          <div
-            className={`relative overflow-hidden rounded-[28px] bg-gradient-to-br ${product.bg}`}
-          >
+          <div className="relative overflow-hidden rounded-[28px] bg-[#fffdf9] border border-[rgba(66,29,34,0.18)] shadow-[0_8px_24px_rgba(66,29,34,0.06)]">
             <img
               src={safeSrc(gallery[imgIdx])}
               alt={`${product.name} — view ${imgIdx + 1}`}
@@ -133,12 +131,12 @@ function ProductContent({ product }: { product: Product }) {
               }}
             />
             {product.badge && (
-              <span className="absolute left-4 top-4 rounded-full bg-[#1a1a2e] px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-white">
+              <span className="absolute left-4 top-4 rounded-full bg-[#421D22] px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-white">
                 {product.badge}
               </span>
             )}
             {discount > 0 && (
-              <span className="absolute right-4 top-4 rounded-full bg-[#a83232] px-3 py-1.5 text-[10px] font-bold text-white">
+              <span className="absolute right-4 top-4 rounded-full bg-[#7A2533] px-3 py-1.5 text-[10px] font-bold text-white">
                 -{discount}%
               </span>
             )}
@@ -161,8 +159,8 @@ function ProductContent({ product }: { product: Product }) {
                   type="button"
                   onClick={() => setImgIdx(i)}
                   aria-label={`View image ${i + 1}`}
-                  className={`flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-[12px] border-2 bg-gradient-to-br ${product.bg} ${
-                    i === imgIdx ? "border-[#C9A96E]" : "border-transparent"
+                  className={`flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-[12px] border-2 bg-[#fffdf9] ${
+                    i === imgIdx ? "border-[#C9A96E]" : "border-[rgba(66,29,34,0.18)]"
                   }`}
                 >
                   <img src={safeSrc(src)} alt="" className="h-full w-full object-contain p-1.5" />
@@ -180,24 +178,6 @@ function ProductContent({ product }: { product: Product }) {
             {product.name}
           </h1>
 
-          <div className="mt-4 flex flex-wrap items-center gap-2 text-sm text-[#7a6e64]">
-            <span className="flex items-center gap-1">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <Star
-                  key={i}
-                  className={`h-4 w-4 ${
-                    i < Math.round(product.rating)
-                      ? "fill-[#C9A96E] text-[#C9A96E]"
-                      : "text-[#e0d8cc]"
-                  }`}
-                />
-              ))}
-            </span>
-            <span>
-              {product.rating.toFixed(1)} · {product.reviews} reviews
-            </span>
-          </div>
-
           {product.shortDescription && (
             <p className="mt-5 text-[15px] leading-relaxed text-[#6b5d52]">
               {product.shortDescription}
@@ -210,7 +190,7 @@ function ProductContent({ product }: { product: Product }) {
               {formatPrice(product.mrp)}
             </span>
             {discount > 0 && (
-              <span className="rounded-full bg-[#a83232] px-3 py-1 text-xs font-semibold text-white">
+              <span className="rounded-full bg-[#7A2533] px-3 py-1 text-xs font-semibold text-white">
                 {discount}% off
               </span>
             )}

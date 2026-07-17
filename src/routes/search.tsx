@@ -64,7 +64,6 @@ function SearchPage() {
     return [...filtered].sort((a, b) => {
       if (sort === "Price: Low to High") return a.price - b.price;
       if (sort === "Price: High to Low") return b.price - a.price;
-      if (sort === "Top Rated") return b.rating - a.rating;
       return 0;
     });
   }, [filtered, sort]);
@@ -128,12 +127,11 @@ function SearchPage() {
               <select
                 value={sort}
                 onChange={(event) => setSort(event.target.value)}
-                className="w-full rounded-full border border-[#e0d8cc] bg-white px-4 py-2 text-sm text-[#3a3028] focus:outline-none focus:ring-2 focus:ring-[#C9A96E]/40 sm:w-auto"
+                className="w-full appearance-none rounded-full border border-[rgba(66,29,34,0.24)] bg-[#fffdf9] bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%228%22%20viewBox%3D%220%200%2012%208%22%3E%3Cpath%20d%3D%22M1%201.5l5%205%205-5%22%20stroke%3D%22%23421D22%22%20stroke-width%3D%221.5%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3C%2Fsvg%3E')] bg-[length:12px_8px] bg-[right_16px_center] bg-no-repeat px-5 py-2.5 pr-12 text-sm text-[#421D22] focus:outline-none focus:ring-2 focus:ring-[#421D22]/30 sm:w-auto"
               >
                 <option>Relevance</option>
                 <option>Price: Low to High</option>
                 <option>Price: High to Low</option>
-                <option>Top Rated</option>
               </select>
             </div>
 

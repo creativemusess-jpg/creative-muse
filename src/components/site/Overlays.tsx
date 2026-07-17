@@ -7,7 +7,6 @@ import {
   Trash2,
   ShoppingBag,
   Heart,
-  Star,
   ChevronLeft,
   ChevronRight,
   ZoomIn,
@@ -119,9 +118,7 @@ function CartDrawer() {
                         key={p.id}
                         className="flex gap-4 rounded-[20px] bg-white p-3 shadow-[0_2px_12px_rgba(0,0,0,0.04)]"
                       >
-                        <div
-                          className={`flex aspect-square w-20 shrink-0 items-center justify-center overflow-hidden rounded-[14px] bg-gradient-to-br ${p.bg}`}
-                        >
+                        <div className="flex aspect-square w-20 shrink-0 items-center justify-center overflow-hidden rounded-[14px] bg-[#fffdf9] border border-[rgba(66,29,34,0.18)] shadow-[0_8px_24px_rgba(66,29,34,0.06)]">
                           <img
                             src={p.image}
                             alt={p.name}
@@ -307,9 +304,7 @@ function WishlistDrawer() {
                       key={p.id}
                       className="flex gap-4 rounded-[20px] bg-white p-3 shadow-[0_2px_12px_rgba(0,0,0,0.04)]"
                     >
-                      <div
-                        className={`flex aspect-square w-20 shrink-0 items-center justify-center overflow-hidden rounded-[14px] bg-gradient-to-br ${p.bg}`}
-                      >
+                      <div className="flex aspect-square w-20 shrink-0 items-center justify-center overflow-hidden rounded-[14px] bg-[#fffdf9] border border-[rgba(66,29,34,0.18)] shadow-[0_8px_24px_rgba(66,29,34,0.06)]">
                         <img
                           src={p.image}
                           alt={p.name}
@@ -510,7 +505,7 @@ function QuickViewMedia({ product }: { product: Product }) {
     <div className="flex flex-col gap-3 p-4 md:p-5">
       {/* Stage */}
       <div
-        className={`relative flex aspect-square w-full items-center justify-center overflow-hidden rounded-[20px] bg-gradient-to-br ${product.bg}`}
+        className="relative flex aspect-square w-full items-center justify-center overflow-hidden rounded-[20px] bg-[#fffdf9] border border-[rgba(66,29,34,0.18)] shadow-[0_8px_24px_rgba(66,29,34,0.06)]"
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
       >
@@ -566,8 +561,8 @@ function QuickViewMedia({ product }: { product: Product }) {
               type="button"
               onClick={() => setIdx(i)}
               aria-label={`View image ${i + 1}`}
-              className={`flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-[12px] border-2 bg-gradient-to-br ${product.bg} ${
-                i === idx ? "border-[#C9A96E]" : "border-transparent"
+              className={`flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-[12px] border-2 bg-[#fffdf9] ${
+                i === idx ? "border-[#C9A96E]" : "border-[rgba(66,29,34,0.18)]"
               }`}
             >
               <img src={src} alt="" className="h-full w-full object-contain p-1.5" />
@@ -664,20 +659,6 @@ function QuickViewInfo({
         </h3>
       )}
 
-      <div className="mt-2 flex items-center gap-2">
-        {Array.from({ length: 5 }).map((_, i) => (
-          <Star
-            key={i}
-            className={`h-3.5 w-3.5 ${
-              i < Math.round(product.rating) ? "fill-[#C9A96E] text-[#C9A96E]" : "text-[#e0d8cc]"
-            }`}
-          />
-        ))}
-        <span className="text-xs text-[#7a6e64]">
-          {product.rating.toFixed(1)} · {product.reviews} reviews
-        </span>
-      </div>
-
       {product.shortDescription && (
         <p className="mt-4 text-sm leading-relaxed text-[#7a6e64]">{product.shortDescription}</p>
       )}
@@ -740,10 +721,11 @@ function QuickViewInfo({
       <Link
         to={productLink(product)?.to ?? "/product/$productId"}
         params={productLink(product)?.params ?? { productId: product.id }}
-        className="font-display text-xs font-semibold tracking-[0.14em] text-[#C9A96E] transition-colors hover:text-[#8a6a2a] uppercase"
+        className="mt-5 flex items-center justify-center gap-1.5 text-[11px] font-semibold tracking-[0.16em] text-[#421D22] transition-colors hover:text-[#633039] uppercase"
         onClick={onClose}
       >
         View Full Details
+        <ChevronRight className="h-3.5 w-3.5" />
       </Link>
 
       {/* Details accordions */}

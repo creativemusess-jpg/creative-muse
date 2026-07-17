@@ -1,16 +1,16 @@
 import { memo, useRef } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { Link } from "@tanstack/react-router";
-import { Heart, Star, ShoppingBag, Eye } from "lucide-react";
+import { Heart, ShoppingBag, Eye } from "lucide-react";
 import { type Product, formatPrice } from "@/lib/products";
 import { useStore } from "@/lib/store";
 import { productLink } from "@/lib/product-link";
 
 const BADGE_STYLE: Record<NonNullable<Product["badge"]>, string> = {
-  New: "bg-[#0f4c3a] text-white",
-  "Best Seller": "bg-[#a8843a] text-white",
-  Wedding: "bg-[#6b1330] text-white",
-  Trending: "bg-[#151a2e] text-white",
+  New: "bg-[#421D22] text-white",
+  "Best Seller": "bg-gradient-to-r from-[#421D22] to-[#633039] text-white",
+  Wedding: "bg-[#7A2533] text-white",
+  Trending: "bg-[#421D22] text-white",
 };
 
 export const ProductCard = memo(function ProductCard({
@@ -58,7 +58,7 @@ export const ProductCard = memo(function ProductCard({
         className="relative block text-left"
         aria-label={`Quick view ${product.name}`}
       >
-        <div className={`relative aspect-[1/1.08] overflow-hidden bg-gradient-to-br ${product.bg} md:aspect-square`}>
+        <div className="relative aspect-[1/1.08] overflow-hidden md:aspect-square rounded-[14px] md:rounded-[18px] bg-[#fffdf9] border border-[rgba(66,29,34,0.18)] shadow-[0_8px_24px_rgba(66,29,34,0.06)]">
           <img
             src={product.image}
             alt={product.name}
@@ -66,7 +66,7 @@ export const ProductCard = memo(function ProductCard({
             width={1024}
             height={1024}
             className="absolute inset-0 h-full w-full object-contain p-2 transition-transform duration-700 group-hover:scale-[1.06] md:p-3"
-            onError={(e) => { const t = e.currentTarget; if (t.dataset.fallback) { t.style.display = "none"; return; } t.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400'%3E%3Crect fill='%23f5efe8' width='400' height='400'/%3E%3C/svg%3E"; t.dataset.fallback = "1"; }}
+            onError={(e) => { const t = e.currentTarget; if (t.dataset.fallback) { t.style.display = "none"; return; } t.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400'%3E%3Crect fill='%23fffdf9' width='400' height='400'/%3E%3C/svg%3E"; t.dataset.fallback = "1"; }}
           />
 
           <div className="absolute top-2 left-2 flex flex-col gap-1 md:top-3 md:left-3">
@@ -78,7 +78,7 @@ export const ProductCard = memo(function ProductCard({
               </span>
             )}
             {discount > 0 && (
-              <span className="rounded-full bg-[#a83232] px-1.5 py-0.5 text-[8px] font-bold tracking-wide text-white shadow-sm md:px-2.5 md:py-1 md:text-[9px]">
+              <span className="rounded-full bg-[#7A2533] px-1.5 py-0.5 text-[8px] font-bold tracking-wide text-white shadow-sm md:px-2.5 md:py-1 md:text-[9px]">
                 -{discount}%
               </span>
             )}
@@ -92,19 +92,21 @@ export const ProductCard = memo(function ProductCard({
               toggleWishlist(product.id);
             }}
             aria-label="Wishlist"
-            className={`absolute top-2 right-2 flex h-7 w-7 items-center justify-center rounded-full shadow-[0_4px_12px_rgba(0,0,0,0.08)] backdrop-blur-sm transition-all duration-300 md:h-9 md:w-9 md:top-3 md:right-3 hover:md:shadow-[0_12px_24px_rgba(201,169,110,0.35)] ${
-              wishlisted ? "bg-[#8a6a2a] text-white" : "bg-white/90 hover:bg-white"
+            className={`absolute top-2 right-2 flex h-7 w-7 items-center justify-center rounded-full shadow-[0_4px_12px_rgba(0,0,0,0.08)] transition-all duration-300 md:h-9 md:w-9 md:top-3 md:right-3 ${
+              wishlisted
+                ? "bg-[#421D22] text-white"
+                : "bg-white text-[#421D22] border border-[rgba(66,29,34,0.24)] hover:bg-[#421D22] hover:text-white"
             }`}
           >
             <Heart
               className={`h-3 w-3 transition-colors md:h-4 md:w-4 ${
-                wishlisted ? "fill-white text-white" : "text-[#5a4e44] hover:text-[#8a6a2a]"
+                wishlisted ? "fill-white text-white" : "text-[#421D22]"
               }`}
             />
           </button>
 
           <div className="absolute right-2 bottom-2 opacity-100 transition-all duration-400 md:right-3 md:bottom-3 md:translate-y-3 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100">
-            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-white/90 text-[#1a1a2e] shadow-sm backdrop-blur-sm md:h-auto md:w-auto md:rounded-full md:bg-white/95 md:px-4 md:py-2 md:text-[11px] md:font-semibold md:tracking-[0.16em] md:uppercase">
+            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-white/90 text-[#421D22] shadow-sm backdrop-blur-sm border border-[rgba(66,29,34,0.15)] md:h-auto md:w-auto md:rounded-full md:bg-white/95 md:px-4 md:py-2 md:text-[11px] md:font-semibold md:tracking-[0.16em] md:uppercase md:border md:border-[rgba(66,29,34,0.15)]">
               <Eye className="h-3 w-3 md:hidden" />
               <span className="hidden md:inline">Quick View</span>
             </span>
@@ -129,17 +131,6 @@ export const ProductCard = memo(function ProductCard({
             {product.name}
           </h3>
         ))}
-        <div className="mt-1 flex items-center gap-1 md:mt-1.5 md:gap-1.5">
-          <div className="flex">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <Star
-                key={i}
-                className={`h-2.5 w-2.5 md:h-3 md:w-3 ${i < Math.round(product.rating) ? "fill-[#C9A96E] text-[#C9A96E]" : "text-[#e0d8cc]"}`}
-              />
-            ))}
-          </div>
-          <span className="text-[10px] text-[#7a6e64] md:text-[11px]">({product.reviews})</span>
-        </div>
         <div className="mt-1.5 flex items-baseline gap-1.5 md:mt-2 md:gap-2">
           <span className="text-[15px] font-bold text-[#1a1a2e] md:text-[17px]">{formatPrice(product.price)}</span>
           <span className="text-[10px] text-[#7a6e64] line-through md:text-[12px]">{formatPrice(product.mrp)}</span>

@@ -84,9 +84,7 @@ function CartPage() {
               key={it.id}
               className="flex flex-col gap-4 rounded-[28px] bg-white p-5 shadow-[0_4px_24px_rgba(0,0,0,0.05)] sm:flex-row sm:items-center"
             >
-              <div
-                className={`flex aspect-square w-full shrink-0 items-center justify-center overflow-hidden rounded-[20px] bg-gradient-to-br sm:w-28 ${it.bg}`}
-              >
+              <div className="flex aspect-square w-full shrink-0 items-center justify-center overflow-hidden rounded-[20px] bg-[#fffdf9] border border-[rgba(66,29,34,0.18)] shadow-[0_8px_24px_rgba(66,29,34,0.06)] sm:w-28">
                 <img
                   src={it.image}
                   alt={it.name}
