@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, useMatchRoute } from "@tanstack/react-router";
 import { PageHeader, PageShell } from "@/components/site/PageHeader";
 import prodPolki from "@/assets/prod-polki-choker.jpg";
 import prodAarav from "@/assets/prod-aarav-ring.jpg";
@@ -27,7 +27,18 @@ const COLORS = [
 
 export const Route = createFileRoute("/collections")({
   head: () => ({ meta: [{ title: "Collections — Creative Muse" }] }),
-  component: () => (
+  component: CollectionsIndex,
+});
+
+function CollectionsIndex() {
+  const matchRoute = useMatchRoute();
+  const isExactCollections = matchRoute({ to: "/collections", fuzzy: false });
+
+  if (!isExactCollections) {
+    return <Outlet />;
+  }
+
+  return (
     <PageShell>
       <PageHeader eyebrow="Edits" title="Our Curated Collections" subtitle="Discover handpicked jewellery stories — from everyday classics to bridal masterpieces." />
       <section className="mx-auto max-w-[1280px] px-6 py-16">
@@ -55,5 +66,5 @@ export const Route = createFileRoute("/collections")({
         </div>
       </section>
     </PageShell>
-  ),
-});
+  );
+}

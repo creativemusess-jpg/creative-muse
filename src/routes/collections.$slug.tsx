@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { createFileRoute, Link, useParams } from "@tanstack/react-router";
 import { PageShell } from "@/components/site/PageHeader";
-import { productsApi, type ProductWithImages } from "@/lib/api/products";
+import { productsApi } from "@/lib/api/products";
 import { categoriesApi } from "@/lib/api/categories";
 import { subcategoriesApi } from "@/lib/api/subcategories";
+import { productFromDb } from "@/lib/products";
 import { ProductCard } from "@/components/site/ProductCard";
 
 export const Route = createFileRoute("/collections/$slug")({
@@ -14,26 +15,32 @@ export const Route = createFileRoute("/collections/$slug")({
 function CategoryCollectionPage() {
   const { slug } = useParams({ from: "/collections/$slug" });
   const [category, setCategory] = useState<any | null>(null);
-  const [products, setProducts] = useState<ProductWithImages[]>([]);
+  const [products, setProducts] = useState<any[]>([]);
   const [subcategories, setSubcategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setLoading(true);
-    Promise.all([
-      categoriesApi.getBySlug(slug),
-      productsApi.getPublished({ category: slug }),
-      (async () => {
+    (async () => {
+      try {
         const cat = await categoriesApi.getBySlug(slug);
-        if (cat) return subcategoriesApi.listByCategory(cat.id, true);
-        return [];
-      })(),
-    ]).then(([cat, prods, subs]) => {
-      setCategory(cat);
-      setProducts(prods);
-      setSubcategories(subs);
+        setCategory(cat);
+        if (cat) {
+          const [prods, subs] = await Promise.all([
+            productsApi.getPublished({ category: slug }),
+            subcategoriesApi.listByCategory(cat.id, true),
+          ]);
+          setProducts(prods.map(productFromDb));
+          setSubcategories(subs);
+        } else {
+          setProducts([]);
+          setSubcategories([]);
+        }
+      } catch (err) {
+        console.error(err);
+      }
       setLoading(false);
-    }).catch(() => setLoading(false));
+    })();
   }, [slug]);
 
   if (loading) {

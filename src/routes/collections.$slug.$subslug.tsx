@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { createFileRoute, Link, useParams } from "@tanstack/react-router";
 import { PageShell } from "@/components/site/PageHeader";
-import { productsApi, type ProductWithImages } from "@/lib/api/products";
+import { productsApi } from "@/lib/api/products";
 import { subcategoriesApi } from "@/lib/api/subcategories";
+import { productFromDb } from "@/lib/products";
 import { ProductCard } from "@/components/site/ProductCard";
 
 export const Route = createFileRoute("/collections/$slug/$subslug")({
@@ -13,19 +14,24 @@ export const Route = createFileRoute("/collections/$slug/$subslug")({
 function SubcategoryCollectionPage() {
   const { slug, subslug } = useParams({ from: "/collections/$slug/$subslug" });
   const [subcategory, setSubcategory] = useState<any | null>(null);
-  const [products, setProducts] = useState<ProductWithImages[]>([]);
+  const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setLoading(true);
-    Promise.all([
-      subcategoriesApi.getByCategoryAndSlug(slug, subslug),
-      productsApi.getPublished({ category: slug, subcategory: subslug }),
-    ]).then(([sub, prods]) => {
-      setSubcategory(sub);
-      setProducts(prods);
+    (async () => {
+      try {
+        const [sub, prods] = await Promise.all([
+          subcategoriesApi.getByCategoryAndSlug(slug, subslug),
+          productsApi.getPublished({ category: slug, subcategory: subslug }),
+        ]);
+        setSubcategory(sub);
+        setProducts(prods.map(productFromDb));
+      } catch (err) {
+        console.error(err);
+      }
       setLoading(false);
-    }).catch(() => setLoading(false));
+    })();
   }, [slug, subslug]);
 
   if (loading) {
