@@ -16,10 +16,12 @@ CREATE TABLE IF NOT EXISTS shoppable_reels (
 
 ALTER TABLE shoppable_reels ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY IF NOT EXISTS "Anyone can read active shoppable reels" ON shoppable_reels
+DROP POLICY IF EXISTS "Anyone can read active shoppable reels" ON shoppable_reels;
+CREATE POLICY "Anyone can read active shoppable reels" ON shoppable_reels
   FOR SELECT USING (is_active = true);
 
-CREATE POLICY IF NOT EXISTS "Admin full access to shoppable reels" ON shoppable_reels
+DROP POLICY IF EXISTS "Admin full access to shoppable reels" ON shoppable_reels;
+CREATE POLICY "Admin full access to shoppable reels" ON shoppable_reels
   FOR ALL USING (
     auth.uid() IN (
       SELECT user_id FROM admin_role_assignments
