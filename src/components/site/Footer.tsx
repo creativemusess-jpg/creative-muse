@@ -89,7 +89,12 @@ export function Footer() {
       </div>
 
       <div className="mx-auto mt-16 flex max-w-[1280px] flex-col items-center justify-between gap-4 border-t border-white/10 pt-6 sm:flex-row">
-        <p className="text-xs text-[#7a6e64]">© 2025 Creative Muse. All rights reserved. Built by MysticMuse.</p>
+        <p className="text-xs text-[#7a6e64]">
+          © 2025 Creative Muse. All rights reserved. Built by{" "}
+          <a href="https://apfpuniversal.com" target="_blank" rel="noopener noreferrer" className="text-[#C9A96E] hover:underline">
+            APFP Universal
+          </a>.
+        </p>
         <div className="flex gap-2">
           <span className="flex items-center gap-1.5 rounded-[8px] bg-[#0a0a2e] px-3 py-1.5 text-[10px] font-semibold tracking-wider text-[#8a8aff] uppercase">
             <svg viewBox="0 0 24 24" className="h-3.5 w-3.5"><text x="12" y="17" textAnchor="middle" fill="currentColor" fontSize="14" fontWeight="bold">R</text></svg>
