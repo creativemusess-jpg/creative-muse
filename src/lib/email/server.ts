@@ -74,12 +74,23 @@ function safeError(error: unknown) {
 }
 
 function siteUrl() {
-  return (
+  const value =
     env("SITE_URL") ||
     env("VERCEL_PROJECT_PRODUCTION_URL") ||
     env("VERCEL_URL") ||
-    "https://creativemuse.in"
-  );
+    "https://creativemuse.in";
+  const trimmed = value.trim().replace(/\/$/, "");
+  return /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
+}
+
+function publicAssetUrl(value?: string | null) {
+  if (!value) return null;
+  const trimmed = value.trim();
+  if (!trimmed) return null;
+  if (/^https?:\/\//i.test(trimmed)) return trimmed;
+  if (trimmed.startsWith("//")) return `https:${trimmed}`;
+  const path = trimmed.startsWith("/") ? trimmed : `/${trimmed}`;
+  return `${siteUrl()}${path}`;
 }
 
 async function requireActor(accessToken?: string) {
@@ -161,9 +172,13 @@ async function loadOrderEmailData(orderId: string, accessToken?: string): Promis
 
   const invoiceNumber = await ensureInvoiceNumber(serviceDb, order);
   const base = siteUrl().replace(/\/$/, "");
+  const normalizedItems = normalizeOrderItems(itemRows || []).map((item) => ({
+    ...item,
+    productImage: publicAssetUrl(item.productImage),
+  }));
   return {
     order: { ...order, invoice_number: invoiceNumber },
-    items: normalizeOrderItems(itemRows || []),
+    items: normalizedItems,
     payments: payments || [],
     invoiceNumber,
     store,
