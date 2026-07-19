@@ -244,7 +244,7 @@ async function sendProviderEmail(payload: {
   if (provider === "resend") {
     const key = env("RESEND_API_KEY");
     if (!key) throw new Error("RESEND_API_KEY is not configured.");
-    const from = env("EMAIL_FROM") || "Creative Muse Fine Jewellery <hello@creativemuse.in>";
+    const from = normalizeEmailFrom(env("EMAIL_FROM"));
     const response = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
@@ -262,6 +262,22 @@ async function sendProviderEmail(payload: {
   }
   console.info("[development_log email]", { to: payload.to, subject: payload.subject });
   return { provider: "development_log", providerMessageId: `dev_${Date.now().toString(36)}` };
+}
+
+function normalizeEmailFrom(value?: string) {
+  const fallback = "Creative Muse Fine Jewellery <onboarding@resend.dev>";
+  const cleaned = (value || fallback)
+    .trim()
+    .replace(/^['"]+|['"]+$/g, "")
+    .trim();
+  const simpleEmail = /^[^\s<>@]+@[^\s<>@]+\.[^\s<>@]+$/;
+  const namedEmail = /^.{1,120}\s<([^\s<>@]+@[^\s<>@]+\.[^\s<>@]+)>$/;
+
+  if (simpleEmail.test(cleaned) || namedEmail.test(cleaned)) return cleaned;
+
+  throw new Error(
+    "EMAIL_FROM is invalid. Use email@example.com or Name <email@example.com>. In Vercel, enter the value without surrounding quotes.",
+  );
 }
 
 async function insertNotification(db: any, row: Record<string, any>) {
