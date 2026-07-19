@@ -16,15 +16,6 @@ export interface ValidatedCoupon {
   discountAmount: number;
 }
 
-export interface CheckoutTotalsLegacy {
-  subtotal: number;
-  discountAmount: number;
-  shipping: number;
-  tax: number;
-  total: number;
-  couponCode: string | null;
-}
-
 export type { CheckoutTotals } from "../checkout";
 
 export async function validateCoupon(
@@ -94,17 +85,6 @@ export async function validateCoupon(
     message: `Coupon applied! You save ₹${Math.round(discountAmount).toLocaleString("en-IN")}.`,
     discountAmount: Math.round(discountAmount),
   };
-}
-
-export function calculateTotals(
-  subtotal: number,
-  discountAmount: number,
-  shippingOverride?: number,
-): CheckoutTotalsLegacy {
-  const shipping = shippingOverride ?? (subtotal > 5000 || subtotal === 0 ? 0 : 250);
-  const tax = 0;
-  const total = Math.max(0, subtotal + shipping + tax - discountAmount);
-  return { subtotal, discountAmount, shipping, tax, total, couponCode: null };
 }
 
 export async function validateAndRecalculateTotals(params: {
@@ -251,7 +231,12 @@ export async function createOrder(params: CreateOrderParams): Promise<{ orderNum
       orderNumber = await generateOrderNumber();
       const retry = await adb()
         .from("orders")
-        .insert(buildOrderPayload(orderNumber, checkoutAttemptId, params))
+        .insert(buildOrderPayload(orderNumber, checkoutAttemptId, params, {
+          shipping: serverTotals.shippingCharge,
+          tax: serverTotals.gstAmount,
+          total: finalAmount,
+          taxSnapshot: serverTotals as any,
+        }))
         .select()
         .single();
       if (retry.error || !retry.data) {
