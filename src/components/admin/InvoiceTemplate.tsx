@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { forwardRef } from "react";
 import type { NormalizedOrderItem } from "@/lib/api/order-items";
 
@@ -12,12 +13,16 @@ const InvoiceTemplate = forwardRef<HTMLDivElement, InvoiceTemplateProps>(
   ({ order, items, invoiceNumber, storeSettings }, ref) => {
     const subtotal = items.reduce((s: number, i: any) => s + (i.lineTotal || 0), 0);
     const total = order.total_amount || subtotal;
-    const business = storeSettings?.business_info || {};
+    const business = storeSettings?.store_info || storeSettings?.business_info || {};
     const taxSnap = order.tax_snapshot || {};
     const formatCurrency = (n: number) => `₹${n.toLocaleString("en-IN")}`;
 
     return (
-      <div ref={ref} className="invoice-template" style={{ fontFamily: "Inter, system-ui, sans-serif", color: "#1a1a2e" }}>
+      <div
+        ref={ref}
+        className="invoice-template"
+        style={{ fontFamily: "Inter, system-ui, sans-serif", color: "#1a1a2e" }}
+      >
         <style>{`
           @page { size: A4; margin: 15mm; }
           .invoice-template { width: 100%; max-width: 210mm; margin: 0 auto; padding: 20px; background: #fff; }
@@ -64,21 +69,59 @@ const InvoiceTemplate = forwardRef<HTMLDivElement, InvoiceTemplateProps>(
           <div className="invoice-business">
             <h1>{business.name || "Creative Muse"}</h1>
             <p>{business.address || ""}</p>
-            <p>{(business.city || "") + (business.city && business.state ? ", " : "") + (business.state || "")}</p>
+            <p>
+              {(business.city || "") +
+                (business.city && business.state ? ", " : "") +
+                (business.state || "")}
+            </p>
             <p>{business.postal_code || ""}</p>
             <p>{business.phone || ""}</p>
             <p>{business.email || ""}</p>
-            {business.gstin && <p><strong>GSTIN:</strong> {business.gstin}</p>}
+            {business.gstin && (
+              <p>
+                <strong>GSTIN:</strong> {business.gstin}
+              </p>
+            )}
             <p>www.creativemuse.in</p>
           </div>
           <div className="invoice-title">
             <h2>Invoice</h2>
-            <p><strong>Invoice #:</strong> {invoiceNumber}</p>
-            <p><strong>Order #:</strong> {order.order_number}</p>
-            <p><strong>Invoice Date:</strong> {new Date().toLocaleDateString("en-IN", { year: "numeric", month: "short", day: "numeric" })}</p>
-            <p><strong>Order Date:</strong> {new Date(order.created_at).toLocaleDateString("en-IN", { year: "numeric", month: "short", day: "numeric" })}</p>
-            <p><strong>Payment:</strong> <span className={`invoice-badge badge-${order.payment_status}`}>{order.payment_status}</span></p>
-            <p><strong>Status:</strong> <span className={`invoice-badge badge-${order.order_status === "delivered" ? "paid" : order.order_status}`}>{order.order_status}</span></p>
+            <p>
+              <strong>Invoice #:</strong> {invoiceNumber}
+            </p>
+            <p>
+              <strong>Order #:</strong> {order.order_number}
+            </p>
+            <p>
+              <strong>Invoice Date:</strong>{" "}
+              {new Date().toLocaleDateString("en-IN", {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+              })}
+            </p>
+            <p>
+              <strong>Order Date:</strong>{" "}
+              {new Date(order.created_at).toLocaleDateString("en-IN", {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+              })}
+            </p>
+            <p>
+              <strong>Payment:</strong>{" "}
+              <span className={`invoice-badge badge-${order.payment_status}`}>
+                {order.payment_status}
+              </span>
+            </p>
+            <p>
+              <strong>Status:</strong>{" "}
+              <span
+                className={`invoice-badge badge-${order.order_status === "delivered" ? "paid" : order.order_status}`}
+              >
+                {order.order_status}
+              </span>
+            </p>
           </div>
         </div>
 
@@ -87,19 +130,27 @@ const InvoiceTemplate = forwardRef<HTMLDivElement, InvoiceTemplateProps>(
         <div className="info-grid">
           <div className="invoice-section">
             <h3>Bill To</h3>
-            <p><strong>{order.customer_name || "Guest"}</strong></p>
+            <p>
+              <strong>{order.customer_name || "Guest"}</strong>
+            </p>
             <p>{order.customer_email || ""}</p>
             <p>{order.customer_phone || ""}</p>
           </div>
           <div className="invoice-section">
             <h3>Ship To</h3>
-            {order.shipping_address ? (
-              typeof order.shipping_address === "string" ? (
-                <p>{order.shipping_address}</p>
+            {order.delivery_address || order.shipping_address ? (
+              typeof (order.delivery_address || order.shipping_address) === "string" ? (
+                <p>{order.delivery_address || order.shipping_address}</p>
               ) : (
                 <div>
                   <p>{order.customer_name}</p>
-                  {Object.values(order.shipping_address as Record<string, any>).filter(Boolean).map((v: any, i: number) => <p key={i}>{v}</p>)}
+                  {Object.values(
+                    (order.delivery_address || order.shipping_address) as Record<string, any>,
+                  )
+                    .filter(Boolean)
+                    .map((v: any, i: number) => (
+                      <p key={i}>{String(v)}</p>
+                    ))}
                   <p>{order.customer_phone}</p>
                 </div>
               )
@@ -129,12 +180,19 @@ const InvoiceTemplate = forwardRef<HTMLDivElement, InvoiceTemplateProps>(
                     {item.productImage ? (
                       <img src={item.productImage} alt={item.productName} />
                     ) : (
-                      <div style={{ width: 40, height: 40, background: "#f3f4f6", borderRadius: 4 }} />
+                      <div
+                        style={{ width: 40, height: 40, background: "#f3f4f6", borderRadius: 4 }}
+                      />
                     )}
                   </td>
                   <td>
                     {item.productName || "Unavailable product"}
-                    {item.selectedVariant && <div style={{ fontSize: 10, color: "#999" }}>{item.selectedVariant}{item.selectedSize ? `, ${item.selectedSize}` : ""}</div>}
+                    {item.selectedVariant && (
+                      <div style={{ fontSize: 10, color: "#999" }}>
+                        {item.selectedVariant}
+                        {item.selectedSize ? `, ${item.selectedSize}` : ""}
+                      </div>
+                    )}
                   </td>
                   <td>{item.sku || "—"}</td>
                   <td>{item.quantity}</td>
@@ -149,42 +207,89 @@ const InvoiceTemplate = forwardRef<HTMLDivElement, InvoiceTemplateProps>(
         <div className="invoice-totals">
           <table>
             <tbody>
-              <tr><td>Subtotal</td><td>{formatCurrency(subtotal)}</td></tr>
-              {order.discount_amount > 0 && <tr><td>Discount</td><td style={{ color: "#059669" }}>-{formatCurrency(order.discount_amount)}</td></tr>}
-              {order.shipping_amount > 0 && <tr><td>Shipping</td><td>{formatCurrency(order.shipping_amount)}</td></tr>}
+              <tr>
+                <td>Subtotal</td>
+                <td>{formatCurrency(subtotal)}</td>
+              </tr>
+              {order.discount_amount > 0 && (
+                <tr>
+                  <td>Discount</td>
+                  <td style={{ color: "#059669" }}>-{formatCurrency(order.discount_amount)}</td>
+                </tr>
+              )}
+              {order.shipping_amount > 0 && (
+                <tr>
+                  <td>Shipping</td>
+                  <td>{formatCurrency(order.shipping_amount)}</td>
+                </tr>
+              )}
               {order.tax_amount > 0 && taxSnap.gstType === "cgst_sgst" ? (
                 <>
-                  <tr><td>CGST @ {taxSnap.cgstRate || ""}%</td><td>{formatCurrency(taxSnap.cgstAmount || order.tax_amount / 2)}</td></tr>
-                  <tr><td>SGST @ {taxSnap.sgstRate || ""}%</td><td>{formatCurrency(taxSnap.sgstAmount || order.tax_amount / 2)}</td></tr>
+                  <tr>
+                    <td>CGST @ {taxSnap.cgstRate || ""}%</td>
+                    <td>{formatCurrency(taxSnap.cgstAmount || order.tax_amount / 2)}</td>
+                  </tr>
+                  <tr>
+                    <td>SGST @ {taxSnap.sgstRate || ""}%</td>
+                    <td>{formatCurrency(taxSnap.sgstAmount || order.tax_amount / 2)}</td>
+                  </tr>
                 </>
               ) : order.tax_amount > 0 && taxSnap.gstType === "igst" ? (
-                <tr><td>IGST @ {taxSnap.igstRate || ""}%</td><td>{formatCurrency(taxSnap.igstAmount || order.tax_amount)}</td></tr>
+                <tr>
+                  <td>IGST @ {taxSnap.igstRate || ""}%</td>
+                  <td>{formatCurrency(taxSnap.igstAmount || order.tax_amount)}</td>
+                </tr>
               ) : order.tax_amount > 0 ? (
-                <tr><td>Tax / GST</td><td>{formatCurrency(order.tax_amount)}</td></tr>
+                <tr>
+                  <td>Tax / GST</td>
+                  <td>{formatCurrency(order.tax_amount)}</td>
+                </tr>
               ) : null}
-              <tr className="grand-total"><td>Grand Total</td><td>{formatCurrency(total)}</td></tr>
+              <tr className="grand-total">
+                <td>Grand Total</td>
+                <td>{formatCurrency(total)}</td>
+              </tr>
             </tbody>
           </table>
         </div>
 
         <div className="invoice-payment-info">
-          <p><strong>Payment Method:</strong> {order.payment_method || "—"}</p>
-          <p><strong>Payment Status:</strong> {order.payment_status}</p>
-          {business.gstin && <p><strong>GSTIN:</strong> {business.gstin}</p>}
-          {order.delivery_state_code && <p><strong>Place of Supply:</strong> {order.delivery_state_code}</p>}
-          {order.delivery_method && <p><strong>Delivery Method:</strong> {order.delivery_method === "express" ? "Express Delivery" : "Standard Delivery"}</p>}
+          <p>
+            <strong>Payment Method:</strong> {order.payment_method || "—"}
+          </p>
+          <p>
+            <strong>Payment Status:</strong> {order.payment_status}
+          </p>
+          {business.gstin && (
+            <p>
+              <strong>GSTIN:</strong> {business.gstin}
+            </p>
+          )}
+          {order.delivery_state_code && (
+            <p>
+              <strong>Place of Supply:</strong> {order.delivery_state_code}
+            </p>
+          )}
+          {order.delivery_method && (
+            <p>
+              <strong>Delivery Method:</strong>{" "}
+              {order.delivery_method === "express" ? "Express Delivery" : "Standard Delivery"}
+            </p>
+          )}
         </div>
 
         <div className="invoice-footer">
           <p>Thank you for shopping with Creative Muse!</p>
           <p>For returns or exchanges, please contact us within 7 days of delivery.</p>
-          <p>Email: {business.email || "hello@creativemuse.in"} | Phone: {business.phone || ""}</p>
+          <p>
+            Email: {business.email || "hello@creativemuse.in"} | Phone: {business.phone || ""}
+          </p>
           <p style={{ marginTop: 8 }}>© 2026 All Rights Reserved By Creative Muse</p>
           <p>Designed & Developed By APFP UNIVERSAL</p>
         </div>
       </div>
     );
-  }
+  },
 );
 
 InvoiceTemplate.displayName = "InvoiceTemplate";

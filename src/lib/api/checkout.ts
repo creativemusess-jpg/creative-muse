@@ -1,6 +1,14 @@
+/* eslint-disable @typescript-eslint/no-explicit-any, no-empty */
 import { supabase } from "../supabase";
 import { storefrontSupabase } from "../supabase-storefront";
-import { calculateTotals, type CalcInput, type CheckoutTotals, DEFAULT_TAX_SETTINGS, DEFAULT_DELIVERY } from "../checkout";
+import {
+  calculateTotals,
+  type CalcInput,
+  type CheckoutTotals,
+  DEFAULT_TAX_SETTINGS,
+  DEFAULT_DELIVERY,
+} from "../checkout";
+import { sendTransactionalEmail } from "../email/server";
 
 const db = () => supabase as any;
 const adb = () => storefrontSupabase as any;
@@ -25,7 +33,16 @@ export async function validateCoupon(
 ): Promise<ValidatedCoupon> {
   const trimmed = code.trim().toUpperCase();
   if (!trimmed) {
-    return { id: "", code: "", discountType: "percentage", discountValue: 0, maxDiscount: 0, isValid: false, message: "Please enter a coupon code.", discountAmount: 0 };
+    return {
+      id: "",
+      code: "",
+      discountType: "percentage",
+      discountValue: 0,
+      maxDiscount: 0,
+      isValid: false,
+      message: "Please enter a coupon code.",
+      discountAmount: 0,
+    };
   }
 
   const { data: coupon } = await db()
@@ -35,27 +52,81 @@ export async function validateCoupon(
     .maybeSingle();
 
   if (!coupon) {
-    return { id: "", code: trimmed, discountType: "percentage", discountValue: 0, maxDiscount: 0, isValid: false, message: "Invalid coupon code.", discountAmount: 0 };
+    return {
+      id: "",
+      code: trimmed,
+      discountType: "percentage",
+      discountValue: 0,
+      maxDiscount: 0,
+      isValid: false,
+      message: "Invalid coupon code.",
+      discountAmount: 0,
+    };
   }
 
   if (!coupon.is_active) {
-    return { id: coupon.id, code: trimmed, discountType: coupon.discount_type, discountValue: coupon.discount_value, maxDiscount: coupon.max_discount || 0, isValid: false, message: "This coupon is no longer active.", discountAmount: 0 };
+    return {
+      id: coupon.id,
+      code: trimmed,
+      discountType: coupon.discount_type,
+      discountValue: coupon.discount_value,
+      maxDiscount: coupon.max_discount || 0,
+      isValid: false,
+      message: "This coupon is no longer active.",
+      discountAmount: 0,
+    };
   }
 
   const now = new Date();
   if (coupon.start_date && new Date(coupon.start_date) > now) {
-    return { id: coupon.id, code: trimmed, discountType: coupon.discount_type, discountValue: coupon.discount_value, maxDiscount: coupon.max_discount || 0, isValid: false, message: "This coupon is not yet valid.", discountAmount: 0 };
+    return {
+      id: coupon.id,
+      code: trimmed,
+      discountType: coupon.discount_type,
+      discountValue: coupon.discount_value,
+      maxDiscount: coupon.max_discount || 0,
+      isValid: false,
+      message: "This coupon is not yet valid.",
+      discountAmount: 0,
+    };
   }
   if (coupon.expiry_date && new Date(coupon.expiry_date) < now) {
-    return { id: coupon.id, code: trimmed, discountType: coupon.discount_type, discountValue: coupon.discount_value, maxDiscount: coupon.max_discount || 0, isValid: false, message: "This coupon has expired.", discountAmount: 0 };
+    return {
+      id: coupon.id,
+      code: trimmed,
+      discountType: coupon.discount_type,
+      discountValue: coupon.discount_value,
+      maxDiscount: coupon.max_discount || 0,
+      isValid: false,
+      message: "This coupon has expired.",
+      discountAmount: 0,
+    };
   }
 
   if (coupon.min_cart_value && subtotal < coupon.min_cart_value) {
-    return { id: coupon.id, code: trimmed, discountType: coupon.discount_type, discountValue: coupon.discount_value, maxDiscount: coupon.max_discount || 0, isValid: false, message: `Minimum order value is ₹${Number(coupon.min_cart_value).toLocaleString("en-IN")}.`, discountAmount: 0 };
+    return {
+      id: coupon.id,
+      code: trimmed,
+      discountType: coupon.discount_type,
+      discountValue: coupon.discount_value,
+      maxDiscount: coupon.max_discount || 0,
+      isValid: false,
+      message: `Minimum order value is ₹${Number(coupon.min_cart_value).toLocaleString("en-IN")}.`,
+      discountAmount: 0,
+    };
   }
 
   if (coupon.total_usage_limit && (coupon.usage_count || 0) >= coupon.total_usage_limit) {
-    return { id: coupon.id, code: trimmed, discountType: coupon.discount_type, discountValue: coupon.discount_value, maxDiscount: coupon.max_discount || 0, isValid: false, message: "This coupon has reached its usage limit.", discountAmount: 0 };
+    return {
+      id: coupon.id,
+      code: trimmed,
+      discountType: coupon.discount_type,
+      discountValue: coupon.discount_value,
+      maxDiscount: coupon.max_discount || 0,
+      isValid: false,
+      message: "This coupon has reached its usage limit.",
+      discountAmount: 0,
+    };
   }
 
   if (customerId && coupon.per_user_usage_limit) {
@@ -65,7 +136,16 @@ export async function validateCoupon(
       .eq("coupon_id", coupon.id)
       .eq("customer_id", customerId);
     if (count && count >= coupon.per_user_usage_limit) {
-      return { id: coupon.id, code: trimmed, discountType: coupon.discount_type, discountValue: coupon.discount_value, maxDiscount: coupon.max_discount || 0, isValid: false, message: "You have already used this coupon.", discountAmount: 0 };
+      return {
+        id: coupon.id,
+        code: trimmed,
+        discountType: coupon.discount_type,
+        discountValue: coupon.discount_value,
+        maxDiscount: coupon.max_discount || 0,
+        isValid: false,
+        message: "You have already used this coupon.",
+        discountAmount: 0,
+      };
     }
   }
 
@@ -93,7 +173,11 @@ export async function validateAndRecalculateTotals(params: {
   deliveryMethod: "standard" | "express";
   deliveryStateCode?: string;
 }): Promise<CheckoutTotals> {
-  const settings = await db().from("site_settings").select("*").eq("setting_key", "tax_settings").maybeSingle();
+  const settings = await db()
+    .from("site_settings")
+    .select("*")
+    .eq("setting_key", "tax_settings")
+    .maybeSingle();
   const storedTaxSettings = settings?.data?.setting_value || null;
   const taxSettings = storedTaxSettings || DEFAULT_TAX_SETTINGS;
 
@@ -120,7 +204,12 @@ function buildOrderPayload(
   orderNumber: string,
   checkoutAttemptId: string,
   params: CreateOrderParams,
-  overrides?: { shipping?: number; tax?: number; total?: number; taxSnapshot?: Record<string, any> },
+  overrides?: {
+    shipping?: number;
+    tax?: number;
+    total?: number;
+    taxSnapshot?: Record<string, any>;
+  },
 ) {
   const addr = params.deliveryAddress;
   return {
@@ -169,7 +258,15 @@ interface CreateOrderParams {
   customerName: string;
   customerEmail: string;
   customerPhone: string;
-  items: Array<{ productId: string; name: string; image: string; sku: string; qty: number; unitPrice: number; lineTotal: number }>;
+  items: Array<{
+    productId: string;
+    name: string;
+    image: string;
+    sku: string;
+    qty: number;
+    unitPrice: number;
+    lineTotal: number;
+  }>;
   subtotal: number;
   discountAmount: number;
   couponCode: string | null;
@@ -197,7 +294,9 @@ interface CreateOrderParams {
   checkoutAttemptId?: string;
 }
 
-export async function createOrder(params: CreateOrderParams): Promise<{ orderNumber: string; orderId: string; error: string | null }> {
+export async function createOrder(
+  params: CreateOrderParams,
+): Promise<{ orderNumber: string; orderId: string; error: string | null }> {
   try {
     const checkoutAttemptId = params.checkoutAttemptId || crypto.randomUUID();
     const txRef = `DEMO-CM-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
@@ -211,7 +310,10 @@ export async function createOrder(params: CreateOrderParams): Promise<{ orderNum
 
     const finalAmount = Math.round(serverTotals.grandTotal);
     if (Math.abs(finalAmount - params.total) > 1) {
-      console.warn("Client/server total mismatch — using server-calculated amount", { client: params.total, server: finalAmount });
+      console.warn("Client/server total mismatch — using server-calculated amount", {
+        client: params.total,
+        server: finalAmount,
+      });
     }
 
     let orderNumber = await generateOrderNumber();
@@ -221,27 +323,34 @@ export async function createOrder(params: CreateOrderParams): Promise<{ orderNum
       total: finalAmount,
       taxSnapshot: serverTotals as any,
     });
-    let { data: order, error: orderErr } = await adb()
+    const { data: createdOrder, error: orderErr } = await adb()
       .from("orders")
       .insert(payload)
       .select()
       .single();
+    let order = createdOrder;
 
     if (orderErr?.code === "23505" && orderErr.message?.includes("orders_order_number")) {
       orderNumber = await generateOrderNumber();
       const retry = await adb()
         .from("orders")
-        .insert(buildOrderPayload(orderNumber, checkoutAttemptId, params, {
-          shipping: serverTotals.shippingCharge,
-          tax: serverTotals.gstAmount,
-          total: finalAmount,
-          taxSnapshot: serverTotals as any,
-        }))
+        .insert(
+          buildOrderPayload(orderNumber, checkoutAttemptId, params, {
+            shipping: serverTotals.shippingCharge,
+            tax: serverTotals.gstAmount,
+            total: finalAmount,
+            taxSnapshot: serverTotals as any,
+          }),
+        )
         .select()
         .single();
       if (retry.error || !retry.data) {
         console.error("Order creation retry failed:", retry.error);
-        return { orderNumber: "", orderId: "", error: "Your order could not be created. Please try again." };
+        return {
+          orderNumber: "",
+          orderId: "",
+          error: "Your order could not be created. Please try again.",
+        };
       }
       order = retry.data;
     } else if (orderErr || !order) {
@@ -250,10 +359,7 @@ export async function createOrder(params: CreateOrderParams): Promise<{ orderNum
     }
 
     const slugs = [...new Set(params.items.map((i) => i.productId))];
-    const { data: productRows } = await adb()
-      .from("products")
-      .select("id, slug")
-      .in("slug", slugs);
+    const { data: productRows } = await adb().from("products").select("id, slug").in("slug", slugs);
     const slugToUuid = new Map<string, string>();
     if (productRows) {
       for (const p of productRows) slugToUuid.set(p.slug, p.id);
@@ -270,9 +376,7 @@ export async function createOrder(params: CreateOrderParams): Promise<{ orderNum
       total_price: item.lineTotal,
     }));
 
-    const { error: itemsErr } = await adb()
-      .from("order_items")
-      .insert(orderItems);
+    const { error: itemsErr } = await adb().from("order_items").insert(orderItems);
     if (itemsErr) throw new Error(`Failed to create order items: ${itemsErr.message}`);
 
     const paymentAmount = finalAmount || params.total;
@@ -287,19 +391,61 @@ export async function createOrder(params: CreateOrderParams): Promise<{ orderNum
         currency: "INR",
         status: params.paymentMethod === "cod" ? "pending" : "paid",
         is_demo: true,
-        safe_metadata: { method: params.paymentMethod, isDemo: true, deliveryMethod: params.deliveryMethod },
+        safe_metadata: {
+          method: params.paymentMethod,
+          isDemo: true,
+          deliveryMethod: params.deliveryMethod,
+        },
       });
     if (payErr) throw new Error(`Failed to create payment: ${payErr.message}`);
 
+    try {
+      const { data: sessionData } = await storefrontSupabase.auth.getSession();
+      const accessToken = sessionData.session?.access_token || "";
+
+      const { data: customer } = await adb()
+        .from("customers")
+        .select("welcome_email_sent_at, first_order_at")
+        .eq("id", params.customerId)
+        .maybeSingle();
+
+      if (!customer?.first_order_at) {
+        await adb()
+          .from("customers")
+          .update({ first_order_at: new Date().toISOString() })
+          .eq("id", params.customerId);
+      }
+
+      if (!customer?.welcome_email_sent_at) {
+        sendTransactionalEmail({
+          data: {
+            template: "welcome",
+            customerId: params.customerId,
+            source: "system",
+            accessToken,
+          },
+        }).catch((err) => console.error("Welcome email failed:", err));
+      }
+
+      sendTransactionalEmail({
+        data: {
+          template: "order_confirmation",
+          orderId: order.id,
+          source: "system",
+          accessToken,
+        },
+      }).catch((err) => console.error("Order confirmation email failed:", err));
+    } catch (notificationErr) {
+      console.error("Transactional notification scheduling failed:", notificationErr);
+    }
+
     if (params.couponId && params.couponCode) {
-      const { error: usageErr } = await adb()
-        .from("coupon_usage")
-        .insert({
-          coupon_id: params.couponId,
-          order_id: order.id,
-          customer_id: params.customerId,
-          discount_amount: params.discountAmount,
-        });
+      const { error: usageErr } = await adb().from("coupon_usage").insert({
+        coupon_id: params.couponId,
+        order_id: order.id,
+        customer_id: params.customerId,
+        discount_amount: params.discountAmount,
+      });
       if (!usageErr) {
         await adb()
           .from("coupons")
@@ -317,10 +463,7 @@ export async function createOrder(params: CreateOrderParams): Promise<{ orderNum
         .single();
       if (product && product.stock_quantity != null) {
         const newStock = Math.max(0, product.stock_quantity - item.qty);
-        await adb()
-          .from("products")
-          .update({ stock_quantity: newStock })
-          .eq("id", pid);
+        await adb().from("products").update({ stock_quantity: newStock }).eq("id", pid);
       }
     }
 
@@ -348,7 +491,11 @@ export async function saveAbandonedCheckout(params: {
   deliveryState?: string;
 }) {
   try {
-    const { error } = await (supabase as any).from("site_settings").select("setting_key").eq("setting_key", "_checkout_abandoned").limit(1);
+    const { error } = await (supabase as any)
+      .from("site_settings")
+      .select("setting_key")
+      .eq("setting_key", "_checkout_abandoned")
+      .limit(1);
     if (error?.code === "42P01") return;
     const { error: insertErr } = await (supabase as any).from("abandoned_checkouts").insert({
       customer_id: params.customerId,
@@ -377,17 +524,29 @@ export async function saveCustomerAddress(params: {
 }) {
   try {
     if (params.isDefault) {
-      await (supabase as any).from("customer_addresses").update({ is_default: false }).eq("customer_id", params.customerId);
+      await (supabase as any)
+        .from("customer_addresses")
+        .update({ is_default: false })
+        .eq("customer_id", params.customerId);
     }
-    const { data: existing } = await (supabase as any).from("customer_addresses").select("id").eq("customer_id", params.customerId).eq("address_line1", params.addressLine1).eq("city", params.city).maybeSingle();
+    const { data: existing } = await (supabase as any)
+      .from("customer_addresses")
+      .select("id")
+      .eq("customer_id", params.customerId)
+      .eq("address_line1", params.addressLine1)
+      .eq("city", params.city)
+      .maybeSingle();
     if (existing) {
-      await (supabase as any).from("customer_addresses").update({
-        address_line2: params.addressLine2 || "",
-        state: params.state,
-        postal_code: params.postalCode,
-        landmark: params.landmark || "",
-        is_default: params.isDefault || false,
-      }).eq("id", existing.id);
+      await (supabase as any)
+        .from("customer_addresses")
+        .update({
+          address_line2: params.addressLine2 || "",
+          state: params.state,
+          postal_code: params.postalCode,
+          landmark: params.landmark || "",
+          is_default: params.isDefault || false,
+        })
+        .eq("id", existing.id);
     } else {
       await (supabase as any).from("customer_addresses").insert({
         customer_id: params.customerId,

@@ -108,6 +108,11 @@ export interface Database {
         Insert: OrderItemInsert;
         Update: OrderItemUpdate;
       };
+      order_notifications: {
+        Row: OrderNotificationRow;
+        Insert: OrderNotificationInsert;
+        Update: OrderNotificationUpdate;
+      };
       coupons: {
         Row: CouponRow;
         Insert: CouponInsert;
@@ -138,12 +143,27 @@ export interface Database {
     Functions: Record<string, never>;
     Enums: {
       product_status: "draft" | "active" | "out_of_stock" | "archived";
-      order_status: "pending" | "confirmed" | "processing" | "shipped" | "out_for_delivery" | "delivered" | "cancelled" | "returned" | "refunded";
+      order_status:
+        | "pending"
+        | "confirmed"
+        | "processing"
+        | "shipped"
+        | "out_for_delivery"
+        | "delivered"
+        | "cancelled"
+        | "returned"
+        | "refunded";
       payment_status: "pending" | "paid" | "failed" | "refunded";
       review_status: "pending" | "approved" | "rejected";
       subscriber_status: "active" | "unsubscribed";
       appointment_status: "pending" | "confirmed" | "completed" | "cancelled";
-      admin_role_name: "super_admin" | "admin" | "content_manager" | "product_manager" | "order_manager" | "support_staff";
+      admin_role_name:
+        | "super_admin"
+        | "admin"
+        | "content_manager"
+        | "product_manager"
+        | "order_manager"
+        | "support_staff";
     };
   };
 }
@@ -528,7 +548,7 @@ export interface ProductCollectionRow {
 
 export interface AutoScrollSettings {
   autoScrollEnabled?: boolean;
-  scrollDirection?: 'left' | 'right';
+  scrollDirection?: "left" | "right";
   scrollSpeed?: number;
   pauseOnHover?: boolean;
   autoResumeEnabled?: boolean;
@@ -621,6 +641,9 @@ export interface CustomerRow {
   total_orders: number;
   total_spent: number;
   account_status: string;
+  welcome_email_sent_at: string | null;
+  first_order_at: string | null;
+  updated_at: string | null;
   created_at: string;
 }
 
@@ -643,24 +666,34 @@ export interface OrderRow {
   delivery_address: Json | null;
   shipping_address: Json | null;
   tracking_id: string | null;
+  tracking_number: string | null;
   courier: string | null;
   notes: string | null;
   created_at: string;
   updated_at: string;
   invoice_number: string | null;
+  invoice_pdf_url: string | null;
+  invoice_token: string | null;
+  invoice_token_expires_at: string | null;
   cancelled_at: string | null;
   cancelled_by: string | null;
   cancellation_reason: string | null;
   archived_at: string | null;
   archived_by: string | null;
+  packed_at: string | null;
   shipped_at: string | null;
   delivered_at: string | null;
+  actual_delivery_at: string | null;
   estimated_delivery_at: string | null;
   tracking_url: string | null;
   courier_name: string | null;
   shipping_service: string | null;
+  shipment_id: string | null;
+  package_number: string | null;
+  routing_code: string | null;
   package_weight: number | null;
   package_count: number;
+  last_notification_at: string | null;
   duplicated_from_id: string | null;
   is_archived: boolean;
 }
@@ -676,6 +709,34 @@ export interface OrderItemRow {
   unit_price: number;
   total_price: number;
   variant_info: Json | null;
+}
+
+export interface OrderNotificationRow {
+  id: string;
+  order_id: string | null;
+  customer_id: string | null;
+  notification_type: string;
+  idempotency_key: string | null;
+  intended_recipient: string | null;
+  actual_recipient: string;
+  subject: string;
+  provider: string | null;
+  provider_message_id: string | null;
+  status: string;
+  attempt_count: number;
+  sent_at: string | null;
+  delivered_at: string | null;
+  failed_at: string | null;
+  bounced_at: string | null;
+  error_summary: string | null;
+  initiated_by: string | null;
+  is_test: boolean;
+  test_template: string | null;
+  test_recipient: string | null;
+  source: string;
+  metadata: Json;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface CouponRow {
@@ -950,6 +1011,9 @@ export interface CustomerUpdate {
   total_orders?: number;
   total_spent?: number;
   account_status?: string;
+  welcome_email_sent_at?: string | null;
+  first_order_at?: string | null;
+  updated_at?: string | null;
 }
 
 export interface OrderInsert {
@@ -980,20 +1044,30 @@ export interface OrderUpdate {
   order_status?: string;
   shipping_address?: Json | null;
   tracking_id?: string | null;
+  tracking_number?: string | null;
   courier?: string | null;
   notes?: string | null;
   invoice_number?: string | null;
+  invoice_pdf_url?: string | null;
+  invoice_token?: string | null;
+  invoice_token_expires_at?: string | null;
   cancelled_at?: string | null;
   cancelled_by?: string | null;
   cancellation_reason?: string | null;
+  packed_at?: string | null;
   shipped_at?: string | null;
   delivered_at?: string | null;
+  actual_delivery_at?: string | null;
   estimated_delivery_at?: string | null;
   tracking_url?: string | null;
   courier_name?: string | null;
   shipping_service?: string | null;
+  shipment_id?: string | null;
+  package_number?: string | null;
+  routing_code?: string | null;
   package_weight?: number | null;
   package_count?: number;
+  last_notification_at?: string | null;
   duplicated_from_id?: string | null;
   is_archived?: boolean;
   archived_at?: string | null;
@@ -1021,6 +1095,60 @@ export interface OrderItemUpdate {
   unit_price?: number;
   total_price?: number;
   variant_info?: Json | null;
+}
+
+export interface OrderNotificationInsert {
+  id?: string;
+  order_id?: string | null;
+  customer_id?: string | null;
+  notification_type: string;
+  idempotency_key?: string | null;
+  intended_recipient?: string | null;
+  actual_recipient: string;
+  subject: string;
+  provider?: string | null;
+  provider_message_id?: string | null;
+  status?: string;
+  attempt_count?: number;
+  sent_at?: string | null;
+  delivered_at?: string | null;
+  failed_at?: string | null;
+  bounced_at?: string | null;
+  error_summary?: string | null;
+  initiated_by?: string | null;
+  is_test?: boolean;
+  test_template?: string | null;
+  test_recipient?: string | null;
+  source?: string;
+  metadata?: Json;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface OrderNotificationUpdate {
+  order_id?: string | null;
+  customer_id?: string | null;
+  notification_type?: string;
+  idempotency_key?: string | null;
+  intended_recipient?: string | null;
+  actual_recipient?: string;
+  subject?: string;
+  provider?: string | null;
+  provider_message_id?: string | null;
+  status?: string;
+  attempt_count?: number;
+  sent_at?: string | null;
+  delivered_at?: string | null;
+  failed_at?: string | null;
+  bounced_at?: string | null;
+  error_summary?: string | null;
+  initiated_by?: string | null;
+  is_test?: boolean;
+  test_template?: string | null;
+  test_recipient?: string | null;
+  source?: string;
+  metadata?: Json;
+  updated_at?: string;
 }
 
 export interface CouponInsert {
