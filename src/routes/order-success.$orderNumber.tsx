@@ -20,6 +20,40 @@ function OrderSuccessPage() {
 
   useEffect(() => {
     async function load() {
+      const cached = sessionStorage.getItem("cm_order_success");
+      if (cached) {
+        try {
+          const parsed = JSON.parse(cached);
+          if (parsed.orderNumber === orderNumber) {
+            setOrder({
+              order_number: parsed.orderNumber,
+              customer_name: parsed.customerName,
+              customer_email: parsed.customerEmail,
+              subtotal: parsed.subtotal,
+              discount_amount: parsed.discountAmount,
+              shipping_amount: parsed.shipping,
+              tax_amount: parsed.tax,
+              total_amount: parsed.total,
+              delivery_method: parsed.deliveryMethod,
+              delivery_address: parsed.deliveryAddress || {},
+              coupon_code: parsed.couponCode,
+              payment_method: parsed.paymentMethod,
+              payment_status: "paid",
+              order_status: "confirmed",
+              created_at: parsed.created_at,
+            });
+            if (parsed.items) setItems(parsed.items.map((i: any) => ({
+              product_name: i.name,
+              quantity: i.qty,
+              unit_price: i.unitPrice,
+              total_price: i.lineTotal,
+            })));
+            sessionStorage.removeItem("cm_order_success");
+            setLoading(false);
+            return;
+          }
+        } catch { /* fall through to DB */ }
+      }
       const { data } = await db()
         .from("orders")
         .select("*")

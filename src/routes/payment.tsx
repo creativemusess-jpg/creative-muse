@@ -136,6 +136,22 @@ function PaymentPage() {
       }
 
       clearCart();
+      sessionStorage.setItem("cm_order_success", JSON.stringify({
+        orderNumber: result.orderNumber,
+        customerName: user?.user_metadata?.name || user?.email || "Customer",
+        customerEmail: user?.email || "",
+        items: checkoutData.items,
+        subtotal: t.subtotal || t.itemsSubtotal,
+        discountAmount: t.discountAmount || t.couponDiscount || 0,
+        shipping: t.shipping || t.shippingCharge || 0,
+        tax: t.tax || t.gstAmount || 0,
+        total: t.total || t.grandTotal || 0,
+        deliveryMethod: checkoutData.deliveryMethod,
+        deliveryAddress: checkoutData.address,
+        couponCode: checkoutData.couponCode || null,
+        paymentMethod: checkoutData.paymentMethod || "demo",
+        created_at: new Date().toISOString(),
+      }));
       sessionStorage.removeItem("cm_checkout_data");
       setSuccess({ orderNumber: result.orderNumber });
       setPaying(false);
