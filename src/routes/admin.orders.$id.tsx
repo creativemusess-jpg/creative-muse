@@ -589,17 +589,26 @@ function OrderDetailPage() {
                   <span className="font-medium text-green-600">-{formatCurrency(order.discount_amount)}</span>
                 </div>
               )}
-              {order.shipping_amount > 0 && (
-                <div className="flex justify-between text-sm mt-1">
-                  <span className="text-gray-500">Shipping</span>
-                  <span className="font-medium">{formatCurrency(order.shipping_amount)}</span>
-                </div>
-              )}
+              <div className="flex justify-between text-sm mt-1">
+                <span className="text-gray-500">Shipping</span>
+                <span className="font-medium">{order.shipping_amount > 0 ? formatCurrency(order.shipping_amount) : "Free"}</span>
+              </div>
               {order.tax_amount > 0 && (
-                <div className="flex justify-between text-sm mt-1">
-                  <span className="text-gray-500">Tax / GST</span>
-                  <span className="font-medium">{formatCurrency(order.tax_amount)}</span>
-                </div>
+                <>
+                  {order.tax_snapshot?.gstType === "cgst_sgst" ? (
+                    <>
+                      <div className="flex justify-between text-sm mt-1"><span className="text-gray-500">CGST @ {order.tax_snapshot.cgstRate}%</span><span className="font-medium">{formatCurrency(order.tax_snapshot.cgstAmount)}</span></div>
+                      <div className="flex justify-between text-sm mt-1"><span className="text-gray-500">SGST @ {order.tax_snapshot.sgstRate}%</span><span className="font-medium">{formatCurrency(order.tax_snapshot.sgstAmount)}</span></div>
+                    </>
+                  ) : order.tax_snapshot?.gstType === "igst" ? (
+                    <div className="flex justify-between text-sm mt-1"><span className="text-gray-500">IGST @ {order.tax_snapshot.igstRate}%</span><span className="font-medium">{formatCurrency(order.tax_snapshot.igstAmount)}</span></div>
+                  ) : (
+                    <div className="flex justify-between text-sm mt-1">
+                      <span className="text-gray-500">Tax / GST</span>
+                      <span className="font-medium">{formatCurrency(order.tax_amount)}</span>
+                    </div>
+                  )}
+                </>
               )}
               <div className="flex justify-between text-base font-bold mt-2 pt-2 border-t border-gray-100">
                 <span>Total</span>
@@ -612,6 +621,11 @@ function OrderDetailPage() {
           <div className="rounded-xl border border-gray-200 bg-white">
             <div className="border-b border-gray-100 px-5 py-4">
               <h2 className="flex items-center gap-2 text-sm font-bold text-[#1a1a2e]"><Truck className="h-4 w-4" /> Fulfillment & Tracking</h2>
+              {order.delivery_method && (
+                <span className={`inline-block mt-1 rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${order.delivery_method === "express" ? "bg-purple-100 text-purple-700" : "bg-blue-100 text-blue-700"}`}>
+                  {order.delivery_method === "express" ? "Express" : "Standard"}
+                </span>
+              )}
             </div>
             {showTrackingForm ? (
               <div className="p-5 space-y-3">
@@ -679,6 +693,12 @@ function OrderDetailPage() {
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-500">Service</span>
                     <span className="font-medium">{order.shipping_service}</span>
+                  </div>
+                )}
+                {order.delivery_estimate && !order.estimated_delivery_at && (
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-500">Est. Delivery</span>
+                    <span className="font-medium">{order.delivery_estimate}</span>
                   </div>
                 )}
                 {order.estimated_delivery_at && (
@@ -913,10 +933,31 @@ function OrderDetailPage() {
                 </div>
               )}
 
-              {order.shipping_address && (
+              {(order.shipping_address || order.delivery_address) && (
                 <div className="border-t border-gray-100 pt-3 mt-3">
                   <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">Shipping Address</p>
-                  <p className="mt-1 text-sm text-gray-600 whitespace-pre-line">{parseAddress(order.shipping_address)}</p>
+                  <div className="mt-1 text-sm text-gray-600">
+                    {order.delivery_state_code && (
+                      <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs mb-2">
+                        {order.delivery_pincode && <div><span className="text-gray-400">PIN:</span> {order.delivery_pincode}</div>}
+                        {order.delivery_city && <div><span className="text-gray-400">City:</span> {order.delivery_city}</div>}
+                        {order.delivery_state_code && <div><span className="text-gray-400">State:</span> {order.delivery_state_code}</div>}
+                        {order.delivery_district && <div><span className="text-gray-400">District:</span> {order.delivery_district}</div>}
+                        {order.delivery_locality && <div className="col-span-2"><span className="text-gray-400">Locality:</span> {order.delivery_locality}</div>}
+                      </div>
+                    )}
+                    {order.delivery_address && typeof order.delivery_address === "object" && !Array.isArray(order.delivery_address) ? (
+                      <p className="whitespace-pre-line">{[order.delivery_address.addressLine1, order.delivery_address.addressLine2, order.delivery_address.landmark, `${order.delivery_address.city || ""}${order.delivery_address.state ? ", " + order.delivery_address.state : ""}${order.delivery_address.postalCode ? " - " + order.delivery_address.postalCode : ""}`].filter(Boolean).join("\n")}</p>
+                    ) : (
+                      <p className="whitespace-pre-line">{parseAddress(order.shipping_address || order.delivery_address)}</p>
+                    )}
+                    {order.delivery_method && (
+                      <p className="text-xs text-gray-400 mt-1">Method: {order.delivery_method === "express" ? "Express Delivery" : "Standard Delivery"}</p>
+                    )}
+                    {order.delivery_estimate && (
+                      <p className="text-xs text-gray-400">Est. delivery: {order.delivery_estimate}</p>
+                    )}
+                  </div>
                 </div>
               )}
             </div>

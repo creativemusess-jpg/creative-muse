@@ -55,7 +55,11 @@ function OrderSuccessPage() {
                 <InfoRow label="Order" value={order.order_number} />
                 <InfoRow label="Status" value={order.order_status} />
                 <InfoRow label="Payment" value={order.payment_status === "paid" ? "Paid (Demo)" : "Pending"} />
-                <InfoRow label="Total" value={formatPrice(order.total_amount)} />
+                <InfoRow label="Subtotal" value={formatPrice(order.subtotal)} />
+                {order.shipping_amount > 0 && <InfoRow label="Shipping" value={formatPrice(order.shipping_amount)} />}
+                {order.tax_amount > 0 && <InfoRow label="GST" value={formatPrice(order.tax_amount)} />}
+                <div className="border-t border-[#e0d8cc] pt-2" />
+                <InfoRow label="Total" value={formatPrice(order.total_amount)} bold />
                 <InfoRow label="Email" value={order.customer_email} />
               </div>
             </div>
@@ -85,6 +89,6 @@ function OrderSuccessPage() {
   );
 }
 
-function InfoRow({ label, value }: { label: string; value: string }) {
-  return <div className="flex items-center justify-between border-b border-[#f5efe8] pb-2"><span className="text-[#7a6e64]">{label}</span><span className="font-medium text-[#1a1a2e]">{value}</span></div>;
+function InfoRow({ label, value, bold }: { label: string; value: string; bold?: boolean }) {
+  return <div className={`flex items-center justify-between border-b border-[#f5efe8] pb-2 ${bold ? "font-semibold" : ""}`}><span className="text-[#7a6e64]">{label}</span><span className={`${bold ? "font-semibold text-base" : "font-medium"} text-[#1a1a2e]`}>{value}</span></div>;
 }

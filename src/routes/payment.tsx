@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState, useEffect, useRef } from "react";
-import { CreditCard, DollarSign, Building2, Wallet, Truck, Loader2, ShieldCheck, CheckCircle } from "lucide-react";
+import { CreditCard, Building2, Wallet, Truck, Loader2, ShieldCheck } from "lucide-react";
 import { PageShell } from "@/components/site/PageHeader";
 import { useAuth } from "@/lib/auth";
 import { useCartLines, useStore } from "@/lib/store";
@@ -81,6 +81,8 @@ function PaymentPage() {
     setError("");
 
     try {
+    const addr = checkoutData.address || {};
+    const t = totals || {};
     const result = await createOrder({
       checkoutAttemptId: checkoutAttemptRef.current,
       customerId: user.id,
@@ -88,24 +90,30 @@ function PaymentPage() {
       customerEmail: user.email,
       customerPhone: checkoutData.phone || user.email,
       items: checkoutData.items,
-      subtotal: totals.subtotal,
-      discountAmount: totals.discountAmount,
+      subtotal: t.subtotal || t.itemsSubtotal || 0,
+      discountAmount: t.discountAmount || t.couponDiscount || 0,
       couponCode: null,
       couponId: null,
-      shipping: totals.shipping,
-      tax: totals.tax,
-      total: totals.total,
+      shipping: t.shipping || t.shippingCharge || 0,
+      tax: t.tax || t.gstAmount || 0,
+      total: t.total || t.grandTotal || 0,
       paymentMethod: method,
+      deliveryMethod: checkoutData.deliveryMethod || "standard",
       deliveryAddress: {
-        addressLine1: checkoutData.address.line1,
-        addressLine2: checkoutData.address.line2,
-        city: checkoutData.address.city,
-        state: checkoutData.address.state,
-        postalCode: checkoutData.address.postalCode,
-        country: "India",
-        landmark: checkoutData.address.landmark,
+        addressLine1: addr.line1 || "",
+        addressLine2: addr.line2 || "",
+        city: addr.city || "",
+        state: addr.state || "",
+        stateCode: addr.stateCode || "",
+        district: addr.district || "",
+        postalCode: addr.postalCode || addr.pincode || "",
+        pincode: addr.pincode || addr.postalCode || "",
+        locality: addr.locality || "",
+        country: addr.country || "India",
+        landmark: addr.landmark || "",
         addressType: "Home",
       },
+      taxSnapshot: checkoutData.taxSnapshot || undefined,
     });
 
       if (result.error) { setError(result.error); setPaying(false); return; }

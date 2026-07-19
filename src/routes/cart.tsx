@@ -145,6 +145,7 @@ function CartPage() {
               {discount > 0 && <Row label="Discount" value={`-${formatPrice(Math.round(discount))}`} />}
               <div className="my-2 border-t border-dashed border-[#e0d8cc]" />
               <Row label="Total" value={formatPrice(total)} bold />
+              <p className="text-[10px] text-[#7a6e64]">GST will be calculated at checkout based on delivery address.</p>
             </div>
 
             <div className="mt-5 rounded-[20px] border border-dashed border-[#C9A96E]/40 bg-[#fdf8f3] p-3">

@@ -1,5 +1,6 @@
 import { supabase } from "../supabase";
 import { storefrontSupabase } from "../supabase-storefront";
+import { calculateTotals, type CalcInput, type CheckoutTotals, DEFAULT_TAX_SETTINGS, DEFAULT_DELIVERY } from "../checkout";
 
 const db = () => supabase as any;
 const adb = () => storefrontSupabase as any;
@@ -15,7 +16,7 @@ export interface ValidatedCoupon {
   discountAmount: number;
 }
 
-export interface CheckoutTotals {
+export interface CheckoutTotalsLegacy {
   subtotal: number;
   discountAmount: number;
   shipping: number;
@@ -23,6 +24,8 @@ export interface CheckoutTotals {
   total: number;
   couponCode: string | null;
 }
+
+export type { CheckoutTotals } from "../checkout";
 
 export async function validateCoupon(
   code: string,
@@ -97,11 +100,30 @@ export function calculateTotals(
   subtotal: number,
   discountAmount: number,
   shippingOverride?: number,
-): CheckoutTotals {
+): CheckoutTotalsLegacy {
   const shipping = shippingOverride ?? (subtotal > 5000 || subtotal === 0 ? 0 : 250);
   const tax = 0;
   const total = Math.max(0, subtotal + shipping + tax - discountAmount);
   return { subtotal, discountAmount, shipping, tax, total, couponCode: null };
+}
+
+export async function validateAndRecalculateTotals(params: {
+  subtotal: number;
+  discountAmount: number;
+  deliveryMethod: "standard" | "express";
+  deliveryStateCode?: string;
+}): Promise<CheckoutTotals> {
+  const settings = await db().from("site_settings").select("*").eq("setting_key", "tax_settings").maybeSingle();
+  const storedTaxSettings = settings?.data?.setting_value || null;
+  const taxSettings = storedTaxSettings || DEFAULT_TAX_SETTINGS;
+
+  return calculateTotals({
+    subtotal: params.subtotal,
+    couponDiscount: params.discountAmount,
+    deliveryMethod: params.deliveryMethod,
+    deliveryStateCode: params.deliveryStateCode,
+    taxSettings,
+  });
 }
 
 async function generateOrderNumber(): Promise<string> {
@@ -114,7 +136,13 @@ async function generateOrderNumber(): Promise<string> {
   return `CM-${year}-${rand}`;
 }
 
-function buildOrderPayload(orderNumber: string, checkoutAttemptId: string, params: CreateOrderParams) {
+function buildOrderPayload(
+  orderNumber: string,
+  checkoutAttemptId: string,
+  params: CreateOrderParams,
+  overrides?: { shipping?: number; tax?: number; total?: number; taxSnapshot?: Record<string, any> },
+) {
+  const addr = params.deliveryAddress;
   return {
     order_number: orderNumber,
     checkout_attempt_id: checkoutAttemptId,
@@ -122,13 +150,34 @@ function buildOrderPayload(orderNumber: string, checkoutAttemptId: string, param
     customer_name: params.customerName,
     customer_email: params.customerEmail,
     customer_phone: params.customerPhone,
-    delivery_address: params.deliveryAddress,
+    delivery_address: {
+      addressLine1: addr.addressLine1,
+      addressLine2: addr.addressLine2 || "",
+      city: addr.city,
+      state: addr.state,
+      stateCode: addr.stateCode || "",
+      district: addr.district || "",
+      postalCode: addr.postalCode,
+      pincode: addr.pincode || addr.postalCode,
+      locality: addr.locality || "",
+      country: addr.country || "India",
+      landmark: addr.landmark || "",
+      addressType: addr.addressType || "Home",
+    },
+    delivery_method: params.deliveryMethod,
+    delivery_state_code: addr.stateCode || "",
+    delivery_city: addr.city,
+    delivery_district: addr.district || "",
+    delivery_pincode: addr.pincode || addr.postalCode,
+    delivery_locality: addr.locality || "",
+    delivery_country_code: "IN",
     subtotal: params.subtotal,
     discount_amount: params.discountAmount,
     coupon_code: params.couponCode,
-    shipping_amount: params.shipping,
-    tax_amount: params.tax,
-    total_amount: params.total,
+    shipping_amount: overrides?.shipping ?? params.shipping,
+    tax_amount: overrides?.tax ?? params.tax,
+    total_amount: overrides?.total ?? params.total,
+    tax_snapshot: overrides?.taxSnapshot ?? params.taxSnapshot ?? null,
     payment_method: params.paymentMethod,
     payment_status: params.paymentMethod === "cod" ? "pending" : "paid",
     order_status: "confirmed",
@@ -149,16 +198,22 @@ interface CreateOrderParams {
   tax: number;
   total: number;
   paymentMethod: string;
+  deliveryMethod: string;
   deliveryAddress: {
     addressLine1: string;
     addressLine2?: string;
     city: string;
     state: string;
+    stateCode?: string;
+    district?: string;
     postalCode: string;
+    pincode?: string;
+    locality?: string;
     country: string;
     landmark?: string;
     addressType?: string;
   };
+  taxSnapshot?: Record<string, any>;
   checkoutAttemptId?: string;
 }
 
@@ -167,10 +222,28 @@ export async function createOrder(params: CreateOrderParams): Promise<{ orderNum
     const checkoutAttemptId = params.checkoutAttemptId || crypto.randomUUID();
     const txRef = `DEMO-CM-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
 
+    const serverTotals = await validateAndRecalculateTotals({
+      subtotal: params.subtotal,
+      discountAmount: params.discountAmount,
+      deliveryMethod: params.deliveryMethod as "standard" | "express",
+      deliveryStateCode: params.deliveryAddress.stateCode,
+    });
+
+    const finalAmount = Math.round(serverTotals.grandTotal);
+    if (Math.abs(finalAmount - params.total) > 1) {
+      console.warn("Client/server total mismatch — using server-calculated amount", { client: params.total, server: finalAmount });
+    }
+
     let orderNumber = await generateOrderNumber();
+    const payload = buildOrderPayload(orderNumber, checkoutAttemptId, params, {
+      shipping: serverTotals.shippingCharge,
+      tax: serverTotals.gstAmount,
+      total: finalAmount,
+      taxSnapshot: serverTotals as any,
+    });
     let { data: order, error: orderErr } = await adb()
       .from("orders")
-      .insert(buildOrderPayload(orderNumber, checkoutAttemptId, params))
+      .insert(payload)
       .select()
       .single();
 
@@ -217,6 +290,7 @@ export async function createOrder(params: CreateOrderParams): Promise<{ orderNum
       .insert(orderItems);
     if (itemsErr) throw new Error(`Failed to create order items: ${itemsErr.message}`);
 
+    const paymentAmount = finalAmount || params.total;
     const { error: payErr } = await adb()
       .from("payments")
       .insert({
@@ -224,11 +298,11 @@ export async function createOrder(params: CreateOrderParams): Promise<{ orderNum
         customer_id: params.customerId,
         payment_method: params.paymentMethod,
         transaction_reference: txRef,
-        amount: params.total,
+        amount: paymentAmount,
         currency: "INR",
         status: params.paymentMethod === "cod" ? "pending" : "paid",
         is_demo: true,
-        safe_metadata: { method: params.paymentMethod, isDemo: true },
+        safe_metadata: { method: params.paymentMethod, isDemo: true, deliveryMethod: params.deliveryMethod },
       });
     if (payErr) throw new Error(`Failed to create payment: ${payErr.message}`);
 

@@ -13,6 +13,7 @@ const InvoiceTemplate = forwardRef<HTMLDivElement, InvoiceTemplateProps>(
     const subtotal = items.reduce((s: number, i: any) => s + (i.lineTotal || 0), 0);
     const total = order.total_amount || subtotal;
     const business = storeSettings?.business_info || {};
+    const taxSnap = order.tax_snapshot || {};
     const formatCurrency = (n: number) => `₹${n.toLocaleString("en-IN")}`;
 
     return (
@@ -151,7 +152,16 @@ const InvoiceTemplate = forwardRef<HTMLDivElement, InvoiceTemplateProps>(
               <tr><td>Subtotal</td><td>{formatCurrency(subtotal)}</td></tr>
               {order.discount_amount > 0 && <tr><td>Discount</td><td style={{ color: "#059669" }}>-{formatCurrency(order.discount_amount)}</td></tr>}
               {order.shipping_amount > 0 && <tr><td>Shipping</td><td>{formatCurrency(order.shipping_amount)}</td></tr>}
-              {order.tax_amount > 0 && <tr><td>Tax / GST</td><td>{formatCurrency(order.tax_amount)}</td></tr>}
+              {order.tax_amount > 0 && taxSnap.gstType === "cgst_sgst" ? (
+                <>
+                  <tr><td>CGST @ {taxSnap.cgstRate || ""}%</td><td>{formatCurrency(taxSnap.cgstAmount || order.tax_amount / 2)}</td></tr>
+                  <tr><td>SGST @ {taxSnap.sgstRate || ""}%</td><td>{formatCurrency(taxSnap.sgstAmount || order.tax_amount / 2)}</td></tr>
+                </>
+              ) : order.tax_amount > 0 && taxSnap.gstType === "igst" ? (
+                <tr><td>IGST @ {taxSnap.igstRate || ""}%</td><td>{formatCurrency(taxSnap.igstAmount || order.tax_amount)}</td></tr>
+              ) : order.tax_amount > 0 ? (
+                <tr><td>Tax / GST</td><td>{formatCurrency(order.tax_amount)}</td></tr>
+              ) : null}
               <tr className="grand-total"><td>Grand Total</td><td>{formatCurrency(total)}</td></tr>
             </tbody>
           </table>
@@ -160,6 +170,9 @@ const InvoiceTemplate = forwardRef<HTMLDivElement, InvoiceTemplateProps>(
         <div className="invoice-payment-info">
           <p><strong>Payment Method:</strong> {order.payment_method || "—"}</p>
           <p><strong>Payment Status:</strong> {order.payment_status}</p>
+          {business.gstin && <p><strong>GSTIN:</strong> {business.gstin}</p>}
+          {order.delivery_state_code && <p><strong>Place of Supply:</strong> {order.delivery_state_code}</p>}
+          {order.delivery_method && <p><strong>Delivery Method:</strong> {order.delivery_method === "express" ? "Express Delivery" : "Standard Delivery"}</p>}
         </div>
 
         <div className="invoice-footer">
