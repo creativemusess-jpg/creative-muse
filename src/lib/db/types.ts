@@ -647,6 +647,22 @@ export interface OrderRow {
   notes: string | null;
   created_at: string;
   updated_at: string;
+  invoice_number: string | null;
+  cancelled_at: string | null;
+  cancelled_by: string | null;
+  cancellation_reason: string | null;
+  archived_at: string | null;
+  archived_by: string | null;
+  shipped_at: string | null;
+  delivered_at: string | null;
+  estimated_delivery_at: string | null;
+  tracking_url: string | null;
+  courier_name: string | null;
+  shipping_service: string | null;
+  package_weight: number | null;
+  package_count: number;
+  duplicated_from_id: string | null;
+  is_archived: boolean;
 }
 
 export interface OrderItemRow {
@@ -966,6 +982,22 @@ export interface OrderUpdate {
   tracking_id?: string | null;
   courier?: string | null;
   notes?: string | null;
+  invoice_number?: string | null;
+  cancelled_at?: string | null;
+  cancelled_by?: string | null;
+  cancellation_reason?: string | null;
+  shipped_at?: string | null;
+  delivered_at?: string | null;
+  estimated_delivery_at?: string | null;
+  tracking_url?: string | null;
+  courier_name?: string | null;
+  shipping_service?: string | null;
+  package_weight?: number | null;
+  package_count?: number;
+  duplicated_from_id?: string | null;
+  is_archived?: boolean;
+  archived_at?: string | null;
+  archived_by?: string | null;
 }
 
 export interface OrderItemInsert {
