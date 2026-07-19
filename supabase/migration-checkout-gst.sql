@@ -24,3 +24,20 @@ ALTER TABLE orders ADD COLUMN IF NOT EXISTS billing_same_as_delivery BOOLEAN NOT
 
 -- Estimated delivery
 ALTER TABLE orders ADD COLUMN IF NOT EXISTS delivery_estimate TEXT;
+
+-- Abandoned checkouts tracking
+CREATE TABLE IF NOT EXISTS abandoned_checkouts (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  customer_id UUID REFERENCES customers(id) ON DELETE SET NULL,
+  customer_email TEXT,
+  cart_value NUMERIC(12,2) NOT NULL DEFAULT 0,
+  last_step TEXT,
+  delivery_pincode TEXT,
+  delivery_state TEXT,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS idx_abandoned_checkouts_customer_id ON abandoned_checkouts(customer_id);
+CREATE INDEX IF NOT EXISTS idx_abandoned_checkouts_created_at ON abandoned_checkouts(created_at);
+
+ALTER TABLE customer_addresses ADD COLUMN IF NOT EXISTS phone TEXT;

@@ -1,11 +1,11 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState, useEffect, useRef } from "react";
-import { CreditCard, Building2, Wallet, Truck, Loader2, ShieldCheck } from "lucide-react";
+import { CreditCard, Building2, Wallet, Truck, Loader2, ShieldCheck, AlertCircle, RefreshCw } from "lucide-react";
 import { PageShell } from "@/components/site/PageHeader";
 import { useAuth } from "@/lib/auth";
 import { useCartLines, useStore } from "@/lib/store";
 import { formatPrice } from "@/lib/products";
-import { createOrder } from "@/lib/api/checkout";
+import { createOrder, saveCustomerAddress } from "@/lib/api/checkout";
 
 type PaymentMethod = "upi" | "card" | "netbanking" | "wallet" | "cod";
 
@@ -16,6 +16,8 @@ const METHODS: { id: PaymentMethod; label: string; icon: any }[] = [
   { id: "wallet", label: "Wallets", icon: Wallet },
   { id: "cod", label: "Cash on Delivery", icon: Truck },
 ];
+
+const COD_MAX_AMOUNT = 50000;
 
 function SmartphoneIcon(props: any) { return (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><rect width="14" height="20" x="5" y="2" rx="2" ry="2" /><line x1="12" x2="12.01" y1="18" y2="18" /></svg>); }
 
@@ -42,6 +44,7 @@ function PaymentPage() {
   const [error, setError] = useState("");
   const [checkoutData, setCheckoutData] = useState<any>(null);
   const [success, setSuccess] = useState<{ orderNumber: string } | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
 
   useEffect(() => {
     if (!authLoading && !user) { navigate({ to: "/login", search: { redirect: "/payment" } }); return; }
@@ -58,7 +61,8 @@ function PaymentPage() {
   if (authLoading || !user || !checkoutData) return null;
 
   const totals = checkoutData.totals;
-  const codEnabled = true;
+  const totalAmount = totals?.total || 0;
+  const codEnabled = totalAmount <= COD_MAX_AMOUNT;
 
   const validateMethod = (): string | null => {
     if (method === "upi" && !upiId.trim()) return "Please enter your UPI ID.";
@@ -69,6 +73,7 @@ function PaymentPage() {
     if (method === "card" && cardCvv.length < 3) return "Please enter the CVV.";
     if (method === "netbanking" && !selectedBank) return "Please select a bank.";
     if (method === "wallet" && !selectedWallet) return "Please select a wallet.";
+    if (method === "cod" && totalAmount > COD_MAX_AMOUNT) return "COD is not available for orders above ₹50,000.";
     return null;
   };
 
@@ -81,42 +86,54 @@ function PaymentPage() {
     setError("");
 
     try {
-    const addr = checkoutData.address || {};
-    const t = totals || {};
-    const result = await createOrder({
-      checkoutAttemptId: checkoutAttemptRef.current,
-      customerId: user.id,
-      customerName: user.fullName,
-      customerEmail: user.email,
-      customerPhone: checkoutData.phone || user.email,
-      items: checkoutData.items,
-      subtotal: t.subtotal || t.itemsSubtotal || 0,
-      discountAmount: t.discountAmount || t.couponDiscount || 0,
-      couponCode: null,
-      couponId: null,
-      shipping: t.shipping || t.shippingCharge || 0,
-      tax: t.tax || t.gstAmount || 0,
-      total: t.total || t.grandTotal || 0,
-      paymentMethod: method,
-      deliveryMethod: checkoutData.deliveryMethod || "standard",
-      deliveryAddress: {
-        addressLine1: addr.line1 || "",
-        addressLine2: addr.line2 || "",
-        city: addr.city || "",
-        state: addr.state || "",
-        stateCode: addr.stateCode || "",
-        district: addr.district || "",
-        postalCode: addr.postalCode || addr.pincode || "",
-        pincode: addr.pincode || addr.postalCode || "",
-        locality: addr.locality || "",
-        country: addr.country || "India",
-        landmark: addr.landmark || "",
-        addressType: "Home",
-      },
-      taxSnapshot: checkoutData.taxSnapshot || undefined,
-    });
+      const addr = checkoutData.address || {};
+      const t = totals || {};
+      const result = await createOrder({
+        checkoutAttemptId: checkoutAttemptRef.current,
+        customerId: user.id,
+        customerName: user.fullName,
+        customerEmail: user.email,
+        customerPhone: checkoutData.phone || user.email,
+        items: checkoutData.items,
+        subtotal: t.subtotal || t.itemsSubtotal || 0,
+        discountAmount: t.discountAmount || t.couponDiscount || 0,
+        couponCode: checkoutData.couponCode || null,
+        couponId: checkoutData.couponId || null,
+        shipping: t.shipping || t.shippingCharge || 0,
+        tax: t.tax || t.gstAmount || 0,
+        total: t.total || t.grandTotal || 0,
+        paymentMethod: method,
+        deliveryMethod: checkoutData.deliveryMethod || "standard",
+        deliveryAddress: {
+          addressLine1: addr.line1 || "",
+          addressLine2: addr.line2 || "",
+          city: addr.city || "",
+          state: addr.state || "",
+          stateCode: addr.stateCode || "",
+          district: addr.district || "",
+          postalCode: addr.postalCode || addr.pincode || "",
+          pincode: addr.pincode || addr.postalCode || "",
+          locality: addr.locality || "",
+          country: addr.country || "India",
+          landmark: addr.landmark || "",
+          addressType: "Home",
+        },
+        taxSnapshot: checkoutData.taxSnapshot || undefined,
+      });
 
-      if (result.error) { setError(result.error); setPaying(false); return; }
+      if (result.error) { setError(result.error); setPaying(false); setRetryCount((c) => c + 1); return; }
+
+      if (checkoutData.saveAddress !== false && addr.line1) {
+        saveCustomerAddress({
+          customerId: user.id,
+          addressLine1: addr.line1,
+          addressLine2: addr.line2,
+          city: addr.city || "",
+          state: addr.state || "",
+          postalCode: addr.postalCode || addr.pincode || "",
+          landmark: addr.landmark,
+        });
+      }
 
       clearCart();
       sessionStorage.removeItem("cm_checkout_data");
@@ -125,6 +142,7 @@ function PaymentPage() {
     } catch (err: any) {
       setError(err.message || "Something went wrong. Please try again.");
       setPaying(false);
+      setRetryCount((c) => c + 1);
     }
   };
 
@@ -142,6 +160,8 @@ function PaymentPage() {
     );
   }
 
+  const taxSnap = checkoutData.taxSnapshot || {};
+
   return (
     <PageShell>
       <div className="mx-auto max-w-[1200px] px-6 py-16">
@@ -151,26 +171,34 @@ function PaymentPage() {
             <h1 className="font-display mt-2 text-[32px] font-semibold text-[#1a1a2e]">Complete Your Order</h1>
           </div>
           <div className="hidden items-center gap-2 rounded-full border border-amber-200 bg-amber-50 px-4 py-2 text-xs font-medium text-amber-700 sm:flex">
-            <ShieldCheck className="h-4 w-4" />
-            Secure Demo Checkout — No real payment will be charged.
+            <ShieldCheck className="h-4 w-4" /> Secure Demo Checkout — No real payment will be charged.
           </div>
         </div>
 
         <div className="mt-2 flex items-center gap-2 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs font-medium text-amber-700 sm:hidden">
-          <ShieldCheck className="h-4 w-4 shrink-0" />
-          Secure Demo Checkout — No real payment will be charged.
+          <ShieldCheck className="h-4 w-4 shrink-0" /> Secure Demo Checkout — No real payment will be charged.
         </div>
+
+        {retryCount > 0 && (
+          <div className="mt-4 flex items-center gap-2 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs text-amber-700">
+            <AlertCircle className="h-4 w-4 shrink-0" /> Payment failed. You can review your information and try again.
+          </div>
+        )}
 
         <div className="mt-10 grid gap-10 lg:grid-cols-[1fr_400px]">
           <div className="space-y-6">
             <div className="rounded-[28px] bg-white p-6 shadow-[0_4px_24px_rgba(0,0,0,0.05)]">
               <h2 className="font-display text-lg font-semibold text-[#1a1a2e]">Payment Method</h2>
               <div className="mt-4 flex flex-wrap gap-2">
-                {METHODS.map((m) => (
-                  <button key={m.id} onClick={() => { setMethod(m.id); setError(""); }} className={`flex items-center gap-2 rounded-xl border px-4 py-3 text-sm font-medium transition-colors ${method === m.id ? "border-[#c9a96e] bg-[#fdf8f3] text-[#1a1a2e]" : "border-[#e0d8cc] text-[#7a6e64] hover:border-[#c9a96e]/50"}`}>
-                    <m.icon className="h-4 w-4" /> {m.label}
-                  </button>
-                ))}
+                {METHODS.map((m) => {
+                  const disabled = m.id === "cod" && !codEnabled;
+                  return (
+                    <button key={m.id} onClick={() => { if (!disabled) { setMethod(m.id); setError(""); } }} disabled={disabled}
+                      className={`flex items-center gap-2 rounded-xl border px-4 py-3 text-sm font-medium transition-colors ${method === m.id ? "border-[#c9a96e] bg-[#fdf8f3] text-[#1a1a2e]" : disabled ? "border-gray-100 text-gray-300 cursor-not-allowed" : "border-[#e0d8cc] text-[#7a6e64] hover:border-[#c9a96e]/50"}`}>
+                      <m.icon className="h-4 w-4" /> {m.label}
+                    </button>
+                  );
+                })}
               </div>
 
               <div className="mt-6">
@@ -183,7 +211,6 @@ function PaymentPage() {
                     <p className="text-xs text-[#7a6e64]">Demo: Enter any valid UPI ID format (e.g., name@upi)</p>
                   </div>
                 )}
-
                 {method === "card" && (
                   <div className="space-y-4">
                     <div>
@@ -204,10 +231,9 @@ function PaymentPage() {
                       <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">CVV</label>
                       <input type="password" value={cardCvv} onChange={(e) => setCardCvv(e.target.value.replace(/\D/g, "").slice(0, 4))} placeholder="***" className="w-full rounded-xl border border-[#e0d8cc] px-4 py-3 text-sm outline-none focus:border-[#c9a96e]" maxLength={4} autoComplete="off" />
                     </div>
-                    <p className="text-xs text-[#7a6e64]">Demo: Use 4111 1111 1111 1111 for testing. No real card data is stored.</p>
+                    <p className="text-xs text-[#7a6e64]">Demo: Use 4111 1111 1111 1111 for testing.</p>
                   </div>
                 )}
-
                 {method === "netbanking" && (
                   <div className="space-y-4">
                     <select value={selectedBank} onChange={(e) => setSelectedBank(e.target.value)} className="w-full rounded-xl border border-[#e0d8cc] px-4 py-3 text-sm outline-none focus:border-[#c9a96e]">
@@ -220,10 +246,9 @@ function PaymentPage() {
                       <option value="bob">Bank of Baroda</option>
                       <option value="yes">Yes Bank</option>
                     </select>
-                    <p className="text-xs text-[#7a6e64]">Demo: Selecting a bank simulates the payment. No real banking credentials are collected.</p>
+                    <p className="text-xs text-[#7a6e64]">Demo: Selecting a bank simulates the payment.</p>
                   </div>
                 )}
-
                 {method === "wallet" && (
                   <div className="space-y-4">
                     <div className="flex flex-wrap gap-3">
@@ -234,14 +259,12 @@ function PaymentPage() {
                     <p className="text-xs text-[#7a6e64]">Demo: No real wallet authentication is performed.</p>
                   </div>
                 )}
-
                 {method === "cod" && (
                   <div className="space-y-4">
-                    <div className="rounded-xl border border-[#e0d8cc] bg-[#fdf8f3] p-4">
+                    <div className={`rounded-xl border p-4 ${codEnabled ? "border-[#e0d8cc] bg-[#fdf8f3]" : "border-red-200 bg-red-50"}`}>
                       <p className="text-sm font-medium text-[#1a1a2e]">Cash on Delivery</p>
-                      <p className="mt-1 text-xs text-[#7a6e64]">Pay when your jewellery arrives. Available in eligible areas. No additional charge.</p>
+                      <p className="mt-1 text-xs text-[#7a6e64]">{codEnabled ? "Pay when your jewellery arrives. Available in eligible areas." : `COD is not available for orders above ₹${COD_MAX_AMOUNT.toLocaleString("en-IN")}.`}</p>
                     </div>
-                    {!codEnabled && <p className="text-xs text-amber-600">COD is currently disabled for your location.</p>}
                   </div>
                 )}
               </div>
@@ -264,26 +287,32 @@ function PaymentPage() {
               </div>
               <div className="mt-4 space-y-2 text-sm">
                 <Row label="Subtotal" value={formatPrice(totals.subtotal)} />
-                <Row label="Shipping" value={totals.shipping === 0 ? "Free" : formatPrice(totals.shipping)} />
                 {totals.discountAmount > 0 && <Row label="Discount" value={`-${formatPrice(totals.discountAmount)}`} />}
+                <Row label="Shipping" value={totals.shipping === 0 ? "Free" : formatPrice(totals.shipping)} />
+                {totals.tax > 0 && taxSnap.gstType === "cgst_sgst" ? (
+                  <><Row label={`CGST @ ${taxSnap.cgstRate || ""}%`} value={formatPrice(taxSnap.cgstAmount || totals.tax / 2)} /><Row label={`SGST @ ${taxSnap.sgstRate || ""}%`} value={formatPrice(taxSnap.sgstAmount || totals.tax / 2)} /></>
+                ) : totals.tax > 0 && taxSnap.gstType === "igst" ? (
+                  <Row label={`IGST @ ${taxSnap.igstRate || ""}%`} value={formatPrice(taxSnap.igstAmount || totals.tax)} />
+                ) : totals.tax > 0 ? (
+                  <Row label="GST" value={formatPrice(totals.tax)} />
+                ) : null}
                 <div className="my-2 border-t border-dashed border-[#e0d8cc]" />
                 <Row label="Total" value={formatPrice(totals.total)} bold />
               </div>
 
               <div className="mt-4 rounded-xl bg-[#fdf8f3] p-3 text-xs text-[#7a6e64]">
                 <p><strong>Delivering to:</strong><br />{checkoutData.address.line1}, {checkoutData.address.city}, {checkoutData.address.state} {checkoutData.address.postalCode}</p>
+                {checkoutData.deliveryMethod === "express" && <p className="mt-1 text-purple-600 font-medium">Express Delivery</p>}
               </div>
 
               {error && <p className="mt-3 text-sm text-red-500">{error}</p>}
 
               <button onClick={handlePay} disabled={paying} className="btn-primary mt-5 w-full justify-center disabled:opacity-60">
-                {paying ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
-                {paying ? "Processing…" : `Pay ${formatPrice(totals.total)}`}
+                {paying ? <Loader2 className="h-4 w-4 animate-spin" /> : retryCount > 0 ? <RefreshCw className="h-4 w-4" /> : null}
+                {paying ? "Processing…" : retryCount > 0 ? "Retry Payment" : `Pay ${formatPrice(totals.total)}`}
               </button>
 
-              <Link to="/checkout" className="mt-3 block text-center text-[11px] font-semibold tracking-[0.14em] text-[#7a6e64] uppercase hover:text-[#1a1a2e]">
-                ← Back to Checkout
-              </Link>
+              <Link to="/checkout" className="mt-3 block text-center text-[11px] font-semibold tracking-[0.14em] text-[#7a6e64] uppercase hover:text-[#1a1a2e]">← Back to Checkout</Link>
             </div>
           </div>
         </div>

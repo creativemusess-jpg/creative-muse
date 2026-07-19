@@ -31,11 +31,20 @@ export type CalcInput = {
   deliveryConfig?: DeliveryConfig;
 };
 
-function moneyRound(n: number, rule: TaxSettings["roundingRule"] = "round"): number {
+function toPaise(n: number): number {
+  return Math.round(n * 100);
+}
+
+function fromPaise(p: number): number {
+  return p / 100;
+}
+
+function moneyRoundPaise(n: number, rule: TaxSettings["roundingRule"] = "round"): number {
+  const paise = toPaise(n);
   switch (rule) {
-    case "floor": return Math.floor(n * 100) / 100;
-    case "ceil": return Math.ceil(n * 100) / 100;
-    default: return Math.round(n * 100) / 100;
+    case "floor": return Math.floor(paise / 100);
+    case "ceil": return Math.ceil(paise / 100);
+    default: return Math.round(paise / 100);
   }
 }
 
@@ -55,7 +64,8 @@ export function calculateTotals(input: CalcInput): CheckoutTotals {
   const isSameState = deliveryStateCode === businessStateCode;
   const gstType: GstType = tax.enabled ? (isSameState ? "cgst_sgst" : "igst") : "igst";
 
-  let taxableBase = tax.mode === "inclusive" ? afterDiscount + (tax.applyGstToShipping ? shippingCharge : 0) : afterDiscount + (tax.applyGstToShipping ? shippingCharge : 0);
+  const shippingInBase = tax.applyGstToShipping ? shippingCharge : 0;
+  let taxableBase = afterDiscount + shippingInBase;
 
   let cgstAmount = 0;
   let sgstAmount = 0;
@@ -65,30 +75,31 @@ export function calculateTotals(input: CalcInput): CheckoutTotals {
   if (tax.enabled) {
     if (tax.mode === "inclusive") {
       const inclusiveRate = tax.defaultRate / 100;
-      const extractedTax = moneyRound(taxableBase - (taxableBase / (1 + inclusiveRate)), tax.roundingRule);
-      gstAmount = extractedTax;
+      const taxablePaise = toPaise(taxableBase);
+      const extractedPaise = taxablePaise - Math.round(taxablePaise / (1 + inclusiveRate));
+      gstAmount = fromPaise(extractedPaise);
       if (gstType === "cgst_sgst") {
-        cgstAmount = moneyRound(extractedTax / 2, tax.roundingRule);
-        sgstAmount = extractedTax - cgstAmount;
+        cgstAmount = fromPaise(Math.round(extractedPaise / 2));
+        sgstAmount = gstAmount - cgstAmount;
       } else {
-        igstAmount = extractedTax;
+        igstAmount = gstAmount;
       }
     } else {
-      taxableBase = afterDiscount + (tax.applyGstToShipping ? shippingCharge : 0);
+      const taxablePaise = toPaise(taxableBase);
       if (gstType === "cgst_sgst") {
-        cgstAmount = moneyRound(taxableBase * (tax.cgstRate / 100), tax.roundingRule);
-        sgstAmount = moneyRound(taxableBase * (tax.sgstRate / 100), tax.roundingRule);
+        cgstAmount = fromPaise(Math.round(taxablePaise * tax.cgstRate / 100));
+        sgstAmount = fromPaise(Math.round(taxablePaise * tax.sgstRate / 100));
         gstAmount = cgstAmount + sgstAmount;
       } else {
-        igstAmount = moneyRound(taxableBase * (tax.igstRate / 100), tax.roundingRule);
+        igstAmount = fromPaise(Math.round(taxablePaise * tax.igstRate / 100));
         gstAmount = igstAmount;
       }
     }
   }
 
-  const preRoundTotal = afterDiscount + shippingCharge + gstAmount;
-  const roundingAdjustment = moneyRound(preRoundTotal) - preRoundTotal;
-  const grandTotal = moneyRound(preRoundTotal);
+  const totalPaise = toPaise(afterDiscount) + toPaise(shippingCharge) + toPaise(gstAmount);
+  const roundingAdjustment = fromPaise(Math.round(totalPaise)) - afterDiscount - shippingCharge - gstAmount;
+  const grandTotal = fromPaise(Math.round(totalPaise));
 
   const now = new Date();
   const estDays = input.deliveryMethod === "express" ? [1, 2] : [3, 5];
@@ -109,12 +120,12 @@ export function calculateTotals(input: CalcInput): CheckoutTotals {
     cgstRate: tax.cgstRate,
     sgstRate: tax.sgstRate,
     igstRate: tax.igstRate,
-    cgstAmount,
-    sgstAmount,
-    igstAmount,
-    gstAmount,
-    roundingAdjustment,
-    grandTotal,
+    cgstAmount: Math.round(cgstAmount * 100) / 100,
+    sgstAmount: Math.round(sgstAmount * 100) / 100,
+    igstAmount: Math.round(igstAmount * 100) / 100,
+    gstAmount: Math.round(gstAmount * 100) / 100,
+    roundingAdjustment: Math.round(roundingAdjustment * 100) / 100,
+    grandTotal: Math.round(grandTotal * 100) / 100,
     deliveryLabel: deliveryInfo.label,
     deliveryDays: deliveryInfo.days,
     deliveryEstimate: `${fmtDate(estStart)}–${fmtDate(estEnd)}`,

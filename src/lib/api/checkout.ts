@@ -353,3 +353,75 @@ export async function createOrder(params: CreateOrderParams): Promise<{ orderNum
     return { orderNumber: "", orderId: "", error: err.message || "Unknown error creating order" };
   }
 }
+
+export async function saveAbandonedCheckout(params: {
+  customerId: string;
+  customerEmail: string;
+  cartValue: number;
+  lastStep: string;
+  deliveryPincode?: string;
+  deliveryState?: string;
+}) {
+  try {
+    const { error } = await (supabase as any).from("site_settings").select("setting_key").eq("setting_key", "_checkout_abandoned").limit(1);
+    if (error?.code === "42P01") return;
+    const { error: insertErr } = await (supabase as any).from("abandoned_checkouts").insert({
+      customer_id: params.customerId,
+      customer_email: params.customerEmail,
+      cart_value: params.cartValue,
+      last_step: params.lastStep,
+      delivery_pincode: params.deliveryPincode || null,
+      delivery_state: params.deliveryState || null,
+      created_at: new Date().toISOString(),
+    });
+    if (insertErr) console.error("Failed to save abandoned checkout:", insertErr);
+  } catch {}
+}
+
+export async function saveCustomerAddress(params: {
+  customerId: string;
+  addressLine1: string;
+  addressLine2?: string;
+  city: string;
+  state: string;
+  postalCode: string;
+  country?: string;
+  landmark?: string;
+  addressType?: string;
+  isDefault?: boolean;
+}) {
+  try {
+    if (params.isDefault) {
+      await (supabase as any).from("customer_addresses").update({ is_default: false }).eq("customer_id", params.customerId);
+    }
+    const { data: existing } = await (supabase as any).from("customer_addresses").select("id").eq("customer_id", params.customerId).eq("address_line1", params.addressLine1).eq("city", params.city).maybeSingle();
+    if (existing) {
+      await (supabase as any).from("customer_addresses").update({
+        address_line2: params.addressLine2 || "",
+        state: params.state,
+        postal_code: params.postalCode,
+        landmark: params.landmark || "",
+        is_default: params.isDefault || false,
+      }).eq("id", existing.id);
+    } else {
+      await (supabase as any).from("customer_addresses").insert({
+        customer_id: params.customerId,
+        address_line1: params.addressLine1,
+        address_line2: params.addressLine2 || "",
+        city: params.city,
+        state: params.state,
+        postal_code: params.postalCode,
+        country: params.country || "India",
+        landmark: params.landmark || "",
+        address_type: params.addressType || "Home",
+        is_default: params.isDefault || false,
+      });
+    }
+  } catch {}
+}
+
+export async function deleteCustomerAddress(addressId: string) {
+  try {
+    await (supabase as any).from("customer_addresses").delete().eq("id", addressId);
+  } catch {}
+}
