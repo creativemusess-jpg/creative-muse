@@ -26,8 +26,8 @@ function CollectionsPage() {
   const load = async () => {
     setLoading(true);
     try {
-      const d = await collectionsApi.list();
-      setData(d);
+      const result = await collectionsApi.list();
+      setData(result.data);
     } catch (e: any) { setError(e.message); }
     setLoading(false);
   };

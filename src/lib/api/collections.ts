@@ -30,12 +30,16 @@ export const collectionsApi = {
       .order("sort_order");
     if (error) throw error;
     const ids = (data ?? []).map((c: any) => c.id);
-    const { data: links } = await supabase
-      .from("collection_products")
-      .select("collection_id")
-      .in("collection_id", ids);
+    let links: any[] = [];
+    if (ids.length > 0) {
+      const r = await supabase
+        .from("collection_products")
+        .select("collection_id")
+        .in("collection_id", ids);
+      links = r.data ?? [];
+    }
     const counts: Record<string, number> = {};
-    (links ?? []).forEach((l: any) => { counts[l.collection_id] = (counts[l.collection_id] || 0) + 1; });
+    links.forEach((l: any) => { counts[l.collection_id] = (counts[l.collection_id] || 0) + 1; });
     return {
       data: (data ?? []).map((c: any) => ({ ...c, product_count: counts[c.id] || 0 })),
       count: count ?? 0,
