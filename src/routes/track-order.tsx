@@ -142,7 +142,6 @@ function TrackPage() {
                     </div>
                     <div className="min-w-0 flex-1">
                       <p className="font-semibold text-[#1a1a2e]">{item.productName}</p>
-                      <p className="text-xs text-[#7a6e64]">SKU: {item.sku || "-"}</p>
                       <p className="mt-2 text-xs text-[#7a6e64]">Qty: {item.quantity}</p>
                     </div>
                   </div>

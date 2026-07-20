@@ -27,7 +27,7 @@ export const Route = createFileRoute("/blog")({
               </div>
               <div className="p-6">
                 <p className="eyebrow text-[10px]">Journal</p>
-                <h3 className="font-display mt-2 text-lg font-semibold text-[#1a1a2e] transition-colors group-hover:text-[#C9A96E]">{p.title}</h3>
+                <h3 className="font-display mt-2 text-lg font-semibold text-[#1a1a2e] transition-colors group-hover:text-[#8B1A1A]">{p.title}</h3>
                 <p className="mt-2 text-sm text-[#7a6e64]">{p.excerpt}</p>
               </div>
             </Link>

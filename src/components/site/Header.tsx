@@ -87,7 +87,7 @@ export function Header() {
               <Link
                 key={item.label}
                 to={item.to}
-                className="shrink-0 whitespace-nowrap rounded-full px-3 py-1.5 text-[12.5px] font-semibold tracking-[0.01em] text-[#2a1e14] transition-colors duration-200 hover:bg-[#fdf8f3] hover:text-[#8a6a2a] xl:px-4 xl:text-[13px]"
+                className="shrink-0 whitespace-nowrap rounded-full px-3 py-1.5 text-[12.5px] font-semibold tracking-[0.01em] text-[#2a1e14] transition-colors duration-200 hover:bg-[#fdf8f3] hover:text-[#8B1A1A] xl:px-4 xl:text-[13px]"
               >
                 {item.label}
               </Link>
@@ -109,10 +109,10 @@ function MobileDrawer({ onClose }: { onClose: () => void }) {
     <div className="fixed inset-0 z-[60] lg:hidden">
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
       <div
-        className="absolute right-0 top-0 flex h-full w-[85vw] max-w-[360px] flex-col rounded-l-[28px] bg-white p-6 shadow-[0_24px_64px_rgba(0,0,0,0.2)]"
+        className="absolute left-0 top-0 flex h-full w-[85vw] max-w-[360px] flex-col rounded-r-[28px] bg-white p-6 shadow-[0_24px_64px_rgba(0,0,0,0.2)]"
         style={{ animation: "cmDrawerIn 300ms ease" }}
       >
-        <style>{`@keyframes cmDrawerIn{from{transform:translateX(100%)}to{transform:translateX(0)}}`}</style>
+        <style>{`@keyframes cmDrawerIn{from{transform:translateX(-100%)}to{transform:translateX(0)}}`}</style>
 
         <div className="mb-6 flex items-center justify-between">
           <img
@@ -139,7 +139,7 @@ function MobileDrawer({ onClose }: { onClose: () => void }) {
                   <>
                     <button
                       onClick={() => setExpandedIdx(isExpanded ? null : idx)}
-                      className="flex min-h-[48px] w-full items-center justify-between rounded-[16px] px-5 py-3 text-sm font-medium text-[#3a3028] transition-colors hover:bg-[#f5efe8] hover:text-[#C9A96E]"
+                      className="flex min-h-[48px] w-full items-center justify-between rounded-[16px] px-5 py-3 text-sm font-medium text-[#3a3028] transition-colors hover:bg-[#f5efe8] hover:text-[#8B1A1A]"
                     >
                       {item.label}
                       {isExpanded ? (
@@ -154,11 +154,11 @@ function MobileDrawer({ onClose }: { onClose: () => void }) {
                         style={{ animation: "cmAccordionIn 200ms ease-out" }}
                       >
                         <style>{`@keyframes cmAccordionIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}`}</style>
-                        <div className="ml-3 border-l-2 border-[#C9A96E]/30 pl-3">
-                          <Link
-                            to={item.to}
-                            onClick={onClose}
-                            className="flex min-h-[40px] items-center rounded-[12px] px-4 py-2 text-sm font-semibold text-[#C9A96E] transition-colors hover:bg-[#f5efe8]"
+                          <div className="ml-3 border-l-2 border-[#8B1A1A]/30 pl-3">
+                            <Link
+                              to={item.to}
+                              onClick={onClose}
+                              className="flex min-h-[40px] items-center rounded-[12px] px-4 py-2 text-sm font-semibold text-[#8B1A1A] transition-colors hover:bg-[#f5efe8]"
                           >
                             View All {item.label}
                           </Link>
@@ -167,7 +167,7 @@ function MobileDrawer({ onClose }: { onClose: () => void }) {
                               key={link.label}
                               to={link.to}
                               onClick={onClose}
-                              className="flex min-h-[40px] items-center rounded-[12px] px-4 py-2 text-sm text-[#6b5d52] transition-colors hover:bg-[#f5efe8] hover:text-[#C9A96E]"
+                              className="flex min-h-[40px] items-center rounded-[12px] px-4 py-2 text-sm text-[#6b5d52] transition-colors hover:bg-[#f5efe8] hover:text-[#8B1A1A]"
                             >
                               {link.label}
                             </Link>
@@ -213,7 +213,7 @@ function MobileDrawer({ onClose }: { onClose: () => void }) {
             href="tel:+919033779867"
             className="flex min-h-[48px] items-center gap-3 rounded-[16px] px-5 py-3 text-sm text-[#3a3028]"
           >
-            <Phone className="h-5 w-5 text-[#C9A96E]" strokeWidth={1.6} />
+            <Phone className="h-5 w-5 text-[#8B1A1A]" strokeWidth={1.6} />
             +91 90337 79867
           </a>
           <a

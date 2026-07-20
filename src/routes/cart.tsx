@@ -182,7 +182,7 @@ function CartPage() {
             </Link>
             <Link
               to="/shop"
-              className="mt-3 block text-center text-[12px] font-semibold tracking-[0.14em] text-[#7a6e64] uppercase hover:text-[#C9A96E]"
+              className="mt-3 block text-center text-[12px] font-semibold tracking-[0.14em] text-[#7a6e64] uppercase hover:text-[#8B1A1A]"
             >
               ← Continue Shopping
             </Link>

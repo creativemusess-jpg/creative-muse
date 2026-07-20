@@ -190,7 +190,7 @@ function FilterPill({
       className={`rounded-full border px-3 py-1.5 text-[12px] font-medium transition-all ${
         active
           ? "border-[#C9A96E] bg-[#C9A96E] text-white"
-          : "border-[#e0d8cc] bg-white text-[#3a3028] hover:border-[#C9A96E] hover:text-[#C9A96E]"
+          : "border-[#e0d8cc] bg-white text-[#3a3028] hover:border-[#8B1A1A] hover:text-[#8B1A1A]"
       }`}
     >
       {children}

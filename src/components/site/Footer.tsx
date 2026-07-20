@@ -17,15 +17,15 @@ export function Footer() {
           </p>
           <ul className="mt-6 space-y-2.5 text-[13px] text-[#cfc6b6]">
             <li className="flex items-start gap-2.5">
-              <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#C9A96E]" />
+              <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#d4c5a9]" />
               <span>GF-3/4, Vidhi Square, BPC Road, Vadodara 390020</span>
             </li>
             <li className="flex items-center gap-2.5">
-              <Phone className="h-4 w-4 text-[#C9A96E]" />
+              <Phone className="h-4 w-4 text-[#e8d5b8]" />
               <a href="tel:+919033779867">+91 90337 79867</a>
             </li>
             <li className="flex items-center gap-2.5">
-              <Mail className="h-4 w-4 text-[#C9A96E]" />
+              <Mail className="h-4 w-4 text-[#e8d5b8]" />
               <a href="mailto:hello@creativemuse.in">hello@creativemuse.in</a>
             </li>
           </ul>
@@ -35,7 +35,7 @@ export function Footer() {
                 key={i}
                 href="#"
                 aria-label="social"
-                className="flex h-10 w-10 items-center justify-center rounded-full bg-white/5 text-[#cfc6b6] transition-colors hover:bg-[#C9A96E] hover:text-white"
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-white/5 text-[#cfc6b6] transition-colors hover:bg-[#e8d5b8] hover:text-[#0d0d1a]"
               >
                 <Ic className="h-4 w-4" />
               </a>
@@ -82,7 +82,7 @@ export function Footer() {
           <p>© 2026 All Rights Reserved By Creative Muse</p>
           <p className="mt-1">
             Designed &amp; Developed By{" "}
-            <a href="https://apfpuniversal.com" target="_blank" rel="noopener noreferrer" className="text-[#C9A96E] hover:underline">
+            <a href="https://apfpuniversal.com" target="_blank" rel="noopener noreferrer" className="text-[#e8d5b8] hover:underline">
               APFP UNIVERSAL
             </a>
           </p>
@@ -128,7 +128,7 @@ function FooterCol({ title, links }: { title: string; links: [string, string][] 
       <ul className="mt-5 space-y-2.5 text-[13px] text-[#9b9082]">
         {links.map(([label, to]) => (
           <li key={label}>
-            <Link to={to} className="transition-colors hover:text-[#C9A96E]">
+            <Link to={to} className="transition-colors hover:text-[#e8d5b8]">
               {label}
             </Link>
           </li>

@@ -125,7 +125,7 @@ function AccountOrderDetailPage() {
       <section className="mx-auto max-w-[1120px] px-4 py-8 sm:px-6 sm:py-14">
         <Link
           to="/account/orders"
-          className="mb-5 inline-flex items-center gap-1 text-sm font-medium text-[#7a6e64] hover:text-[#C9A96E]"
+          className="mb-5 inline-flex items-center gap-1 text-sm font-medium text-[#7a6e64] hover:text-[#8B1A1A]"
         >
           <ChevronLeft className="h-4 w-4" /> All Orders
         </Link>
@@ -222,7 +222,6 @@ function AccountOrderDetailPage() {
                     </div>
                     <div className="min-w-0 flex-1">
                       <p className="font-semibold text-[#1a1a2e]">{item.productName}</p>
-                      <p className="mt-1 text-xs text-[#7a6e64]">SKU: {item.sku || "-"}</p>
                       <p className="mt-4 text-xs text-[#7a6e64]">Qty: {item.quantity}</p>
                       <p className="text-xs text-[#7a6e64]">
                         Unit Price: {formatPrice(item.unitPrice)}

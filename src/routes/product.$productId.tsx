@@ -4,6 +4,7 @@ import { Heart, ShoppingBag, ChevronRight, ZoomIn, Plus } from "lucide-react";
 import { PageShell } from "@/components/site/PageHeader";
 import { ProductCard } from "@/components/site/ProductCard";
 import { formatPrice, getRecommendedProducts, type Product, useStorefrontProduct, useStorefrontProducts } from "@/lib/products";
+import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import { useStore } from "@/lib/store";
 
 export const Route = createFileRoute("/product/$productId")({
@@ -85,7 +86,6 @@ function ProductContent({ product }: { product: Product }) {
   const recommended = getRecommendedProducts(product, products, 6);
 
   const details: Array<[string, string | undefined]> = [
-    ["SKU", product.sku],
     ["Category", product.category],
     ["Collection", product.collection],
     ["Metal", product.metal],
@@ -93,7 +93,6 @@ function ProductContent({ product }: { product: Product }) {
     ["Metal colour", product.metalColor],
     ["Gemstone", product.stone],
     ["Weight", product.weight],
-    ["Certification", product.certification],
   ];
 
   const toggleAcc = (key: string) => setAccOpen((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -102,11 +101,11 @@ function ProductContent({ product }: { product: Product }) {
     <PageShell>
       {/* Breadcrumbs */}
       <div className="mx-auto flex max-w-[1180px] items-center gap-1.5 px-5 pt-6 pb-2 text-[11px] font-semibold tracking-[0.1em] text-[#7a6e64] uppercase sm:px-6">
-        <Link to="/" className="hover:text-[#C9A96E]">
+        <Link to="/" className="hover:text-[#8B1A1A]">
           Home
         </Link>
         <ChevronRight className="h-3 w-3" />
-        <Link to="/shop" className="hover:text-[#C9A96E]">
+        <Link to="/shop" className="hover:text-[#8B1A1A]">
           Shop
         </Link>
         <ChevronRight className="h-3 w-3" />
@@ -248,17 +247,6 @@ function ProductContent({ product }: { product: Product }) {
             </InfoAccordion>
 
             <InfoAccordion
-              title="Materials & Certification"
-              open={accOpen["materials"]}
-              onToggle={() => toggleAcc("materials")}
-            >
-              <p className="text-xs leading-relaxed text-[#7a6e64]">
-                {product.certification ?? "BIS Hallmarked"}. Every piece is quality-checked and
-                hallmarked before it leaves our atelier.
-              </p>
-            </InfoAccordion>
-
-            <InfoAccordion
               title="Shipping & Returns"
               open={accOpen["shipping"]}
               onToggle={() => toggleAcc("shipping")}
@@ -289,10 +277,16 @@ function ProductContent({ product }: { product: Product }) {
           <h2 className="font-display text-center text-2xl font-semibold text-[#1a1a2e] sm:text-3xl">
             Recommended For You
           </h2>
-          <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {recommended.slice(0, 4).map((rec, i) => (
-              <ProductCard key={rec.id} product={rec} index={i} />
-            ))}
+          <div className="mt-8">
+            <Carousel opts={{ align: "start", dragFree: true }}>
+              <CarouselContent className="-ml-3 md:-ml-4">
+                {recommended.slice(0, 6).map((rec, i) => (
+                  <CarouselItem key={rec.id} className="basis-[48%] pl-3 sm:basis-[45%] md:basis-1/3 md:pl-4 lg:basis-1/4">
+                    <ProductCard product={rec} index={i} />
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+            </Carousel>
           </div>
         </section>
       )}

@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion, AnimatePresence } from "framer-motion";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import {
   Sparkles,
   Award,
@@ -17,12 +17,16 @@ import {
   Hand,
   Leaf,
   Package,
+  ArrowLeft,
+  ArrowRight,
 } from "lucide-react";
 import { type Product, useStorefrontProducts } from "@/lib/products";
 import { categoriesApi } from "@/lib/api/categories";
 import { contentApi } from "@/lib/api/content";
 import { ProductCard } from "@/components/site/ProductCard";
 import { ShoppableReelsSection } from "@/components/site/ShoppableReelsSection";
+import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
+import type { CarouselApi } from "@/components/ui/carousel";
 import { useStore } from "@/lib/store";
 import { ProductCarouselSection, type AutoScrollSettings } from "@/components/site/ProductCarouselSection";
 import heroRing from "@/assets/hero-ring.jpg";
@@ -82,6 +86,7 @@ export const Route = createFileRoute("/")({
 function HomePage() {
   return (
     <>
+      <AnnouncementBanner />
       <Hero />
       <TrustBar />
       <ShopByCategory />
@@ -101,112 +106,186 @@ function HomePage() {
 }
 
 /* =========================================================
+   0. ANNOUNCEMENT BANNER
+   ========================================================= */
+function AnnouncementBanner() {
+  return (
+    <div className="bg-[#8B1A1A] py-2 text-center text-[11px] font-semibold tracking-[0.15em] text-white uppercase">
+      <span className="animate-pulse mx-1">✦</span> Free insured shipping on all orders above ₹5,000{" "}
+      <span className="animate-pulse mx-1">✦</span>
+    </div>
+  );
+}
+
+/* =========================================================
    1. HERO
    ========================================================= */
+const HERO_SLIDES = [
+  {
+    badge: "Vadodara's Premier Fine Jewellery",
+    title: <>Where Every Gem<br /><span className="shimmer-text italic">Tells Your Story</span></>,
+    desc: "Handcrafted fine jewellery for life's most precious moments. From bridal masterpieces to everyday elegance — designed in Vadodara, treasured for generations.",
+    image: heroRing,
+    imageAlt: "Aarav Solitaire — 18K rose gold diamond ring",
+    stat: "₹48,500",
+  },
+  {
+    badge: "Bridal Edit 2025",
+    title: <>Celebrate Life's<br /><span className="shimmer-text italic">Golden Moments</span></>,
+    desc: "Exquisite bridal sets crafted to make your special day unforgettable. Each piece tells a story of love, tradition, and timeless beauty.",
+    image: prodPolki,
+    imageAlt: "Polki Choker — Traditional bridal jewellery",
+    stat: "Starting ₹12,500",
+  },
+];
+
 function Hero() {
+  const [api, setApi] = useState<CarouselApi>();
+  const [current, setCurrent] = useState(0);
+
+  const onSelect = useCallback((a: CarouselApi) => {
+    setCurrent(a?.selectedScrollSnap() ?? 0);
+  }, []);
+
+  useEffect(() => {
+    if (!api) return;
+    setCurrent(api.selectedScrollSnap());
+    api.on("select", onSelect);
+    return () => { api.off("select", onSelect); };
+  }, [api, onSelect]);
+
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-[#fdf8f3] via-[#f7ede0] to-[#f0dcc8]">
-      {/* radial accents */}
       <div className="pointer-events-none absolute -top-32 -left-32 h-[480px] w-[480px] rounded-full bg-[#C9A96E]/20 blur-[120px]" />
       <div className="pointer-events-none absolute -right-40 -bottom-40 h-[520px] w-[520px] rounded-full bg-[#E8B4A0]/25 blur-[140px]" />
 
-      <div className="relative mx-auto grid max-w-[1280px] items-center gap-8 px-6 pt-10 pb-16 md:pt-14 md:pb-20 lg:grid-cols-[55fr_45fr] lg:gap-10 lg:pt-16 lg:pb-20">
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7 }}
-          className="flex flex-col justify-center"
-        >
-          <span className="inline-flex w-fit items-center gap-2 rounded-full border border-[#C9A96E]/40 bg-white/60 px-4 py-1.5 text-[11px] font-semibold tracking-[0.18em] text-[#8a6a2a] uppercase backdrop-blur-sm">
-            <Sparkles className="h-3 w-3" />
-            Vadodara's Premier Fine Jewellery
-          </span>
+      <Carousel setApi={setApi} opts={{ loop: true, align: "start" }} className="relative">
+        <CarouselContent>
+          {HERO_SLIDES.map((slide, idx) => (
+            <CarouselItem key={idx}>
+              <div className="relative mx-auto grid max-w-[1280px] items-center gap-6 px-6 pt-8 pb-12 md:pt-10 md:pb-16 lg:grid-cols-[55fr_45fr] lg:gap-8 lg:pt-12 lg:pb-16">
+                <motion.div
+                  initial={{ opacity: 0, y: 24 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.7 }}
+                  className="flex flex-col justify-center"
+                >
+                  <span className="inline-flex w-fit items-center gap-2 rounded-full border border-[#C9A96E]/40 bg-white/60 px-4 py-1.5 text-[11px] font-semibold tracking-[0.18em] text-[#8a6a2a] uppercase backdrop-blur-sm">
+                    <Sparkles className="h-3 w-3" />
+                    {slide.badge}
+                  </span>
 
-          <h1
-            className="font-display mt-5 font-bold leading-[1.05] text-[#1a1a2e]"
-            style={{ fontSize: "clamp(32px, 6vw, 60px)" }}
-          >
-            Where Every Gem
-            <br />
-            <span className="shimmer-text italic">Tells Your Story</span>
-          </h1>
+                  <h1
+                    className="font-display mt-4 font-bold leading-[1.05] text-[#1a1a2e]"
+                    style={{ fontSize: "clamp(28px, 5vw, 52px)" }}
+                  >
+                    {slide.title}
+                  </h1>
 
-          <p className="mt-5 max-w-lg text-[15px] leading-relaxed text-[#5a4e44] sm:text-[16px]">
-            Handcrafted fine jewellery for life's most precious moments. From bridal masterpieces to
-            everyday elegance — designed in Vadodara, treasured for generations.
-          </p>
+                  <p className="mt-4 max-w-lg text-[14px] leading-relaxed text-[#5a4e44] sm:text-[15px]">
+                    {slide.desc}
+                  </p>
 
-          <div className="mt-7 flex flex-wrap gap-3">
-            <Link to="/shop" className="btn-primary">
-              Explore Collections
-            </Link>
-            <Link to="/contact" className="btn-secondary">
-              Visit Our Store
-            </Link>
-          </div>
+                  <div className="mt-5 flex flex-wrap gap-3">
+                    <Link to="/shop" className="btn-primary">
+                      Explore Collections
+                    </Link>
+                    <Link to="/contact" className="btn-secondary">
+                      Visit Our Store
+                    </Link>
+                  </div>
 
-          <div className="mt-8 flex flex-wrap items-center gap-x-10 gap-y-5 border-t border-[#C9A96E]/20 pt-6">
-            {[
-              ["15+", "Years of Craft"],
-              ["50K+", "Happy Customers"],
-              ["100%", "Hallmarked Gold"],
-            ].map(([n, l]) => (
-              <div key={l}>
-                <p className="font-display text-2xl font-bold text-[#1a1a2e]">{n}</p>
-                <p className="text-[11px] tracking-[0.14em] text-[#5a4e44] uppercase">{l}</p>
+                  <div className="mt-6 flex flex-wrap items-center gap-x-10 gap-y-4 border-t border-[#C9A96E]/20 pt-5">
+                    {[
+                      ["15+", "Years of Craft"],
+                      ["50K+", "Happy Customers"],
+                      ["100%", "Hallmarked Gold"],
+                    ].map(([n, l]) => (
+                      <div key={l}>
+                        <p className="font-display text-2xl font-bold text-[#1a1a2e]">{n}</p>
+                        <p className="text-[11px] tracking-[0.14em] text-[#5a4e44] uppercase">{l}</p>
+                      </div>
+                    ))}
+                  </div>
+                </motion.div>
+
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.8, delay: 0.2 }}
+                  className="relative mx-auto flex w-full max-w-[420px] items-center justify-center"
+                >
+                  <div className="glass-panel relative aspect-square w-full overflow-hidden rounded-[28px] p-4 shadow-[0_24px_64px_rgba(0,0,0,0.12)] sm:p-5">
+                    <div className="animate-cm-float flex h-full w-full items-center justify-center">
+                      <img
+                        src={slide.image}
+                        alt={slide.imageAlt}
+                        width={1024}
+                        height={1280}
+                        className="h-full w-full rounded-[20px] object-contain drop-shadow-[0_24px_48px_rgba(201,169,110,0.35)]"
+                      />
+                    </div>
+                  </div>
+
+                  <motion.div
+                    initial={{ opacity: 0, x: -30 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.6, duration: 0.6 }}
+                    className="absolute top-4 left-2 hidden rounded-[18px] border border-[#C9A96E]/30 bg-white/90 p-3 shadow-[0_8px_32px_rgba(201,169,110,0.2)] backdrop-blur-xl md:block"
+                  >
+                    <p className="eyebrow text-[9px] text-[#8a6a2a]">Best Seller</p>
+                    <p className="font-display mt-1 text-sm font-semibold text-[#1a1a2e]">Aarav Solitaire</p>
+                    <p className="mt-0.5 text-[13px] font-bold text-[#8a6a2a]">{slide.stat}</p>
+                  </motion.div>
+
+                  <motion.div
+                    initial={{ opacity: 0, x: 30 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.8, duration: 0.6 }}
+                    className="absolute right-2 bottom-4 hidden items-center gap-2 rounded-[18px] border border-emerald-200/60 bg-white/90 p-2.5 shadow-[0_8px_32px_rgba(0,0,0,0.1)] backdrop-blur-xl md:flex"
+                  >
+                    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-emerald-100">
+                      <Diamond className="h-4 w-4 text-emerald-700" />
+                    </div>
+                    <div>
+                      <p className="text-[11px] font-semibold text-emerald-800">IGI Certified</p>
+                      <p className="text-[10px] text-[#5a4e44]">Lab-graded diamonds</p>
+                    </div>
+                  </motion.div>
+                </motion.div>
               </div>
-            ))}
-          </div>
-        </motion.div>
+            </CarouselItem>
+          ))}
+        </CarouselContent>
 
-        {/* Right floating visual */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="relative mx-auto flex w-full max-w-[460px] items-center justify-center"
+        <button
+          onClick={() => api?.scrollPrev()}
+          className="absolute left-3 top-1/2 z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 text-[#2a1e14] shadow transition-colors hover:bg-white"
+          aria-label="Previous slide"
         >
-          <div className="glass-panel relative aspect-square w-full overflow-hidden rounded-[32px] p-4 shadow-[0_24px_64px_rgba(0,0,0,0.12)] sm:p-6">
-            <div className="animate-cm-float flex h-full w-full items-center justify-center">
-              <img
-                src={heroRing}
-                alt="Aarav Solitaire — 18K rose gold diamond ring"
-                width={1024}
-                height={1280}
-                className="h-full w-full rounded-[24px] object-contain drop-shadow-[0_24px_48px_rgba(201,169,110,0.35)]"
-              />
-            </div>
-          </div>
+          <ArrowLeft className="h-4 w-4" />
+        </button>
+        <button
+          onClick={() => api?.scrollNext()}
+          className="absolute right-3 top-1/2 z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 text-[#2a1e14] shadow transition-colors hover:bg-white"
+          aria-label="Next slide"
+        >
+          <ArrowRight className="h-4 w-4" />
+        </button>
 
-          {/* mini floating card top-left */}
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.6, duration: 0.6 }}
-            className="absolute top-4 left-2 hidden rounded-[18px] border border-[#C9A96E]/30 bg-white/90 p-3 shadow-[0_8px_32px_rgba(201,169,110,0.2)] backdrop-blur-xl md:block"
-          >
-            <p className="eyebrow text-[9px] text-[#8a6a2a]">Best Seller</p>
-            <p className="font-display mt-1 text-sm font-semibold text-[#1a1a2e]">Aarav Solitaire</p>
-            <p className="mt-0.5 text-[13px] font-bold text-[#8a6a2a]">₹48,500</p>
-          </motion.div>
-
-          {/* mini floating card bottom-right */}
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.8, duration: 0.6 }}
-            className="absolute right-2 bottom-4 hidden items-center gap-2 rounded-[18px] border border-emerald-200/60 bg-white/90 p-2.5 shadow-[0_8px_32px_rgba(0,0,0,0.1)] backdrop-blur-xl md:flex"
-          >
-            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-emerald-100">
-              <Diamond className="h-4 w-4 text-emerald-700" />
-            </div>
-            <div>
-              <p className="text-[11px] font-semibold text-emerald-800">IGI Certified</p>
-              <p className="text-[10px] text-[#5a4e44]">Lab-graded diamonds</p>
-            </div>
-          </motion.div>
-        </motion.div>
-      </div>
+        <div className="absolute bottom-4 left-1/2 z-10 flex -translate-x-1/2 gap-2">
+          {HERO_SLIDES.map((_, idx) => (
+            <button
+              key={idx}
+              onClick={() => api?.scrollTo(idx)}
+              className={`h-2 rounded-full transition-all ${
+                idx === current ? "w-7 bg-[#8B1A1A]" : "w-2 bg-[#C9A96E]/50"
+              }`}
+              aria-label={`Go to slide ${idx + 1}`}
+            />
+          ))}
+        </div>
+      </Carousel>
     </section>
   );
 }
@@ -297,46 +376,51 @@ function ShopByCategory() {
       <div className="mx-auto max-w-[1280px] px-6">
         <SectionHeading eyebrow="Browse" title="Shop by Category" />
 
-        <div className="mt-10 grid grid-cols-2 gap-4 sm:gap-5 md:grid-cols-4">
-          {dbCategories.map((cat, i) => {
-            const categoryImg = cat.imageUrl || CATEGORY_IMAGES[cat.name] || null;
-            return (
-            <motion.div
-              key={cat.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.4, delay: i * 0.05 }}
-              className="h-full"
-            >
-               <Link
-                to={`/category/${cat.slug}`}
-                className="group flex h-full flex-col items-center rounded-[24px] border border-transparent bg-white p-3 pb-4 text-center shadow-[0_4px_24px_rgba(0,0,0,0.04)] transition-all duration-500 hover:-translate-y-2 hover:border-[#C9A96E]/50 hover:shadow-[0_20px_60px_rgba(201,169,110,0.22)] active:scale-[0.97] md:p-4 md:pb-5"
-              >
-                <div className="relative aspect-square w-full overflow-hidden rounded-[18px] bg-gradient-to-br from-[#fdf8f3] to-[#f0e4cd]">
-                  {categoryImg ? (
-                    <img
-                      src={categoryImg}
-                      alt={cat.name}
-                      loading="lazy"
-                      width={768}
-                      height={768}
-                      className="absolute inset-0 h-full w-full object-contain p-2 transition-transform duration-700 ease-out group-hover:scale-110 md:p-3"
-                      onError={(e) => { e.currentTarget.style.display = "none"; }}
-                    />
-                  ) : (
-                    <div className="flex h-full w-full items-center justify-center bg-[#f5efe8] p-3">
-                      <svg className="h-8 w-8 text-[#c9a96e]/20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z" /></svg>
-                    </div>
-                  )}
-                </div>
-                <p className="font-display mt-3 text-[14px] font-semibold text-[#1a1a2e] md:mt-4 md:text-[15px]">
-                  {cat.name}
-                </p>
-              </Link>
-            </motion.div>
-            );
-          })}
+        <div className="mt-10">
+          <Carousel opts={{ align: "start", dragFree: true }}>
+            <CarouselContent className="-ml-3 md:-ml-4">
+              {dbCategories.map((cat, i) => {
+                const categoryImg = cat.imageUrl || CATEGORY_IMAGES[cat.name] || null;
+                return (
+                <CarouselItem key={cat.id} className="basis-[44%] pl-3 sm:basis-[30%] md:basis-1/4 md:pl-4 lg:basis-[20%]">
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-50px" }}
+                    transition={{ duration: 0.4, delay: i * 0.05 }}
+                    className="h-full"
+                  >
+                     <Link
+                      to={`/category/${cat.slug}`}
+                      className="group flex h-full flex-col items-center rounded-[24px] border border-transparent bg-white p-3 pb-4 text-center shadow-[0_4px_24px_rgba(0,0,0,0.04)] transition-all duration-500 hover:-translate-y-2 hover:border-[#C9A96E]/50 hover:shadow-[0_20px_60px_rgba(201,169,110,0.22)] active:scale-[0.97] md:p-4 md:pb-5"
+                    >
+                      <div className="relative aspect-square w-full overflow-hidden rounded-[18px] bg-gradient-to-br from-[#fdf8f3] to-[#f0e4cd]">
+                        {categoryImg ? (
+                          <img
+                            src={categoryImg}
+                            alt={cat.name}
+                            loading="lazy"
+                            width={768}
+                            height={768}
+                            className="absolute inset-0 h-full w-full object-contain p-2 transition-transform duration-700 ease-out group-hover:scale-110 md:p-3"
+                            onError={(e) => { e.currentTarget.style.display = "none"; }}
+                          />
+                        ) : (
+                          <div className="flex h-full w-full items-center justify-center bg-[#f5efe8] p-3">
+                            <svg className="h-8 w-8 text-[#c9a96e]/20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z" /></svg>
+                          </div>
+                        )}
+                      </div>
+                      <p className="font-display mt-3 text-[14px] font-semibold text-[#1a1a2e] md:mt-4 md:text-[15px]">
+                        {cat.name}
+                      </p>
+                    </Link>
+                  </motion.div>
+                </CarouselItem>
+                );
+              })}
+            </CarouselContent>
+          </Carousel>
         </div>
       </div>
     </section>
@@ -475,11 +559,19 @@ function BestSellers() {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 sm:gap-7 sm:grid-cols-2 lg:grid-cols-4">
+        <div>
           {filtered.length === 0 ? (
-            <p className="col-span-full text-center text-[#7a6e64]">No products in this tab yet.</p>
+            <p className="text-center text-[#7a6e64]">No products in this tab yet.</p>
           ) : (
-            filtered.map((p, i) => <ProductCard key={p.id} product={p} index={i} />)
+            <Carousel opts={{ align: "start", dragFree: true }}>
+              <CarouselContent className="-ml-3 md:-ml-4">
+                {filtered.map((p, i) => (
+                  <CarouselItem key={p.id} className="basis-[48%] pl-3 sm:basis-[45%] md:basis-1/3 md:pl-4 lg:basis-1/4">
+                    <ProductCard product={p} index={i} />
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+            </Carousel>
           )}
         </div>
       </div>
@@ -591,32 +683,35 @@ function Offers() {
   return (
     <section className="bg-[#f5efe8] py-20">
       <div className="mx-auto max-w-[1280px] px-6">
-        <div className="grid gap-6 md:grid-cols-3">
-          {cards.map((c, i) => (
-            <motion.div
-              key={c.title}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.5, delay: i * 0.1 }}
-              className={`relative overflow-hidden rounded-[28px] bg-gradient-to-br p-8 text-white shadow-[0_12px_40px_rgba(0,0,0,0.15)] ${c.bg}`}
-            >
-              <div className="absolute inset-0 opacity-10">
-                <img src={c.image} alt="" className="h-full w-full object-contain p-4" />
-              </div>
-              <div className="relative">
-                <h3 className="font-display mt-4 text-2xl font-semibold text-white">{c.title}</h3>
-                <p className="mt-2 text-sm text-white/75">{c.copy}</p>
-                <Link
-                  to="/shop"
-                  className="mt-6 inline-flex items-center gap-2 text-[12px] font-semibold tracking-[0.16em] text-[#E8C98A] uppercase"
+        <Carousel opts={{ align: "start" }}>
+          <CarouselContent className="-ml-4 md:-ml-6">
+            {cards.map((c, i) => (
+              <CarouselItem key={c.title} className="basis-[85%] pl-4 sm:basis-[55%] md:basis-1/3 md:pl-6">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-50px" }}
+                  transition={{ duration: 0.5, delay: i * 0.1 }}
+                  className={`relative overflow-hidden rounded-[28px] bg-gradient-to-br p-8 text-white shadow-[0_12px_40px_rgba(0,0,0,0.15)] ${c.bg}`}
                 >
-                  {c.cta} <ChevronRight className="h-4 w-4" />
-                </Link>
-              </div>
-            </motion.div>
-          ))}
-        </div>
+                  <div className="absolute inset-0 opacity-10">
+                    <img src={c.image} alt="" className="h-full w-full object-contain p-4" />
+                  </div>
+                  <div className="relative">
+                    <h3 className="font-display mt-4 text-2xl font-semibold text-white">{c.title}</h3>
+                    <p className="mt-2 text-sm text-white/75">{c.copy}</p>
+                    <Link
+                      to="/shop"
+                      className="mt-6 inline-flex items-center gap-2 text-[12px] font-semibold tracking-[0.16em] text-[#E8C98A] uppercase"
+                    >
+                      {c.cta} <ChevronRight className="h-4 w-4" />
+                    </Link>
+                  </div>
+                </motion.div>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+        </Carousel>
       </div>
     </section>
   );

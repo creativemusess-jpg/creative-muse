@@ -58,7 +58,6 @@ const InvoiceTemplate = forwardRef<HTMLDivElement, InvoiceTemplateProps>(
           .badge-paid { background: #d1fae5; color: #065f46; }
           .badge-pending { background: #fef3c7; color: #92400e; }
           .badge-cancelled { background: #fee2e2; color: #991b1b; }
-          .item-image-cell img { width: 40px; height: 40px; object-fit: contain; border-radius: 4px; border: 1px solid #eee; }
           @media print {
             .invoice-template { padding: 0; max-width: 100%; }
             .no-print { display: none !important; }
@@ -165,26 +164,15 @@ const InvoiceTemplate = forwardRef<HTMLDivElement, InvoiceTemplateProps>(
           <table className="invoice-items">
             <thead>
               <tr>
-                <th style={{ width: 50 }}></th>
                 <th>Product</th>
-                <th>SKU</th>
-                <th>Qty</th>
-                <th>Unit Price</th>
-                <th>Total</th>
+                <th style={{ width: 60 }}>Qty</th>
+                <th style={{ width: 90 }}>Unit Price</th>
+                <th style={{ width: 90 }}>Total</th>
               </tr>
             </thead>
             <tbody>
               {items.map((item, i) => (
                 <tr key={i}>
-                  <td className="item-image-cell">
-                    {item.productImage ? (
-                      <img src={item.productImage} alt={item.productName} />
-                    ) : (
-                      <div
-                        style={{ width: 40, height: 40, background: "#f3f4f6", borderRadius: 4 }}
-                      />
-                    )}
-                  </td>
                   <td>
                     {item.productName || "Unavailable product"}
                     {item.selectedVariant && (
@@ -194,7 +182,6 @@ const InvoiceTemplate = forwardRef<HTMLDivElement, InvoiceTemplateProps>(
                       </div>
                     )}
                   </td>
-                  <td>{item.sku || "—"}</td>
                   <td>{item.quantity}</td>
                   <td>{item.unitPrice > 0 ? formatCurrency(item.unitPrice) : "—"}</td>
                   <td>{formatCurrency(item.lineTotal || 0)}</td>
