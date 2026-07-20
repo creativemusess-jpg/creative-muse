@@ -20,7 +20,7 @@ export interface AutoScrollSettings {
 
 interface ProductCarouselSectionProps {
   eyebrow: string;
-  title: string;
+  title?: string;
   products: Product[];
   autoScroll?: AutoScrollSettings;
 }
@@ -49,6 +49,7 @@ export function ProductCarouselSection({
 
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const inactivityRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const initialTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const sectionRef = useRef<HTMLElement>(null);
 
   const prefersReducedMotion = useMemo(() => {
@@ -59,16 +60,14 @@ export function ProductCarouselSection({
   const effectiveAutoScrollEnabled = config.autoScrollEnabled && !prefersReducedMotion;
 
   const startAutoScroll = useCallback(() => {
-    if (!api || !effectiveAutoScrollEnabled || products.length <= 1) return;
-    const slides = scrollSnaps.length;
-    if (slides <= 1) return;
+    if (!api || !effectiveAutoScrollEnabled) return;
+    const slides = api.scrollSnapList().length;
+    if (slides <= 1 || products.length <= 1) return;
 
     stopAutoScroll();
 
     const speedMs = Math.max(config.scrollSpeed, 3) * 1000;
     const intervalMs = speedMs / Math.max(slides, 1);
-
-    trySetSlowTransition(intervalMs);
 
     intervalRef.current = setInterval(() => {
       if (!api) return;
@@ -78,38 +77,14 @@ export function ProductCarouselSection({
         api.scrollNext();
       }
     }, intervalMs);
-  }, [api, effectiveAutoScrollEnabled, products.length, scrollSnaps.length, config.scrollSpeed, config.scrollDirection]);
+  }, [api, effectiveAutoScrollEnabled, products.length, config.scrollSpeed, config.scrollDirection]);
 
   const stopAutoScroll = useCallback(() => {
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
     }
-    trySetFastTransition();
   }, []);
-
-  const trySetSlowTransition = useCallback((intervalMs: number) => {
-    try {
-      if (!api) return;
-      const container = api.containerNode();
-      if (container) {
-        const slowDuration = Math.max(intervalMs * 0.85, 300);
-        container.style.setProperty('transition-duration', `${slowDuration}ms`, 'important');
-        container.style.setProperty('transition-timing-function', 'linear', 'important');
-      }
-    } catch {}
-  }, [api]);
-
-  const trySetFastTransition = useCallback(() => {
-    try {
-      if (!api) return;
-      const container = api.containerNode();
-      if (container) {
-        container.style.setProperty('transition-duration', '350ms', 'important');
-        container.style.setProperty('transition-timing-function', '', 'important');
-      }
-    } catch {}
-  }, [api]);
 
   const clearInactivityTimer = useCallback(() => {
     if (inactivityRef.current) {
@@ -132,18 +107,18 @@ export function ProductCarouselSection({
   useEffect(() => {
     if (!api) return;
     if (effectiveAutoScrollEnabled) {
-      const handler = () => startAutoScroll();
-      api.on('settle', handler);
-      startAutoScroll();
+      const onSettle = () => startAutoScroll();
+      api.on('settle', onSettle);
+      initialTimerRef.current = setTimeout(() => startAutoScroll(), 800);
       return () => {
-        api.off('settle', handler);
+        api.off('settle', onSettle);
         stopAutoScroll();
+        if (initialTimerRef.current) { clearTimeout(initialTimerRef.current); initialTimerRef.current = null; }
       };
     } else {
       stopAutoScroll();
-      trySetFastTransition();
     }
-  }, [api, effectiveAutoScrollEnabled, startAutoScroll, stopAutoScroll, trySetFastTransition]);
+  }, [api, effectiveAutoScrollEnabled, startAutoScroll, stopAutoScroll]);
 
   const handleMouseEnter = useCallback(() => {
     if (config.pauseOnHover) {
@@ -186,6 +161,7 @@ export function ProductCarouselSection({
     return () => {
       stopAutoScroll();
       clearInactivityTimer();
+      if (initialTimerRef.current) { clearTimeout(initialTimerRef.current); initialTimerRef.current = null; }
     };
   }, [stopAutoScroll, clearInactivityTimer]);
 
@@ -217,9 +193,11 @@ export function ProductCarouselSection({
         <div className="flex items-end justify-between gap-6">
           <div>
             <p className="eyebrow">{eyebrow}</p>
-            <h2 className="font-display mt-3 text-[32px] leading-tight font-semibold text-[#1a1a2e] sm:text-[40px]">
-              {title}
-            </h2>
+            {title && (
+              <h2 className="font-display mt-3 text-[32px] leading-tight font-semibold text-[#1a1a2e] sm:text-[40px]">
+                {title}
+              </h2>
+            )}
             <span className="gold-divider mt-4 inline-block" />
           </div>
           <div className="hidden gap-2 sm:flex">

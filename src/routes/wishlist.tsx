@@ -16,7 +16,7 @@ function WishlistPage() {
       <PageHeader eyebrow="Saved" title="Your Wishlist" subtitle="Pieces you've fallen in love with." />
       <section className="mx-auto max-w-[1280px] px-6 py-16">
         {products.length > 0 ? (
-          <div className="grid grid-cols-2 gap-3 sm:gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-4 sm:gap-7 sm:grid-cols-2 lg:grid-cols-4">
             {products.map((product, index) => (
               <ProductCard key={product.id} product={product} index={index} />
             ))}

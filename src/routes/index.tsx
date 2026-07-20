@@ -17,7 +17,6 @@ import {
   Hand,
   Leaf,
   Package,
-  Check,
 } from "lucide-react";
 import { type Product, useStorefrontProducts } from "@/lib/products";
 import { categoriesApi } from "@/lib/api/categories";
@@ -95,7 +94,6 @@ function HomePage() {
       <WhyChoose />
       <VideoBanner />
       <StoreLocation />
-      <GiftFinder />
       <FAQ />
       <Newsletter />
     </>
@@ -477,7 +475,7 @@ function BestSellers() {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-3 sm:gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-4 sm:gap-7 sm:grid-cols-2 lg:grid-cols-4">
           {filtered.length === 0 ? (
             <p className="col-span-full text-center text-[#7a6e64]">No products in this tab yet.</p>
           ) : (
@@ -521,7 +519,6 @@ function NewArrivals() {
   return (
     <ProductCarouselSection
       eyebrow="Just Arrived"
-      title="New This Season"
       products={list}
       autoScroll={scrollSettings}
     />
@@ -772,126 +769,7 @@ function StoreLocation() {
 }
 
 /* =========================================================
-   12. GIFT FINDER
-   ========================================================= */
-function GiftFinder() {
-  const groups = [
-    { label: "For Whom?", options: ["Wife", "Mother", "Sister", "Friend"] },
-    { label: "Occasion?", options: ["Birthday", "Anniversary", "Wedding", "Festival"] },
-    { label: "Budget?", options: ["Under ₹5K", "₹5K–₹20K", "₹20K–₹50K", "₹50K+"] },
-  ];
-  const [selected, setSelected] = useState<Record<string, string>>({});
-  const [showResults, setShowResults] = useState(false);
-  const { products } = useStorefrontProducts();
-  const complete = groups.every((g) => selected[g.label]);
-
-  const recommendations = useMemo(() => {
-    if (!showResults) return [];
-    const budget = selected["Budget?"];
-    const inBudget = products.filter((p) => {
-      if (budget === "Under ₹5K") return p.price < 5000;
-      if (budget === "₹5K–₹20K") return p.price >= 5000 && p.price <= 20000;
-      if (budget === "₹20K–₹50K") return p.price > 20000 && p.price <= 50000;
-      if (budget === "₹50K+") return p.price > 50000;
-      return true;
-    });
-    const list = inBudget.length ? inBudget : products;
-    return list.slice(0, 3);
-  }, [products, showResults, selected]);
-
-  return (
-    <section className="px-4 py-20 sm:px-6">
-      <div className="mx-auto max-w-[1280px] rounded-[40px] border border-[#C9A96E]/30 bg-[#fdf8f3] px-6 py-16 shadow-[0_8px_32px_rgba(201,169,110,0.15)] sm:px-12">
-        <SectionHeading
-          eyebrow="Gift Finder"
-          title="Find the Perfect Gift"
-          subtitle="Three questions, one ideal piece."
-        />
-
-        <div className="grid gap-8 md:grid-cols-3">
-          {groups.map((g) => (
-            <div key={g.label}>
-              <p className="font-display mb-3 text-sm font-semibold text-[#1a1a2e]">{g.label}</p>
-              <div className="flex flex-wrap gap-2">
-                {g.options.map((opt) => {
-                  const active = selected[g.label] === opt;
-                  return (
-                    <button
-                      key={opt}
-                      onClick={() => {
-                        setSelected({ ...selected, [g.label]: opt });
-                        setShowResults(false);
-                      }}
-                      className={`rounded-full border px-4 py-2 text-[12px] font-medium transition-all duration-300 ${
-                        active
-                          ? "border-[#C9A96E] bg-[#C9A96E] text-white shadow-[0_8px_20px_rgba(201,169,110,0.35)]"
-                          : "border-[#e0d8cc] bg-white text-[#3a3028] hover:border-[#C9A96E] hover:text-[#C9A96E]"
-                      }`}
-                    >
-                      {active && <Check className="mr-1 inline h-3 w-3" />}{opt}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div className="mt-10 flex flex-wrap justify-center gap-3">
-          <button
-            onClick={() => setShowResults(true)}
-            disabled={!complete}
-            className="btn-primary disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            Find My Gift
-          </button>
-          {(Object.keys(selected).length > 0 || showResults) && (
-            <button
-              onClick={() => {
-                setSelected({});
-                setShowResults(false);
-              }}
-              className="btn-secondary"
-            >
-              Reset
-            </button>
-          )}
-        </div>
-
-        <AnimatePresence>
-          {showResults && (
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.4 }}
-              className="mt-12"
-            >
-              <p className="eyebrow text-center">Curated for you</p>
-              <h3 className="font-display mt-2 text-center text-2xl font-semibold text-[#1a1a2e]">
-                Perfect Matches
-              </h3>
-              <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {recommendations.length === 0 ? (
-                  <p className="col-span-full text-center text-[#7a6e64]">
-                    No matches in that budget — try widening it.
-                  </p>
-                ) : (
-                  recommendations.map((p, i) => (
-                    <ProductCard key={p.id} product={p} index={i} />
-                  ))
-                )}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-    </section>
-  );
-}
-
-/* =========================================================
-   13. FAQ
+   12. FAQ
    ========================================================= */
 const FAQS = [
   ["What certifications do your diamonds carry?", "All Creative Muse diamonds are IGI or GIA certified, with a unique grading report detailing the 4Cs. Certificates are included with every purchase."],
@@ -958,7 +836,7 @@ function FAQ() {
 import { newsletterApi } from "@/lib/api/newsletter";
 
 /* =========================================================
-   14. NEWSLETTER
+   13. NEWSLETTER
    ========================================================= */
 function Newsletter() {
   const [email, setEmail] = useState("");

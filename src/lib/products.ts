@@ -275,7 +275,9 @@ const imageUrl = (image?: { url?: string; image_url?: string } | null) =>
 export function productFromDb(product: ProductWithImages): Product {
   const fallback = fallbackBySku.get(product.sku ?? "") ?? fallbackBySlug.get(product.slug);
   const allImages = (product.images || []).map(imageUrl).filter(Boolean);
-  const mainImage = imageUrl(product.main_image) || allImages[0] || fallback?.image || "";
+  const dbImage = imageUrl(product.main_image) || allImages[0] || "";
+  const isKnownProduct = fallbackBySlug.has(product.slug) || fallbackBySku.has(product.sku ?? "");
+  const mainImage = dbImage || (isKnownProduct && fallback?.image ? fallback.image : "");
   const otherImages = allImages.filter((url) => url !== mainImage);
   const category = product.category_name || fallback?.category || "Jewellery";
   return {

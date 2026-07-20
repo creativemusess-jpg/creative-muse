@@ -673,14 +673,8 @@ function QuickViewInfo({
         )}
       </div>
 
-      <p
-        className={`mt-1.5 text-[12px] font-semibold ${
-          product.stock !== undefined && product.stock <= 5 ? "text-orange-600" : "text-green-700"
-        }`}
-      >
-        {product.stock !== undefined && product.stock <= 5
-          ? `Only ${product.stock} left in stock`
-          : "In stock · ships in 3–5 days"}
+      <p className="mt-1.5 text-[12px] font-semibold text-green-700">
+        In stock · ships in 3–5 days
       </p>
 
       {/* Actions */}

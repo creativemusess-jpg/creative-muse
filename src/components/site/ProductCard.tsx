@@ -135,13 +135,7 @@ export const ProductCard = memo(function ProductCard({
           <span className="text-[15px] font-bold text-[#1a1a2e] md:text-[17px]">{formatPrice(product.price)}</span>
           <span className="text-[10px] text-[#7a6e64] line-through md:text-[12px]">{formatPrice(product.mrp)}</span>
         </div>
-        <div className="min-h-[14px] md:min-h-[18px]">
-          {product.stock !== undefined && product.stock <= 5 && (
-            <p className="mt-0.5 text-[10px] font-semibold text-[#c0603a] md:mt-1 md:text-[11px]">
-              Only {product.stock} left
-            </p>
-          )}
-        </div>
+        <div className="min-h-[14px] md:min-h-[18px]" />
         <button
           type="button"
           onClick={() => addToCart(product.id, 1)}

@@ -196,16 +196,8 @@ function ProductContent({ product }: { product: Product }) {
             )}
           </div>
 
-          <p
-            className={`mt-2 text-[13px] font-semibold ${
-              product.stock !== undefined && product.stock <= 5
-                ? "text-orange-600"
-                : "text-green-700"
-            }`}
-          >
-            {product.stock !== undefined && product.stock <= 5
-              ? `Only ${product.stock} left in stock`
-              : "In stock · ships in 3–5 days"}
+          <p className="mt-2 text-[13px] font-semibold text-green-700">
+            In stock · ships in 3–5 days
           </p>
 
           <div className="mt-7 flex flex-col gap-3 sm:flex-row">
@@ -294,15 +286,10 @@ function ProductContent({ product }: { product: Product }) {
       {/* Recommended Products */}
       {recommended.length > 0 && (
         <section className="mx-auto max-w-[1180px] px-5 pb-16 sm:px-6">
-          <div className="mb-2 flex items-center gap-3">
-            <span className="gold-divider" />
-            <p className="eyebrow">You May Also Like</p>
-            <span className="gold-divider" />
-          </div>
           <h2 className="font-display text-center text-2xl font-semibold text-[#1a1a2e] sm:text-3xl">
             Recommended For You
           </h2>
-          <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {recommended.slice(0, 4).map((rec, i) => (
               <ProductCard key={rec.id} product={rec} index={i} />
             ))}
