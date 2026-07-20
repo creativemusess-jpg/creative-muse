@@ -11,12 +11,14 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WishlistRouteImport } from './routes/wishlist'
 import { Route as TrackOrderRouteImport } from './routes/track-order'
+import { Route as TermsAndConditionsRouteImport } from './routes/terms-and-conditions'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as ShopRouteImport } from './routes/shop'
 import { Route as ShippingPolicyRouteImport } from './routes/shipping-policy'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as RefundReturnPolicyRouteImport } from './routes/refund-return-policy'
 import { Route as RefundPolicyRouteImport } from './routes/refund-policy'
 import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as PaymentRouteImport } from './routes/payment'
@@ -73,6 +75,11 @@ const TrackOrderRoute = TrackOrderRouteImport.update({
   path: '/track-order',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TermsAndConditionsRoute = TermsAndConditionsRouteImport.update({
+  id: '/terms-and-conditions',
+  path: '/terms-and-conditions',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
   path: '/terms',
@@ -101,6 +108,11 @@ const SearchRoute = SearchRouteImport.update({
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RefundReturnPolicyRoute = RefundReturnPolicyRouteImport.update({
+  id: '/refund-return-policy',
+  path: '/refund-return-policy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RefundPolicyRoute = RefundPolicyRouteImport.update({
@@ -345,12 +357,14 @@ export interface FileRoutesByFullPath {
   '/payment': typeof PaymentRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/refund-policy': typeof RefundPolicyRoute
+  '/refund-return-policy': typeof RefundReturnPolicyRoute
   '/reset-password': typeof ResetPasswordRoute
   '/search': typeof SearchRoute
   '/shipping-policy': typeof ShippingPolicyRoute
   '/shop': typeof ShopRoute
   '/signup': typeof SignupRoute
   '/terms': typeof TermsRoute
+  '/terms-and-conditions': typeof TermsAndConditionsRoute
   '/track-order': typeof TrackOrderRoute
   '/wishlist': typeof WishlistRoute
   '/account/orders': typeof AccountOrdersRouteWithChildren
@@ -400,12 +414,14 @@ export interface FileRoutesByTo {
   '/payment': typeof PaymentRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/refund-policy': typeof RefundPolicyRoute
+  '/refund-return-policy': typeof RefundReturnPolicyRoute
   '/reset-password': typeof ResetPasswordRoute
   '/search': typeof SearchRoute
   '/shipping-policy': typeof ShippingPolicyRoute
   '/shop': typeof ShopRoute
   '/signup': typeof SignupRoute
   '/terms': typeof TermsRoute
+  '/terms-and-conditions': typeof TermsAndConditionsRoute
   '/track-order': typeof TrackOrderRoute
   '/wishlist': typeof WishlistRoute
   '/account/orders': typeof AccountOrdersRouteWithChildren
@@ -456,12 +472,14 @@ export interface FileRoutesById {
   '/payment': typeof PaymentRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/refund-policy': typeof RefundPolicyRoute
+  '/refund-return-policy': typeof RefundReturnPolicyRoute
   '/reset-password': typeof ResetPasswordRoute
   '/search': typeof SearchRoute
   '/shipping-policy': typeof ShippingPolicyRoute
   '/shop': typeof ShopRoute
   '/signup': typeof SignupRoute
   '/terms': typeof TermsRoute
+  '/terms-and-conditions': typeof TermsAndConditionsRoute
   '/track-order': typeof TrackOrderRoute
   '/wishlist': typeof WishlistRoute
   '/account/orders': typeof AccountOrdersRouteWithChildren
@@ -513,12 +531,14 @@ export interface FileRouteTypes {
     | '/payment'
     | '/privacy-policy'
     | '/refund-policy'
+    | '/refund-return-policy'
     | '/reset-password'
     | '/search'
     | '/shipping-policy'
     | '/shop'
     | '/signup'
     | '/terms'
+    | '/terms-and-conditions'
     | '/track-order'
     | '/wishlist'
     | '/account/orders'
@@ -568,12 +588,14 @@ export interface FileRouteTypes {
     | '/payment'
     | '/privacy-policy'
     | '/refund-policy'
+    | '/refund-return-policy'
     | '/reset-password'
     | '/search'
     | '/shipping-policy'
     | '/shop'
     | '/signup'
     | '/terms'
+    | '/terms-and-conditions'
     | '/track-order'
     | '/wishlist'
     | '/account/orders'
@@ -623,12 +645,14 @@ export interface FileRouteTypes {
     | '/payment'
     | '/privacy-policy'
     | '/refund-policy'
+    | '/refund-return-policy'
     | '/reset-password'
     | '/search'
     | '/shipping-policy'
     | '/shop'
     | '/signup'
     | '/terms'
+    | '/terms-and-conditions'
     | '/track-order'
     | '/wishlist'
     | '/account/orders'
@@ -679,12 +703,14 @@ export interface RootRouteChildren {
   PaymentRoute: typeof PaymentRoute
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute
   RefundPolicyRoute: typeof RefundPolicyRoute
+  RefundReturnPolicyRoute: typeof RefundReturnPolicyRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SearchRoute: typeof SearchRoute
   ShippingPolicyRoute: typeof ShippingPolicyRoute
   ShopRoute: typeof ShopRoute
   SignupRoute: typeof SignupRoute
   TermsRoute: typeof TermsRoute
+  TermsAndConditionsRoute: typeof TermsAndConditionsRoute
   TrackOrderRoute: typeof TrackOrderRoute
   WishlistRoute: typeof WishlistRoute
   AdminAnalyticsRoute: typeof AdminAnalyticsRoute
@@ -727,6 +753,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TrackOrderRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/terms-and-conditions': {
+      id: '/terms-and-conditions'
+      path: '/terms-and-conditions'
+      fullPath: '/terms-and-conditions'
+      preLoaderRoute: typeof TermsAndConditionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/terms': {
       id: '/terms'
       path: '/terms'
@@ -767,6 +800,13 @@ declare module '@tanstack/react-router' {
       path: '/reset-password'
       fullPath: '/reset-password'
       preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/refund-return-policy': {
+      id: '/refund-return-policy'
+      path: '/refund-return-policy'
+      fullPath: '/refund-return-policy'
+      preLoaderRoute: typeof RefundReturnPolicyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/refund-policy': {
@@ -1197,12 +1237,14 @@ const rootRouteChildren: RootRouteChildren = {
   PaymentRoute: PaymentRoute,
   PrivacyPolicyRoute: PrivacyPolicyRoute,
   RefundPolicyRoute: RefundPolicyRoute,
+  RefundReturnPolicyRoute: RefundReturnPolicyRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SearchRoute: SearchRoute,
   ShippingPolicyRoute: ShippingPolicyRoute,
   ShopRoute: ShopRoute,
   SignupRoute: SignupRoute,
   TermsRoute: TermsRoute,
+  TermsAndConditionsRoute: TermsAndConditionsRoute,
   TrackOrderRoute: TrackOrderRoute,
   WishlistRoute: WishlistRoute,
   AdminAnalyticsRoute: AdminAnalyticsRoute,
