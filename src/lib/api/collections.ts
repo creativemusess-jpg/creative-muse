@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { supabase } from "../supabase";
 
 export interface Collection {
@@ -8,7 +9,8 @@ export interface Collection {
   image: string | null;
   is_manual: boolean;
   condition: any;
-  status: string;
+  status?: string;
+  active?: boolean;
   sort_order: number;
   created_at: string;
   updated_at: string;
@@ -33,13 +35,15 @@ export const collectionsApi = {
     let links: any[] = [];
     if (ids.length > 0) {
       const r = await supabase
-        .from("collection_products")
+        .from("product_collections")
         .select("collection_id")
         .in("collection_id", ids);
       links = r.data ?? [];
     }
     const counts: Record<string, number> = {};
-    links.forEach((l: any) => { counts[l.collection_id] = (counts[l.collection_id] || 0) + 1; });
+    links.forEach((l: any) => {
+      counts[l.collection_id] = (counts[l.collection_id] || 0) + 1;
+    });
     return {
       data: (data ?? []).map((c: any) => ({ ...c, product_count: counts[c.id] || 0 })),
       count: count ?? 0,
@@ -52,10 +56,18 @@ export const collectionsApi = {
   },
 
   async create(data: Partial<Collection>): Promise<Collection> {
-    const { data: result, error } = await supabase.from("collections").insert({
-      name: data.name, slug: data.slug, description: data.description,
-      image: data.image, status: data.status || "active", sort_order: data.sort_order || 0,
-    }).select().single();
+    const { data: result, error } = await supabase
+      .from("collections")
+      .insert({
+        name: data.name,
+        slug: data.slug,
+        description: data.description,
+        image: data.image,
+        active: data.active ?? true,
+        sort_order: data.sort_order || 0,
+      })
+      .select()
+      .single();
     if (error) throw error;
     return result;
   },
@@ -66,25 +78,31 @@ export const collectionsApi = {
   },
 
   async delete(id: string): Promise<void> {
-    await supabase.from("collection_products").delete().eq("collection_id", id);
+    await supabase.from("product_collections").delete().eq("collection_id", id);
     const { error } = await supabase.from("collections").delete().eq("id", id);
     if (error) throw error;
   },
 
   async getProducts(collectionId: string): Promise<CollectionProduct[]> {
     const { data } = await supabase
-      .from("collection_products")
+      .from("product_collections")
       .select("collection_id, product_id")
       .eq("collection_id", collectionId);
     return (data ?? []).map((cp: any) => ({ ...cp }));
   },
 
   async addProduct(collectionId: string, productId: string): Promise<void> {
-    const { error } = await supabase.from("collection_products").insert({ collection_id: collectionId, product_id: productId });
+    const { error } = await supabase
+      .from("product_collections")
+      .insert({ collection_id: collectionId, product_id: productId });
     if (error && !error.message?.includes("duplicate")) throw error;
   },
 
   async removeProduct(collectionId: string, productId: string): Promise<void> {
-    await supabase.from("collection_products").delete().eq("collection_id", collectionId).eq("product_id", productId);
+    await supabase
+      .from("product_collections")
+      .delete()
+      .eq("collection_id", collectionId)
+      .eq("product_id", productId);
   },
 };
