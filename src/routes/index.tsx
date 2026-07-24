@@ -8,17 +8,19 @@ import {
   Truck,
   RotateCcw,
   Shield,
-  ChevronRight,
-  ChevronLeft,
   Phone,
   MapPin,
   Play,
   Plus,
-  Hand,
   Leaf,
-  Package,
   ArrowLeft,
   ArrowRight,
+  Heart,
+  Gem,
+  Star,
+  Users,
+  Droplets,
+  ShieldCheck,
 } from "lucide-react";
 import { type Product, useStorefrontProducts } from "@/lib/products";
 import { categoriesApi } from "@/lib/api/categories";
@@ -42,7 +44,6 @@ import prodAarav from "@/assets/prod-aarav-ring.jpg";
 import prodPriya from "@/assets/prod-priya-necklace.jpg";
 import prodPolki from "@/assets/prod-polki-choker.jpg";
 import prodCelestia from "@/assets/prod-celestia-earrings.jpg";
-import prodJhumka from "@/assets/prod-jhumka.jpg";
 
 const CATEGORY_IMAGES: Record<string, string> = {
   Rings: catRings,
@@ -95,7 +96,6 @@ function HomePage() {
       <ShoppableReelsSection />
       <NewArrivals />
       <PremiumArrivals />
-      <Offers />
       <WhyChoose />
       <VideoBanner />
       <StoreLocation />
@@ -358,13 +358,47 @@ function SectionHeading({
 /* =========================================================
    3. SHOP BY CATEGORY
    ========================================================= */
+const EXCLUDED_CATEGORIES = new Set(["ARTH", "Test", "Demo"]);
+
+const CANONICAL_NAMES = new Set([
+  "Earrings", "Necklace", "Rings", "Hoops", "Earcuffs", "Kada", "Bracelets",
+  "Mangalsutra", "Pendants", "Bangles", "Wedding Sets",
+]);
+
+function deduplicateCategories(cats: any[]): any[] {
+  const seen = new Map<string, any>();
+  for (const cat of cats) {
+    if (EXCLUDED_CATEGORIES.has(cat.name)) continue;
+    const key = cat.name.toLowerCase();
+    if (!seen.has(key)) {
+      seen.set(key, cat);
+    } else {
+      const existing = seen.get(key);
+      if (CANONICAL_NAMES.has(cat.name) || !CANONICAL_NAMES.has(existing.name)) {
+        seen.set(key, cat);
+      }
+    }
+  }
+  const result = Array.from(seen.values());
+  const order = ["Earrings", "Necklace", "Rings", "Hoops", "Earcuffs", "Kada", "Bracelets", "Mangalsutra", "Pendants", "Bangles", "Wedding Sets"];
+  result.sort((a, b) => {
+    const ia = order.indexOf(a.name);
+    const ib = order.indexOf(b.name);
+    if (ia !== -1 && ib !== -1) return ia - ib;
+    if (ia !== -1) return -1;
+    if (ib !== -1) return 1;
+    return (a.sort_order ?? 0) - (b.sort_order ?? 0);
+  });
+  return result;
+}
+
 function ShopByCategory() {
   const [dbCategories, setDbCategories] = useState<any[]>([]);
   const [catLoaded, setCatLoaded] = useState(false);
 
   useEffect(() => {
     categoriesApi.list(true).then((data) => {
-      setDbCategories(data);
+      setDbCategories(deduplicateCategories(data));
       setCatLoaded(true);
     }).catch(() => setCatLoaded(true));
   }, []);
@@ -377,50 +411,96 @@ function ShopByCategory() {
         <SectionHeading eyebrow="Browse" title="Shop by Category" />
 
         <div className="mt-10">
-          <Carousel opts={{ align: "start", dragFree: true }}>
-            <CarouselContent className="-ml-3 md:-ml-4">
-              {dbCategories.map((cat, i) => {
-                const categoryImg = cat.imageUrl || CATEGORY_IMAGES[cat.name] || null;
-                return (
-                <CarouselItem key={cat.id} className="basis-[44%] pl-3 sm:basis-[30%] md:basis-1/4 md:pl-4 lg:basis-[20%]">
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: "-50px" }}
-                    transition={{ duration: 0.4, delay: i * 0.05 }}
-                    className="h-full"
-                  >
-                     <Link
-                      to={`/category/${cat.slug}`}
-                      className="group flex h-full flex-col items-center rounded-[24px] border border-transparent bg-white p-3 pb-4 text-center shadow-[0_4px_24px_rgba(0,0,0,0.04)] transition-all duration-500 hover:-translate-y-2 hover:border-[#C9A96E]/50 hover:shadow-[0_20px_60px_rgba(201,169,110,0.22)] active:scale-[0.97] md:p-4 md:pb-5"
+          {/* Mobile/tablet: carousel — desktop: wrapping grid */}
+          <div className="lg:hidden">
+            <Carousel opts={{ align: "start", dragFree: true }}>
+              <CarouselContent className="-ml-3 md:-ml-4">
+                {dbCategories.map((cat, i) => {
+                  const categoryImg = cat.imageUrl || CATEGORY_IMAGES[cat.name] || null;
+                  return (
+                  <CarouselItem key={cat.id} className="basis-[44%] pl-3 sm:basis-[30%] md:basis-1/4 md:pl-4">
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true, margin: "-50px" }}
+                      transition={{ duration: 0.4, delay: i * 0.05 }}
+                      className="h-full"
                     >
-                      <div className="relative aspect-square w-full overflow-hidden rounded-[18px] bg-gradient-to-br from-[#fdf8f3] to-[#f0e4cd]">
-                        {categoryImg ? (
-                          <img
-                            src={categoryImg}
-                            alt={cat.name}
-                            loading="lazy"
-                            width={768}
-                            height={768}
-                            className="absolute inset-0 h-full w-full object-contain p-2 transition-transform duration-700 ease-out group-hover:scale-110 md:p-3"
-                            onError={(e) => { e.currentTarget.style.display = "none"; }}
-                          />
-                        ) : (
-                          <div className="flex h-full w-full items-center justify-center bg-[#f5efe8] p-3">
-                            <svg className="h-8 w-8 text-[#c9a96e]/20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z" /></svg>
-                          </div>
-                        )}
-                      </div>
-                      <p className="font-display mt-3 text-[14px] font-semibold text-[#1a1a2e] md:mt-4 md:text-[15px]">
-                        {cat.name}
-                      </p>
-                    </Link>
-                  </motion.div>
-                </CarouselItem>
-                );
-              })}
-            </CarouselContent>
-          </Carousel>
+                       <Link
+                        to={`/category/${cat.slug}`}
+                        className="group flex h-full flex-col items-center rounded-[24px] border border-transparent bg-white p-3 pb-4 text-center shadow-[0_4px_24px_rgba(0,0,0,0.04)] transition-all duration-500 hover:-translate-y-2 hover:border-[#C9A96E]/50 hover:shadow-[0_20px_60px_rgba(201,169,110,0.22)] active:scale-[0.97] md:p-4 md:pb-5"
+                      >
+                        <div className="relative aspect-square w-full overflow-hidden rounded-[18px] bg-gradient-to-br from-[#fdf8f3] to-[#f0e4cd]">
+                          {categoryImg ? (
+                            <img
+                              src={categoryImg}
+                              alt={cat.name}
+                              loading="lazy"
+                              width={768}
+                              height={768}
+                              className="absolute inset-0 h-full w-full object-contain p-2 transition-transform duration-700 ease-out group-hover:scale-110 md:p-3"
+                              onError={(e) => { e.currentTarget.style.display = "none"; }}
+                            />
+                          ) : (
+                            <div className="flex h-full w-full items-center justify-center bg-[#f5efe8] p-3">
+                              <svg className="h-8 w-8 text-[#c9a96e]/20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z" /></svg>
+                            </div>
+                          )}
+                        </div>
+                        <p className="font-display mt-3 text-[14px] font-semibold text-[#1a1a2e] md:mt-4 md:text-[15px]">
+                          {cat.name}
+                        </p>
+                      </Link>
+                    </motion.div>
+                  </CarouselItem>
+                  );
+                })}
+              </CarouselContent>
+            </Carousel>
+          </div>
+
+          {/* Desktop: flex-wrap grid — all categories visible */}
+          <div className="hidden lg:flex lg:flex-wrap lg:justify-center lg:gap-5">
+            {dbCategories.map((cat, i) => {
+              const categoryImg = cat.imageUrl || CATEGORY_IMAGES[cat.name] || null;
+              return (
+                <motion.div
+                  key={cat.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-50px" }}
+                  transition={{ duration: 0.4, delay: i * 0.05 }}
+                  className="w-[172px]"
+                >
+                  <Link
+                    to={`/category/${cat.slug}`}
+                    className="group flex h-full flex-col items-center rounded-[24px] border border-transparent bg-white p-3 pb-4 text-center shadow-[0_4px_24px_rgba(0,0,0,0.04)] transition-all duration-500 hover:-translate-y-2 hover:border-[#C9A96E]/50 hover:shadow-[0_20px_60px_rgba(201,169,110,0.22)] active:scale-[0.97] md:p-4 md:pb-5"
+                  >
+                    <div className="relative aspect-square w-full overflow-hidden rounded-[18px] bg-gradient-to-br from-[#fdf8f3] to-[#f0e4cd]">
+                      {categoryImg ? (
+                        <img
+                          src={categoryImg}
+                          alt={cat.name}
+                          loading="lazy"
+                          width={768}
+                          height={768}
+                          className="absolute inset-0 h-full w-full object-contain p-2 transition-transform duration-700 ease-out group-hover:scale-110 md:p-3"
+                          onError={(e) => { e.currentTarget.style.display = "none"; }}
+                        />
+                      ) : (
+                        <div className="flex h-full w-full items-center justify-center bg-[#f5efe8] p-3">
+                          <svg className="h-8 w-8 text-[#c9a96e]/20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z" /></svg>
+                        </div>
+                      )}
+                    </div>
+                    <p className="font-display mt-3 text-[14px] font-semibold text-[#1a1a2e] md:mt-4 md:text-[15px]">
+                      {cat.name}
+                    </p>
+                  </Link>
+                </motion.div>
+              );
+            })}
+          </div>
         </div>
       </div>
     </section>
@@ -654,105 +734,70 @@ function PremiumArrivals() {
 }
 
 /* =========================================================
-   8. OFFERS
-   ========================================================= */
-function Offers() {
-  const cards = [
-    {
-      bg: "from-[#1a1a2e] via-[#2d1b4e] to-[#1a1a2e]",
-      image: prodAarav,
-      title: "Diamond Sale",
-      copy: "Up to 30% off this weekend",
-      cta: "Shop Diamonds",
-    },
-    {
-      bg: "from-[#8B1A4A] via-[#a8326b] to-[#5e0e33]",
-      image: prodPolki,
-      title: "Bridal Bundle",
-      copy: "Complete sets + free gift wrap",
-      cta: "View Sets",
-    },
-    {
-      bg: "from-[#3a3028] via-[#5a4a3c] to-[#1a1a1a]",
-      image: prodJhumka,
-      title: "Gift Collection",
-      copy: "Free luxury packaging above ₹10,000",
-      cta: "Shop Gifts",
-    },
-  ];
-  return (
-    <section className="bg-[#f5efe8] py-20">
-      <div className="mx-auto max-w-[1280px] px-6">
-        <Carousel opts={{ align: "start" }}>
-          <CarouselContent className="-ml-4 md:-ml-6">
-            {cards.map((c, i) => (
-              <CarouselItem key={c.title} className="basis-[85%] pl-4 sm:basis-[55%] md:basis-1/3 md:pl-6">
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-50px" }}
-                  transition={{ duration: 0.5, delay: i * 0.1 }}
-                  className={`relative overflow-hidden rounded-[28px] bg-gradient-to-br p-8 text-white shadow-[0_12px_40px_rgba(0,0,0,0.15)] ${c.bg}`}
-                >
-                  <div className="absolute inset-0 opacity-10">
-                    <img src={c.image} alt="" className="h-full w-full object-contain p-4" />
-                  </div>
-                  <div className="relative">
-                    <h3 className="font-display mt-4 text-2xl font-semibold text-white">{c.title}</h3>
-                    <p className="mt-2 text-sm text-white/75">{c.copy}</p>
-                    <Link
-                      to="/shop"
-                      className="mt-6 inline-flex items-center gap-2 text-[12px] font-semibold tracking-[0.16em] text-[#E8C98A] uppercase"
-                    >
-                      {c.cta} <ChevronRight className="h-4 w-4" />
-                    </Link>
-                  </div>
-                </motion.div>
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-        </Carousel>
-      </div>
-    </section>
-  );
-}
-
-/* =========================================================
-   9. WHY CHOOSE
+   8. WHY CHOOSE US — Premium Benefits
    ========================================================= */
 function WhyChoose() {
-  const items = [
-    [Award, "Certified Purity", "BIS hallmarked & IGI graded"],
-    [Hand, "Master Craftsmen", "Five generations of artistry"],
-    [Diamond, "Ethically Sourced", "Conflict-free gemstones"],
-    [RotateCcw, "Lifetime Exchange", "Buyback at honest value"],
-    [Package, "Luxury Packaging", "Heirloom-worthy presentation"],
-    [Phone, "Personal Stylist", "Private appointments"],
-    [Shield, "Secure Payments", "Razorpay & UPI protected"],
-    [Truck, "Insured Delivery", "Free above ₹5,000"],
-  ] as const;
+  const benefitItems = [
+    { icon: Gem, title: "18K Gold Plated" },
+    { icon: ShieldCheck, title: "Skin Safe" },
+    { icon: Users, title: "10000+ Happy Customers" },
+    { icon: Heart, title: "Guaranteed Compliments" },
+  ];
+
+  const featureItems = [
+    { icon: ShieldCheck, label: "Hypoallergenic" },
+    { icon: Droplets, label: "Water-Resistant" },
+    { icon: Sparkles, label: "Non Tarnish" },
+    { icon: Gem, label: "18K Gold Plated" },
+  ];
+
   return (
     <section className="bg-[#fdf8f3] py-20">
       <div className="mx-auto max-w-[1280px] px-6">
         <SectionHeading eyebrow="The Creative Muse Promise" title="Why Choose Us" />
 
-        <div className="grid grid-cols-2 gap-5 md:grid-cols-4">
-          {items.map(([Ic, title, desc], i) => (
-            <motion.div
-              key={title}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-30px" }}
-              transition={{ duration: 0.4, delay: i * 0.04 }}
-              className="rounded-[24px] border border-[#e0d8cc]/70 bg-white p-6 text-center shadow-[0_4px_16px_rgba(0,0,0,0.04)] transition-all duration-400 hover:-translate-y-1 hover:shadow-[0_20px_48px_rgba(201,169,110,0.18)]"
-            >
-              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-[#fdf8f3] to-[#f0e4cd]">
-                <Ic className="h-6 w-6 text-[#C9A96E]" />
-              </div>
-              <h4 className="font-display mt-4 text-[15px] font-semibold text-[#1a1a2e]">{title}</h4>
-              <p className="mt-1.5 text-[12px] leading-relaxed text-[#7a6e64]">{desc}</p>
-            </motion.div>
-          ))}
+        {/* 2x2 Premium Benefit Grid */}
+        <div className="mx-auto max-w-[900px]">
+          <div className="grid grid-cols-2 gap-5 md:gap-8">
+            {benefitItems.map((item, i) => (
+              <motion.div
+                key={item.title}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-30px" }}
+                transition={{ duration: 0.4, delay: i * 0.04 }}
+                className="flex flex-col items-center rounded-[28px] bg-[#f9f2e9] p-8 text-center md:p-10"
+              >
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-[#C9A96E] to-[#B8860B] shadow-[0_8px_24px_rgba(201,169,110,0.3)]">
+                  <item.icon className="h-7 w-7 text-white" />
+                </div>
+                <h4 className="font-display mt-5 text-[17px] font-semibold text-[#1a1a2e] md:text-[19px]">
+                  {item.title}
+                </h4>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+
+        {/* Horizontal Feature Strip */}
+        <div className="mx-auto mt-12 max-w-[900px]">
+          <div className="flex flex-wrap items-center justify-center gap-6 rounded-[28px] bg-[#e8ddd0] px-8 py-6 md:flex-nowrap md:gap-0 md:py-5">
+            {featureItems.map((item, i) => (
+              <motion.div
+                key={item.label}
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-30px" }}
+                transition={{ duration: 0.3, delay: i * 0.06 }}
+                className="flex items-center gap-3 px-4 md:flex-1 md:justify-center md:px-2"
+              >
+                <item.icon className="h-5 w-5 shrink-0 text-[#1a1a2e]" />
+                <span className="text-[11px] font-semibold tracking-[0.14em] text-[#1a1a2e] uppercase md:text-[10px]">
+                  {item.label}
+                </span>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </div>
     </section>

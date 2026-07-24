@@ -130,12 +130,12 @@ function ProductContent({ product }: { product: Product }) {
               }}
             />
             {product.badge && (
-              <span className="absolute left-4 top-4 rounded-full bg-[#421D22] px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-white">
+              <span className="absolute left-4 top-4 rounded-full bg-[#421D22] px-2 py-[2px] text-[10px] font-semibold uppercase tracking-[0.14em] text-white">
                 {product.badge}
               </span>
             )}
             {discount > 0 && (
-              <span className="absolute right-4 top-4 rounded-full bg-[#7A2533] px-3 py-1.5 text-[10px] font-bold text-white">
+              <span className="absolute left-4 top-4 mt-7 rounded-full bg-[#7A2533] px-2 py-[2px] text-[10px] font-bold text-white">
                 -{discount}%
               </span>
             )}

@@ -184,7 +184,7 @@ export function HeaderSearch() {
                     </span>
                   </span>
                   {product.badge && (
-                    <span className="hidden shrink-0 rounded-full bg-[#1a1a2e] px-2.5 py-1 text-[9px] font-semibold uppercase tracking-[0.12em] text-white sm:inline-flex">
+                    <span className="hidden shrink-0 rounded-full bg-[#1a1a2e] px-2 py-[2px] text-[9px] font-semibold uppercase tracking-[0.1em] text-white sm:inline-flex">
                       {product.badge}
                     </span>
                   )}

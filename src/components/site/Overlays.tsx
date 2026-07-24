@@ -635,7 +635,7 @@ function QuickViewInfo({
     <div className="flex flex-col p-6 pr-5 md:p-8 md:pr-6">
       <div className="flex items-center gap-2">
         {product.badge && (
-          <span className="rounded-full bg-[#1a1a2e] px-2.5 py-1 text-[9px] font-semibold tracking-[0.14em] text-white uppercase">
+          <span className="rounded-full bg-[#1a1a2e] px-2 py-[2px] text-[9px] font-semibold tracking-[0.12em] text-white uppercase">
             {product.badge}
           </span>
         )}

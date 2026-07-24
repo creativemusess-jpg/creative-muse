@@ -69,16 +69,16 @@ export const ProductCard = memo(function ProductCard({
             onError={(e) => { const t = e.currentTarget; if (t.dataset.fallback) { t.style.display = "none"; return; } t.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400'%3E%3Crect fill='%23fffdf9' width='400' height='400'/%3E%3C/svg%3E"; t.dataset.fallback = "1"; }}
           />
 
-          <div className="absolute top-2 left-2 flex flex-col gap-1 md:top-3 md:left-3">
+          <div className="absolute top-2 left-2 flex flex-col gap-0.5 md:top-2.5 md:left-2.5">
             {product.badge && (
               <span
-                className={`rounded-full px-1.5 py-0.5 text-[8px] font-semibold tracking-[0.1em] uppercase shadow-sm md:px-2.5 md:py-1 md:text-[9px] md:tracking-[0.14em] ${BADGE_STYLE[product.badge]}`}
+                className={`rounded-full px-1.5 py-[2px] text-[9px] font-semibold tracking-[0.08em] uppercase shadow-sm md:px-2 md:py-[2px] md:text-[10px] md:tracking-[0.1em] ${BADGE_STYLE[product.badge]}`}
               >
                 {product.badge}
               </span>
             )}
             {discount > 0 && (
-              <span className="rounded-full bg-[#7A2533] px-1.5 py-0.5 text-[8px] font-bold tracking-wide text-white shadow-sm md:px-2.5 md:py-1 md:text-[9px]">
+              <span className="rounded-full bg-[#7A2533] px-1.5 py-[2px] text-[9px] font-bold tracking-wide text-white shadow-sm md:px-2 md:py-[2px] md:text-[10px]">
                 -{discount}%
               </span>
             )}
