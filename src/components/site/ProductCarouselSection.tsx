@@ -6,12 +6,12 @@ import {
   type CarouselApi,
 } from "@/components/ui/carousel";
 import { ProductCard } from "./ProductCard";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import type { Product } from "@/lib/products";
 
 export interface AutoScrollSettings {
   autoScrollEnabled?: boolean;
-  scrollDirection?: 'left' | 'right';
+  scrollDirection?: "left" | "right";
   scrollSpeed?: number;
   pauseOnHover?: boolean;
   autoResumeEnabled?: boolean;
@@ -27,7 +27,7 @@ interface ProductCarouselSectionProps {
 
 const DEFAULT_AUTO_SCROLL: AutoScrollSettings = {
   autoScrollEnabled: false,
-  scrollDirection: 'left',
+  scrollDirection: "left",
   scrollSpeed: 30,
   pauseOnHover: true,
   autoResumeEnabled: true,
@@ -53,8 +53,8 @@ export function ProductCarouselSection({
   const sectionRef = useRef<HTMLElement>(null);
 
   const prefersReducedMotion = useMemo(() => {
-    if (typeof window === 'undefined') return false;
-    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (typeof window === "undefined") return false;
+    return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   }, []);
 
   const effectiveAutoScrollEnabled = config.autoScrollEnabled && !prefersReducedMotion;
@@ -71,13 +71,19 @@ export function ProductCarouselSection({
 
     intervalRef.current = setInterval(() => {
       if (!api) return;
-      if (config.scrollDirection === 'right') {
+      if (config.scrollDirection === "right") {
         api.scrollPrev();
       } else {
         api.scrollNext();
       }
     }, intervalMs);
-  }, [api, effectiveAutoScrollEnabled, products.length, config.scrollSpeed, config.scrollDirection]);
+  }, [
+    api,
+    effectiveAutoScrollEnabled,
+    products.length,
+    config.scrollSpeed,
+    config.scrollDirection,
+  ]);
 
   const stopAutoScroll = useCallback(() => {
     if (intervalRef.current) {
@@ -108,12 +114,15 @@ export function ProductCarouselSection({
     if (!api) return;
     if (effectiveAutoScrollEnabled) {
       const onSettle = () => startAutoScroll();
-      api.on('settle', onSettle);
+      api.on("settle", onSettle);
       initialTimerRef.current = setTimeout(() => startAutoScroll(), 800);
       return () => {
-        api.off('settle', onSettle);
+        api.off("settle", onSettle);
         stopAutoScroll();
-        if (initialTimerRef.current) { clearTimeout(initialTimerRef.current); initialTimerRef.current = null; }
+        if (initialTimerRef.current) {
+          clearTimeout(initialTimerRef.current);
+          initialTimerRef.current = null;
+        }
       };
     } else {
       stopAutoScroll();
@@ -143,7 +152,12 @@ export function ProductCarouselSection({
         resumeAutoScroll();
       }, config.autoResumeDelaySeconds * 1000);
     }
-  }, [config.autoResumeEnabled, config.autoResumeDelaySeconds, clearInactivityTimer, resumeAutoScroll]);
+  }, [
+    config.autoResumeEnabled,
+    config.autoResumeDelaySeconds,
+    clearInactivityTimer,
+    resumeAutoScroll,
+  ]);
 
   useEffect(() => {
     const handleVisibility = () => {
@@ -153,15 +167,18 @@ export function ProductCarouselSection({
         resumeAutoScroll();
       }
     };
-    document.addEventListener('visibilitychange', handleVisibility);
-    return () => document.removeEventListener('visibilitychange', handleVisibility);
+    document.addEventListener("visibilitychange", handleVisibility);
+    return () => document.removeEventListener("visibilitychange", handleVisibility);
   }, [pauseAutoScroll, resumeAutoScroll]);
 
   useEffect(() => {
     return () => {
       stopAutoScroll();
       clearInactivityTimer();
-      if (initialTimerRef.current) { clearTimeout(initialTimerRef.current); initialTimerRef.current = null; }
+      if (initialTimerRef.current) {
+        clearTimeout(initialTimerRef.current);
+        initialTimerRef.current = null;
+      }
     };
   }, [stopAutoScroll, clearInactivityTimer]);
 
@@ -200,24 +217,6 @@ export function ProductCarouselSection({
             )}
             <span className="gold-divider mt-4 inline-block" />
           </div>
-          <div className="hidden gap-2 sm:flex">
-            <button
-              onClick={() => { pauseAutoScroll(); api?.scrollPrev(); }}
-              disabled={!api?.canScrollPrev()}
-              className="flex h-11 w-11 items-center justify-center rounded-full bg-[#1a1a2e] text-white shadow-md transition-opacity disabled:opacity-30"
-              aria-label="Previous products"
-            >
-              <ChevronLeft className="h-5 w-5" />
-            </button>
-            <button
-              onClick={() => { pauseAutoScroll(); api?.scrollNext(); }}
-              disabled={!api?.canScrollNext()}
-              className="flex h-11 w-11 items-center justify-center rounded-full bg-[#1a1a2e] text-white shadow-md transition-opacity disabled:opacity-30"
-              aria-label="Next products"
-            >
-              <ChevronRight className="h-5 w-5" />
-            </button>
-          </div>
         </div>
 
         <div className="mt-10">
@@ -243,36 +242,63 @@ export function ProductCarouselSection({
                   key={p.id}
                   className="basis-[84%] sm:basis-[46%] md:basis-[44%] lg:basis-1/3 xl:basis-1/4"
                 >
-                  <div
-                    className={`h-full transition-transform duration-400 ${
-                      i === selectedIndex
-                        ? "scale-100 opacity-100"
-                        : "scale-[0.96] opacity-80"
-                    }`}
-                  >
-                    <ProductCard
-                      product={p}
-                      index={i}
-                      pointerStart={pointerStart}
-                    />
+                  <div className="h-full transition-transform duration-400">
+                    <ProductCard product={p} index={i} pointerStart={pointerStart} />
                   </div>
                 </CarouselItem>
               ))}
             </CarouselContent>
           </Carousel>
 
-          <div className="mt-6 flex items-center justify-center gap-2 sm:hidden" aria-hidden="true">
-            {scrollSnaps.length > 1 && scrollSnaps.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => { pauseAutoScroll(); api?.scrollTo(i); }}
-                className={`h-1.5 rounded-full transition-all duration-300 ${
-                  i === selectedIndex ? "w-6 bg-[#1a1a2e]" : "w-1.5 bg-[#c9a96e]/40"
-                }`}
-                aria-label={`Go to product ${i + 1} of ${scrollSnaps.length}`}
-              />
-            ))}
+          <div
+            className="mt-4 flex items-center justify-center gap-3 sm:mt-5 sm:gap-4"
+            aria-label={`${eyebrow} carousel controls`}
+          >
+            <button
+              onClick={() => {
+                pauseAutoScroll();
+                api?.scrollPrev();
+              }}
+              disabled={!api?.canScrollPrev()}
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-[#d8d0c6] bg-[#fdf8f3] text-[#1a1a2e] shadow-[0_6px_14px_rgba(0,0,0,0.07)] transition-all hover:border-[#C9A96E] hover:text-[#8a6a2a] disabled:opacity-40 sm:h-12 sm:w-12"
+              aria-label="Previous products"
+            >
+              <ArrowLeft className="h-4 w-4 sm:h-5 sm:w-5" />
+            </button>
+
+            {scrollSnaps.length > 1 && (
+              <div className="flex items-center gap-2 sm:gap-2.5">
+                {scrollSnaps.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => {
+                      pauseAutoScroll();
+                      api?.scrollTo(i);
+                    }}
+                    className={`h-2 rounded-full border border-[#C9A96E] transition-all duration-300 sm:h-2.5 ${
+                      i === selectedIndex
+                        ? "w-7 bg-[#C9A96E] sm:w-9"
+                        : "w-2 bg-transparent sm:w-2.5"
+                    }`}
+                    aria-label={`Go to product ${i + 1} of ${scrollSnaps.length}`}
+                  />
+                ))}
+              </div>
+            )}
+
+            <button
+              onClick={() => {
+                pauseAutoScroll();
+                api?.scrollNext();
+              }}
+              disabled={!api?.canScrollNext()}
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-[#d8d0c6] bg-[#fdf8f3] text-[#1a1a2e] shadow-[0_6px_14px_rgba(0,0,0,0.07)] transition-all hover:border-[#C9A96E] hover:text-[#8a6a2a] disabled:opacity-40 sm:h-12 sm:w-12"
+              aria-label="Next products"
+            >
+              <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5" />
+            </button>
           </div>
+          <div className="mt-6 border-b border-[#e0d8cc]" aria-hidden="true" />
         </div>
       </div>
     </section>

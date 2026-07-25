@@ -32,7 +32,20 @@ export function Overlays() {
 
 /* ---------------- Cart Drawer ---------------- */
 function CartDrawer() {
-  const { cartOpen, closeCart, setQty, removeFromCart, cartSubtotal, couponCode, setCouponCode, discountAmount, setDiscountAmount, appliedCouponId, setAppliedCouponId, clearCoupon } = useStore();
+  const {
+    cartOpen,
+    closeCart,
+    setQty,
+    removeFromCart,
+    cartSubtotal,
+    couponCode,
+    setCouponCode,
+    discountAmount,
+    setDiscountAmount,
+    appliedCouponId,
+    setAppliedCouponId,
+    clearCoupon,
+  } = useStore();
   const lines = useCartLines();
   const [couponInput, setCouponInput] = useState("");
   const [couponLoading, setCouponLoading] = useState(false);
@@ -153,7 +166,9 @@ function CartDrawer() {
                               >
                                 <Minus className="h-3 w-3" />
                               </button>
-                              <span className="min-w-5 text-center text-xs font-semibold">{qty}</span>
+                              <span className="min-w-5 text-center text-xs font-semibold">
+                                {qty}
+                              </span>
                               <button
                                 onClick={() => setQty(p.id, qty + 1)}
                                 aria-label="Increase"
@@ -182,9 +197,14 @@ function CartDrawer() {
                         <div className="flex items-center gap-2">
                           <Tag className="h-4 w-4 text-green-600" />
                           <span className="text-sm font-semibold text-green-700">{couponCode}</span>
-                          <span className="text-xs text-[#7a6e64]">· -{formatPrice(discountAmount)}</span>
+                          <span className="text-xs text-[#7a6e64]">
+                            · -{formatPrice(discountAmount)}
+                          </span>
                         </div>
-                        <button onClick={handleRemoveCoupon} className="text-xs font-semibold text-red-500 hover:text-red-700">
+                        <button
+                          onClick={handleRemoveCoupon}
+                          className="text-xs font-semibold text-red-500 hover:text-red-700"
+                        >
                           Remove
                         </button>
                       </div>
@@ -223,7 +243,10 @@ function CartDrawer() {
                   <Row label="Subtotal" value={formatPrice(cartSubtotal)} />
                   <Row label="Shipping" value={shipping === 0 ? "Free" : formatPrice(shipping)} />
                   {discountAmount > 0 && (
-                    <Row label={`Discount (${couponCode})`} value={`-${formatPrice(discountAmount)}`} />
+                    <Row
+                      label={`Discount (${couponCode})`}
+                      value={`-${formatPrice(discountAmount)}`}
+                    />
                   )}
                   <div className="my-2 border-t border-dashed border-[#e0d8cc]" />
                   <Row label="Total" value={formatPrice(total)} bold />
@@ -432,19 +455,19 @@ function QuickViewModal() {
           aria-labelledby="qv-title"
         >
           <div className="absolute inset-0 bg-black/60 backdrop-blur-md" onClick={closeQuickView} />
-            <motion.div
-              ref={containerRef}
-              key={product.id}
-              initial={{ scale: 0.96, opacity: 0, y: 16 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.96, opacity: 0, y: 16 }}
-              transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
-              className="relative grid max-h-[88vh] w-full max-w-5xl grid-cols-1 overflow-y-auto scrollbar-thin rounded-[28px] bg-[#fdf8f3] shadow-[0_24px_64px_rgba(0,0,0,0.3)] md:max-h-none md:h-[90vh] md:grid-cols-2 md:grid-rows-[1fr] md:overflow-hidden"
+          <motion.div
+            ref={containerRef}
+            key={product.id}
+            initial={{ scale: 0.96, opacity: 0, y: 16 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+            exit={{ scale: 0.96, opacity: 0, y: 16 }}
+            transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
+            className="relative grid max-h-[88vh] w-full max-w-5xl grid-cols-1 overflow-y-auto scrollbar-thin rounded-[28px] bg-[#fdf8f3] shadow-[0_24px_64px_rgba(0,0,0,0.3)] md:max-h-none md:h-[90vh] md:grid-cols-2 md:grid-rows-[1fr] md:overflow-hidden"
           >
             <button
               aria-label="Close"
               onClick={closeQuickView}
-              className="absolute top-3 right-3 z-20 flex h-9 w-9 items-center justify-center rounded-full bg-white/95 shadow-md backdrop-blur-sm transition-colors hover:bg-white md:top-4 md:right-4 md:h-10 md:w-10"
+              className="absolute top-3 right-3 z-30 flex h-9 w-9 items-center justify-center rounded-full border border-[#C9A96E] bg-white shadow-md transition-colors hover:bg-white md:top-4 md:right-4 md:h-10 md:w-10"
             >
               <X className="h-4 w-4" />
             </button>
@@ -545,7 +568,7 @@ function QuickViewMedia({ product }: { product: Product }) {
             type="button"
             aria-label="Zoom"
             onClick={() => setZoom(true)}
-            className="absolute top-3 right-3 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 shadow-md hover:bg-white"
+            className="absolute top-3 left-3 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 shadow-md hover:bg-white md:left-auto md:right-3"
           >
             <ZoomIn className="h-4 w-4" />
           </button>

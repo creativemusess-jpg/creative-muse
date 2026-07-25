@@ -31,7 +31,10 @@ import { ShoppableReelsSection } from "@/components/site/ShoppableReelsSection";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import type { CarouselApi } from "@/components/ui/carousel";
 import { useStore } from "@/lib/store";
-import { ProductCarouselSection, type AutoScrollSettings } from "@/components/site/ProductCarouselSection";
+import {
+  ProductCarouselSection,
+  type AutoScrollSettings,
+} from "@/components/site/ProductCarouselSection";
 import heroRing from "@/assets/hero-ring.jpg";
 import catRings from "@/assets/cat-rings.png";
 import catNecklaces from "@/assets/cat-necklaces.png";
@@ -75,10 +78,14 @@ export const Route = createFileRoute("/")({
         content:
           "Discover handcrafted fine jewellery from Vadodara. BIS Hallmarked gold, IGI certified diamonds, bridal collections and everyday luxury.",
       },
-      { property: "og:title", content: "Creative Muse Fine Jewellery — Where Every Gem Tells Your Story" },
+      {
+        property: "og:title",
+        content: "Creative Muse Fine Jewellery — Where Every Gem Tells Your Story",
+      },
       {
         property: "og:description",
-        content: "Discover handcrafted fine jewellery from Vadodara. BIS Hallmarked gold, IGI certified diamonds, bridal collections and everyday luxury.",
+        content:
+          "Discover handcrafted fine jewellery from Vadodara. BIS Hallmarked gold, IGI certified diamonds, bridal collections and everyday luxury.",
       },
     ],
   }),
@@ -124,7 +131,13 @@ function AnnouncementBanner() {
 const HERO_SLIDES = [
   {
     badge: "Vadodara's Premier Fine Jewellery",
-    title: <>Where Every Gem<br /><span className="shimmer-text italic">Tells Your Story</span></>,
+    title: (
+      <>
+        Where Every Gem
+        <br />
+        <span className="shimmer-text italic">Tells Your Story</span>
+      </>
+    ),
     desc: "Handcrafted fine jewellery for life's most precious moments. From bridal masterpieces to everyday elegance — designed in Vadodara, treasured for generations.",
     image: heroRing,
     imageAlt: "Aarav Solitaire — 18K rose gold diamond ring",
@@ -132,7 +145,13 @@ const HERO_SLIDES = [
   },
   {
     badge: "Bridal Edit 2025",
-    title: <>Celebrate Life's<br /><span className="shimmer-text italic">Golden Moments</span></>,
+    title: (
+      <>
+        Celebrate Life's
+        <br />
+        <span className="shimmer-text italic">Golden Moments</span>
+      </>
+    ),
     desc: "Exquisite bridal sets crafted to make your special day unforgettable. Each piece tells a story of love, tradition, and timeless beauty.",
     image: prodPolki,
     imageAlt: "Polki Choker — Traditional bridal jewellery",
@@ -152,7 +171,9 @@ function Hero() {
     if (!api) return;
     setCurrent(api.selectedScrollSnap());
     api.on("select", onSelect);
-    return () => { api.off("select", onSelect); };
+    return () => {
+      api.off("select", onSelect);
+    };
   }, [api, onSelect]);
 
   return (
@@ -204,7 +225,9 @@ function Hero() {
                     ].map(([n, l]) => (
                       <div key={l}>
                         <p className="font-display text-2xl font-bold text-[#1a1a2e]">{n}</p>
-                        <p className="text-[11px] tracking-[0.14em] text-[#5a4e44] uppercase">{l}</p>
+                        <p className="text-[11px] tracking-[0.14em] text-[#5a4e44] uppercase">
+                          {l}
+                        </p>
                       </div>
                     ))}
                   </div>
@@ -235,7 +258,9 @@ function Hero() {
                     className="absolute top-4 left-2 hidden rounded-[18px] border border-[#C9A96E]/30 bg-white/90 p-3 shadow-[0_8px_32px_rgba(201,169,110,0.2)] backdrop-blur-xl md:block"
                   >
                     <p className="eyebrow text-[9px] text-[#8a6a2a]">Best Seller</p>
-                    <p className="font-display mt-1 text-sm font-semibold text-[#1a1a2e]">Aarav Solitaire</p>
+                    <p className="font-display mt-1 text-sm font-semibold text-[#1a1a2e]">
+                      Aarav Solitaire
+                    </p>
                     <p className="mt-0.5 text-[13px] font-bold text-[#8a6a2a]">{slide.stat}</p>
                   </motion.div>
 
@@ -350,7 +375,9 @@ function SectionHeading({
         <span className="gold-divider" />
       </div>
       {subtitle && (
-        <p className={`mt-5 text-[15px] ${light ? "text-white/70" : "text-[#7a6e64]"}`}>{subtitle}</p>
+        <p className={`mt-5 text-[15px] ${light ? "text-white/70" : "text-[#7a6e64]"}`}>
+          {subtitle}
+        </p>
       )}
     </motion.div>
   );
@@ -362,8 +389,17 @@ function SectionHeading({
 const EXCLUDED_CATEGORIES = new Set(["ARTH", "Test", "Demo"]);
 
 const CANONICAL_NAMES = new Set([
-  "Earrings", "Necklace", "Rings", "Hoops", "Earcuffs", "Kada", "Bracelets",
-  "Mangalsutra", "Pendants", "Bangles", "Wedding Sets",
+  "Earrings",
+  "Necklace",
+  "Rings",
+  "Hoops",
+  "Earcuffs",
+  "Kada",
+  "Bracelets",
+  "Mangalsutra",
+  "Pendants",
+  "Bangles",
+  "Wedding Sets",
 ]);
 
 function deduplicateCategories(cats: any[]): any[] {
@@ -381,7 +417,19 @@ function deduplicateCategories(cats: any[]): any[] {
     }
   }
   const result = Array.from(seen.values());
-  const order = ["Earrings", "Necklace", "Rings", "Hoops", "Earcuffs", "Kada", "Bracelets", "Mangalsutra", "Pendants", "Bangles", "Wedding Sets"];
+  const order = [
+    "Earrings",
+    "Necklace",
+    "Rings",
+    "Hoops",
+    "Earcuffs",
+    "Kada",
+    "Bracelets",
+    "Mangalsutra",
+    "Pendants",
+    "Bangles",
+    "Wedding Sets",
+  ];
   result.sort((a, b) => {
     const ia = order.indexOf(a.name);
     const ib = order.indexOf(b.name);
@@ -401,10 +449,13 @@ function ShopByCategory() {
   const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
-    categoriesApi.list(true).then((data) => {
-      setDbCategories(deduplicateCategories(data));
-      setCatLoaded(true);
-    }).catch(() => setCatLoaded(true));
+    categoriesApi
+      .list(true)
+      .then((data) => {
+        setDbCategories(deduplicateCategories(data));
+        setCatLoaded(true);
+      })
+      .catch(() => setCatLoaded(true));
   }, []);
 
   if (!catLoaded) return null;
@@ -418,9 +469,12 @@ function ShopByCategory() {
   function toggle() {
     if (expanded) {
       setExpanded(false);
-      setTimeout(() => {
-        sectionRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
-      }, prefersReducedMotion ? 50 : 450);
+      setTimeout(
+        () => {
+          sectionRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        },
+        prefersReducedMotion ? 50 : 450,
+      );
     } else {
       setExpanded(true);
     }
@@ -442,11 +496,25 @@ function ShopByCategory() {
               width={768}
               height={768}
               className="absolute inset-0 h-full w-full object-contain p-2 transition-transform duration-700 ease-out group-hover:scale-110 md:p-3"
-              onError={(e) => { e.currentTarget.style.display = "none"; }}
+              onError={(e) => {
+                e.currentTarget.style.display = "none";
+              }}
             />
           ) : (
             <div className="flex h-full w-full items-center justify-center bg-[#f5efe8] p-3">
-              <svg className="h-8 w-8 text-[#c9a96e]/20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z" /></svg>
+              <svg
+                className="h-8 w-8 text-[#c9a96e]/20"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={1}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z"
+                />
+              </svg>
             </div>
           )}
         </div>
@@ -458,7 +526,11 @@ function ShopByCategory() {
   }
 
   return (
-    <section id="shop-by-category" ref={sectionRef} className="scroll-mt-40 bg-[#fdf8f3] py-16 md:py-20">
+    <section
+      id="shop-by-category"
+      ref={sectionRef}
+      className="scroll-mt-40 bg-[#fdf8f3] py-16 md:py-20"
+    >
       <div className="mx-auto max-w-[1280px] px-6">
         <SectionHeading eyebrow="Browse" title="Shop by Category" />
 
@@ -557,12 +629,15 @@ function FeaturedBanner() {
   const [ctaLoaded, setCtaLoaded] = useState(false);
 
   useEffect(() => {
-    contentApi.getSection("featured_banner").then((section) => {
-      if (section?.content?.cta_images) {
-        setCtaImages(section.content.cta_images);
-      }
-      setCtaLoaded(true);
-    }).catch(() => setCtaLoaded(true));
+    contentApi
+      .getSection("featured_banner")
+      .then((section) => {
+        if (section?.content?.cta_images) {
+          setCtaImages(section.content.cta_images);
+        }
+        setCtaLoaded(true);
+      })
+      .catch(() => setCtaLoaded(true));
   }, []);
 
   const images = ctaImages && ctaImages.length === 3 ? ctaImages : CTA_FALLBACK_IMAGES;
@@ -584,7 +659,8 @@ function FeaturedBanner() {
           >
             <p className="eyebrow text-[#E8C98A]">Bridal Edit</p>
             <h2 className="font-display mt-3 text-[34px] leading-tight font-semibold text-white sm:text-[44px] lg:text-[48px]">
-              The 2025<br />
+              The 2025
+              <br />
               <span className="shimmer-text">Bridal Collection</span>
             </h2>
             <p className="mt-5 max-w-md text-[15px] leading-relaxed text-white/70">
@@ -592,8 +668,13 @@ function FeaturedBanner() {
               Gold — designed to be worn for a lifetime.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <Link to="/shop" className="btn-primary">View Collection</Link>
-              <Link to="/contact" className="btn-secondary border-[#E8C98A] text-[#E8C98A] hover:bg-[#E8C98A] hover:text-[#1a1a2e]">
+              <Link to="/shop" className="btn-primary">
+                View Collection
+              </Link>
+              <Link
+                to="/contact"
+                className="btn-secondary border-[#E8C98A] text-[#E8C98A] hover:bg-[#E8C98A] hover:text-[#1a1a2e]"
+              >
                 Book Consultation
               </Link>
             </div>
@@ -614,7 +695,9 @@ function FeaturedBanner() {
                   src={images[i].src}
                   alt={images[i].alt}
                   className="h-full w-full object-cover"
-                  onError={(e) => { e.currentTarget.style.display = "none"; }}
+                  onError={(e) => {
+                    e.currentTarget.style.display = "none";
+                  }}
                 />
               </motion.div>
             ))}
@@ -642,7 +725,11 @@ function BestSellers() {
       case "Trending":
         return products.filter((p) => p.badge === "Trending");
       default:
-        return products.filter((p) => p.badge === "Best Seller" || p.badge === "Trending" || p.badge === "Wedding").slice(0, 8);
+        return products
+          .filter(
+            (p) => p.badge === "Best Seller" || p.badge === "Trending" || p.badge === "Wedding",
+          )
+          .slice(0, 8);
     }
   })();
 
@@ -676,7 +763,10 @@ function BestSellers() {
             <Carousel opts={{ align: "start", dragFree: true }}>
               <CarouselContent className="-ml-3 md:-ml-4">
                 {filtered.map((p, i) => (
-                  <CarouselItem key={p.id} className="basis-[48%] pl-3 sm:basis-[45%] md:basis-1/3 md:pl-4 lg:basis-1/4">
+                  <CarouselItem
+                    key={p.id}
+                    className="basis-[48%] pl-3 sm:basis-[45%] md:basis-1/3 md:pl-4 lg:basis-1/4"
+                  >
                     <ProductCard product={p} index={i} />
                   </CarouselItem>
                 ))}
@@ -700,11 +790,11 @@ function NewArrivals() {
   const [scrollSettings, setScrollSettings] = useState<AutoScrollSettings | undefined>();
 
   useEffect(() => {
-    contentApi.getSection('new_arrivals').then((section) => {
+    contentApi.getSection("new_arrivals").then((section) => {
       if (section) {
         setScrollSettings({
           autoScrollEnabled: section.auto_scroll_enabled ?? false,
-          scrollDirection: section.scroll_direction ?? 'left',
+          scrollDirection: section.scroll_direction ?? "left",
           scrollSpeed: section.scroll_speed ?? 30,
           pauseOnHover: section.pause_on_hover ?? true,
           autoResumeEnabled: section.auto_resume_enabled ?? true,
@@ -715,15 +805,15 @@ function NewArrivals() {
   }, []);
 
   const list = useMemo(
-    () => products.filter((p) => p.badge === "New").concat(products).slice(0, 6),
+    () =>
+      products
+        .filter((p) => p.badge === "New")
+        .concat(products)
+        .slice(0, 6),
     [products],
   );
   return (
-    <ProductCarouselSection
-      eyebrow="Just Arrived"
-      products={list}
-      autoScroll={scrollSettings}
-    />
+    <ProductCarouselSection eyebrow="Just Arrived" products={list} autoScroll={scrollSettings} />
   );
 }
 
@@ -735,11 +825,11 @@ function PremiumArrivals() {
   const [scrollSettings, setScrollSettings] = useState<AutoScrollSettings | undefined>();
 
   useEffect(() => {
-    contentApi.getSection('premium_arrivals').then((section) => {
+    contentApi.getSection("premium_arrivals").then((section) => {
       if (section) {
         setScrollSettings({
           autoScrollEnabled: section.auto_scroll_enabled ?? false,
-          scrollDirection: section.scroll_direction ?? 'left',
+          scrollDirection: section.scroll_direction ?? "left",
           scrollSpeed: section.scroll_speed ?? 30,
           pauseOnHover: section.pause_on_hover ?? true,
           autoResumeEnabled: section.auto_resume_enabled ?? true,
@@ -750,7 +840,11 @@ function PremiumArrivals() {
   }, []);
 
   const list = useMemo(
-    () => products.filter((p) => p.badge === "New").concat(products).slice(0, 6),
+    () =>
+      products
+        .filter((p) => p.badge === "New")
+        .concat(products)
+        .slice(0, 6),
     [products],
   );
   return (
@@ -782,13 +876,13 @@ function WhyChoose() {
   ];
 
   return (
-    <section className="bg-[#fdf8f3] py-20">
+    <section className="bg-[#fdf8f3] py-14 md:py-16">
       <div className="mx-auto max-w-[1280px] px-6">
         <SectionHeading eyebrow="The Creative Muse Promise" title="Why Choose Us" />
 
         {/* 2x2 Premium Benefit Grid */}
-        <div className="mx-auto max-w-[900px]">
-          <div className="grid grid-cols-2 gap-5 md:gap-8">
+        <div className="mx-auto max-w-[760px]">
+          <div className="grid grid-cols-2 gap-3 md:gap-5">
             {benefitItems.map((item, i) => (
               <motion.div
                 key={item.title}
@@ -796,12 +890,12 @@ function WhyChoose() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-30px" }}
                 transition={{ duration: 0.4, delay: i * 0.04 }}
-                className="flex flex-col items-center rounded-[28px] bg-[#f9f2e9] p-8 text-center md:p-10"
+                className="flex min-h-[138px] flex-col items-center justify-center rounded-[22px] bg-[#f9f2e9] p-5 text-center md:min-h-[170px] md:p-6"
               >
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-[#C9A96E] to-[#B8860B] shadow-[0_8px_24px_rgba(201,169,110,0.3)]">
-                  <item.icon className="h-7 w-7 text-white" />
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-[#C9A96E] to-[#B8860B] shadow-[0_8px_24px_rgba(201,169,110,0.3)] md:h-14 md:w-14">
+                  <item.icon className="h-5 w-5 text-white md:h-6 md:w-6" />
                 </div>
-                <h4 className="font-display mt-5 text-[17px] font-semibold text-[#1a1a2e] md:text-[19px]">
+                <h4 className="font-display mt-4 text-[14px] font-semibold text-[#1a1a2e] md:text-[17px]">
                   {item.title}
                 </h4>
               </motion.div>
@@ -810,8 +904,8 @@ function WhyChoose() {
         </div>
 
         {/* Horizontal Feature Strip */}
-        <div className="mx-auto mt-12 max-w-[900px]">
-          <div className="flex flex-wrap items-center justify-center gap-6 rounded-[28px] bg-[#e8ddd0] px-8 py-6 md:flex-nowrap md:gap-0 md:py-5">
+        <div className="mx-auto mt-8 max-w-[760px] md:mt-10">
+          <div className="flex flex-wrap items-center justify-center gap-4 rounded-[22px] bg-[#e8ddd0] px-5 py-4 md:flex-nowrap md:gap-0">
             {featureItems.map((item, i) => (
               <motion.div
                 key={item.label}
@@ -819,10 +913,10 @@ function WhyChoose() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-30px" }}
                 transition={{ duration: 0.3, delay: i * 0.06 }}
-                className="flex items-center gap-3 px-4 md:flex-1 md:justify-center md:px-2"
+                className="flex items-center gap-2 px-2 md:flex-1 md:justify-center"
               >
-                <item.icon className="h-5 w-5 shrink-0 text-[#1a1a2e]" />
-                <span className="text-[11px] font-semibold tracking-[0.14em] text-[#1a1a2e] uppercase md:text-[10px]">
+                <item.icon className="h-4 w-4 shrink-0 text-[#1a1a2e]" />
+                <span className="text-[9px] font-semibold tracking-[0.12em] text-[#1a1a2e] uppercase md:text-[10px]">
                   {item.label}
                 </span>
               </motion.div>
@@ -884,7 +978,9 @@ function StoreLocation() {
         >
           <p className="eyebrow">Visit Us</p>
           <h2 className="font-display mt-3 text-[32px] leading-tight font-semibold text-[#1a1a2e] sm:text-[40px]">
-            Step Inside Our<br />Vadodara Atelier
+            Step Inside Our
+            <br />
+            Vadodara Atelier
           </h2>
           <div className="mt-6 space-y-4 text-[15px] text-[#3a3028]">
             <div className="flex items-start gap-3">
@@ -893,7 +989,9 @@ function StoreLocation() {
             </div>
             <div className="flex items-start gap-3">
               <Phone className="mt-0.5 h-5 w-5 shrink-0 text-[#C9A96E]" />
-              <a href="tel:+919033779867" className="hover:text-[#C9A96E]">+91 90337 79867</a>
+              <a href="tel:+919033779867" className="hover:text-[#C9A96E]">
+                +91 90337 79867
+              </a>
             </div>
             <div className="flex items-start gap-3">
               <Award className="mt-0.5 h-5 w-5 shrink-0 text-[#C9A96E]" />
@@ -909,7 +1007,9 @@ function StoreLocation() {
             >
               Get Directions
             </a>
-            <a href="tel:+919033779867" className="btn-secondary">Call Us Now</a>
+            <a href="tel:+919033779867" className="btn-secondary">
+              Call Us Now
+            </a>
           </div>
         </motion.div>
 
@@ -921,9 +1021,21 @@ function StoreLocation() {
           className="relative flex aspect-[5/4] items-center justify-center overflow-hidden rounded-[28px] bg-[#f5efe8] shadow-[0_12px_40px_rgba(0,0,0,0.08)]"
         >
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(201,169,110,0.18),transparent_60%)]" />
-          <svg className="absolute inset-0 h-full w-full opacity-20" viewBox="0 0 400 320" fill="none">
-            <path d="M0 80 L400 60 M0 160 L400 180 M0 240 L400 220" stroke="#C9A96E" strokeWidth="1" />
-            <path d="M80 0 L100 320 M200 0 L220 320 M320 0 L300 320" stroke="#C9A96E" strokeWidth="1" />
+          <svg
+            className="absolute inset-0 h-full w-full opacity-20"
+            viewBox="0 0 400 320"
+            fill="none"
+          >
+            <path
+              d="M0 80 L400 60 M0 160 L400 180 M0 240 L400 220"
+              stroke="#C9A96E"
+              strokeWidth="1"
+            />
+            <path
+              d="M80 0 L100 320 M200 0 L220 320 M320 0 L300 320"
+              stroke="#C9A96E"
+              strokeWidth="1"
+            />
           </svg>
           <div className="relative text-center">
             <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-r from-[#C9A96E] to-[#B8860B] shadow-[0_12px_32px_rgba(201,169,110,0.4)]">
@@ -942,12 +1054,30 @@ function StoreLocation() {
    12. FAQ
    ========================================================= */
 const FAQS = [
-  ["What certifications do your diamonds carry?", "All Creative Muse diamonds are IGI or GIA certified, with a unique grading report detailing the 4Cs. Certificates are included with every purchase."],
-  ["Do you offer hallmarked gold jewellery?", "Yes — every gold piece is BIS hallmarked. The hallmark, purity stamp and HUID number are visible on each item."],
-  ["What is your return and exchange policy?", "We offer 30-day returns on unworn pieces in original packaging. Custom and engraved orders are non-returnable but exchangeable for store credit."],
-  ["Can I customise a piece for my wedding?", "Absolutely. Book a private appointment at our Vadodara atelier or via video call — our designers will work with you from sketch to delivery."],
-  ["Do you offer EMI options?", "Yes — no-cost EMI is available across major credit cards and via Razorpay. Choose your tenure at checkout."],
-  ["How long does shipping take across India?", "2–5 business days, fully insured and tracked. Free shipping on orders above ₹5,000."],
+  [
+    "What certifications do your diamonds carry?",
+    "All Creative Muse diamonds are IGI or GIA certified, with a unique grading report detailing the 4Cs. Certificates are included with every purchase.",
+  ],
+  [
+    "Do you offer hallmarked gold jewellery?",
+    "Yes — every gold piece is BIS hallmarked. The hallmark, purity stamp and HUID number are visible on each item.",
+  ],
+  [
+    "What is your return and exchange policy?",
+    "We offer 30-day returns on unworn pieces in original packaging. Custom and engraved orders are non-returnable but exchangeable for store credit.",
+  ],
+  [
+    "Can I customise a piece for my wedding?",
+    "Absolutely. Book a private appointment at our Vadodara atelier or via video call — our designers will work with you from sketch to delivery.",
+  ],
+  [
+    "Do you offer EMI options?",
+    "Yes — no-cost EMI is available across major credit cards and via Razorpay. Choose your tenure at checkout.",
+  ],
+  [
+    "How long does shipping take across India?",
+    "2–5 business days, fully insured and tracked. Free shipping on orders above ₹5,000.",
+  ],
 ];
 
 function FAQ() {
@@ -1087,14 +1217,16 @@ function Newsletter() {
               disabled={state === "loading"}
               className="btn-dark whitespace-nowrap disabled:opacity-60"
             >
-              {state === "loading" ? "Sending…" : state === "success" ? "Subscribed ✓" : "Subscribe"}
+              {state === "loading"
+                ? "Sending…"
+                : state === "success"
+                  ? "Subscribed ✓"
+                  : "Subscribe"}
             </button>
           </form>
           {msg && (
             <p
-              className={`mt-4 text-[13px] ${
-                state === "error" ? "text-red-100" : "text-white"
-              }`}
+              className={`mt-4 text-[13px] ${state === "error" ? "text-red-100" : "text-white"}`}
               role="status"
             >
               {msg}

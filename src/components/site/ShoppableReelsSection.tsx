@@ -11,10 +11,11 @@ import {
   type CarouselApi,
 } from "@/components/ui/carousel";
 
-const SAMPLE_VIDEO = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4";
+const SAMPLE_VIDEO =
+  "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4";
 
-const SPEED_SECONDS = 4;
-const INACTIVITY_RESUME_SECONDS = 3;
+const SPEED_SECONDS = 1.8;
+const INACTIVITY_RESUME_SECONDS = 1.5;
 
 function SectionHeading({
   eyebrow,
@@ -34,9 +35,7 @@ function SectionHeading({
       <div className="mt-3 flex justify-center">
         <span className="gold-divider" />
       </div>
-      {subtitle && (
-        <p className="mt-3 text-[14px] text-[#7a6e64] sm:text-[15px]">{subtitle}</p>
-      )}
+      {subtitle && <p className="mt-3 text-[14px] text-[#7a6e64] sm:text-[15px]">{subtitle}</p>}
     </div>
   );
 }
@@ -193,7 +192,9 @@ export function ShoppableReelsSection() {
       setReels(fallbackReels);
       if (!cancelled) setLoading(false);
     })();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [products]);
 
   if (loading) {
@@ -235,7 +236,7 @@ export function ShoppableReelsSection() {
             loop: true,
             dragFree: true,
             containScroll: "trimSnaps",
-            duration: 25,
+            duration: 12,
           }}
         >
           <CarouselContent
