@@ -7,7 +7,9 @@ import { productFromDb } from "@/lib/products";
 import { ProductCard } from "@/components/site/ProductCard";
 
 export const Route = createFileRoute("/collections/$slug/$subslug")({
-  head: ({ params }) => ({ meta: [{ title: `${params.subslug.replace(/-/g, " ")} — Creative Muse` }] }),
+  head: ({ params }) => ({
+    meta: [{ title: `${params.subslug.replace(/-/g, " ")} — Creative Muse` }],
+  }),
   component: SubcategoryCollectionPage,
 });
 
@@ -49,7 +51,9 @@ function SubcategoryCollectionPage() {
       <PageShell>
         <div className="mx-auto max-w-[1280px] px-6 py-20 text-center">
           <h1 className="text-2xl font-bold text-gray-800">Collection not found</h1>
-          <Link to="/shop" className="mt-4 inline-block text-[#c9a96e] hover:underline">Browse all products</Link>
+          <Link to="/shop" className="mt-4 inline-block text-[#c9a96e] hover:underline">
+            Browse all products
+          </Link>
         </div>
       </PageShell>
     );
@@ -61,15 +65,21 @@ function SubcategoryCollectionPage() {
     <PageShell>
       <div className="mx-auto max-w-[1440px] px-4 py-8 lg:px-8">
         <nav className="mb-4 text-xs text-gray-400">
-          <Link to="/" className="hover:text-[#c9a96e]">Home</Link>
+          <Link to="/" className="hover:text-[#c9a96e]">
+            Home
+          </Link>
           <span className="mx-2">/</span>
-          <Link to={`/collections/${slug}`} className="hover:text-[#c9a96e]">{categoryName}</Link>
+          <Link to={`/collections/${slug}`} className="hover:text-[#c9a96e]">
+            {categoryName}
+          </Link>
           <span className="mx-2">/</span>
           <span className="text-gray-600">{subcategory.name}</span>
         </nav>
 
         <div className="mb-8">
-          <h1 className="font-display text-3xl font-semibold text-[#1a1a2e] lg:text-4xl">{subcategory.name}</h1>
+          <h1 className="font-display text-3xl font-semibold text-[#1a1a2e] lg:text-4xl">
+            {subcategory.name}
+          </h1>
         </div>
 
         {products.length === 0 ? (
@@ -77,7 +87,7 @@ function SubcategoryCollectionPage() {
             <p className="text-gray-400">No products found in this collection.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-3 lg:grid-cols-4 items-stretch">
+          <div className="grid grid-cols-2 gap-3 sm:gap-6 md:grid-cols-3 lg:grid-cols-4 items-stretch">
             {products.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}

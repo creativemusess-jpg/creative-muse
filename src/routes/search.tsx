@@ -15,7 +15,8 @@ export const Route = createFileRoute("/search")({
       { title: "Search Jewellery - Creative Muse" },
       {
         name: "description",
-        content: "Search rings, earrings, necklaces, pendants, mangalsutra and bridal jewellery at Creative Muse.",
+        content:
+          "Search rings, earrings, necklaces, pendants, mangalsutra and bridal jewellery at Creative Muse.",
       },
     ],
   }),
@@ -34,7 +35,10 @@ function SearchPage() {
   const [dbCategories, setDbCategories] = useState<any[]>([]);
 
   useEffect(() => {
-    categoriesApi.list(true).then(setDbCategories).catch(() => {});
+    categoriesApi
+      .list(true)
+      .then(setDbCategories)
+      .catch(() => {});
   }, []);
 
   const liveProducts = useStorefrontProducts();
@@ -43,14 +47,19 @@ function SearchPage() {
   const loading = query ? liveSearch.isFetching : liveProducts.isFetching;
 
   const metals = useMemo(
-    () => ["All", ...Array.from(new Set(liveProducts.products.map((product) => product.metal))).sort()],
+    () => [
+      "All",
+      ...Array.from(new Set(liveProducts.products.map((product) => product.metal))).sort(),
+    ],
     [liveProducts.products],
   );
 
   const filtered = useMemo(() => {
     return baseResults
       .filter((product) => category === "All" || product.category === category)
-      .filter((product) => metal === "All" || product.metal === metal || product.metalColor === metal)
+      .filter(
+        (product) => metal === "All" || product.metal === metal || product.metalColor === metal,
+      )
       .filter((product) => {
         if (price === "Under Rs.20K") return product.price < 20000;
         if (price === "Rs.20K-50K") return product.price >= 20000 && product.price <= 50000;
@@ -75,7 +84,11 @@ function SearchPage() {
       <PageHeader
         eyebrow="Search"
         title={heading}
-        subtitle={loading ? "Searching live catalogue..." : `${sorted.length} ${sorted.length === 1 ? "piece" : "pieces"} found`}
+        subtitle={
+          loading
+            ? "Searching live catalogue..."
+            : `${sorted.length} ${sorted.length === 1 ? "piece" : "pieces"} found`
+        }
       />
 
       <section className="mx-auto max-w-[1280px] px-5 py-12 sm:px-6 lg:py-16">
@@ -122,7 +135,8 @@ function SearchPage() {
             <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <p className="text-sm text-[#7a6e64]">
                 Showing <span className="font-semibold text-[#1a1a2e]">{sorted.length}</span> of{" "}
-                <span className="font-semibold text-[#1a1a2e]">{baseResults.length}</span> matching pieces
+                <span className="font-semibold text-[#1a1a2e]">{baseResults.length}</span> matching
+                pieces
               </p>
               <select
                 value={sort}
@@ -136,7 +150,7 @@ function SearchPage() {
             </div>
 
             {sorted.length > 0 ? (
-              <div className="grid grid-cols-2 gap-4 sm:gap-7 sm:grid-cols-2 xl:grid-cols-3 items-stretch">
+              <div className="grid grid-cols-2 gap-3 sm:gap-7 sm:grid-cols-2 xl:grid-cols-3 items-stretch">
                 {sorted.map((product, index) => (
                   <ProductCard key={product.id} product={product} index={index} />
                 ))}
@@ -147,7 +161,8 @@ function SearchPage() {
                   No jewellery found for "{query || "your search"}"
                 </h2>
                 <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-[#7a6e64]">
-                  Try a collection, product type, gemstone, metal, SKU or one of these popular options.
+                  Try a collection, product type, gemstone, metal, SKU or one of these popular
+                  options.
                 </p>
                 <div className="mt-6 flex flex-wrap justify-center gap-2">
                   <QuickLink label="Browse Rings" q="Rings" />

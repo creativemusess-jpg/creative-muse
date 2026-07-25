@@ -55,18 +55,27 @@ export const ProductCard = memo(function ProductCard({
             openQuickView(product.id);
           }
         }}
-        className="relative block text-left"
+        className="relative block shrink-0 text-left"
         aria-label={`Quick view ${product.name}`}
       >
-        <div className="relative aspect-[1/1.08] overflow-hidden md:aspect-square rounded-[14px] md:rounded-[18px] bg-[#fffdf9] border border-[rgba(66,29,34,0.18)] shadow-[0_8px_24px_rgba(66,29,34,0.06)]">
+        <div className="relative flex h-[168px] items-center justify-center overflow-hidden rounded-[14px] border border-[rgba(66,29,34,0.18)] bg-white p-2 shadow-[0_8px_24px_rgba(66,29,34,0.06)] sm:h-[230px] sm:p-3 md:h-[250px] md:rounded-[18px] md:p-4">
           <img
             src={product.image}
             alt={product.name}
             loading="lazy"
             width={1024}
             height={1024}
-            className="absolute inset-0 h-full w-full object-contain p-2 transition-transform duration-700 group-hover:scale-[1.06] md:p-3"
-            onError={(e) => { const t = e.currentTarget; if (t.dataset.fallback) { t.style.display = "none"; return; } t.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400'%3E%3Crect fill='%23fffdf9' width='400' height='400'/%3E%3C/svg%3E"; t.dataset.fallback = "1"; }}
+            className="h-full max-h-full w-full max-w-full object-contain transition-transform duration-700 group-hover:scale-[1.02]"
+            onError={(e) => {
+              const t = e.currentTarget;
+              if (t.dataset.fallback) {
+                t.style.display = "none";
+                return;
+              }
+              t.src =
+                "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400'%3E%3Crect fill='white' width='400' height='400'/%3E%3C/svg%3E";
+              t.dataset.fallback = "1";
+            }}
           />
 
           <div className="absolute top-2 left-2 flex flex-col gap-0.5 md:top-2.5 md:left-2.5">
@@ -106,7 +115,7 @@ export const ProductCard = memo(function ProductCard({
           </button>
 
           <div className="absolute right-2 bottom-2 opacity-100 transition-all duration-400 md:right-3 md:bottom-3 md:translate-y-3 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100">
-            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-white/90 text-[#421D22] shadow-sm backdrop-blur-sm border border-[rgba(66,29,34,0.15)] md:h-auto md:w-auto md:rounded-full md:bg-white/95 md:px-4 md:py-2 md:text-[11px] md:font-semibold md:tracking-[0.16em] md:uppercase md:border md:border-[rgba(66,29,34,0.15)]">
+            <span className="flex h-7 w-7 items-center justify-center rounded-full border border-[rgba(66,29,34,0.15)] bg-white text-[#421D22] shadow-sm md:h-auto md:w-auto md:rounded-full md:border md:border-[rgba(66,29,34,0.15)] md:bg-white md:px-4 md:py-2 md:text-[11px] md:font-semibold md:tracking-[0.16em] md:uppercase">
               <Eye className="h-3 w-3 md:hidden" />
               <span className="hidden md:inline">Quick View</span>
             </span>
@@ -114,11 +123,11 @@ export const ProductCard = memo(function ProductCard({
         </div>
       </div>
 
-      <div className="flex flex-1 flex-col p-2.5 md:p-4">
-        <p className="text-[9px] tracking-[0.08em] text-[#7a6e64] uppercase md:text-[10px] md:tracking-[0.1em]">
+      <div className="flex flex-1 flex-col p-2 md:p-4">
+        <p className="min-h-[13px] truncate text-[9px] tracking-[0.08em] text-[#7a6e64] uppercase md:min-h-[16px] md:text-[10px] md:tracking-[0.1em]">
           {product.metal} · {product.stone}
         </p>
-        {(productLink(product) ? (
+        {productLink(product) ? (
           <Link
             to={productLink(product)!.to}
             params={productLink(product)!.params}
@@ -130,12 +139,16 @@ export const ProductCard = memo(function ProductCard({
           <h3 className="font-display mt-1 line-clamp-2 min-h-[2.4em] text-[13px] leading-snug font-semibold text-[#1a1a2e] md:mt-1.5 md:min-h-[38px] md:text-[14px]">
             {product.name}
           </h3>
-        ))}
-        <div className="mt-1.5 flex items-baseline gap-1.5 md:mt-2 md:gap-2">
-          <span className="text-[15px] font-bold text-[#1a1a2e] md:text-[17px]">{formatPrice(product.price)}</span>
-          <span className="text-[10px] text-[#7a6e64] line-through md:text-[12px]">{formatPrice(product.mrp)}</span>
+        )}
+        <div className="mt-1.5 flex min-h-[25px] items-baseline gap-1.5 md:mt-2 md:min-h-[29px] md:gap-2">
+          <span className="text-[15px] font-bold text-[#1a1a2e] md:text-[17px]">
+            {formatPrice(product.price)}
+          </span>
+          <span className="text-[10px] text-[#7a6e64] line-through md:text-[12px]">
+            {formatPrice(product.mrp)}
+          </span>
         </div>
-        <div className="min-h-[14px] md:min-h-[18px]" />
+        <div className="min-h-[10px] md:min-h-[18px]" />
         <button
           type="button"
           onClick={() => addToCart(product.id, 1)}

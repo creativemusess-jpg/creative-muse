@@ -15,14 +15,14 @@ const sortFromUrl = (s: unknown): string =>
   SORT_OPTIONS.includes(s as SortOption) ? (s as SortOption) : "Featured";
 
 const CAT_SLUG_MAP: Record<string, string> = {
-  "All": "",
-  "Earrings": "earrings",
-  "Necklace": "necklace",
-  "Rings": "rings",
-  "Hoops": "hoops",
-  "Earcuffs": "earcuffs",
-  "Kada": "kada",
-  "Bracelets": "bracelets",
+  All: "",
+  Earrings: "earrings",
+  Necklace: "necklace",
+  Rings: "rings",
+  Hoops: "hoops",
+  Earcuffs: "earcuffs",
+  Kada: "kada",
+  Bracelets: "bracelets",
 };
 
 const knownCategoryNames = new Set(Object.keys(CAT_SLUG_MAP));
@@ -52,7 +52,11 @@ export const Route = createFileRoute("/shop")({
   head: () => ({
     meta: [
       { title: "Shop Fine Jewellery — Creative Muse" },
-      { name: "description", content: "Browse rings, necklaces, earrings, bracelets and bridal sets — handcrafted in Vadodara." },
+      {
+        name: "description",
+        content:
+          "Browse rings, necklaces, earrings, bracelets and bridal sets — handcrafted in Vadodara.",
+      },
     ],
   }),
   component: ShopPage,
@@ -75,7 +79,10 @@ function ShopPage() {
   const [retryTick, setRetryTick] = useState(0);
 
   const selectedCat = urlCat;
-  const selectedMetals = useMemo(() => urlMetal ? urlMetal.split(",").filter(Boolean) : [], [urlMetal]);
+  const selectedMetals = useMemo(
+    () => (urlMetal ? urlMetal.split(",").filter(Boolean) : []),
+    [urlMetal],
+  );
   const sort = urlSort;
 
   const pushFilters = useCallback(
@@ -102,7 +109,9 @@ function ShopPage() {
 
   // Fetch products when category changes (on first load + category switch)
   useEffect(() => {
-    const catSlug = selectedCat ? CAT_SLUG_MAP[selectedCat] || selectedCat.toLowerCase() : undefined;
+    const catSlug = selectedCat
+      ? CAT_SLUG_MAP[selectedCat] || selectedCat.toLowerCase()
+      : undefined;
 
     const abort = new AbortController();
     setLoading(true);
@@ -243,7 +252,10 @@ function ShopPage() {
               )}
             </button>
             {hasActiveFilters && (
-              <button onClick={clearFilters} className="text-[11px] font-semibold text-[#421D22] uppercase">
+              <button
+                onClick={clearFilters}
+                className="text-[11px] font-semibold text-[#421D22] uppercase"
+              >
                 Clear All
               </button>
             )}
@@ -319,7 +331,8 @@ function ShopPage() {
                         : "border-[#e0d8cc] bg-white text-[#3a3028] hover:border-[#421D22] hover:text-[#421D22]"
                     }`}
                   >
-                    {m}{count > 0 ? ` (${count})` : ""}
+                    {m}
+                    {count > 0 ? ` (${count})` : ""}
                   </button>
                 );
               })}
@@ -355,8 +368,15 @@ function ShopPage() {
           <div>
             <div className="mb-6 flex items-center justify-between gap-4">
               <p className="text-sm text-[#7a6e64]">
-                {loading ? "Loading jewellery..." : error ? "" : (
-                  <>Showing <span className="font-semibold text-[#1a1a2e]">{sorted.length}</span> {sorted.length === 1 ? "piece" : "pieces"}</>
+                {loading ? (
+                  "Loading jewellery..."
+                ) : error ? (
+                  ""
+                ) : (
+                  <>
+                    Showing <span className="font-semibold text-[#1a1a2e]">{sorted.length}</span>{" "}
+                    {sorted.length === 1 ? "piece" : "pieces"}
+                  </>
                 )}
               </p>
               {!error && (
@@ -378,26 +398,33 @@ function ShopPage() {
               </div>
             ) : error ? (
               <div className="rounded-[24px] border border-[#e0d8cc] bg-white px-5 py-16 text-center shadow-[0_4px_16px_rgba(0,0,0,0.04)]">
-                <h2 className="font-display text-2xl font-semibold text-[#1a1a2e]">Unable to load products</h2>
+                <h2 className="font-display text-2xl font-semibold text-[#1a1a2e]">
+                  Unable to load products
+                </h2>
                 <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-[#7a6e64]">
                   {error}. Please try again.
                 </p>
                 <button
-                  onClick={() => { setError(null); setRetryTick((t) => t + 1); }}
+                  onClick={() => {
+                    setError(null);
+                    setRetryTick((t) => t + 1);
+                  }}
                   className="btn-primary mt-8"
                 >
                   Retry
                 </button>
               </div>
             ) : sorted.length > 0 ? (
-              <div className="grid grid-cols-2 gap-4 sm:gap-7 sm:grid-cols-2 lg:grid-cols-3 items-stretch">
+              <div className="grid grid-cols-2 gap-3 sm:gap-7 sm:grid-cols-2 lg:grid-cols-3 items-stretch">
                 {sorted.map((p, i) => (
                   <ProductCard key={p.id} product={p} index={i} />
                 ))}
               </div>
             ) : (
               <div className="rounded-[24px] border border-[#e0d8cc] bg-white px-5 py-16 text-center shadow-[0_4px_16px_rgba(0,0,0,0.04)]">
-                <h2 className="font-display text-2xl font-semibold text-[#1a1a2e]">No products found</h2>
+                <h2 className="font-display text-2xl font-semibold text-[#1a1a2e]">
+                  No products found
+                </h2>
                 <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-[#7a6e64]">
                   Try changing the metal or price range.
                 </p>

@@ -79,28 +79,37 @@ export function Footer() {
           <p>© 2026 All Rights Reserved By Creative Muse</p>
           <p className="mt-1">
             Designed &amp; Developed By{" "}
-            <a href="https://apfpuniversal.com" target="_blank" rel="noopener noreferrer" className="text-[#e8d5b8] hover:underline">
+            <a
+              href="https://apfpuniversal.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[#e8d5b8] hover:underline"
+            >
               APFP UNIVERSAL
             </a>
           </p>
         </div>
-        <div className="flex flex-wrap items-center gap-3 sm:gap-4">
-          <span className="flex items-center gap-2 rounded-[6px] bg-[#0a0a2e] px-3 py-2" aria-label="Razorpay payment">
-            <img src="/payment-methods/razorpay.svg" alt="" className="h-[22px] w-[80px]" />
-            <span className="text-[10px] font-medium tracking-[0.06em] text-[#e8d5b8]">Razorpay</span>
-          </span>
-          <span className="flex items-center gap-2 rounded-[6px] bg-[#0a3320] px-3 py-2" aria-label="UPI payment">
-            <img src="/payment-methods/upi.svg" alt="" className="h-[22px] w-[72px]" />
-            <span className="text-[10px] font-medium tracking-[0.06em] text-[#e8d5b8]">UPI</span>
-          </span>
-          <span className="flex items-center gap-2 rounded-[6px] bg-[#1A1F71] px-3 py-2" aria-label="Visa payment">
-            <img src="/payment-methods/visa.svg" alt="" className="h-[22px] w-[62px]" />
-            <span className="text-[10px] font-medium tracking-[0.06em] text-[#e8d5b8]">Visa</span>
-          </span>
-          <span className="flex items-center gap-2 rounded-[6px] bg-[#1A1A2E] px-3 py-2" aria-label="Mastercard payment">
-            <img src="/payment-methods/mastercard.svg" alt="" className="h-[22px] w-[110px]" />
-            <span className="text-[10px] font-medium tracking-[0.06em] text-[#e8d5b8]">Mastercard</span>
-          </span>
+        <div className="grid grid-cols-2 place-items-center gap-x-8 gap-y-4 sm:flex sm:items-center sm:justify-end sm:gap-6">
+          <img
+            src="/payment-methods/razorpay.svg"
+            alt="Razorpay"
+            className="h-7 w-auto opacity-90 transition-opacity hover:opacity-100"
+          />
+          <img
+            src="/payment-methods/upi.svg"
+            alt="UPI"
+            className="h-7 w-auto opacity-90 transition-opacity hover:opacity-100"
+          />
+          <img
+            src="/payment-methods/visa.svg"
+            alt="Visa"
+            className="h-7 w-auto opacity-90 transition-opacity hover:opacity-100"
+          />
+          <img
+            src="/payment-methods/mastercard.svg"
+            alt="Mastercard"
+            className="h-7 w-auto opacity-90 transition-opacity hover:opacity-100"
+          />
         </div>
       </div>
     </footer>
