@@ -100,7 +100,7 @@ function PaymentPage() {
         couponCode: checkoutData.couponCode || null,
         couponId: checkoutData.couponId || null,
         shipping: t.shipping || t.shippingCharge || 0,
-        tax: t.tax || t.gstAmount || 0,
+        tax: 0,
         total: t.total || t.grandTotal || 0,
         paymentMethod: method,
         deliveryMethod: checkoutData.deliveryMethod || "standard",
@@ -118,7 +118,7 @@ function PaymentPage() {
           landmark: addr.landmark || "",
           addressType: "Home",
         },
-        taxSnapshot: checkoutData.taxSnapshot || undefined,
+        taxSnapshot: undefined,
       });
 
       if (result.error) { setError(result.error); setPaying(false); setRetryCount((c) => c + 1); return; }
@@ -144,7 +144,7 @@ function PaymentPage() {
         subtotal: t.subtotal || t.itemsSubtotal,
         discountAmount: t.discountAmount || t.couponDiscount || 0,
         shipping: t.shipping || t.shippingCharge || 0,
-        tax: t.tax || t.gstAmount || 0,
+        tax: 0,
         total: t.total || t.grandTotal || 0,
         deliveryMethod: checkoutData.deliveryMethod,
         deliveryAddress: checkoutData.address,
@@ -175,8 +175,6 @@ function PaymentPage() {
       </PageShell>
     );
   }
-
-  const taxSnap = checkoutData.taxSnapshot || {};
 
   return (
     <PageShell>
@@ -305,13 +303,7 @@ function PaymentPage() {
                 <Row label="Subtotal" value={formatPrice(totals.subtotal)} />
                 {totals.discountAmount > 0 && <Row label="Discount" value={`-${formatPrice(totals.discountAmount)}`} />}
                 <Row label="Shipping" value={totals.shipping === 0 ? "Free" : formatPrice(totals.shipping)} />
-                {totals.tax > 0 && taxSnap.gstType === "cgst_sgst" ? (
-                  <><Row label={`CGST @ ${taxSnap.cgstRate || ""}%`} value={formatPrice(taxSnap.cgstAmount || totals.tax / 2)} /><Row label={`SGST @ ${taxSnap.sgstRate || ""}%`} value={formatPrice(taxSnap.sgstAmount || totals.tax / 2)} /></>
-                ) : totals.tax > 0 && taxSnap.gstType === "igst" ? (
-                  <Row label={`IGST @ ${taxSnap.igstRate || ""}%`} value={formatPrice(taxSnap.igstAmount || totals.tax)} />
-                ) : totals.tax > 0 ? (
-                  <Row label="GST" value={formatPrice(totals.tax)} />
-                ) : null}
+                {null}
                 <div className="my-2 border-t border-dashed border-[#e0d8cc]" />
                 <Row label="Total" value={formatPrice(totals.total)} bold />
               </div>

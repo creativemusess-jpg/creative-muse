@@ -1073,38 +1073,7 @@ function OrderDetailPage() {
                   {order.shipping_amount > 0 ? formatCurrency(order.shipping_amount) : "Free"}
                 </span>
               </div>
-              {order.tax_amount > 0 && (
-                <>
-                  {order.tax_snapshot?.gstType === "cgst_sgst" ? (
-                    <>
-                      <div className="flex justify-between text-sm mt-1">
-                        <span className="text-gray-500">CGST @ {order.tax_snapshot.cgstRate}%</span>
-                        <span className="font-medium">
-                          {formatCurrency(order.tax_snapshot.cgstAmount)}
-                        </span>
-                      </div>
-                      <div className="flex justify-between text-sm mt-1">
-                        <span className="text-gray-500">SGST @ {order.tax_snapshot.sgstRate}%</span>
-                        <span className="font-medium">
-                          {formatCurrency(order.tax_snapshot.sgstAmount)}
-                        </span>
-                      </div>
-                    </>
-                  ) : order.tax_snapshot?.gstType === "igst" ? (
-                    <div className="flex justify-between text-sm mt-1">
-                      <span className="text-gray-500">IGST @ {order.tax_snapshot.igstRate}%</span>
-                      <span className="font-medium">
-                        {formatCurrency(order.tax_snapshot.igstAmount)}
-                      </span>
-                    </div>
-                  ) : (
-                    <div className="flex justify-between text-sm mt-1">
-                      <span className="text-gray-500">Tax / GST</span>
-                      <span className="font-medium">{formatCurrency(order.tax_amount)}</span>
-                    </div>
-                  )}
-                </>
-              )}
+              {null}
               <div className="flex justify-between text-base font-bold mt-2 pt-2 border-t border-gray-100">
                 <span>Total</span>
                 <span>{formatCurrency(total)}</span>

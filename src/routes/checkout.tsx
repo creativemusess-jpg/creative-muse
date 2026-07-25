@@ -6,7 +6,7 @@ import { useAuth } from "@/lib/auth";
 import { useCartLines, useStore } from "@/lib/store";
 import { formatPrice } from "@/lib/products";
 import { validateCoupon, saveAbandonedCheckout, saveCustomerAddress, deleteCustomerAddress } from "@/lib/api/checkout";
-import { calculateTotals, formatINR, INDIAN_STATES, getCitiesByState, getStateCodeByName, getStateNameByCode, DEFAULT_DELIVERY, DEFAULT_TAX_SETTINGS, type CheckoutTotals, type DeliveryMethod, type CityOption } from "@/lib/checkout";
+import { calculateTotals, formatINR, INDIAN_STATES, getCitiesByState, getStateCodeByName, getStateNameByCode, DEFAULT_DELIVERY, type CheckoutTotals, type DeliveryMethod, type CityOption } from "@/lib/checkout";
 import { lookupPincode, validateIndianPincode, detectStateConflict } from "@/lib/checkout/pincode";
 import { settingsApi } from "@/lib/api/settings";
 
@@ -39,7 +39,6 @@ function CheckoutPage() {
   const [selectedLocality, setSelectedLocality] = useState("");
   const [stateConflict, setStateConflict] = useState<{ conflict: boolean; message?: string }>({ conflict: false });
 
-  const [taxSettings, setTaxSettings] = useState(DEFAULT_TAX_SETTINGS);
   const [savedAddresses, setSavedAddresses] = useState<any[]>([]);
   const [showSavedAddresses, setShowSavedAddresses] = useState(false);
   const [billingSame, setBillingSame] = useState(true);
@@ -69,7 +68,6 @@ function CheckoutPage() {
   }, [lines, authLoading, navigate]);
 
   useEffect(() => {
-    settingsApi.get("tax_settings").then((s) => { if (s?.setting_value) setTaxSettings(s.setting_value); }).catch(() => {});
     loadSavedAddresses();
   }, []);
 
@@ -91,8 +89,7 @@ function CheckoutPage() {
     couponDiscount: discountAmount || 0,
     deliveryMethod,
     deliveryStateCode,
-    taxSettings,
-  }), [subtotal, discountAmount, deliveryMethod, deliveryStateCode, taxSettings]);
+  }), [subtotal, discountAmount, deliveryMethod, deliveryStateCode]);
 
   useEffect(() => {
     if (pincodeLocations.length > 0 && !selectedLocality) {
@@ -209,8 +206,7 @@ function CheckoutPage() {
       address: { ...address, stateCode: deliveryStateCode },
       phone: phone || user?.email || "",
       deliveryMethod,
-      totals: { subtotal: totals.itemsSubtotal, discountAmount: totals.couponDiscount, shipping: totals.shippingCharge, tax: totals.gstAmount, total: totals.grandTotal },
-      taxSnapshot: totals,
+      totals: { subtotal: totals.itemsSubtotal, discountAmount: totals.couponDiscount, shipping: totals.shippingCharge, tax: 0, total: totals.grandTotal },
       couponCode: couponCode || null,
       couponId: appliedCouponId || null,
       billingSame,
@@ -441,14 +437,8 @@ function CheckoutPage() {
                 {totals.couponDiscount > 0 && <Row label="Coupon Discount" value={`-${formatPrice(totals.couponDiscount)}`} />}
                 <Row label="Shipping" value={totals.shippingCharge === 0 ? "Free" : formatPrice(totals.shippingCharge)} />
                 {totals.shippingCharge > 0 && <p className="text-[10px] text-[#7a6e64] -mt-1">{totals.deliveryLabel} · {totals.deliveryEstimate}</p>}
-                {taxSettings.enabled && taxSettings.displayBreakdown && totals.gstAmount > 0 && (
-                  <>{totals.gstType === "cgst_sgst" ? (
-                    <><Row label={`CGST @ ${totals.cgstRate}%`} value={formatPrice(totals.cgstAmount)} /><Row label={`SGST @ ${totals.sgstRate}%`} value={formatPrice(totals.sgstAmount)} /></>
-                  ) : <Row label={`IGST @ ${totals.igstRate}%`} value={formatPrice(totals.igstAmount)} />}</>
-                )}
                 <div className="my-2 border-t border-[#e0d8cc]" />
                 <Row label="Total" value={formatPrice(totals.grandTotal)} bold />
-                {taxSettings.enabled && totals.gstAmount > 0 && <p className="text-[10px] text-[#7a6e64]">Inclusive of all taxes</p>}
               </div>
               {error && <p className="mt-3 text-sm text-red-500">{error}</p>}
               <button type="submit" disabled={saving || couponStatus === "loading"} className="btn-primary mt-5 w-full justify-center disabled:opacity-60">

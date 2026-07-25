@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { motion, AnimatePresence } from "framer-motion";
-import { useEffect, useMemo, useState, useCallback } from "react";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { useEffect, useMemo, useState, useCallback, useRef } from "react";
 import {
   Sparkles,
   Award,
@@ -21,6 +21,7 @@ import {
   Users,
   Droplets,
   ShieldCheck,
+  ChevronDown,
 } from "lucide-react";
 import { type Product, useStorefrontProducts } from "@/lib/products";
 import { categoriesApi } from "@/lib/api/categories";
@@ -395,6 +396,9 @@ function deduplicateCategories(cats: any[]): any[] {
 function ShopByCategory() {
   const [dbCategories, setDbCategories] = useState<any[]>([]);
   const [catLoaded, setCatLoaded] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
+  const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
     categoriesApi.list(true).then((data) => {
@@ -405,102 +409,128 @@ function ShopByCategory() {
 
   if (!catLoaded) return null;
 
+  const INITIAL_COUNT = 5;
+  const hasMore = dbCategories.length > INITIAL_COUNT;
+  const firstFive = dbCategories.slice(0, INITIAL_COUNT);
+  const rest = dbCategories.slice(INITIAL_COUNT);
+  const d = prefersReducedMotion ? 0 : undefined;
+
+  function toggle() {
+    if (expanded) {
+      setExpanded(false);
+      setTimeout(() => {
+        sectionRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }, prefersReducedMotion ? 50 : 450);
+    } else {
+      setExpanded(true);
+    }
+  }
+
+  function renderCard(cat: any) {
+    const img = cat.imageUrl || CATEGORY_IMAGES[cat.name] || null;
+    return (
+      <Link
+        to={`/category/${cat.slug}`}
+        className="group flex h-full flex-col items-center rounded-[24px] border border-transparent bg-white p-3 pb-4 text-center shadow-[0_4px_24px_rgba(0,0,0,0.04)] transition-all duration-500 hover:-translate-y-2 hover:border-[#C9A96E]/50 hover:shadow-[0_20px_60px_rgba(201,169,110,0.22)] active:scale-[0.97] md:p-4 md:pb-5"
+      >
+        <div className="relative aspect-square w-full overflow-hidden rounded-[18px] bg-gradient-to-br from-[#fdf8f3] to-[#f0e4cd]">
+          {img ? (
+            <img
+              src={img}
+              alt={cat.name}
+              loading="lazy"
+              width={768}
+              height={768}
+              className="absolute inset-0 h-full w-full object-contain p-2 transition-transform duration-700 ease-out group-hover:scale-110 md:p-3"
+              onError={(e) => { e.currentTarget.style.display = "none"; }}
+            />
+          ) : (
+            <div className="flex h-full w-full items-center justify-center bg-[#f5efe8] p-3">
+              <svg className="h-8 w-8 text-[#c9a96e]/20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z" /></svg>
+            </div>
+          )}
+        </div>
+        <p className="font-display mt-3 text-[14px] font-semibold text-[#1a1a2e] md:mt-4 md:text-[15px]">
+          {cat.name}
+        </p>
+      </Link>
+    );
+  }
+
   return (
-    <section id="shop-by-category" className="scroll-mt-40 bg-[#fdf8f3] py-16 md:py-20">
+    <section id="shop-by-category" ref={sectionRef} className="scroll-mt-40 bg-[#fdf8f3] py-16 md:py-20">
       <div className="mx-auto max-w-[1280px] px-6">
         <SectionHeading eyebrow="Browse" title="Shop by Category" />
 
         <div className="mt-10">
-          {/* Mobile/tablet: carousel — desktop: wrapping grid */}
-          <div className="lg:hidden">
-            <Carousel opts={{ align: "start", dragFree: true }}>
-              <CarouselContent className="-ml-3 md:-ml-4">
-                {dbCategories.map((cat, i) => {
-                  const categoryImg = cat.imageUrl || CATEGORY_IMAGES[cat.name] || null;
-                  return (
-                  <CarouselItem key={cat.id} className="basis-[44%] pl-3 sm:basis-[30%] md:basis-1/4 md:pl-4">
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true, margin: "-50px" }}
-                      transition={{ duration: 0.4, delay: i * 0.05 }}
-                      className="h-full"
-                    >
-                       <Link
-                        to={`/category/${cat.slug}`}
-                        className="group flex h-full flex-col items-center rounded-[24px] border border-transparent bg-white p-3 pb-4 text-center shadow-[0_4px_24px_rgba(0,0,0,0.04)] transition-all duration-500 hover:-translate-y-2 hover:border-[#C9A96E]/50 hover:shadow-[0_20px_60px_rgba(201,169,110,0.22)] active:scale-[0.97] md:p-4 md:pb-5"
-                      >
-                        <div className="relative aspect-square w-full overflow-hidden rounded-[18px] bg-gradient-to-br from-[#fdf8f3] to-[#f0e4cd]">
-                          {categoryImg ? (
-                            <img
-                              src={categoryImg}
-                              alt={cat.name}
-                              loading="lazy"
-                              width={768}
-                              height={768}
-                              className="absolute inset-0 h-full w-full object-contain p-2 transition-transform duration-700 ease-out group-hover:scale-110 md:p-3"
-                              onError={(e) => { e.currentTarget.style.display = "none"; }}
-                            />
-                          ) : (
-                            <div className="flex h-full w-full items-center justify-center bg-[#f5efe8] p-3">
-                              <svg className="h-8 w-8 text-[#c9a96e]/20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z" /></svg>
-                            </div>
-                          )}
-                        </div>
-                        <p className="font-display mt-3 text-[14px] font-semibold text-[#1a1a2e] md:mt-4 md:text-[15px]">
-                          {cat.name}
-                        </p>
-                      </Link>
-                    </motion.div>
-                  </CarouselItem>
-                  );
-                })}
-              </CarouselContent>
-            </Carousel>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5 lg:gap-5">
+            {firstFive.map((cat, i) => (
+              <motion.div
+                key={cat.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ duration: d ?? 0.4, delay: d ?? i * 0.05 }}
+              >
+                {renderCard(cat)}
+              </motion.div>
+            ))}
+
+            {hasMore && (
+              <AnimatePresence>
+                {expanded && (
+                  <motion.div
+                    key="extras"
+                    initial={{ height: 0, opacity: 0, overflow: "hidden" }}
+                    animate={{ height: "auto", opacity: 1, overflow: "hidden" }}
+                    exit={{ height: 0, opacity: 0, overflow: "hidden" }}
+                    transition={{ duration: d ?? 0.4, ease: "easeInOut" }}
+                    className="col-span-full"
+                  >
+                    <div className="grid grid-cols-2 gap-3 pt-2 sm:grid-cols-3 lg:grid-cols-5 lg:gap-5">
+                      {rest.map((cat, i) => (
+                        <motion.div
+                          key={cat.id}
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{
+                            duration: d ?? 0.3,
+                            delay: d ?? i * 0.04,
+                            ease: "easeOut",
+                          }}
+                        >
+                          {renderCard(cat)}
+                        </motion.div>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            )}
           </div>
 
-          {/* Desktop: flex-wrap grid — all categories visible */}
-          <div className="hidden lg:flex lg:flex-wrap lg:justify-center lg:gap-5">
-            {dbCategories.map((cat, i) => {
-              const categoryImg = cat.imageUrl || CATEGORY_IMAGES[cat.name] || null;
-              return (
-                <motion.div
-                  key={cat.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-50px" }}
-                  transition={{ duration: 0.4, delay: i * 0.05 }}
-                  className="w-[172px]"
-                >
-                  <Link
-                    to={`/category/${cat.slug}`}
-                    className="group flex h-full flex-col items-center rounded-[24px] border border-transparent bg-white p-3 pb-4 text-center shadow-[0_4px_24px_rgba(0,0,0,0.04)] transition-all duration-500 hover:-translate-y-2 hover:border-[#C9A96E]/50 hover:shadow-[0_20px_60px_rgba(201,169,110,0.22)] active:scale-[0.97] md:p-4 md:pb-5"
-                  >
-                    <div className="relative aspect-square w-full overflow-hidden rounded-[18px] bg-gradient-to-br from-[#fdf8f3] to-[#f0e4cd]">
-                      {categoryImg ? (
-                        <img
-                          src={categoryImg}
-                          alt={cat.name}
-                          loading="lazy"
-                          width={768}
-                          height={768}
-                          className="absolute inset-0 h-full w-full object-contain p-2 transition-transform duration-700 ease-out group-hover:scale-110 md:p-3"
-                          onError={(e) => { e.currentTarget.style.display = "none"; }}
-                        />
-                      ) : (
-                        <div className="flex h-full w-full items-center justify-center bg-[#f5efe8] p-3">
-                          <svg className="h-8 w-8 text-[#c9a96e]/20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z" /></svg>
-                        </div>
-                      )}
-                    </div>
-                    <p className="font-display mt-3 text-[14px] font-semibold text-[#1a1a2e] md:mt-4 md:text-[15px]">
-                      {cat.name}
-                    </p>
-                  </Link>
-                </motion.div>
-              );
-            })}
-          </div>
+          {hasMore && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: d ?? 0.3 }}
+              className="mt-10 flex justify-center"
+            >
+              <button
+                onClick={toggle}
+                aria-expanded={expanded}
+                aria-controls="shop-by-category"
+                className="inline-flex items-center gap-2 rounded-full border-2 border-[#C9A96E] bg-white px-8 py-3 text-[13px] font-semibold tracking-[0.14em] text-[#8a6a2a] uppercase transition-all duration-300 hover:bg-[#C9A96E] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A96E] focus-visible:ring-offset-2 active:scale-95"
+              >
+                {expanded ? "View Less" : "View More"}
+                <ChevronDown
+                  className={`h-4 w-4 transition-transform duration-300 ${
+                    expanded ? "rotate-180" : ""
+                  }`}
+                />
+              </button>
+            </motion.div>
+          )}
         </div>
       </div>
     </section>

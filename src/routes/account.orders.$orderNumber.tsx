@@ -117,7 +117,6 @@ function AccountOrderDetailPage() {
   }
 
   const activeStep = statusIndex(order.order_status);
-  const tax = order.tax_snapshot || {};
   const delivery = order.delivery_address || order.shipping_address;
 
   return (
@@ -251,20 +250,6 @@ function AccountOrderDetailPage() {
                     : formatPrice(order.shipping_amount)
                 }
               />
-              {tax.gstType === "cgst_sgst" ? (
-                <>
-                  <SummaryRow
-                    label={`CGST @ ${tax.cgstRate || 9}%`}
-                    value={formatPrice(tax.cgstAmount || order.tax_amount / 2)}
-                  />
-                  <SummaryRow
-                    label={`SGST @ ${tax.sgstRate || 9}%`}
-                    value={formatPrice(tax.sgstAmount || order.tax_amount / 2)}
-                  />
-                </>
-              ) : order.tax_amount > 0 ? (
-                <SummaryRow label="GST" value={formatPrice(order.tax_amount)} />
-              ) : null}
               <div className="mt-2 border-t border-[#1a1a2e] pt-2">
                 <SummaryRow label="Grand Total" value={formatPrice(order.total_amount)} strong />
               </div>

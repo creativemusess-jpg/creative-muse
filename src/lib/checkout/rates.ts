@@ -56,7 +56,7 @@ export const DEFAULT_DELIVERY: DeliveryConfig = {
 };
 
 export const DEFAULT_TAX_SETTINGS: TaxSettings = {
-  enabled: true,
+  enabled: false,
   mode: "exclusive",
   defaultRate: 18,
   cgstRate: 9,

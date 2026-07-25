@@ -85,7 +85,7 @@ function OrderSuccessPage() {
       <hr style="border-color:#c9a96e" />
       <p><strong>Bill To:</strong> ${order.customer_name || "Guest"}<br/>${order.customer_email || ""}<br/>${addr.addressLine1 || ""}${addr.city ? ", " + addr.city : ""}${addr.state ? ", " + addr.state : ""}</p>
       <table><thead><tr><th>Item</th><th style="text-align:center">Qty</th><th style="text-align:right">Price</th><th style="text-align:right">Total</th></tr></thead><tbody>${itemsHtml}</tbody></table>
-      <div style="margin-left:auto;width:300px"><table><tr><td>Subtotal</td><td class="right">${formatPrice(order.subtotal)}</td></tr>${order.shipping_amount > 0 ? `<tr><td>Shipping</td><td class="right">${formatPrice(order.shipping_amount)}</td></tr>` : ""}${order.tax_amount > 0 ? `<tr><td>GST</td><td class="right">${formatPrice(order.tax_amount)}</td></tr>` : ""}<tr class="total"><td>Total</td><td class="right">${formatPrice(order.total_amount)}</td></tr></table></div>
+      <div style="margin-left:auto;width:300px"><table><tr><td>Subtotal</td><td class="right">${formatPrice(order.subtotal)}</td></tr>${order.shipping_amount > 0 ? `<tr><td>Shipping</td><td class="right">${formatPrice(order.shipping_amount)}</td></tr>` : ""}<tr class="total"><td>Total</td><td class="right">${formatPrice(order.total_amount)}</td></tr></table></div>
       <div class="footer"><p>Thank you for shopping with Creative Muse!</p><p>Payment: <span class="badge badge-${order.payment_status}">${order.payment_status}</span></p></div>
     </body></html>`);
     win.document.close();
@@ -112,7 +112,6 @@ function OrderSuccessPage() {
                 <InfoRow label="Payment" value={order.payment_status === "paid" ? "Paid (Demo)" : "Pending"} />
                 <InfoRow label="Subtotal" value={formatPrice(order.subtotal)} />
                 {order.shipping_amount > 0 && <InfoRow label="Shipping" value={formatPrice(order.shipping_amount)} />}
-                {order.tax_amount > 0 && <InfoRow label="GST" value={formatPrice(order.tax_amount)} />}
                 <div className="border-t border-[#e0d8cc] pt-2" />
                 <InfoRow label="Total Paid" value={formatPrice(order.total_amount)} bold />
                 {order.delivery_method && <InfoRow label="Delivery" value={order.delivery_method === "express" ? "Express" : "Standard"} />}

@@ -59,10 +59,39 @@ export function calculateTotals(input: CalcInput): CheckoutTotals {
   const couponDiscount = input.couponDiscount;
   const afterDiscount = itemsSubtotal - couponDiscount - productDiscount;
 
+  const now = new Date();
+  const estDays = input.deliveryMethod === "express" ? [1, 2] : [3, 5];
+  const fmtDate = (d: Date) => d.toLocaleDateString("en-IN", { day: "numeric", month: "short" });
+
+  if (!tax.enabled) {
+    const rawTotal = afterDiscount + shippingCharge;
+    return {
+      itemsSubtotal,
+      productDiscount,
+      couponDiscount,
+      shippingCharge,
+      shippingMethod: input.deliveryMethod,
+      taxableAmount: rawTotal,
+      gstType: "igst",
+      cgstRate: 0,
+      sgstRate: 0,
+      igstRate: 0,
+      cgstAmount: 0,
+      sgstAmount: 0,
+      igstAmount: 0,
+      gstAmount: 0,
+      roundingAdjustment: 0,
+      grandTotal: Math.round(rawTotal * 100) / 100,
+      deliveryLabel: deliveryInfo.label,
+      deliveryDays: deliveryInfo.days,
+      deliveryEstimate: `${fmtDate(new Date(Date.now() + estDays[0] * 86400000))}–${fmtDate(new Date(Date.now() + estDays[1] * 86400000))}`,
+    };
+  }
+
   const businessStateCode = tax.businessStateCode;
   const deliveryStateCode = input.deliveryStateCode || "";
   const isSameState = deliveryStateCode === businessStateCode;
-  const gstType: GstType = tax.enabled ? (isSameState ? "cgst_sgst" : "igst") : "igst";
+  const gstType: GstType = isSameState ? "cgst_sgst" : "igst";
 
   const shippingInBase = tax.applyGstToShipping ? shippingCharge : 0;
   let taxableBase = afterDiscount + shippingInBase;
@@ -72,28 +101,26 @@ export function calculateTotals(input: CalcInput): CheckoutTotals {
   let igstAmount = 0;
   let gstAmount = 0;
 
-  if (tax.enabled) {
-    if (tax.mode === "inclusive") {
-      const inclusiveRate = tax.defaultRate / 100;
-      const taxablePaise = toPaise(taxableBase);
-      const extractedPaise = taxablePaise - Math.round(taxablePaise / (1 + inclusiveRate));
-      gstAmount = fromPaise(extractedPaise);
-      if (gstType === "cgst_sgst") {
-        cgstAmount = fromPaise(Math.round(extractedPaise / 2));
-        sgstAmount = gstAmount - cgstAmount;
-      } else {
-        igstAmount = gstAmount;
-      }
+  if (tax.mode === "inclusive") {
+    const inclusiveRate = tax.defaultRate / 100;
+    const taxablePaise = toPaise(taxableBase);
+    const extractedPaise = taxablePaise - Math.round(taxablePaise / (1 + inclusiveRate));
+    gstAmount = fromPaise(extractedPaise);
+    if (gstType === "cgst_sgst") {
+      cgstAmount = fromPaise(Math.round(extractedPaise / 2));
+      sgstAmount = gstAmount - cgstAmount;
     } else {
-      const taxablePaise = toPaise(taxableBase);
-      if (gstType === "cgst_sgst") {
-        cgstAmount = fromPaise(Math.round(taxablePaise * tax.cgstRate / 100));
-        sgstAmount = fromPaise(Math.round(taxablePaise * tax.sgstRate / 100));
-        gstAmount = cgstAmount + sgstAmount;
-      } else {
-        igstAmount = fromPaise(Math.round(taxablePaise * tax.igstRate / 100));
-        gstAmount = igstAmount;
-      }
+      igstAmount = gstAmount;
+    }
+  } else {
+    const taxablePaise = toPaise(taxableBase);
+    if (gstType === "cgst_sgst") {
+      cgstAmount = fromPaise(Math.round(taxablePaise * tax.cgstRate / 100));
+      sgstAmount = fromPaise(Math.round(taxablePaise * tax.sgstRate / 100));
+      gstAmount = cgstAmount + sgstAmount;
+    } else {
+      igstAmount = fromPaise(Math.round(taxablePaise * tax.igstRate / 100));
+      gstAmount = igstAmount;
     }
   }
 
@@ -101,13 +128,10 @@ export function calculateTotals(input: CalcInput): CheckoutTotals {
   const roundingAdjustment = fromPaise(Math.round(totalPaise)) - afterDiscount - shippingCharge - gstAmount;
   const grandTotal = fromPaise(Math.round(totalPaise));
 
-  const now = new Date();
-  const estDays = input.deliveryMethod === "express" ? [1, 2] : [3, 5];
   const estStart = new Date(now);
   estStart.setDate(estStart.getDate() + estDays[0]);
   const estEnd = new Date(now);
   estEnd.setDate(estEnd.getDate() + estDays[1]);
-  const fmtDate = (d: Date) => d.toLocaleDateString("en-IN", { day: "numeric", month: "short" });
 
   return {
     itemsSubtotal,

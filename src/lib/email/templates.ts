@@ -225,21 +225,10 @@ function orderItems(data: OrderEmailData) {
 
 function totals(data: OrderEmailData) {
   const order = data.order;
-  const tax = order.tax_snapshot || {};
   const rows = [
     ["Subtotal", money(order.subtotal)],
     order.discount_amount > 0 ? ["Discount", `-${money(order.discount_amount)}`] : null,
     ["Shipping", Number(order.shipping_amount || 0) === 0 ? "Free" : money(order.shipping_amount)],
-    tax.gstType === "cgst_sgst"
-      ? [`CGST @ ${tax.cgstRate || 9}%`, money(tax.cgstAmount || Number(order.tax_amount || 0) / 2)]
-      : null,
-    tax.gstType === "cgst_sgst"
-      ? [`SGST @ ${tax.sgstRate || 9}%`, money(tax.sgstAmount || Number(order.tax_amount || 0) / 2)]
-      : null,
-    tax.gstType === "igst"
-      ? [`IGST @ ${tax.igstRate || 18}%`, money(tax.igstAmount || order.tax_amount)]
-      : null,
-    !tax.gstType && Number(order.tax_amount || 0) > 0 ? ["GST", money(order.tax_amount)] : null,
   ].filter(Boolean) as Array<[string, string]>;
   return `${statGrid(rows)}
     <div style="border-top:2px solid ${NAVY};margin-top:10px;padding-top:12px;text-align:right;font:700 20px Georgia,serif;color:${NAVY}">
