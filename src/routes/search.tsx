@@ -136,7 +136,7 @@ function SearchPage() {
             </div>
 
             {sorted.length > 0 ? (
-              <div className="grid grid-cols-2 gap-4 sm:gap-7 sm:grid-cols-2 xl:grid-cols-3">
+              <div className="grid grid-cols-2 gap-4 sm:gap-7 sm:grid-cols-2 xl:grid-cols-3 items-stretch">
                 {sorted.map((product, index) => (
                   <ProductCard key={product.id} product={product} index={index} />
                 ))}
