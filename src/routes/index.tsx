@@ -843,9 +843,9 @@ function WhyChoose() {
       <div className="mx-auto max-w-[1280px] px-6">
         <SectionHeading eyebrow="The Creative Muse Promise" title="Why Choose Us" />
 
-        {/* 2x2 Premium Benefit Grid */}
-        <div className="mx-auto max-w-[760px]">
-          <div className="grid grid-cols-2 gap-3 md:gap-5">
+        {/* Premium Benefit Grid */}
+        <div className="mx-auto max-w-[760px] lg:max-w-[1120px]">
+          <div className="grid grid-cols-2 gap-3 md:gap-5 lg:grid-cols-4 lg:gap-4">
             {benefitItems.map((item, i) => (
               <motion.div
                 key={item.title}
@@ -853,12 +853,12 @@ function WhyChoose() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-30px" }}
                 transition={{ duration: 0.4, delay: i * 0.04 }}
-                className="flex min-h-[138px] flex-col items-center justify-center rounded-[22px] bg-[#f9f2e9] p-5 text-center md:min-h-[170px] md:p-6"
+                className="flex min-h-[138px] flex-col items-center justify-center rounded-[22px] bg-[#f9f2e9] p-5 text-center md:min-h-[170px] md:p-6 lg:min-h-[128px] lg:p-4"
               >
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-[#C9A96E] to-[#B8860B] shadow-[0_8px_24px_rgba(201,169,110,0.3)] md:h-14 md:w-14">
-                  <item.icon className="h-5 w-5 text-white md:h-6 md:w-6" />
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-[#C9A96E] to-[#B8860B] shadow-[0_8px_24px_rgba(201,169,110,0.3)] md:h-14 md:w-14 lg:h-12 lg:w-12">
+                  <item.icon className="h-5 w-5 text-white md:h-6 md:w-6 lg:h-5 lg:w-5" />
                 </div>
-                <h4 className="font-display mt-4 text-[14px] font-semibold text-[#1a1a2e] md:text-[17px]">
+                <h4 className="font-display mt-4 text-[14px] font-semibold text-[#1a1a2e] md:text-[17px] lg:mt-3 lg:text-[15px]">
                   {item.title}
                 </h4>
               </motion.div>
@@ -867,7 +867,7 @@ function WhyChoose() {
         </div>
 
         {/* Horizontal Feature Strip */}
-        <div className="mx-auto mt-8 max-w-[760px] md:mt-10">
+        <div className="mx-auto mt-8 max-w-[760px] md:mt-10 lg:max-w-[1120px]">
           <div className="flex flex-wrap items-center justify-center gap-4 rounded-[22px] bg-[#e8ddd0] px-5 py-4 md:flex-nowrap md:gap-0">
             {featureItems.map((item, i) => (
               <motion.div
