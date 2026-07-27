@@ -95,7 +95,6 @@ export const Route = createFileRoute("/")({
 function HomePage() {
   return (
     <>
-      <AnnouncementBanner />
       <Hero />
       <TrustBar />
       <ShopByCategory />
@@ -110,18 +109,6 @@ function HomePage() {
       <FAQ />
       <Newsletter />
     </>
-  );
-}
-
-/* =========================================================
-   0. ANNOUNCEMENT BANNER
-   ========================================================= */
-function AnnouncementBanner() {
-  return (
-    <div className="bg-[#8B1A1A] py-2 text-center text-[11px] font-semibold tracking-[0.15em] text-white uppercase">
-      <span className="animate-pulse mx-1">✦</span> Free insured shipping on all orders above ₹5,000{" "}
-      <span className="animate-pulse mx-1">✦</span>
-    </div>
   );
 }
 
@@ -386,7 +373,7 @@ function SectionHeading({
 /* =========================================================
    3. SHOP BY CATEGORY
    ========================================================= */
-const EXCLUDED_CATEGORIES = new Set(["ARTH", "Test", "Demo"]);
+const EXCLUDED_CATEGORIES = new Set(["arth", "lucky", "test", "demo"]);
 
 const CANONICAL_NAMES = new Set([
   "Earrings",
@@ -405,8 +392,8 @@ const CANONICAL_NAMES = new Set([
 function deduplicateCategories(cats: any[]): any[] {
   const seen = new Map<string, any>();
   for (const cat of cats) {
-    if (EXCLUDED_CATEGORIES.has(cat.name)) continue;
-    const key = cat.name.toLowerCase();
+    const key = cat.name.trim().toLowerCase();
+    if (EXCLUDED_CATEGORIES.has(key)) continue;
     if (!seen.has(key)) {
       seen.set(key, cat);
     } else {
@@ -445,6 +432,7 @@ function ShopByCategory() {
   const [dbCategories, setDbCategories] = useState<any[]>([]);
   const [catLoaded, setCatLoaded] = useState(false);
   const [expanded, setExpanded] = useState(false);
+  const [compactCategoryGrid, setCompactCategoryGrid] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
   const prefersReducedMotion = useReducedMotion();
 
@@ -458,12 +446,19 @@ function ShopByCategory() {
       .catch(() => setCatLoaded(true));
   }, []);
 
+  useEffect(() => {
+    const query = window.matchMedia("(max-width: 1023px)");
+    const sync = () => setCompactCategoryGrid(query.matches);
+    sync();
+    query.addEventListener("change", sync);
+    return () => query.removeEventListener("change", sync);
+  }, []);
+
   if (!catLoaded) return null;
 
-  const INITIAL_COUNT = 5;
+  const INITIAL_COUNT = compactCategoryGrid ? 4 : 5;
   const hasMore = dbCategories.length > INITIAL_COUNT;
-  const firstFive = dbCategories.slice(0, INITIAL_COUNT);
-  const rest = dbCategories.slice(INITIAL_COUNT);
+  const visibleCategories = expanded ? dbCategories : dbCategories.slice(0, INITIAL_COUNT);
   const d = prefersReducedMotion ? 0 : undefined;
 
   function toggle() {
@@ -535,50 +530,18 @@ function ShopByCategory() {
         <SectionHeading eyebrow="Browse" title="Shop by Category" />
 
         <div className="mt-10">
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5 lg:gap-5">
-            {firstFive.map((cat, i) => (
+          <div className="grid grid-flow-row-dense grid-cols-2 gap-3 lg:grid-cols-5 lg:gap-5">
+            {visibleCategories.map((cat, i) => (
               <motion.div
                 key={cat.id}
                 initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                animate={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-50px" }}
                 transition={{ duration: d ?? 0.4, delay: d ?? i * 0.05 }}
               >
                 {renderCard(cat)}
               </motion.div>
             ))}
-
-            {hasMore && (
-              <AnimatePresence>
-                {expanded && (
-                  <motion.div
-                    key="extras"
-                    initial={{ height: 0, opacity: 0, overflow: "hidden" }}
-                    animate={{ height: "auto", opacity: 1, overflow: "hidden" }}
-                    exit={{ height: 0, opacity: 0, overflow: "hidden" }}
-                    transition={{ duration: d ?? 0.4, ease: "easeInOut" }}
-                    className="col-span-full"
-                  >
-                    <div className="grid grid-cols-2 gap-3 pt-2 sm:grid-cols-3 lg:grid-cols-5 lg:gap-5">
-                      {rest.map((cat, i) => (
-                        <motion.div
-                          key={cat.id}
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{
-                            duration: d ?? 0.3,
-                            delay: d ?? i * 0.04,
-                            ease: "easeOut",
-                          }}
-                        >
-                          {renderCard(cat)}
-                        </motion.div>
-                      ))}
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            )}
           </div>
 
           {hasMore && (
@@ -739,7 +702,7 @@ function BestSellers() {
         <SectionHeading eyebrow="Our Jewellery" title="Handpicked Best Sellers" />
 
         <div className="mb-8 flex justify-center md:mb-10">
-          <div className="w-[calc(100%-32px)] max-w-[430px] grid-cols-2 gap-1.5 rounded-[28px] bg-white p-2 shadow-[0_4px_16px_rgba(0,0,0,0.06)] md:inline-flex md:w-auto md:max-w-none md:flex-wrap md:justify-center md:gap-1 md:rounded-full md:p-1.5">
+          <div className="grid w-[calc(100%-32px)] max-w-[430px] grid-cols-2 gap-1.5 rounded-[28px] bg-white p-2 shadow-[0_4px_16px_rgba(0,0,0,0.06)] md:inline-flex md:w-auto md:max-w-none md:flex-wrap md:justify-center md:gap-1 md:rounded-full md:p-1.5">
             {tabs.map((t) => (
               <button
                 key={t}
