@@ -21,7 +21,6 @@ import {
   Users,
   Droplets,
   ShieldCheck,
-  ChevronDown,
 } from "lucide-react";
 import { type Product, useStorefrontProducts } from "@/lib/products";
 import { categoriesApi } from "@/lib/api/categories";
@@ -431,9 +430,7 @@ function deduplicateCategories(cats: any[]): any[] {
 function ShopByCategory() {
   const [dbCategories, setDbCategories] = useState<any[]>([]);
   const [catLoaded, setCatLoaded] = useState(false);
-  const [expanded, setExpanded] = useState(false);
-  const [compactCategoryGrid, setCompactCategoryGrid] = useState(false);
-  const sectionRef = useRef<HTMLElement>(null);
+  const categoryScrollerRef = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
@@ -446,37 +443,17 @@ function ShopByCategory() {
       .catch(() => setCatLoaded(true));
   }, []);
 
-  useEffect(() => {
-    const query = window.matchMedia("(max-width: 1023px)");
-    const sync = () => setCompactCategoryGrid(query.matches);
-    sync();
-    query.addEventListener("change", sync);
-    return () => query.removeEventListener("change", sync);
-  }, []);
-
   if (!catLoaded) return null;
 
-  const INITIAL_COUNT = 5;
-  const hasMore = !compactCategoryGrid && dbCategories.length > INITIAL_COUNT;
-  const visibleCategories = compactCategoryGrid
-    ? dbCategories
-    : expanded
-      ? dbCategories
-      : dbCategories.slice(0, INITIAL_COUNT);
   const d = prefersReducedMotion ? 0 : undefined;
 
-  function toggle() {
-    if (expanded) {
-      setExpanded(false);
-      setTimeout(
-        () => {
-          sectionRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
-        },
-        prefersReducedMotion ? 50 : 450,
-      );
-    } else {
-      setExpanded(true);
-    }
+  function scrollCategories(direction: -1 | 1) {
+    const el = categoryScrollerRef.current;
+    if (!el) return;
+    el.scrollBy({
+      left: direction * Math.max(el.clientWidth * 0.75, 260),
+      behavior: prefersReducedMotion ? "auto" : "smooth",
+    });
   }
 
   function renderCard(cat: any) {
@@ -527,50 +504,62 @@ function ShopByCategory() {
   return (
     <section
       id="shop-by-category"
-      ref={sectionRef}
       className="scroll-mt-40 bg-[#fdf8f3] py-16 md:py-20"
     >
       <div className="mx-auto max-w-[1280px] px-6">
         <SectionHeading eyebrow="Browse" title="Shop by Category" />
 
-        <div className="mt-10">
-          <div className="scrollbar-hide -mx-6 flex snap-x gap-3 overflow-x-auto px-6 pb-2 lg:mx-0 lg:grid lg:grid-flow-row-dense lg:grid-cols-5 lg:gap-5 lg:overflow-visible lg:px-0 lg:pb-0">
-            {visibleCategories.map((cat, i) => (
+        <div className="relative mt-10">
+          <button
+            onClick={() => scrollCategories(-1)}
+            className="absolute left-0 top-1/2 z-10 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-[#d8d0c6] bg-white text-[#1a1a2e] shadow-[0_8px_20px_rgba(0,0,0,0.08)] transition-all hover:border-[#C9A96E] hover:text-[#8a6a2a] md:flex"
+            aria-label="Scroll categories left"
+          >
+            <ArrowLeft className="h-4 w-4" />
+          </button>
+
+          <div
+            ref={categoryScrollerRef}
+            className="scrollbar-hide -mx-6 flex snap-x gap-3 overflow-x-auto px-6 pb-2 md:mx-10 md:gap-5 md:px-0"
+          >
+            {dbCategories.map((cat, i) => (
               <motion.div
                 key={cat.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-50px" }}
                 transition={{ duration: d ?? 0.4, delay: d ?? i * 0.05 }}
-                className="w-[42vw] min-w-[150px] max-w-[180px] shrink-0 snap-start lg:w-auto lg:min-w-0 lg:max-w-none"
+                className="w-[42vw] min-w-[150px] max-w-[180px] shrink-0 snap-start md:w-[190px] md:min-w-[190px] md:max-w-none lg:w-[210px] lg:min-w-[210px]"
               >
                 {renderCard(cat)}
               </motion.div>
             ))}
           </div>
 
-          {hasMore && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: d ?? 0.3 }}
-              className="mt-10 hidden justify-center lg:flex"
+          <button
+            onClick={() => scrollCategories(1)}
+            className="absolute right-0 top-1/2 z-10 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-[#d8d0c6] bg-white text-[#1a1a2e] shadow-[0_8px_20px_rgba(0,0,0,0.08)] transition-all hover:border-[#C9A96E] hover:text-[#8a6a2a] md:flex"
+            aria-label="Scroll categories right"
+          >
+            <ArrowRight className="h-4 w-4" />
+          </button>
+
+          <div className="mt-6 flex justify-center gap-4 md:hidden">
+            <button
+              onClick={() => scrollCategories(-1)}
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-[#d8d0c6] bg-white text-[#1a1a2e] shadow-[0_6px_14px_rgba(0,0,0,0.07)] transition-all active:scale-95"
+              aria-label="Scroll categories left"
             >
-              <button
-                onClick={toggle}
-                aria-expanded={expanded}
-                aria-controls="shop-by-category"
-                className="inline-flex items-center gap-2 rounded-full border-2 border-[#C9A96E] bg-white px-8 py-3 text-[13px] font-semibold tracking-[0.14em] text-[#8a6a2a] uppercase transition-all duration-300 hover:bg-[#C9A96E] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A96E] focus-visible:ring-offset-2 active:scale-95"
-              >
-                {expanded ? "View Less" : "View More"}
-                <ChevronDown
-                  className={`h-4 w-4 transition-transform duration-300 ${
-                    expanded ? "rotate-180" : ""
-                  }`}
-                />
-              </button>
-            </motion.div>
-          )}
+              <ArrowLeft className="h-4 w-4" />
+            </button>
+            <button
+              onClick={() => scrollCategories(1)}
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-[#C9A96E] bg-white text-[#8a6a2a] shadow-[0_6px_14px_rgba(0,0,0,0.07)] transition-all active:scale-95"
+              aria-label="Scroll categories right"
+            >
+              <ArrowRight className="h-4 w-4" />
+            </button>
+          </div>
         </div>
       </div>
     </section>
@@ -781,7 +770,12 @@ function NewArrivals() {
     [products],
   );
   return (
-    <ProductCarouselSection eyebrow="Just Arrived" products={list} autoScroll={scrollSettings} />
+    <ProductCarouselSection
+      eyebrow="Just Arrived"
+      title="NEW THIS SEASON"
+      products={list}
+      autoScroll={scrollSettings}
+    />
   );
 }
 
