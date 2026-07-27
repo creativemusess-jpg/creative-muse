@@ -141,9 +141,11 @@ export const ProductCard = memo(function ProductCard({
           <span className="text-[14px] font-bold text-[#1a1a2e] md:text-[17px]">
             {formatPrice(product.price)}
           </span>
-          <span className="text-[9px] text-[#7a6e64] line-through md:text-[12px]">
-            {formatPrice(product.mrp)}
-          </span>
+          {discount > 0 && (
+            <span className="text-[9px] text-[#7a6e64] line-through md:text-[12px]">
+              {formatPrice(product.mrp)}
+            </span>
+          )}
           {discount > 0 && (
             <span className="inline-flex h-[15px] items-center rounded-full bg-[#7A2533] px-1.5 text-[7px] leading-none font-bold tracking-wide whitespace-nowrap text-white md:h-[18px] md:px-2 md:text-[9px]">
               -{discount}%

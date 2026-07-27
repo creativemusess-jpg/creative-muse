@@ -315,10 +315,10 @@ function TrustBar() {
     [Shield, "Secure Payments"],
   ] as const;
   return (
-    <section className="bg-[#1a1a2e] py-5">
-      <div className="mx-auto flex max-w-[1280px] flex-wrap items-center justify-center gap-x-10 gap-y-3 px-6 text-[12px] tracking-[0.1em] text-[#E8C98A] uppercase">
+    <section className="overflow-hidden bg-[#1a1a2e] py-5">
+      <div className="scrollbar-hide mx-auto flex max-w-[1280px] snap-x items-center justify-start gap-x-8 overflow-x-auto px-6 text-[12px] tracking-[0.1em] whitespace-nowrap text-[#E8C98A] uppercase md:flex-wrap md:justify-center md:gap-x-10 md:gap-y-3 md:overflow-visible">
         {items.map(([Ic, label]) => (
-          <div key={label} className="flex items-center gap-2.5">
+          <div key={label} className="flex shrink-0 snap-start items-center gap-2.5">
             <Ic className="h-4 w-4 text-[#C9A96E]" />
             <span>{label}</span>
           </div>
@@ -456,9 +456,13 @@ function ShopByCategory() {
 
   if (!catLoaded) return null;
 
-  const INITIAL_COUNT = compactCategoryGrid ? 4 : 5;
-  const hasMore = dbCategories.length > INITIAL_COUNT;
-  const visibleCategories = expanded ? dbCategories : dbCategories.slice(0, INITIAL_COUNT);
+  const INITIAL_COUNT = 5;
+  const hasMore = !compactCategoryGrid && dbCategories.length > INITIAL_COUNT;
+  const visibleCategories = compactCategoryGrid
+    ? dbCategories
+    : expanded
+      ? dbCategories
+      : dbCategories.slice(0, INITIAL_COUNT);
   const d = prefersReducedMotion ? 0 : undefined;
 
   function toggle() {
@@ -530,7 +534,7 @@ function ShopByCategory() {
         <SectionHeading eyebrow="Browse" title="Shop by Category" />
 
         <div className="mt-10">
-          <div className="grid grid-flow-row-dense grid-cols-2 gap-3 lg:grid-cols-5 lg:gap-5">
+          <div className="scrollbar-hide -mx-6 flex snap-x gap-3 overflow-x-auto px-6 pb-2 lg:mx-0 lg:grid lg:grid-flow-row-dense lg:grid-cols-5 lg:gap-5 lg:overflow-visible lg:px-0 lg:pb-0">
             {visibleCategories.map((cat, i) => (
               <motion.div
                 key={cat.id}
@@ -538,6 +542,7 @@ function ShopByCategory() {
                 animate={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-50px" }}
                 transition={{ duration: d ?? 0.4, delay: d ?? i * 0.05 }}
+                className="w-[42vw] min-w-[150px] max-w-[180px] shrink-0 snap-start lg:w-auto lg:min-w-0 lg:max-w-none"
               >
                 {renderCard(cat)}
               </motion.div>
@@ -549,7 +554,7 @@ function ShopByCategory() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: d ?? 0.3 }}
-              className="mt-10 flex justify-center"
+              className="mt-10 hidden justify-center lg:flex"
             >
               <button
                 onClick={toggle}
@@ -702,12 +707,12 @@ function BestSellers() {
         <SectionHeading eyebrow="Our Jewellery" title="Handpicked Best Sellers" />
 
         <div className="mb-8 flex justify-center md:mb-10">
-          <div className="grid w-[calc(100%-32px)] max-w-[430px] grid-cols-2 gap-1.5 rounded-[28px] bg-white p-2 shadow-[0_4px_16px_rgba(0,0,0,0.06)] md:inline-flex md:w-auto md:max-w-none md:flex-wrap md:justify-center md:gap-1 md:rounded-full md:p-1.5">
+          <div className="scrollbar-hide flex w-full max-w-[calc(100vw-48px)] gap-1.5 overflow-x-auto rounded-[28px] bg-white p-2 shadow-[0_4px_16px_rgba(0,0,0,0.06)] md:inline-flex md:w-auto md:max-w-none md:flex-wrap md:justify-center md:gap-1 md:overflow-visible md:rounded-full md:p-1.5">
             {tabs.map((t) => (
               <button
                 key={t}
                 onClick={() => setActive(t)}
-                className={`flex h-[52px] w-full items-center justify-center rounded-[22px] text-[clamp(11px,3.3vw,15px)] font-semibold tracking-[0.08em] uppercase transition-all duration-300 md:h-auto md:w-auto md:rounded-full md:px-5 md:py-2.5 md:text-[12px] md:tracking-[0.1em] ${
+                className={`flex h-[52px] min-w-[148px] shrink-0 items-center justify-center rounded-[22px] px-4 text-[13px] font-semibold tracking-[0.08em] uppercase transition-all duration-300 md:h-auto md:min-w-0 md:rounded-full md:px-5 md:py-2.5 md:text-[12px] md:tracking-[0.1em] ${
                   active === t
                     ? "bg-gradient-to-r from-[#C9A96E] to-[#B8860B] text-white shadow-[0_6px_16px_rgba(201,169,110,0.35)]"
                     : "text-[#7a6e64] hover:text-[#1a1a2e]"
@@ -728,7 +733,7 @@ function BestSellers() {
                 {filtered.map((p, i) => (
                   <CarouselItem
                     key={p.id}
-                    className="basis-[48%] pl-3 sm:basis-[45%] md:basis-1/3 md:pl-4 lg:basis-1/4"
+                    className="basis-[84%] pl-3 sm:basis-[45%] md:basis-1/3 md:pl-4 lg:basis-1/4"
                   >
                     <ProductCard product={p} index={i} />
                   </CarouselItem>

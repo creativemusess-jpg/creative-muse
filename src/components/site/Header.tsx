@@ -82,7 +82,7 @@ export function Header() {
         </div>
 
         <div className="border-t border-[#e0d8cc]/40">
-          <nav className="mx-auto flex max-w-[1440px] items-center justify-center gap-0.5 overflow-x-auto px-2 py-2 lg:px-4" aria-label="Primary">
+          <nav className="scrollbar-hide mx-auto flex max-w-[1440px] items-center justify-center gap-0.5 overflow-x-auto px-2 py-2 lg:px-4" aria-label="Primary">
             {NAV_ITEMS.map((item) => (
               <Link
                 key={item.label}

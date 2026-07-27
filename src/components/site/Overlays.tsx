@@ -639,7 +639,10 @@ function QuickViewInfo({
   onClose: () => void;
 }) {
   const [qty, setQty] = useState(1);
-  const discount = Math.round(((product.mrp - product.price) / product.mrp) * 100);
+  const discount =
+    product.mrp > product.price
+      ? Math.round(((product.mrp - product.price) / product.mrp) * 100)
+      : 0;
 
   useEffect(() => setQty(1), [product.id]);
 
@@ -688,7 +691,9 @@ function QuickViewInfo({
 
       <div className="mt-4 flex items-baseline gap-3">
         <span className="text-2xl font-bold text-[#1a1a2e]">{formatPrice(product.price)}</span>
-        <span className="text-sm text-[#7a6e64] line-through">{formatPrice(product.mrp)}</span>
+        {discount > 0 && (
+          <span className="text-sm text-[#7a6e64] line-through">{formatPrice(product.mrp)}</span>
+        )}
         {discount > 0 && (
           <span className="rounded-full bg-[#6b1330] px-2 py-0.5 text-[10px] font-bold text-white">
             -{discount}%

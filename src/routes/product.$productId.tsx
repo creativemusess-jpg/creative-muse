@@ -63,7 +63,10 @@ const fallbackImg = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
 const safeSrc = (src: string) => (src && src.trim() ? src : fallbackImg);
 
 function ProductContent({ product }: { product: Product }) {
-  const discount = Math.round(((product.mrp - product.price) / product.mrp) * 100);
+  const discount =
+    product.mrp > product.price
+      ? Math.round(((product.mrp - product.price) / product.mrp) * 100)
+      : 0;
   const { addToCart, toggleWishlist, isWishlisted, openQuickView } = useStore();
   const wishlisted = isWishlisted(product.id);
   const gallery = [product.image, ...(product.gallery ?? [])];
@@ -185,9 +188,11 @@ function ProductContent({ product }: { product: Product }) {
 
           <div className="mt-6 flex flex-wrap items-baseline gap-3">
             <span className="text-3xl font-bold text-[#1a1a2e]">{formatPrice(product.price)}</span>
-            <span className="text-base text-[#7a6e64] line-through">
-              {formatPrice(product.mrp)}
-            </span>
+            {discount > 0 && (
+              <span className="text-base text-[#7a6e64] line-through">
+                {formatPrice(product.mrp)}
+              </span>
+            )}
             {discount > 0 && (
               <span className="rounded-full bg-[#7A2533] px-3 py-1 text-xs font-semibold text-white">
                 {discount}% off

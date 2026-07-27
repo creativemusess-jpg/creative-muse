@@ -29,7 +29,7 @@ function SectionHeading({
   return (
     <div className="mx-auto mb-8 max-w-2xl text-center">
       <p className="eyebrow">{eyebrow}</p>
-      <h2 className="font-display mt-2 text-[28px] leading-tight font-semibold text-[#1a1a2e] sm:text-[32px] lg:text-[36px]">
+      <h2 className="font-display mt-2 text-[clamp(22px,6vw,36px)] leading-tight font-semibold whitespace-nowrap text-[#1a1a2e]">
         {title}
       </h2>
       <div className="mt-3 flex justify-center">

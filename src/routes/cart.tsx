@@ -69,7 +69,7 @@ function CartPage() {
         subtitle={`${lines.length} piece${lines.length === 1 ? "" : "s"} curated for you.`}
       />
 
-      <section className="mx-auto grid max-w-[1200px] gap-8 overflow-hidden px-6 py-16 lg:grid-cols-[1fr_380px]">
+      <section className="mx-auto grid max-w-[1200px] gap-8 overflow-hidden px-4 py-10 sm:px-6 sm:py-16 lg:grid-cols-[1fr_380px]">
         <div className="space-y-4">
           {lines.length === 0 && (
             <div className="rounded-[28px] bg-white p-10 text-center shadow-[0_4px_24px_rgba(0,0,0,0.05)]">
@@ -82,31 +82,59 @@ function CartPage() {
           {lines.map(({ product: it, qty }) => (
             <div
               key={it.id}
-              className="flex flex-col gap-4 rounded-[28px] bg-white p-5 shadow-[0_4px_24px_rgba(0,0,0,0.05)] sm:flex-row sm:items-center"
+              className="flex gap-3 rounded-[22px] bg-white p-3 shadow-[0_4px_24px_rgba(0,0,0,0.05)] sm:gap-4 sm:rounded-[28px] sm:p-5"
             >
-              <div className="flex aspect-square w-full shrink-0 items-center justify-center overflow-hidden rounded-[20px] bg-[#fffdf9] border border-[rgba(66,29,34,0.18)] shadow-[0_8px_24px_rgba(66,29,34,0.06)] sm:w-28">
+              <div className="flex aspect-square w-[108px] shrink-0 items-center justify-center overflow-hidden rounded-[18px] border border-[rgba(66,29,34,0.18)] bg-white shadow-[0_8px_24px_rgba(66,29,34,0.06)] sm:w-28 sm:rounded-[20px]">
                 <img
                   src={it.image}
                   alt={it.name}
                   loading="lazy"
-                  className="h-full w-full object-contain p-3"
+                  className="h-full w-full object-contain p-2 sm:p-3"
                 />
               </div>
-              <div className="flex-1">
+              <div className="min-w-0 flex-1">
                 <p className="eyebrow text-[10px]">
                   {it.metal} · {it.stone}
                 </p>
-                <h3 className="font-display mt-1 text-base font-semibold text-[#1a1a2e]">
+                <h3 className="font-display mt-1 line-clamp-2 text-sm font-semibold text-[#1a1a2e] sm:text-base">
                   {it.name}
                 </h3>
-                <p className="mt-1 text-[13px] text-[#7a6e64] line-through">
-                  {formatPrice(it.mrp)}
-                </p>
+                {it.mrp > it.price && (
+                  <p className="mt-1 text-[12px] text-[#7a6e64] line-through sm:text-[13px]">
+                    {formatPrice(it.mrp)}
+                  </p>
+                )}
                 <p className="text-[16px] font-bold text-[#1a1a2e]">
                   {formatPrice(it.price)}
                 </p>
+                <div className="mt-3 flex items-center justify-between gap-3 sm:hidden">
+                  <div className="flex items-center gap-1 rounded-full border border-[#e0d8cc] p-1">
+                    <button
+                      onClick={() => setQty(it.id, qty - 1)}
+                      aria-label="Decrease"
+                      className="flex h-8 w-8 items-center justify-center rounded-full hover:bg-[#f5efe8]"
+                    >
+                      <Minus className="h-3 w-3" />
+                    </button>
+                    <span className="min-w-6 text-center text-sm font-semibold">{qty}</span>
+                    <button
+                      onClick={() => setQty(it.id, qty + 1)}
+                      aria-label="Increase"
+                      className="flex h-8 w-8 items-center justify-center rounded-full hover:bg-[#f5efe8]"
+                    >
+                      <Plus className="h-3 w-3" />
+                    </button>
+                  </div>
+                  <button
+                    onClick={() => removeFromCart(it.id)}
+                    aria-label="Remove"
+                    className="flex h-9 w-9 items-center justify-center rounded-full text-[#7a6e64] hover:bg-red-50 hover:text-red-500"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </div>
               </div>
-              <div className="flex items-center justify-between gap-4 sm:flex-col sm:items-end">
+              <div className="flex items-center justify-between gap-4 max-sm:hidden sm:flex-col sm:items-end">
                 <div className="flex items-center gap-1 rounded-full border border-[#e0d8cc] p-1">
                   <button
                     onClick={() => setQty(it.id, qty - 1)}
