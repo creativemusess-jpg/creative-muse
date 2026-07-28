@@ -5,7 +5,8 @@ import { PageShell } from "@/components/site/PageHeader";
 import { useAuth } from "@/lib/auth";
 import { useCartLines, useStore } from "@/lib/store";
 import { formatPrice } from "@/lib/products";
-import { createOrder, saveCustomerAddress } from "@/lib/api/checkout";
+import { createOrder } from "@/lib/api/checkout";
+import { saveCustomerAddress } from "@/lib/api/addresses";
 
 type PaymentMethod = "upi" | "card" | "netbanking" | "wallet" | "cod";
 
@@ -28,7 +29,7 @@ export const Route = createFileRoute("/payment")({
 function PaymentPage() {
   const { user, loading: authLoading } = useAuth();
   const lines = useCartLines();
-  const { cartSubtotal, clearCart, cart } = useStore();
+  const { cartSubtotal, clearCart, clearCoupon, cart } = useStore();
   const navigate = useNavigate();
 
   const checkoutAttemptRef = useRef<string>(crypto.randomUUID());
@@ -126,6 +127,9 @@ function PaymentPage() {
       if (checkoutData.saveAddress !== false && addr.line1) {
         saveCustomerAddress({
           customerId: user.id,
+          fullName: checkoutData.fullName || user?.fullName || "",
+          phone: checkoutData.phone || user?.email || "",
+          email: user?.email || "",
           addressLine1: addr.line1,
           addressLine2: addr.line2,
           city: addr.city || "",
@@ -136,6 +140,7 @@ function PaymentPage() {
       }
 
       clearCart();
+      clearCoupon();
       sessionStorage.setItem("cm_order_success", JSON.stringify({
         orderNumber: result.orderNumber,
         customerName: user?.user_metadata?.name || user?.email || "Customer",

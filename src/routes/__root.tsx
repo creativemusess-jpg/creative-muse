@@ -13,6 +13,7 @@ import { lazy, Suspense, useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AuthProvider } from "@/lib/auth";
+import { AddressProvider } from "@/lib/addresses";
 import { SiteChrome } from "@/components/site/SiteChrome";
 
 const NewsletterPopup = lazy(() => import("@/components/site/NewsletterPopup").then((m) => ({ default: m.NewsletterPopup })));
@@ -134,12 +135,14 @@ function RootComponent() {
         <Outlet />
       ) : (
         <AuthProvider>
-          <SiteChrome>
-            <Outlet />
-            <Suspense fallback={null}>
-              <NewsletterPopup />
-            </Suspense>
-          </SiteChrome>
+          <AddressProvider>
+            <SiteChrome>
+              <Outlet />
+              <Suspense fallback={null}>
+                <NewsletterPopup />
+              </Suspense>
+            </SiteChrome>
+          </AddressProvider>
         </AuthProvider>
       )}
     </QueryClientProvider>

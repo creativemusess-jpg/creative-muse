@@ -19,35 +19,38 @@ export const Route = createFileRoute("/cart")({
 
 function CartPage() {
   const lines = useCartLines();
-  const { setQty, removeFromCart, cartSubtotal } = useStore();
+  const { setQty, removeFromCart, cartSubtotal, couponCode, setCouponCode, discountAmount, setDiscountAmount, setAppliedCouponId, appliedCouponId, clearCoupon } = useStore();
   const { user } = useAuth();
-  const [coupon, setCoupon] = useState("");
+  const [couponInput, setCouponInput] = useState("");
   const [couponStatus, setCouponStatus] = useState<"idle" | "loading" | "valid" | "invalid">("idle");
   const [couponMsg, setCouponMsg] = useState("");
-  const [discount, setDiscount] = useState(0);
   const shipping = cartSubtotal > 5000 || cartSubtotal === 0 ? 0 : 250;
-  const total = Math.max(0, cartSubtotal + shipping - discount);
+  const total = Math.max(0, cartSubtotal + shipping - discountAmount);
 
   const applyCoupon = async () => {
-    if (!coupon.trim()) return;
+    if (!couponInput.trim()) return;
     setCouponStatus("loading");
     setCouponMsg("");
     try {
       const items = lines.map((l) => ({ productId: l.product.id, price: l.product.price }));
-      const result = await validateCoupon(coupon.trim().toUpperCase(), cartSubtotal, items);
+      const result = await validateCoupon(couponInput.trim().toUpperCase(), cartSubtotal, items);
       if (result.isValid) {
-        setDiscount(result.discountAmount);
+        setDiscountAmount(result.discountAmount);
+        setCouponCode(result.code);
+        setAppliedCouponId(result.id);
         setCouponStatus("valid");
         setCouponMsg(`Coupon applied! You save ₹${Math.round(result.discountAmount).toLocaleString("en-IN")}.`);
       } else {
         setCouponStatus("invalid");
         setCouponMsg(result.message);
-        setDiscount(0);
+        setDiscountAmount(0);
+        setCouponCode("");
+        setAppliedCouponId(null);
       }
     } catch {
       setCouponStatus("invalid");
       setCouponMsg("Could not validate coupon. Try again.");
-      setDiscount(0);
+      setDiscountAmount(0);
     }
   };
 
@@ -160,28 +163,43 @@ function CartPage() {
             <div className="mt-5 space-y-3 border-t border-[#e0d8cc] pt-5 text-sm">
               <Row label="Subtotal" value={formatPrice(cartSubtotal)} />
               <Row label="Shipping" value={shipping === 0 ? "Free" : formatPrice(shipping)} />
-              {discount > 0 && <Row label="Discount" value={`-${formatPrice(Math.round(discount))}`} />}
+              {discountAmount > 0 && <Row label="Discount" value={`-${formatPrice(Math.round(discountAmount))}`} />}
               <div className="my-2 border-t border-dashed border-[#e0d8cc]" />
               <Row label="Total" value={formatPrice(total)} bold />
             </div>
 
             <div className="mt-5 rounded-[20px] border border-dashed border-[#C9A96E]/40 bg-[#fdf8f3] p-3">
-              <div className="flex items-center gap-2">
-                <Tag className="h-4 w-4 text-[#C9A96E]" />
-                <input
-                  value={coupon}
-                  onChange={(e) => { setCoupon(e.target.value); if (couponStatus !== "idle") { setCouponStatus("idle"); setCouponMsg(""); setDiscount(0); } }}
-                  placeholder="Promo code"
-                  className="flex-1 bg-transparent text-sm focus:outline-none"
-                />
-                <button
-                  onClick={applyCoupon}
-                  disabled={couponStatus === "loading"}
-                  className="rounded-full bg-[#1a1a2e] px-3 py-1.5 text-[11px] font-semibold tracking-wider text-white uppercase disabled:opacity-50"
-                >
-                  {couponStatus === "loading" ? <Loader2 className="h-3 w-3 animate-spin" /> : "Apply"}
-                </button>
-              </div>
+              {discountAmount > 0 && couponCode ? (
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Tag className="h-4 w-4 text-green-600" />
+                    <span className="text-sm font-medium text-green-700">{couponCode}</span>
+                  </div>
+                  <button
+                    onClick={() => { clearCoupon(); setCouponStatus("idle"); setCouponMsg(""); setCouponInput(""); }}
+                    className="text-[11px] font-semibold text-red-500 hover:underline"
+                  >
+                    Remove
+                  </button>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <Tag className="h-4 w-4 text-[#C9A96E]" />
+                  <input
+                    value={couponInput}
+                    onChange={(e) => { setCouponInput(e.target.value); if (couponStatus !== "idle") { setCouponStatus("idle"); setCouponMsg(""); } }}
+                    placeholder="Promo code"
+                    className="flex-1 bg-transparent text-sm focus:outline-none"
+                  />
+                  <button
+                    onClick={applyCoupon}
+                    disabled={couponStatus === "loading"}
+                    className="rounded-full bg-[#1a1a2e] px-3 py-1.5 text-[11px] font-semibold tracking-wider text-white uppercase disabled:opacity-50"
+                  >
+                    {couponStatus === "loading" ? <Loader2 className="h-3 w-3 animate-spin" /> : "Apply"}
+                  </button>
+                </div>
+              )}
               {couponMsg && (
                 <p className={`mt-2 text-[11px] font-medium ${couponStatus === "valid" ? "text-green-700" : "text-red-600"}`}>
                   {couponMsg}

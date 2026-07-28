@@ -128,6 +128,11 @@ export interface Database {
         Insert: AppointmentInsert;
         Update: AppointmentUpdate;
       };
+      customer_addresses: {
+        Row: CustomerAddressRow;
+        Insert: CustomerAddressInsert;
+        Update: CustomerAddressUpdate;
+      };
       site_settings: {
         Row: SiteSettingRow;
         Insert: SiteSettingInsert;
@@ -991,6 +996,57 @@ export interface CustomerUpdate {
   welcome_email_sent_at?: string | null;
   first_order_at?: string | null;
   updated_at?: string | null;
+}
+
+export interface CustomerAddressRow {
+  id: string;
+  customer_id: string;
+  full_name: string;
+  phone: string;
+  email: string;
+  address_line1: string;
+  address_line2: string;
+  city: string;
+  state: string;
+  postal_code: string;
+  landmark: string;
+  address_type: string;
+  is_default: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CustomerAddressInsert {
+  id?: string;
+  customer_id: string;
+  full_name?: string;
+  phone?: string;
+  email?: string;
+  address_line1: string;
+  address_line2?: string;
+  city: string;
+  state: string;
+  postal_code: string;
+  landmark?: string;
+  address_type?: string;
+  is_default?: boolean;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface CustomerAddressUpdate {
+  full_name?: string;
+  phone?: string;
+  email?: string;
+  address_line1?: string;
+  address_line2?: string;
+  city?: string;
+  state?: string;
+  postal_code?: string;
+  landmark?: string;
+  address_type?: string;
+  is_default?: boolean;
+  updated_at?: string;
 }
 
 export interface OrderInsert {
