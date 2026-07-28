@@ -31,7 +31,7 @@ export const ProductCard = memo(function ProductCard({
       viewport={{ once: true, margin: "-50px" }}
       transition={{ duration: 0.5, delay: (index % 4) * 0.06 }}
       whileHover={prefersReduced ? {} : { y: -8 }}
-      className="group flex h-full min-h-[286px] flex-col overflow-hidden rounded-[6px] bg-white transition-shadow duration-400 sm:min-h-[382px] md:min-h-[410px] md:rounded-[8px] hover:md:shadow-[0_12px_34px_rgba(0,0,0,0.08)]"
+      className="group flex h-full min-h-[286px] flex-col overflow-hidden rounded-[16px] bg-white transition-shadow duration-400 sm:min-h-[382px] md:min-h-[410px] md:rounded-[18px] hover:md:shadow-[0_12px_34px_rgba(0,0,0,0.08)]"
     >
       <div
         role="button"
@@ -54,7 +54,7 @@ export const ProductCard = memo(function ProductCard({
         className="relative block shrink-0 text-left"
         aria-label={`Quick view ${product.name}`}
       >
-        <div className="relative flex aspect-square w-full items-center justify-center overflow-hidden rounded-[6px] bg-white md:rounded-[8px]">
+        <div className="relative flex aspect-square w-full items-center justify-center overflow-hidden rounded-[16px] bg-white md:rounded-[18px]">
           <img
             src={product.image}
             alt={product.name}
@@ -62,7 +62,7 @@ export const ProductCard = memo(function ProductCard({
             decoding="async"
             width={1024}
             height={1024}
-            className="h-full max-h-full w-full max-w-full object-contain rounded-[6px] md:rounded-[8px] transition-transform duration-700 group-hover:scale-[1.02]"
+            className="h-full max-h-full w-full max-w-full object-contain rounded-[16px] md:rounded-[18px] transition-transform duration-700 group-hover:scale-[1.02]"
             onError={(e) => {
               const t = e.currentTarget;
               if (t.dataset.fallback) {
