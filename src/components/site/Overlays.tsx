@@ -10,11 +10,16 @@ import {
   ChevronLeft,
   ChevronRight,
   ZoomIn,
+  Package,
+  ShieldCheck,
+  RotateCcw,
+  Truck,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { formatPrice, type Product, useStorefrontProducts } from "@/lib/products";
 import { useCartLines, useStore, useWishlistProducts } from "@/lib/store";
 import { productLink } from "@/lib/product-link";
+import { giftPackagingApi, type GiftPackagingConfig, type EstimatedDeliveryConfig } from "@/lib/api/gift-packaging";
 
 /* Cart drawer + Wishlist drawer + Quick View modal — global overlays */
 export function Overlays() {
@@ -35,11 +40,23 @@ function CartDrawer() {
     setQty,
     removeFromCart,
     cartSubtotal,
+    giftPackagingEnabled,
+    setGiftPackagingEnabled,
+    giftMessage,
+    setGiftMessage,
   } = useStore();
   const lines = useCartLines();
+  const [giftCfg, setGiftCfg] = useState<GiftPackagingConfig | null>(null);
+  const [estDelivery, setEstDelivery] = useState<EstimatedDeliveryConfig | null>(null);
+
+  useEffect(() => {
+    giftPackagingApi.getConfig().then(setGiftCfg);
+    giftPackagingApi.getEstimatedDelivery().then(setEstDelivery);
+  }, []);
 
   const shipping = cartSubtotal > 5000 || cartSubtotal === 0 ? 0 : 250;
-  const total = cartSubtotal + shipping;
+  const giftPrice = giftPackagingEnabled && giftCfg?.enabled ? (giftCfg?.price || 0) : 0;
+  const total = cartSubtotal + shipping + giftPrice;
 
   return (
     <AnimatePresence>
@@ -150,6 +167,94 @@ function CartDrawer() {
                       </li>
                     ))}
                   </ul>
+
+                  {/* Trust Features */}
+                  <div className="mt-5 grid grid-cols-1 gap-2.5 sm:grid-cols-3">
+                    <div className="flex items-center gap-2.5 rounded-[12px] border border-[#e0d8cc] bg-white p-3">
+                      <Truck className="h-4 w-4 shrink-0 text-[#C9A96E]" />
+                      <div>
+                        <p className="text-[11px] font-semibold text-[#1a1a2e]">Free Shipping</p>
+                        <p className="text-[9px] text-[#7a6e64]">Free delivery across India.</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2.5 rounded-[12px] border border-[#e0d8cc] bg-white p-3">
+                      <RotateCcw className="h-4 w-4 shrink-0 text-[#C9A96E]" />
+                      <div>
+                        <p className="text-[11px] font-semibold text-[#1a1a2e]">7-Day Easy Returns</p>
+                        <p className="text-[9px] text-[#7a6e64]">Easy return & exchange policy.</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2.5 rounded-[12px] border border-[#e0d8cc] bg-white p-3">
+                      <ShieldCheck className="h-4 w-4 shrink-0 text-[#C9A96E]" />
+                      <div>
+                        <p className="text-[11px] font-semibold text-[#1a1a2e]">Secure Checkout</p>
+                        <p className="text-[9px] text-[#7a6e64]">100% secure payments with Razorpay.</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Gift Packaging */}
+                  {giftCfg?.enabled && giftCfg?.status === "active" && (
+                    <div className="mt-4 rounded-[16px] border border-[#e0d8cc] bg-white p-4">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex items-start gap-3">
+                          <Package className="mt-0.5 h-5 w-5 shrink-0 text-[#C9A96E]" />
+                          <div>
+                            <p className="text-[13px] font-semibold text-[#1a1a2e]">{giftCfg.name}</p>
+                            <p className="mt-0.5 text-[11px] text-[#7a6e64]">{giftCfg.description}</p>
+                            <p className="mt-1 text-[13px] font-bold text-[#7A2533]">{formatPrice(giftCfg.price)}</p>
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          role="switch"
+                          aria-checked={giftPackagingEnabled}
+                          onClick={() => setGiftPackagingEnabled(!giftPackagingEnabled)}
+                          className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors ${
+                            giftPackagingEnabled ? "bg-[#7A2533]" : "bg-gray-200"
+                          }`}
+                        >
+                          <span
+                            className={`pointer-events-none inline-block h-4 w-4 translate-y-0 rounded-full bg-white shadow transition-transform ${
+                              giftPackagingEnabled ? "translate-x-4" : "translate-x-0"
+                            }`}
+                          />
+                        </button>
+                      </div>
+
+                      {/* Gift Message */}
+                      {giftPackagingEnabled && giftCfg.allow_gift_message && (
+                        <div className="mt-3 border-t border-[#e0d8cc]/60 pt-3">
+                          <label className="text-[11px] font-semibold text-[#1a1a2e]">Gift Message</label>
+                          <textarea
+                            value={giftMessage}
+                            onChange={(e) => {
+                              if (e.target.value.length <= giftCfg.max_message_length) {
+                                setGiftMessage(e.target.value);
+                              }
+                            }}
+                            placeholder="Happy Birthday!"
+                            rows={2}
+                            maxLength={giftCfg.max_message_length}
+                            className="mt-1.5 w-full rounded-[10px] border border-[#e0d8cc] bg-[#fdf8f3] px-3 py-2 text-[12px] outline-none focus:border-[#C9A96E] resize-none"
+                          />
+                          <p className="mt-1 text-right text-[9px] text-[#7a6e64]">
+                            {giftMessage.length}/{giftCfg.max_message_length}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Estimated Delivery */}
+                  {estDelivery?.enabled && (
+                    <div className="mt-3 flex items-center gap-2.5 rounded-[12px] border border-[#e0d8cc] bg-white p-3">
+                      <Truck className="h-4 w-4 shrink-0 text-[#C9A96E]" />
+                      <p className="text-[11px] text-[#1a1a2e]">
+                        <span className="font-semibold">Estimated Delivery:</span> Ships in {estDelivery.min_days}–{estDelivery.max_days} Business Days
+                      </p>
+                    </div>
+                  )}
                 </>
               )}
             </div>
@@ -158,6 +263,9 @@ function CartDrawer() {
               <footer className="border-t border-[#e0d8cc] bg-white px-6 py-5">
                 <div className="space-y-1.5 text-sm">
                   <Row label="Subtotal" value={formatPrice(cartSubtotal)} />
+                  {giftPrice > 0 && (
+                    <Row label={giftCfg?.name || "Gift Packaging"} value={formatPrice(giftPrice)} />
+                  )}
                   <Row label="Shipping" value={shipping === 0 ? "Free" : formatPrice(shipping)} />
                   <div className="my-2 border-t border-dashed border-[#e0d8cc]" />
                   <Row label="Total" value={formatPrice(total)} bold />

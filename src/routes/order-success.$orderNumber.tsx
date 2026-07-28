@@ -36,6 +36,10 @@ function OrderSuccessPage() {
               total_amount: parsed.total,
               delivery_method: parsed.deliveryMethod,
               delivery_address: parsed.deliveryAddress || {},
+              gift_packaging_enabled: parsed.giftPackagingEnabled || false,
+              gift_packaging_price: parsed.giftPackagingPrice || 0,
+              gift_packaging_name: parsed.giftPackagingName || "",
+              gift_message: parsed.giftMessage || "",
               coupon_code: parsed.couponCode,
               payment_method: parsed.paymentMethod,
               payment_status: "paid",
@@ -85,7 +89,7 @@ function OrderSuccessPage() {
       <hr style="border-color:#c9a96e" />
       <p><strong>Bill To:</strong> ${order.customer_name || "Guest"}<br/>${order.customer_email || ""}<br/>${addr.addressLine1 || ""}${addr.city ? ", " + addr.city : ""}${addr.state ? ", " + addr.state : ""}</p>
       <table><thead><tr><th>Item</th><th style="text-align:center">Qty</th><th style="text-align:right">Price</th><th style="text-align:right">Total</th></tr></thead><tbody>${itemsHtml}</tbody></table>
-      <div style="margin-left:auto;width:300px"><table><tr><td>Subtotal</td><td class="right">${formatPrice(order.subtotal)}</td></tr>${order.shipping_amount > 0 ? `<tr><td>Shipping</td><td class="right">${formatPrice(order.shipping_amount)}</td></tr>` : ""}<tr class="total"><td>Total</td><td class="right">${formatPrice(order.total_amount)}</td></tr></table></div>
+      <div style="margin-left:auto;width:300px"><table><tr><td>Subtotal</td><td class="right">${formatPrice(order.subtotal)}</td></tr>${order.shipping_amount > 0 ? `<tr><td>Shipping</td><td class="right">${formatPrice(order.shipping_amount)}</td></tr>` : ""}        ${order.gift_packaging_enabled ? `<tr><td>${order.gift_packaging_name || "Gift Packaging"}</td><td class="right">${formatPrice(order.gift_packaging_price || 0)}</td></tr>` : ""}<tr class="total"><td>Total</td><td class="right">${formatPrice(order.total_amount)}</td></tr></table></div>
       <div class="footer"><p>Thank you for shopping with Creative Muse!</p><p>Payment: <span class="badge badge-${order.payment_status}">${order.payment_status}</span></p></div>
     </body></html>`);
     win.document.close();
@@ -112,6 +116,7 @@ function OrderSuccessPage() {
                 <InfoRow label="Payment" value={order.payment_status === "paid" ? "Paid (Demo)" : "Pending"} />
                 <InfoRow label="Subtotal" value={formatPrice(order.subtotal)} />
                 {order.shipping_amount > 0 && <InfoRow label="Shipping" value={formatPrice(order.shipping_amount)} />}
+                {order.gift_packaging_enabled && <InfoRow label={order.gift_packaging_name || "Gift Packaging"} value={formatPrice(order.gift_packaging_price || 0)} />}
                 <div className="border-t border-[#e0d8cc] pt-2" />
                 <InfoRow label="Total Paid" value={formatPrice(order.total_amount)} bold />
                 {order.delivery_method && <InfoRow label="Delivery" value={order.delivery_method === "express" ? "Express" : "Standard"} />}

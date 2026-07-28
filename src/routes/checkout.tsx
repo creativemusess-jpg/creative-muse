@@ -9,6 +9,7 @@ import { saveAbandonedCheckout } from "@/lib/api/checkout";
 import { useAddresses } from "@/lib/addresses";
 import type { CustomerAddress } from "@/lib/api/addresses";
 import { calculateTotals, INDIAN_STATES, getCitiesByState, getStateCodeByName, getStateNameByCode, DEFAULT_DELIVERY, type CheckoutTotals, type DeliveryMethod, type CityOption } from "@/lib/checkout";
+import { giftPackagingApi, type GiftPackagingConfig } from "@/lib/api/gift-packaging";
 import { lookupPincode, validateIndianPincode, detectStateConflict } from "@/lib/checkout/pincode";
 
 export const Route = createFileRoute("/checkout")({
@@ -20,7 +21,7 @@ const STEPS = ["Cart", "Delivery", "Payment", "Confirmation"];
 function CheckoutPage() {
   const { user, loading: authLoading } = useAuth();
   const lines = useCartLines();
-  const { cartSubtotal, discountAmount, couponCode, appliedCouponId } = useStore();
+  const { cartSubtotal, discountAmount, couponCode, appliedCouponId, giftPackagingEnabled, giftMessage } = useStore();
   const { addresses, defaultAddress, loading: addressesLoading, addAddress, editAddress, removeAddress, markDefault, refreshAddresses } = useAddresses();
   const navigate = useNavigate();
 
@@ -41,6 +42,9 @@ function CheckoutPage() {
   const [pincodeLocations, setPincodeLocations] = useState<Array<{ locality: string; type?: string }>>([]);
   const [selectedLocality, setSelectedLocality] = useState("");
   const [stateConflict, setStateConflict] = useState<{ conflict: boolean; message?: string }>({ conflict: false });
+
+  const [giftCfg, setGiftCfg] = useState<GiftPackagingConfig | null>(null);
+  useEffect(() => { giftPackagingApi.getConfig().then(setGiftCfg); }, []);
 
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
   const [editingAddressId, setEditingAddressId] = useState<string | null>(null);
@@ -275,6 +279,8 @@ function CheckoutPage() {
       billingSame,
       billingAddress: billingSame ? null : billingAddress,
       saveAddress: saveAddr,
+      giftPackagingEnabled,
+      giftMessage,
       items: lines.map((l) => ({ productId: l.product.id, name: l.product.name, image: l.product.image, qty: l.qty, unitPrice: l.product.price, lineTotal: l.product.price * l.qty })),
     };
     sessionStorage.setItem("cm_checkout_data", JSON.stringify(checkoutData));
@@ -531,6 +537,7 @@ function CheckoutPage() {
               <div className="mt-5 space-y-2 border-t border-[#e0d8cc] pt-4 text-sm">
                 <Row label="Subtotal" value={formatPrice(totals.itemsSubtotal)} />
                 {totals.couponDiscount > 0 && <Row label="Coupon Discount" value={`-${formatPrice(totals.couponDiscount)}`} />}
+                {giftPackagingEnabled && giftCfg?.enabled && <Row label={giftCfg.name || "Gift Packaging"} value={formatPrice(giftCfg.price)} />}
                 <Row label="Shipping" value={totals.shippingCharge === 0 ? "Free" : formatPrice(totals.shippingCharge)} />
                 {totals.shippingCharge > 0 && <p className="text-[10px] text-[#7a6e64] -mt-1">{totals.deliveryLabel} · {totals.deliveryEstimate}</p>}
                 <div className="my-2 border-t border-[#e0d8cc]" />

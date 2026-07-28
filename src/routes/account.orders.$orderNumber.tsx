@@ -256,6 +256,14 @@ function AccountOrderDetailPage() {
                     : formatPrice(order.shipping_amount)
                 }
               />
+              {order.gift_packaging_enabled && (
+                <>
+                  <SummaryRow label={order.gift_packaging_name || "Gift Packaging"} value={formatPrice(order.gift_packaging_price || 0)} />
+                  {order.gift_message && (
+                    <p className="mt-1 text-xs italic text-[#7a6e64]">Gift message: "{order.gift_message}"</p>
+                  )}
+                </>
+              )}
               <div className="mt-2 border-t border-[#1a1a2e] pt-2">
                 <SummaryRow label="Grand Total" value={formatPrice(order.total_amount)} strong />
               </div>

@@ -355,6 +355,10 @@ function buildOrderPayload(
     payment_method: params.paymentMethod,
     payment_status: params.paymentMethod === "cod" ? "pending" : "paid",
     order_status: "confirmed",
+    gift_packaging_enabled: params.giftPackagingEnabled || false,
+    gift_packaging_price: params.giftPackagingPrice || 0,
+    gift_packaging_name: params.giftPackagingName || "",
+    gift_message: params.giftMessage || "",
   };
 }
 
@@ -396,6 +400,10 @@ interface CreateOrderParams {
   };
   taxSnapshot?: Record<string, any>;
   checkoutAttemptId?: string;
+  giftPackagingEnabled?: boolean;
+  giftPackagingPrice?: number;
+  giftPackagingName?: string;
+  giftMessage?: string;
 }
 
 export async function createOrder(

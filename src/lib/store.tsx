@@ -45,6 +45,11 @@ type StoreCtx = {
   appliedCouponId: string | null;
   setAppliedCouponId: (id: string | null) => void;
   clearCoupon: () => void;
+
+  giftPackagingEnabled: boolean;
+  setGiftPackagingEnabled: (v: boolean) => void;
+  giftMessage: string;
+  setGiftMessage: (v: string) => void;
 };
 
 const Ctx = createContext<StoreCtx | null>(null);
@@ -72,6 +77,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const [couponCode, setCouponCode] = useState("");
   const [discountAmount, setDiscountAmount] = useState(0);
   const [appliedCouponId, setAppliedCouponId] = useState<string | null>(null);
+  const [giftPackagingEnabled, setGiftPackagingEnabled] = useState(false);
+  const [giftMessage, setGiftMessage] = useState("");
   const { products } = useStorefrontProducts();
 
   useEffect(() => {
@@ -208,6 +215,11 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       appliedCouponId,
       setAppliedCouponId,
       clearCoupon,
+
+      giftPackagingEnabled,
+      setGiftPackagingEnabled,
+      giftMessage,
+      setGiftMessage,
     }),
     [
       cart, cartCount, cartSubtotal, addToCart, removeFromCart, setQty, clearCart, cartOpen,
@@ -217,6 +229,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       quickViewId, closeQuickView,
       couponCode, setCouponCode, discountAmount, setDiscountAmount, appliedCouponId,
       setAppliedCouponId, clearCoupon,
+      giftPackagingEnabled, setGiftPackagingEnabled, giftMessage, setGiftMessage,
     ],
   );
 

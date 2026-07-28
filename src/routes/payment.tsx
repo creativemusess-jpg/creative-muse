@@ -7,6 +7,7 @@ import { useCartLines, useStore } from "@/lib/store";
 import { formatPrice } from "@/lib/products";
 import { createOrder } from "@/lib/api/checkout";
 import { saveCustomerAddress } from "@/lib/api/addresses";
+import { giftPackagingApi, type GiftPackagingConfig } from "@/lib/api/gift-packaging";
 
 type PaymentMethod = "upi" | "card" | "netbanking" | "wallet" | "cod";
 
@@ -44,8 +45,11 @@ function PaymentPage() {
   const [paying, setPaying] = useState(false);
   const [error, setError] = useState("");
   const [checkoutData, setCheckoutData] = useState<any>(null);
+  const [giftCfg, setGiftCfg] = useState<GiftPackagingConfig | null>(null);
   const [success, setSuccess] = useState<{ orderNumber: string } | null>(null);
   const [retryCount, setRetryCount] = useState(0);
+
+  useEffect(() => { giftPackagingApi.getConfig().then(setGiftCfg); }, []);
 
   useEffect(() => {
     if (!authLoading && !user) { navigate({ to: "/login", search: { redirect: "/payment" } }); return; }
@@ -62,7 +66,8 @@ function PaymentPage() {
   if (authLoading || !user || !checkoutData) return null;
 
   const totals = checkoutData.totals;
-  const totalAmount = totals?.total || 0;
+  const giftPackPrice = checkoutData.giftPackagingEnabled && giftCfg?.enabled ? (giftCfg?.price || 0) : 0;
+  const totalAmount = (totals?.total || 0) + giftPackPrice;
   const codEnabled = totalAmount <= COD_MAX_AMOUNT;
 
   const validateMethod = (): string | null => {
@@ -102,7 +107,11 @@ function PaymentPage() {
         couponId: checkoutData.couponId || null,
         shipping: t.shipping || t.shippingCharge || 0,
         tax: 0,
-        total: t.total || t.grandTotal || 0,
+        total: totalAmount,
+        giftPackagingEnabled: checkoutData.giftPackagingEnabled || false,
+        giftPackagingPrice: giftPackPrice,
+        giftPackagingName: checkoutData.giftPackagingEnabled && giftCfg?.enabled ? (giftCfg?.name || "Gift Packaging") : "",
+        giftMessage: checkoutData.giftMessage || "",
         paymentMethod: method,
         deliveryMethod: checkoutData.deliveryMethod || "standard",
         deliveryAddress: {
@@ -150,7 +159,11 @@ function PaymentPage() {
         discountAmount: t.discountAmount || t.couponDiscount || 0,
         shipping: t.shipping || t.shippingCharge || 0,
         tax: 0,
-        total: t.total || t.grandTotal || 0,
+        total: totalAmount,
+        giftPackagingEnabled: checkoutData.giftPackagingEnabled || false,
+        giftPackagingPrice: giftPackPrice,
+        giftPackagingName: checkoutData.giftPackagingEnabled && giftCfg?.enabled ? (giftCfg?.name || "Gift Packaging") : "",
+        giftMessage: checkoutData.giftMessage || "",
         deliveryMethod: checkoutData.deliveryMethod,
         deliveryAddress: checkoutData.address,
         couponCode: checkoutData.couponCode || null,

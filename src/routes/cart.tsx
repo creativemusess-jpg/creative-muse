@@ -1,11 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
-import { Trash2, Plus, Minus, Tag, Loader2 } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Trash2, Plus, Minus, Tag, Loader2, Package } from "lucide-react";
 import { PageHeader, PageShell } from "@/components/site/PageHeader";
 import { formatPrice } from "@/lib/products";
 import { useCartLines, useStore } from "@/lib/store";
 import { useAuth } from "@/lib/auth";
 import { validateCoupon } from "@/lib/api/checkout";
+import { giftPackagingApi, type GiftPackagingConfig } from "@/lib/api/gift-packaging";
 
 export const Route = createFileRoute("/cart")({
   head: () => ({
@@ -19,13 +20,16 @@ export const Route = createFileRoute("/cart")({
 
 function CartPage() {
   const lines = useCartLines();
-  const { setQty, removeFromCart, cartSubtotal, couponCode, setCouponCode, discountAmount, setDiscountAmount, setAppliedCouponId, appliedCouponId, clearCoupon } = useStore();
+  const { setQty, removeFromCart, cartSubtotal, couponCode, setCouponCode, discountAmount, setDiscountAmount, setAppliedCouponId, appliedCouponId, clearCoupon, giftPackagingEnabled, setGiftPackagingEnabled, giftMessage, setGiftMessage } = useStore();
   const { user } = useAuth();
   const [couponInput, setCouponInput] = useState("");
   const [couponStatus, setCouponStatus] = useState<"idle" | "loading" | "valid" | "invalid">("idle");
   const [couponMsg, setCouponMsg] = useState("");
+  const [giftCfg, setGiftCfg] = useState<GiftPackagingConfig | null>(null);
+  useEffect(() => { giftPackagingApi.getConfig().then(setGiftCfg); }, []);
   const shipping = cartSubtotal > 5000 || cartSubtotal === 0 ? 0 : 250;
-  const total = Math.max(0, cartSubtotal + shipping - discountAmount);
+  const giftPrice = giftPackagingEnabled && giftCfg?.enabled ? (giftCfg?.price || 0) : 0;
+  const total = Math.max(0, cartSubtotal + shipping + giftPrice - discountAmount);
 
   const applyCoupon = async () => {
     if (!couponInput.trim()) return;
@@ -162,13 +166,53 @@ function CartPage() {
             <h3 className="font-display text-lg font-semibold text-[#1a1a2e]">Order Summary</h3>
             <div className="mt-5 space-y-3 border-t border-[#e0d8cc] pt-5 text-sm">
               <Row label="Subtotal" value={formatPrice(cartSubtotal)} />
+              {giftPrice > 0 && <Row label={giftCfg?.name || "Gift Packaging"} value={formatPrice(giftPrice)} />}
               <Row label="Shipping" value={shipping === 0 ? "Free" : formatPrice(shipping)} />
               {discountAmount > 0 && <Row label="Discount" value={`-${formatPrice(Math.round(discountAmount))}`} />}
               <div className="my-2 border-t border-dashed border-[#e0d8cc]" />
               <Row label="Total" value={formatPrice(total)} bold />
             </div>
 
-            <div className="mt-5 rounded-[20px] border border-dashed border-[#C9A96E]/40 bg-[#fdf8f3] p-3">
+            {/* Gift Packaging */}
+            {giftCfg?.enabled && giftCfg?.status === "active" && (
+              <div className="mt-4 rounded-[20px] border border-[#e0d8cc] bg-white p-4">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-start gap-3">
+                    <Package className="mt-0.5 h-5 w-5 shrink-0 text-[#C9A96E]" />
+                    <div>
+                      <p className="text-[13px] font-semibold text-[#1a1a2e]">{giftCfg.name}</p>
+                      <p className="mt-0.5 text-[11px] text-[#7a6e64]">{giftCfg.description}</p>
+                      <p className="mt-1 text-[13px] font-bold text-[#7A2533]">{formatPrice(giftCfg.price)}</p>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    role="switch"
+                    aria-checked={giftPackagingEnabled}
+                    onClick={() => setGiftPackagingEnabled(!giftPackagingEnabled)}
+                    className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors ${giftPackagingEnabled ? "bg-[#7A2533]" : "bg-gray-200"}`}
+                  >
+                    <span className={`pointer-events-none inline-block h-4 w-4 translate-y-0 rounded-full bg-white shadow transition-transform ${giftPackagingEnabled ? "translate-x-4" : "translate-x-0"}`} />
+                  </button>
+                </div>
+                {giftPackagingEnabled && giftCfg.allow_gift_message && (
+                  <div className="mt-3 border-t border-[#e0d8cc]/60 pt-3">
+                    <label className="text-[11px] font-semibold text-[#1a1a2e]">Gift Message</label>
+                    <textarea
+                      value={giftMessage}
+                      onChange={(e) => { if (e.target.value.length <= giftCfg.max_message_length) setGiftMessage(e.target.value); }}
+                      placeholder="Happy Birthday!"
+                      rows={2}
+                      maxLength={giftCfg.max_message_length}
+                      className="mt-1.5 w-full rounded-[10px] border border-[#e0d8cc] bg-[#fdf8f3] px-3 py-2 text-[12px] outline-none focus:border-[#C9A96E] resize-none"
+                    />
+                    <p className="mt-1 text-right text-[9px] text-[#7a6e64]">{giftMessage.length}/{giftCfg.max_message_length}</p>
+                  </div>
+                )}
+              </div>
+            )}
+
+            <div className="rounded-[20px] border border-dashed border-[#C9A96E]/40 bg-[#fdf8f3] p-3">
               {discountAmount > 0 && couponCode ? (
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">

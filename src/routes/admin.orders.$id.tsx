@@ -1069,6 +1069,19 @@ function OrderDetailPage() {
                   {order.shipping_amount > 0 ? formatCurrency(order.shipping_amount) : "Free"}
                 </span>
               </div>
+              {order.gift_packaging_enabled && (
+                <>
+                  <div className="flex justify-between text-sm mt-1">
+                    <span className="text-gray-500">{order.gift_packaging_name || "Gift Packaging"}</span>
+                    <span className="font-medium">{formatCurrency(order.gift_packaging_price || 0)}</span>
+                  </div>
+                  {order.gift_message && (
+                    <div className="mt-1 rounded-lg bg-amber-50 p-2 text-xs text-gray-600 italic">
+                      "{(order as any).gift_message}"
+                    </div>
+                  )}
+                </>
+              )}
               {null}
               <div className="flex justify-between text-base font-bold mt-2 pt-2 border-t border-gray-100">
                 <span>Total</span>

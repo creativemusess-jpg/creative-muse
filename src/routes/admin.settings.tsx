@@ -4,6 +4,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { AdminLayout, AdminPageHeader, AdminLoading } from "@/components/admin/AdminLayout";
 import { settingsApi } from "@/lib/api/settings";
 import { supabase } from "@/lib/supabase";
+import { giftPackagingApi, type GiftPackagingConfig, type EstimatedDeliveryConfig } from "@/lib/api/gift-packaging";
 import {
   getEmailTestingConfig,
   listOrderNotifications,
@@ -45,6 +46,13 @@ function AdminSettings() {
   const [emailResult, setEmailResult] = useState<any>(null);
   const [emailError, setEmailError] = useState("");
 
+  const [giftCfg, setGiftCfg] = useState<GiftPackagingConfig>({
+    enabled: true, name: "Premium Gift Packaging", description: "Luxury gift box with ribbon and message card.",
+    price: 199, max_quantity: 1, allow_gift_message: true, max_message_length: 200,
+    default_enabled: false, display_order: 1, status: "active",
+  });
+  const [estCfg, setEstCfg] = useState<EstimatedDeliveryConfig>({ enabled: true, min_days: 3, max_days: 5 });
+
   const fetch = async () => {
     setLoading(true);
     try {
@@ -84,6 +92,8 @@ function AdminSettings() {
       if (newsletterPopupImage) {
         await settingsApi.set("newsletter_popup_image", { url: newsletterPopupImage });
       }
+      await giftPackagingApi.saveConfig(giftCfg);
+      await giftPackagingApi.saveEstimatedDelivery(estCfg);
       alert("Settings saved");
     } catch (err: any) {
       alert(err.message);
@@ -128,6 +138,8 @@ function AdminSettings() {
 
   useEffect(() => {
     loadEmailTesting();
+    giftPackagingApi.getConfig().then(setGiftCfg);
+    giftPackagingApi.getEstimatedDelivery().then(setEstCfg);
   }, []);
 
   const templateRequiresOrder = testTemplate !== "welcome";
@@ -637,6 +649,63 @@ function AdminSettings() {
                   </tbody>
                 </table>
               </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="rounded-xl border border-gray-200 bg-white p-6">
+          <h3 className="text-lg font-bold text-[#1a1a2e] mb-4">Gift Packaging</h3>
+          <div className="space-y-4">
+            <div className="flex items-center gap-3">
+              <input type="checkbox" id="gp-enabled" checked={giftCfg.enabled} onChange={(e) => setGiftCfg({ ...giftCfg, enabled: e.target.checked })} className="h-4 w-4 rounded border-gray-300 text-[#c9a96e] focus:ring-[#c9a96e]" />
+              <label htmlFor="gp-enabled" className="text-sm font-medium text-gray-700">Enable Gift Packaging</label>
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Name</label>
+              <input value={giftCfg.name} onChange={(e) => setGiftCfg({ ...giftCfg, name: e.target.value })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#c9a96e]" />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Description</label>
+              <textarea value={giftCfg.description} onChange={(e) => setGiftCfg({ ...giftCfg, description: e.target.value })} rows={2} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#c9a96e]" />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Price (₹)</label>
+              <input type="number" value={giftCfg.price} onChange={(e) => setGiftCfg({ ...giftCfg, price: Number(e.target.value) })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#c9a96e]" />
+            </div>
+            <div className="flex items-center gap-3">
+              <input type="checkbox" id="gp-msg" checked={giftCfg.allow_gift_message} onChange={(e) => setGiftCfg({ ...giftCfg, allow_gift_message: e.target.checked })} className="h-4 w-4 rounded border-gray-300 text-[#c9a96e] focus:ring-[#c9a96e]" />
+              <label htmlFor="gp-msg" className="text-sm font-medium text-gray-700">Allow Gift Message</label>
+            </div>
+            {giftCfg.allow_gift_message && (
+              <div>
+                <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Max Message Length</label>
+                <input type="number" value={giftCfg.max_message_length} onChange={(e) => setGiftCfg({ ...giftCfg, max_message_length: Number(e.target.value) })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#c9a96e]" />
+              </div>
+            )}
+            <div>
+              <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Status</label>
+              <select value={giftCfg.status} onChange={(e) => setGiftCfg({ ...giftCfg, status: e.target.value as "active" | "inactive" })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#c9a96e]">
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div className="rounded-xl border border-gray-200 bg-white p-6">
+          <h3 className="text-lg font-bold text-[#1a1a2e] mb-4">Estimated Delivery</h3>
+          <div className="space-y-4">
+            <div className="flex items-center gap-3">
+              <input type="checkbox" id="est-enabled" checked={estCfg.enabled} onChange={(e) => setEstCfg({ ...estCfg, enabled: e.target.checked })} className="h-4 w-4 rounded border-gray-300 text-[#c9a96e] focus:ring-[#c9a96e]" />
+              <label htmlFor="est-enabled" className="text-sm font-medium text-gray-700">Show Estimated Delivery</label>
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Min Days</label>
+              <input type="number" value={estCfg.min_days} onChange={(e) => setEstCfg({ ...estCfg, min_days: Number(e.target.value) })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#c9a96e]" />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Max Days</label>
+              <input type="number" value={estCfg.max_days} onChange={(e) => setEstCfg({ ...estCfg, max_days: Number(e.target.value) })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#c9a96e]" />
             </div>
           </div>
         </div>
