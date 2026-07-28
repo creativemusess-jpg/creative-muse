@@ -108,6 +108,7 @@ export function ShoppableReelCard({ reel, product }: ReelWithProduct) {
               alt={product.name}
               className="h-full w-full object-contain p-1.5"
               loading="lazy"
+              decoding="async"
             />
           </div>
           <span className="font-display line-clamp-2 text-sm font-semibold text-[#1a1a2e]">

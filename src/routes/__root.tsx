@@ -8,13 +8,14 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
+import { lazy, Suspense, useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AuthProvider } from "@/lib/auth";
 import { SiteChrome } from "@/components/site/SiteChrome";
-import { NewsletterPopup } from "@/components/site/NewsletterPopup";
+
+const NewsletterPopup = lazy(() => import("@/components/site/NewsletterPopup").then((m) => ({ default: m.NewsletterPopup })));
 
 function NotFoundComponent() {
   return (
@@ -135,7 +136,9 @@ function RootComponent() {
         <AuthProvider>
           <SiteChrome>
             <Outlet />
-            <NewsletterPopup />
+            <Suspense fallback={null}>
+              <NewsletterPopup />
+            </Suspense>
           </SiteChrome>
         </AuthProvider>
       )}

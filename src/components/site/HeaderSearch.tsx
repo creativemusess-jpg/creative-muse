@@ -169,6 +169,8 @@ export function HeaderSearch() {
                     <img
                       src={product.image}
                       alt={product.name}
+                      loading="lazy"
+                      decoding="async"
                       className="h-full w-full object-contain p-1.5"
                     />
                   </span>

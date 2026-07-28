@@ -287,7 +287,7 @@ export function useStorefrontProducts() {
   const query = useQuery({
     queryKey: ["products", "published", "storefront"],
     queryFn: () => productsApi.getPublished({ per_page: 100 }),
-    staleTime: 15_000,
+    staleTime: 5 * 60 * 1000,
   });
 
   const products = useMemo(
@@ -307,7 +307,7 @@ export function useStorefrontProduct(slug: string) {
       return productFromDb(product);
     },
     enabled: !!slug,
-    staleTime: 15_000,
+    staleTime: 5 * 60 * 1000,
   });
 
   return {
@@ -321,7 +321,7 @@ export function useSearchStorefrontProducts(queryText: string) {
     queryKey: ["products", "search", queryText],
     queryFn: () => productsApi.search(queryText),
     enabled: queryText.trim().length >= 2,
-    staleTime: 10_000,
+    staleTime: 2 * 60 * 1000,
   });
 
   const products = useMemo(

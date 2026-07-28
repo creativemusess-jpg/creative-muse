@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
 import { createFileRoute, Link, useParams } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { PageShell } from "@/components/site/PageHeader";
 import { productsApi } from "@/lib/api/products";
 import { categoriesApi } from "@/lib/api/categories";
@@ -16,34 +16,28 @@ export const Route = createFileRoute("/collections/$slug")({
 
 function CategoryCollectionPage() {
   const { slug } = useParams({ from: "/collections/$slug" });
-  const [category, setCategory] = useState<any | null>(null);
-  const [products, setProducts] = useState<any[]>([]);
-  const [subcategories, setSubcategories] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    setLoading(true);
-    (async () => {
-      try {
-        const cat = await categoriesApi.getBySlug(slug);
-        setCategory(cat);
-        if (cat) {
-          const [prods, subs] = await Promise.all([
-            productsApi.getPublished({ category: slug }),
-            subcategoriesApi.listByCategory(cat.id, true),
-          ]);
-          setProducts(prods.map(productFromDb));
-          setSubcategories(subs);
-        } else {
-          setProducts([]);
-          setSubcategories([]);
-        }
-      } catch (err) {
-        console.error(err);
-      }
-      setLoading(false);
-    })();
-  }, [slug]);
+  const { data: category, isLoading: catLoading } = useQuery({
+    queryKey: ["collection", "category", slug],
+    queryFn: () => categoriesApi.getBySlug(slug),
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const { data: products = [], isLoading: prodsLoading } = useQuery({
+    queryKey: ["products", "collection", slug],
+    queryFn: () => productsApi.getPublished({ category: slug }).then((r) => r.map(productFromDb)),
+    enabled: !!category,
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const { data: subcategories = [] } = useQuery({
+    queryKey: ["subcategories", "by-category", category?.id],
+    queryFn: () => subcategoriesApi.listByCategory(category!.id, true),
+    enabled: !!category,
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const loading = catLoading || (!!category && prodsLoading);
 
   if (loading) {
     return (

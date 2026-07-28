@@ -6,8 +6,8 @@ import {
   LayoutDashboard, Package, ShoppingCart, Users,
   Mail, Tag, Settings, LogOut, Menu, X, Clock,
   ChevronRight, Home, MessageSquare, Layers,
-  Search, ExternalLink, Bell, PackageOpen, BarChart3,
-  Percent, UserCog, FileText, Image, Video, Flag, ListChecks,
+  Search, ExternalLink, PackageOpen, BarChart3,
+  UserCog, FileText, Image, Video, Flag, ListChecks,
 } from "lucide-react";
 import { GlobalSearch } from "./GlobalSearch";
 

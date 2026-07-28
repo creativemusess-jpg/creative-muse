@@ -169,38 +169,56 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     return { cartCount: count, cartSubtotal: subtotal };
   }, [cart, products]);
 
-  const value: StoreCtx = {
-    cart,
-    cartCount,
-    cartSubtotal,
-    addToCart,
-    removeFromCart,
-    setQty,
-    clearCart,
-    cartOpen,
-    openCart: () => setCartOpen(true),
-    closeCart: () => setCartOpen(false),
+  const openCart = useCallback(() => setCartOpen(true), []);
+  const closeCart = useCallback(() => setCartOpen(false), []);
+  const openWishlist = useCallback(() => setWishlistOpen(true), []);
+  const closeWishlist = useCallback(() => setWishlistOpen(false), []);
+  const closeQuickView = useCallback(() => setQuickViewId(null), []);
+  const wishlistCount = useMemo(() => wishlist.length, [wishlist]);
 
-    wishlist,
-    wishlistCount: wishlist.length,
-    toggleWishlist,
-    isWishlisted,
-    wishlistOpen,
-    openWishlist: () => setWishlistOpen(true),
-    closeWishlist: () => setWishlistOpen(false),
+  const value = useMemo<StoreCtx>(
+    () => ({
+      cart,
+      cartCount,
+      cartSubtotal,
+      addToCart,
+      removeFromCart,
+      setQty,
+      clearCart,
+      cartOpen,
+      openCart,
+      closeCart,
 
-    quickViewId,
-    openQuickView: setQuickViewId,
-    closeQuickView: () => setQuickViewId(null),
+      wishlist,
+      wishlistCount,
+      toggleWishlist,
+      isWishlisted,
+      wishlistOpen,
+      openWishlist,
+      closeWishlist,
 
-    couponCode,
-    setCouponCode,
-    discountAmount,
-    setDiscountAmount,
-    appliedCouponId,
-    setAppliedCouponId,
-    clearCoupon,
-  };
+      quickViewId,
+      openQuickView: setQuickViewId,
+      closeQuickView,
+
+      couponCode,
+      setCouponCode,
+      discountAmount,
+      setDiscountAmount,
+      appliedCouponId,
+      setAppliedCouponId,
+      clearCoupon,
+    }),
+    [
+      cart, cartCount, cartSubtotal, addToCart, removeFromCart, setQty, clearCart, cartOpen,
+      openCart, closeCart,
+      wishlist, wishlistCount, toggleWishlist, isWishlisted, wishlistOpen,
+      openWishlist, closeWishlist,
+      quickViewId, closeQuickView,
+      couponCode, setCouponCode, discountAmount, setDiscountAmount, appliedCouponId,
+      setAppliedCouponId, clearCoupon,
+    ],
+  );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }

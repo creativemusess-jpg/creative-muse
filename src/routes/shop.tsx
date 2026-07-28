@@ -1,12 +1,13 @@
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { SlidersHorizontal, X } from "lucide-react";
 import { PageHeader, PageShell } from "@/components/site/PageHeader";
 import { ProductCard } from "@/components/site/ProductCard";
 import { productsApi } from "@/lib/api/products";
-import { categoriesApi } from "@/lib/api/categories";
 import { productFromDb, type Product } from "@/lib/products";
 import { PriceRangeSlider } from "@/components/site/PriceRangeSlider";
+import { useCategories } from "@/lib/api/hooks";
 
 const SORT_OPTIONS = ["Featured", "Price: Low to High", "Price: High to Low"] as const;
 type SortOption = (typeof SORT_OPTIONS)[number];
@@ -75,7 +76,6 @@ function ShopPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [allProducts, setAllProducts] = useState<Product[]>([]);
-  const [dbCategories, setDbCategories] = useState<any[]>([]);
   const [retryTick, setRetryTick] = useState(0);
 
   const selectedCat = urlCat;
@@ -99,13 +99,11 @@ function ShopPage() {
     [navigate, urlCat, urlMetal, urlMin, urlMax, urlSort],
   );
 
-  // Load categories once
-  useEffect(() => {
-    categoriesApi
-      .list(true)
-      .then((list) => setDbCategories(list.filter((c: any) => knownCategoryNames.has(c.name))))
-      .catch(() => {});
-  }, []);
+  const { data: catsData } = useCategories();
+  const dbCategories = useMemo(
+    () => (catsData || []).filter((c: any) => knownCategoryNames.has(c.name)),
+    [catsData],
+  );
 
   // Fetch products when category changes (on first load + category switch)
   useEffect(() => {

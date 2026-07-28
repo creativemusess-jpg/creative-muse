@@ -137,6 +137,8 @@ function ProductContent({ product }: { product: Product }) {
               src={safeSrc(gallery[imgIdx])}
               alt={`${product.name} — view ${imgIdx + 1}`}
               className="aspect-square h-full w-full object-contain p-8 sm:p-12"
+              fetchPriority="high"
+              decoding="async"
               onError={(e) => {
                 const img = e.currentTarget;
                 if (img.dataset.fallback) return;
@@ -203,7 +205,7 @@ function ProductContent({ product }: { product: Product }) {
                     i === imgIdx ? "border-[#C9A96E]" : "border-[rgba(66,29,34,0.18)]"
                   }`}
                 >
-                  <img src={safeSrc(src)} alt="" className="h-full w-full object-contain p-1.5" />
+                  <img src={safeSrc(src)} alt="" loading="lazy" decoding="async" className="h-full w-full object-contain p-1.5" />
                 </button>
               ))}
             </div>
@@ -389,6 +391,7 @@ function ProductContent({ product }: { product: Product }) {
               className="max-h-[90vh] max-w-[90vw] select-none object-contain"
               onClick={(e) => e.stopPropagation()}
               draggable={false}
+              decoding="async"
             />
 
             {/* Next */}

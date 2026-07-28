@@ -1,4 +1,5 @@
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Instagram } from "lucide-react";
 import { reelsApi } from "@/lib/api/reels";
 import { productsApi } from "@/lib/api/products";
@@ -41,10 +42,10 @@ function SectionHeading({
 }
 
 export function ShoppableReelsSection() {
-  const [reels, setReels] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
   const { products } = useStorefrontProducts();
   const [api, setApi] = useState<CarouselApi>();
+  const [loading, setLoading] = useState(true);
+  const [reels, setReels] = useState<any[]>([]);
 
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const inactivityRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -135,46 +136,51 @@ export function ShoppableReelsSection() {
     };
   }, [stopAutoScroll, clearInactivity]);
 
-  // Fetch reels
+  // Fetch reels from API
+  const { data: activeReels } = useQuery({
+    queryKey: ["reels", "active"],
+    queryFn: () => reelsApi.listActive(),
+    staleTime: 5 * 60 * 1000,
+  });
+
+  // Enrich reels with product data and fallback
   useEffect(() => {
+    if (!activeReels) return;
     let cancelled = false;
     (async () => {
       try {
-        const activeReels = await reelsApi.listActive();
-        const productIds = activeReels.map((r) => r.product_id).filter(Boolean);
+        const productIds = activeReels.map((r: any) => r.product_id).filter(Boolean);
         let dbProducts: any[] = [];
         if (productIds.length > 0) {
           const { data } = await productsApi.list({ per_page: 100 });
           dbProducts = data || [];
         }
         if (cancelled) return;
-        const enriched = activeReels.map((reel) => {
-          const product = dbProducts.find(
-            (p: any) => p.id === reel.product_id && p.status === "active",
-          );
-          const mapped = product
-            ? {
-                id: product.id,
-                name: product.name,
-                image: product.main_image?.url || product.images?.[0]?.url || "",
-                slug: product.slug,
-              }
-            : null;
-          return { reel, product: mapped };
-        });
+        const enriched = activeReels
+          .map((reel: any) => {
+            const product = dbProducts.find(
+              (p: any) => p.id === reel.product_id && p.status === "active",
+            );
+            const mapped = product
+              ? {
+                  id: product.id,
+                  name: product.name,
+                  image: product.main_image?.url || product.images?.[0]?.url || "",
+                  slug: product.slug,
+                }
+              : null;
+            return mapped ? { reel, product: mapped } : null;
+          })
+          .filter(Boolean);
         if (enriched.length > 0) {
-          setReels(enriched);
-          if (!cancelled) setLoading(false);
+          if (!cancelled) { setReels(enriched); setLoading(false); }
           return;
         }
       } catch (err) {
-        console.warn("DB reels unavailable, using hardcoded fallback:", err);
+        console.warn("DB reels unavailable, using fallback:", err);
       }
       if (cancelled) return;
-      if (products.length === 0) {
-        if (!cancelled) setLoading(true);
-        return;
-      }
+      // Fallback to storefront products
       const fallbackReels = products.slice(0, 8).map((p, i) => ({
         reel: {
           id: `fallback-${p.id}`,
@@ -189,13 +195,10 @@ export function ShoppableReelsSection() {
         },
         product: { id: p.id, name: p.name, image: p.image, slug: p.id },
       }));
-      setReels(fallbackReels);
-      if (!cancelled) setLoading(false);
+      if (!cancelled) { setReels(fallbackReels); setLoading(fallbackReels.length === 0); }
     })();
-    return () => {
-      cancelled = true;
-    };
-  }, [products]);
+    return () => { cancelled = true; };
+  }, [activeReels, products]);
 
   if (loading) {
     return (

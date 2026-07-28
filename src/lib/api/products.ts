@@ -215,6 +215,23 @@ export const productsApi = {
         });
       }
 
+      // Batch-load flags
+      const allProductIds = products.map((p) => p.id);
+      const { data: flagLinks, error: flagErr } = await supabase
+        .from("product_product_flags")
+        .select("product_id, flag_id, product_flags!inner(*)")
+        .in("product_id", allProductIds);
+      if (flagErr) throw flagErr;
+      const flagsByProduct = new Map<string, any[]>();
+      for (const link of (flagLinks as any[]) || []) {
+        const existing = flagsByProduct.get(link.product_id) || [];
+        existing.push(link.product_flags);
+        flagsByProduct.set(link.product_id, existing);
+      }
+      products.forEach((p) => {
+        p.flags = flagsByProduct.get(p.id) || [];
+      });
+
       const allSubIds = [...new Set(products.map((p) => p.subcategory_id).filter(Boolean))] as string[];
       if (allSubIds.length > 0) {
         const { data: subData } = await supabase.from("subcategories").select("id, name").in("id", allSubIds);

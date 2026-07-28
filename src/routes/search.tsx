@@ -1,10 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import { SlidersHorizontal } from "lucide-react";
 import { PageHeader, PageShell } from "@/components/site/PageHeader";
 import { ProductCard } from "@/components/site/ProductCard";
 import { useSearchStorefrontProducts, useStorefrontProducts } from "@/lib/products";
-import { categoriesApi } from "@/lib/api/categories";
+import { useCategories } from "@/lib/api/hooks";
 
 export const Route = createFileRoute("/search")({
   validateSearch: (search: Record<string, unknown>) => ({
@@ -32,15 +32,8 @@ function SearchPage() {
   const [metal, setMetal] = useState("All");
   const [price, setPrice] = useState("All");
   const [sort, setSort] = useState("Relevance");
-  const [dbCategories, setDbCategories] = useState<any[]>([]);
 
-  useEffect(() => {
-    categoriesApi
-      .list(true)
-      .then(setDbCategories)
-      .catch(() => {});
-  }, []);
-
+  const { data: dbCategories = [] } = useCategories();
   const liveProducts = useStorefrontProducts();
   const liveSearch = useSearchStorefrontProducts(query);
   const baseResults = query ? liveSearch.products : liveProducts.products;

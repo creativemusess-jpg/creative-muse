@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { categoriesApi } from "@/lib/api/categories";
 import { productsApi } from "@/lib/api/products";
 import { productFromDb } from "@/lib/products";
@@ -31,34 +31,21 @@ export const Route = createFileRoute("/category/$slug")({
 
 function CategoryPage() {
   const { slug } = Route.useParams();
-  const [category, setCategory] = useState<any | null>(null);
-  const [products, setProducts] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    let cancelled = false;
-    async function load() {
-      setLoading(true);
-      try {
-        const cat = await categoriesApi.getBySlug(slug);
-        if (cancelled) return;
-        setCategory(cat);
-        if (cat) {
-          const result = await productsApi.getPublishedByCategorySlug(slug);
-          if (cancelled) return;
-          setProducts(result.map(productFromDb));
-        }
-      } catch (err) {
-        console.error(err);
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    }
-    load();
-    return () => {
-      cancelled = true;
-    };
-  }, [slug]);
+  const { data: category, isLoading: catLoading } = useQuery({
+    queryKey: ["category", slug],
+    queryFn: () => categoriesApi.getBySlug(slug),
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const { data: products = [], isLoading: prodsLoading } = useQuery({
+    queryKey: ["products", "by-category", slug],
+    queryFn: () => productsApi.getPublishedByCategorySlug(slug).then((r) => r.map(productFromDb)),
+    enabled: !!category,
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const loading = catLoading || (!!category && prodsLoading);
 
   if (loading) {
     return (
@@ -110,6 +97,7 @@ function CategoryPage() {
                 src={catImage}
                 alt={category.name}
                 className="h-full w-full object-contain p-2"
+                decoding="async"
               />
             </div>
           )}

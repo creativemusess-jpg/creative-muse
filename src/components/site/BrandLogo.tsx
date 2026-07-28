@@ -17,6 +17,7 @@ export function BrandLogo({ src, compact = false, dark = false, className = "" }
       <img
         src={src}
         alt="Creative Muse"
+        decoding="async"
         className={className}
       />
     );
@@ -29,6 +30,7 @@ export function BrandLogo({ src, compact = false, dark = false, className = "" }
           src={src}
           alt=""
           aria-hidden="true"
+          decoding="async"
           onLoad={() => setImageState("loaded")}
           onError={() => setImageState("failed")}
           className="hidden"

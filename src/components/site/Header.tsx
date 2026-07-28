@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, useEffect } from "react";
+import { memo, useState, useRef, useCallback, useEffect } from "react";
 import { Link } from "@tanstack/react-router";
 import {
   Heart,
@@ -10,13 +10,12 @@ import {
   ChevronUp,
   Phone,
   MessageCircle,
-  Search,
 } from "lucide-react";
 import { useStore } from "@/lib/store";
 import { useAuth } from "@/lib/auth";
 import { NAV_ITEMS } from "@/lib/navigation";
 
-export function Header() {
+export const Header = memo(function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { cartCount, wishlistCount, openCart, openWishlist } = useStore();
   const { user } = useAuth();
@@ -99,7 +98,7 @@ export function Header() {
       {mobileOpen && <MobileDrawer onClose={() => setMobileOpen(false)} />}
     </>
   );
-}
+});
 
 function MobileDrawer({ onClose }: { onClose: () => void }) {
   const [expandedIdx, setExpandedIdx] = useState<number | null>(null);

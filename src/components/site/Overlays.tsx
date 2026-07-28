@@ -96,6 +96,7 @@ function CartDrawer() {
                             src={p.image}
                             alt={p.name}
                             loading="lazy"
+                            decoding="async"
                             className="h-full w-full object-contain p-2"
                           />
                         </div>
@@ -242,6 +243,7 @@ function WishlistDrawer() {
                           src={p.image}
                           alt={p.name}
                           loading="lazy"
+                          decoding="async"
                           className="h-full w-full object-contain p-2"
                         />
                       </div>
@@ -462,6 +464,7 @@ function QuickViewMedia({ product }: { product: Product }) {
             onClick={() => setZoom(true)}
             className="h-full w-full cursor-zoom-in object-contain p-6 transition-opacity duration-300"
             loading="eager"
+            decoding="async"
           />
           {gallery.length > 1 && (
             <>
@@ -642,7 +645,7 @@ function Thumbnails({
             i === idx ? "border-[#C9A96E]" : "border-[rgba(66,29,34,0.18)]"
           }`}
         >
-          <img src={src} alt="" className="h-full w-full object-contain p-1.5" />
+          <img src={src} alt="" loading="lazy" decoding="async" className="h-full w-full object-contain p-1.5" />
         </button>
       ))}
     </div>

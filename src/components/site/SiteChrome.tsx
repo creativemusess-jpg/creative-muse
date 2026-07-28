@@ -1,9 +1,10 @@
-import type { ReactNode } from "react";
+import { lazy, Suspense, type ReactNode } from "react";
 import { AnnouncementBar } from "./AnnouncementBar";
 import { Header } from "./Header";
 import { Footer } from "./Footer";
 import { StoreProvider } from "@/lib/store";
-import { Overlays } from "./Overlays";
+
+const Overlays = lazy(() => import("./Overlays").then((m) => ({ default: m.Overlays })));
 
 export function SiteChrome({ children }: { children: ReactNode }) {
   return (
@@ -13,7 +14,9 @@ export function SiteChrome({ children }: { children: ReactNode }) {
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />
-        <Overlays />
+        <Suspense fallback={null}>
+          <Overlays />
+        </Suspense>
       </div>
     </StoreProvider>
   );

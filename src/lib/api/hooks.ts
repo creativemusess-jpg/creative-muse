@@ -93,11 +93,19 @@ export function useHomepageSections() {
   });
 }
 
+export function useContentSection(sectionKey: string) {
+  return useQuery({
+    queryKey: ["content", "section", sectionKey],
+    queryFn: () => contentApi.getSection(sectionKey),
+    staleTime: 5 * 60 * 1000,
+  });
+}
+
 export function useSearchProducts(query: string) {
   return useQuery({
     queryKey: ["products", "search", query],
     queryFn: () => productsApi.search(query),
     enabled: query.length >= 2,
-    staleTime: 30_000,
+    staleTime: 2 * 60 * 1000,
   });
 }

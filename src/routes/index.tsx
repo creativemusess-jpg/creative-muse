@@ -23,8 +23,6 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { type Product, useStorefrontProducts } from "@/lib/products";
-import { categoriesApi } from "@/lib/api/categories";
-import { contentApi } from "@/lib/api/content";
 import { ProductCard } from "@/components/site/ProductCard";
 import { ShoppableReelsSection } from "@/components/site/ShoppableReelsSection";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
@@ -34,6 +32,7 @@ import {
   ProductCarouselSection,
   type AutoScrollSettings,
 } from "@/components/site/ProductCarouselSection";
+import { useCategories, useContentSection } from "@/lib/api/hooks";
 import heroRing from "@/assets/hero-ring.jpg";
 import catRings from "@/assets/cat-rings.png";
 import catNecklaces from "@/assets/cat-necklaces.png";
@@ -86,6 +85,9 @@ export const Route = createFileRoute("/")({
         content:
           "Discover handcrafted fine jewellery from Vadodara. BIS Hallmarked gold, IGI certified diamonds, bridal collections and everyday luxury.",
       },
+    ],
+    links: [
+      { rel: "preload", href: heroRing, as: "image" },
     ],
   }),
   component: HomePage,
@@ -232,6 +234,8 @@ function Hero() {
                         alt={slide.imageAlt}
                         width={1024}
                         height={1280}
+                        fetchPriority={idx === 0 ? "high" : undefined}
+                        decoding="async"
                         className="h-full w-full rounded-[20px] object-contain drop-shadow-[0_24px_48px_rgba(201,169,110,0.35)]"
                       />
                     </div>
@@ -428,22 +432,13 @@ function deduplicateCategories(cats: any[]): any[] {
 }
 
 function ShopByCategory() {
-  const [dbCategories, setDbCategories] = useState<any[]>([]);
-  const [catLoaded, setCatLoaded] = useState(false);
+  const { data, isLoading } = useCategories();
   const categoryScrollerRef = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = useReducedMotion();
 
-  useEffect(() => {
-    categoriesApi
-      .list(true)
-      .then((data) => {
-        setDbCategories(deduplicateCategories(data));
-        setCatLoaded(true);
-      })
-      .catch(() => setCatLoaded(true));
-  }, []);
+  const dbCategories = useMemo(() => data ? deduplicateCategories(data) : [], [data]);
 
-  if (!catLoaded) return null;
+  if (isLoading) return null;
 
   const d = prefersReducedMotion ? 0 : undefined;
 
@@ -582,24 +577,16 @@ const CTA_CARD_STYLES = [
 ];
 
 function FeaturedBanner() {
-  const [ctaImages, setCtaImages] = useState<{ src: string; alt: string }[] | null>(null);
-  const [ctaLoaded, setCtaLoaded] = useState(false);
+  const { data: section, isLoading } = useContentSection("featured_banner");
 
-  useEffect(() => {
-    contentApi
-      .getSection("featured_banner")
-      .then((section) => {
-        if (section?.content?.cta_images) {
-          setCtaImages(section.content.cta_images);
-        }
-        setCtaLoaded(true);
-      })
-      .catch(() => setCtaLoaded(true));
-  }, []);
+  const ctaImages = useMemo(() => {
+    if (!section?.content?.cta_images) return null;
+    return section.content.cta_images as { src: string; alt: string }[];
+  }, [section]);
 
   const images = ctaImages && ctaImages.length === 3 ? ctaImages : CTA_FALLBACK_IMAGES;
 
-  if (!ctaLoaded) return null;
+  if (isLoading) return null;
 
   return (
     <section className="px-4 sm:px-6">
@@ -744,22 +731,19 @@ function BestSellers() {
    ========================================================= */
 function NewArrivals() {
   const { products } = useStorefrontProducts();
-  const [scrollSettings, setScrollSettings] = useState<AutoScrollSettings | undefined>();
+  const { data: section } = useContentSection("new_arrivals");
 
-  useEffect(() => {
-    contentApi.getSection("new_arrivals").then((section) => {
-      if (section) {
-        setScrollSettings({
-          autoScrollEnabled: section.auto_scroll_enabled ?? false,
-          scrollDirection: section.scroll_direction ?? "left",
-          scrollSpeed: section.scroll_speed ?? 30,
-          pauseOnHover: section.pause_on_hover ?? true,
-          autoResumeEnabled: section.auto_resume_enabled ?? true,
-          autoResumeDelaySeconds: section.auto_resume_delay_seconds ?? 3,
-        });
-      }
-    });
-  }, []);
+  const scrollSettings = useMemo<AutoScrollSettings | undefined>(() => {
+    if (!section) return undefined;
+    return {
+      autoScrollEnabled: section.auto_scroll_enabled ?? false,
+      scrollDirection: section.scroll_direction ?? "left",
+      scrollSpeed: section.scroll_speed ?? 30,
+      pauseOnHover: section.pause_on_hover ?? true,
+      autoResumeEnabled: section.auto_resume_enabled ?? true,
+      autoResumeDelaySeconds: section.auto_resume_delay_seconds ?? 3,
+    };
+  }, [section]);
 
   const list = useMemo(
     () =>
@@ -784,22 +768,19 @@ function NewArrivals() {
    ========================================================= */
 function PremiumArrivals() {
   const { products } = useStorefrontProducts();
-  const [scrollSettings, setScrollSettings] = useState<AutoScrollSettings | undefined>();
+  const { data: section } = useContentSection("premium_arrivals");
 
-  useEffect(() => {
-    contentApi.getSection("premium_arrivals").then((section) => {
-      if (section) {
-        setScrollSettings({
-          autoScrollEnabled: section.auto_scroll_enabled ?? false,
-          scrollDirection: section.scroll_direction ?? "left",
-          scrollSpeed: section.scroll_speed ?? 30,
-          pauseOnHover: section.pause_on_hover ?? true,
-          autoResumeEnabled: section.auto_resume_enabled ?? true,
-          autoResumeDelaySeconds: section.auto_resume_delay_seconds ?? 3,
-        });
-      }
-    });
-  }, []);
+  const scrollSettings = useMemo<AutoScrollSettings | undefined>(() => {
+    if (!section) return undefined;
+    return {
+      autoScrollEnabled: section.auto_scroll_enabled ?? false,
+      scrollDirection: section.scroll_direction ?? "left",
+      scrollSpeed: section.scroll_speed ?? 30,
+      pauseOnHover: section.pause_on_hover ?? true,
+      autoResumeEnabled: section.auto_resume_enabled ?? true,
+      autoResumeDelaySeconds: section.auto_resume_delay_seconds ?? 3,
+    };
+  }, [section]);
 
   const list = useMemo(
     () =>

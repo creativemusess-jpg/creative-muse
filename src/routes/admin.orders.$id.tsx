@@ -29,7 +29,6 @@ import {
   RotateCcw,
   X,
   Check,
-  ImageIcon,
   ExternalLink,
   Search,
   RefreshCw,
@@ -38,13 +37,10 @@ import {
   Plus,
   Edit3,
   Trash2,
-  Pin,
-  Paperclip,
   Ban,
   Undo2,
   FileText,
-  Eye,
-  QrCode,
+  ChevronDown,
 } from "lucide-react";
 import { requireAdmin } from "@/lib/auth-guard";
 import type { NormalizedOrderItem } from "@/lib/api/order-items";
@@ -1805,5 +1801,3 @@ function OrderDetailPage() {
     </AdminLayout>
   );
 }
-
-import { ChevronDown } from "lucide-react";

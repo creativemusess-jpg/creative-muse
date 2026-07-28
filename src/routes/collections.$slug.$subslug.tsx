@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
 import { createFileRoute, Link, useParams } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { PageShell } from "@/components/site/PageHeader";
 import { productsApi } from "@/lib/api/products";
 import { subcategoriesApi } from "@/lib/api/subcategories";
@@ -15,26 +15,22 @@ export const Route = createFileRoute("/collections/$slug/$subslug")({
 
 function SubcategoryCollectionPage() {
   const { slug, subslug } = useParams({ from: "/collections/$slug/$subslug" });
-  const [subcategory, setSubcategory] = useState<any | null>(null);
-  const [products, setProducts] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    setLoading(true);
-    (async () => {
-      try {
-        const [sub, prods] = await Promise.all([
-          subcategoriesApi.getByCategoryAndSlug(slug, subslug),
-          productsApi.getPublished({ category: slug, subcategory: subslug }),
-        ]);
-        setSubcategory(sub);
-        setProducts(prods.map(productFromDb));
-      } catch (err) {
-        console.error(err);
-      }
-      setLoading(false);
-    })();
-  }, [slug, subslug]);
+  const { data: subcategory, isLoading: subLoading } = useQuery({
+    queryKey: ["subcategory", slug, subslug],
+    queryFn: () => subcategoriesApi.getByCategoryAndSlug(slug, subslug),
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const { data: products = [], isLoading: prodsLoading } = useQuery({
+    queryKey: ["products", "by-subcategory", slug, subslug],
+    queryFn: () =>
+      productsApi.getPublished({ category: slug, subcategory: subslug }).then((r) => r.map(productFromDb)),
+    enabled: !!subcategory,
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const loading = subLoading || (!!subcategory && prodsLoading);
 
   if (loading) {
     return (

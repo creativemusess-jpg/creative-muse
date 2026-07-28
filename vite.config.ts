@@ -15,4 +15,9 @@ export default defineConfig({
   nitro: {
     preset: "vercel",
   },
+  vite: {
+    optimizeDeps: {
+      exclude: ["@tanstack/react-router"],
+    },
+  },
 });
