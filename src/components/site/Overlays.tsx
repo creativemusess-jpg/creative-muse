@@ -10,14 +10,11 @@ import {
   ChevronLeft,
   ChevronRight,
   ZoomIn,
-  Tag,
-  Loader2,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { formatPrice, type Product, useStorefrontProducts } from "@/lib/products";
 import { useCartLines, useStore, useWishlistProducts } from "@/lib/store";
 import { productLink } from "@/lib/product-link";
-import { validateCoupon } from "@/lib/api/checkout";
 
 /* Cart drawer + Wishlist drawer + Quick View modal — global overlays */
 export function Overlays() {
@@ -38,48 +35,11 @@ function CartDrawer() {
     setQty,
     removeFromCart,
     cartSubtotal,
-    couponCode,
-    setCouponCode,
-    discountAmount,
-    setDiscountAmount,
-    appliedCouponId,
-    setAppliedCouponId,
-    clearCoupon,
   } = useStore();
   const lines = useCartLines();
-  const [couponInput, setCouponInput] = useState("");
-  const [couponLoading, setCouponLoading] = useState(false);
-  const [couponError, setCouponError] = useState("");
 
   const shipping = cartSubtotal > 5000 || cartSubtotal === 0 ? 0 : 250;
-  const total = Math.max(0, cartSubtotal + shipping - discountAmount);
-
-  const handleApplyCoupon = async () => {
-    const code = couponInput.trim().toUpperCase();
-    if (!code) return;
-    setCouponLoading(true);
-    setCouponError("");
-    try {
-      const result = await validateCoupon(code, cartSubtotal);
-      if (result.isValid) {
-        setCouponCode(code);
-        setDiscountAmount(result.discountAmount);
-        setAppliedCouponId(result.id);
-      } else {
-        setCouponError(result.message);
-      }
-    } catch {
-      setCouponError("Could not validate coupon. Try again.");
-    } finally {
-      setCouponLoading(false);
-    }
-  };
-
-  const handleRemoveCoupon = () => {
-    clearCoupon();
-    setCouponInput("");
-    setCouponError("");
-  };
+  const total = cartSubtotal + shipping;
 
   return (
     <AnimatePresence>
@@ -189,50 +149,6 @@ function CartDrawer() {
                       </li>
                     ))}
                   </ul>
-
-                  {/* Coupon section */}
-                  <div className="mt-5 rounded-[20px] border border-dashed border-[#C9A96E]/40 bg-white p-4">
-                    {appliedCouponId ? (
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <Tag className="h-4 w-4 text-green-600" />
-                          <span className="text-sm font-semibold text-green-700">{couponCode}</span>
-                          <span className="text-xs text-[#7a6e64]">
-                            · -{formatPrice(discountAmount)}
-                          </span>
-                        </div>
-                        <button
-                          onClick={handleRemoveCoupon}
-                          className="text-xs font-semibold text-red-500 hover:text-red-700"
-                        >
-                          Remove
-                        </button>
-                      </div>
-                    ) : (
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <Tag className="h-4 w-4 text-[#C9A96E]" />
-                          <input
-                            value={couponInput}
-                            onChange={(e) => setCouponInput(e.target.value)}
-                            onKeyDown={(e) => e.key === "Enter" && handleApplyCoupon()}
-                            placeholder="Promo code"
-                            className="flex-1 bg-transparent text-sm focus:outline-none"
-                          />
-                          <button
-                            onClick={handleApplyCoupon}
-                            disabled={couponLoading || !couponInput.trim()}
-                            className="rounded-full bg-[#1a1a2e] px-3 py-1.5 text-[11px] font-semibold tracking-wider text-white uppercase disabled:opacity-50"
-                          >
-                            {couponLoading ? <Loader2 className="h-3 w-3 animate-spin" /> : "Apply"}
-                          </button>
-                        </div>
-                        {couponError && (
-                          <p className="mt-2 text-[11px] font-medium text-red-600">{couponError}</p>
-                        )}
-                      </div>
-                    )}
-                  </div>
                 </>
               )}
             </div>
@@ -242,12 +158,6 @@ function CartDrawer() {
                 <div className="space-y-1.5 text-sm">
                   <Row label="Subtotal" value={formatPrice(cartSubtotal)} />
                   <Row label="Shipping" value={shipping === 0 ? "Free" : formatPrice(shipping)} />
-                  {discountAmount > 0 && (
-                    <Row
-                      label={`Discount (${couponCode})`}
-                      value={`-${formatPrice(discountAmount)}`}
-                    />
-                  )}
                   <div className="my-2 border-t border-dashed border-[#e0d8cc]" />
                   <Row label="Total" value={formatPrice(total)} bold />
                 </div>
@@ -524,6 +434,18 @@ function QuickViewMedia({ product }: { product: Product }) {
     touchX.current = null;
   };
 
+  // Keyboard navigation for zoom
+  useEffect(() => {
+    if (!zoom) return;
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setZoom(false);
+      if (e.key === "ArrowLeft") setIdx((i) => (i - 1 + gallery.length) % gallery.length);
+      if (e.key === "ArrowRight") setIdx((i) => (i + 1) % gallery.length);
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [zoom, gallery.length]);
+
   return (
     <div className="flex flex-col gap-3 p-4 md:p-5">
       {/* Stage */}
@@ -576,50 +498,153 @@ function QuickViewMedia({ product }: { product: Product }) {
       </div>
 
       {/* Thumbnails */}
-      {gallery.length > 1 && (
-        <div className="flex gap-2 overflow-x-auto pb-1">
-          {gallery.map((src, i) => (
-            <button
-              key={src + i}
-              type="button"
-              onClick={() => setIdx(i)}
-              aria-label={`View image ${i + 1}`}
-              className={`flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-[12px] border-2 bg-[#fffdf9] ${
-                i === idx ? "border-[#C9A96E]" : "border-[rgba(66,29,34,0.18)]"
-              }`}
-            >
-              <img src={src} alt="" className="h-full w-full object-contain p-1.5" />
-            </button>
-          ))}
-        </div>
-      )}
+      <Thumbnails
+        gallery={gallery}
+        idx={idx}
+        setIdx={setIdx}
+      />
 
-      {/* Fullscreen zoom overlay */}
+      {/* Fullscreen gallery viewer */}
       <AnimatePresence>
         {zoom && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/85 p-6"
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4 md:p-8"
             onClick={() => setZoom(false)}
+            onTouchStart={(e) => { touchX.current = e.touches[0].clientX; }}
+            onTouchEnd={(e) => {
+              if (touchX.current == null) return;
+              const dx = e.changedTouches[0].clientX - touchX.current;
+              if (Math.abs(dx) > 50) (dx < 0 ? next : prev)();
+              touchX.current = null;
+            }}
           >
-            <img
-              src={gallery[idx]}
-              alt={product.name}
-              className="max-h-full max-w-full object-contain"
-            />
+            {/* Close */}
             <button
               type="button"
-              aria-label="Close zoom"
+              aria-label="Close gallery"
               onClick={() => setZoom(false)}
-              className="absolute top-6 right-6 flex h-10 w-10 items-center justify-center rounded-full bg-white/95"
+              className="absolute top-4 right-4 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-sm hover:bg-white/20"
             >
-              <X className="h-4 w-4" />
+              <X className="h-5 w-5" />
             </button>
+
+            {/* Counter */}
+            {gallery.length > 1 && (
+              <span className="absolute top-5 left-1/2 z-10 -translate-x-1/2 rounded-full bg-white/10 px-4 py-1.5 text-sm font-semibold tracking-wider text-white backdrop-blur-sm">
+                {idx + 1} / {gallery.length}
+              </span>
+            )}
+
+            {/* Previous */}
+            {gallery.length > 1 && (
+              <button
+                type="button"
+                aria-label="Previous image"
+                onClick={(e) => { e.stopPropagation(); prev(); }}
+                className="absolute top-1/2 left-3 z-10 -translate-y-1/2 flex h-12 w-12 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-sm hover:bg-white/20"
+              >
+                <ChevronLeft className="h-6 w-6" />
+              </button>
+            )}
+
+            {/* Image */}
+            <img
+              key={idx}
+              src={gallery[idx]}
+              alt={`${product.name} — view ${idx + 1}`}
+              className="max-h-[90vh] max-w-[90vw] select-none object-contain"
+              onClick={(e) => e.stopPropagation()}
+              draggable={false}
+            />
+
+            {/* Next */}
+            {gallery.length > 1 && (
+              <button
+                type="button"
+                aria-label="Next image"
+                onClick={(e) => { e.stopPropagation(); next(); }}
+                className="absolute top-1/2 right-3 z-10 -translate-y-1/2 flex h-12 w-12 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-sm hover:bg-white/20"
+              >
+                <ChevronRight className="h-6 w-6" />
+              </button>
+            )}
           </motion.div>
         )}
       </AnimatePresence>
+    </div>
+  );
+}
+
+/* Thumbnail strip with passive-safe wheel handler */
+function Thumbnails({
+  gallery,
+  idx,
+  setIdx,
+}: {
+  gallery: string[];
+  idx: number;
+  setIdx: (i: number) => void;
+}) {
+  const thumbRef = useRef<HTMLDivElement>(null);
+  const dragData = useRef({ active: false, startX: 0, scrollLeft: 0, moved: false });
+
+  useEffect(() => {
+    const el = thumbRef.current;
+    if (!el) return;
+    const handler = (e: WheelEvent) => {
+      if (!e.deltaY) return;
+      e.preventDefault();
+      el.scrollLeft += e.deltaY;
+    };
+    el.addEventListener("wheel", handler, { passive: false });
+    return () => el.removeEventListener("wheel", handler);
+  }, []);
+
+  return (
+    <div
+      ref={thumbRef}
+      className="scrollbar-hide flex gap-1.5 overflow-x-auto scroll-smooth pb-1 sm:gap-2"
+      onPointerDown={(e) => {
+        const dd = dragData.current;
+        dd.active = true;
+        dd.startX = e.clientX;
+        dd.scrollLeft = e.currentTarget.scrollLeft;
+        dd.moved = false;
+      }}
+      onPointerMove={(e) => {
+        const dd = dragData.current;
+        if (!dd.active) return;
+        const dx = e.clientX - dd.startX;
+        if (Math.abs(dx) > 4) dd.moved = true;
+        e.currentTarget.scrollLeft = dd.scrollLeft - dx;
+      }}
+      onPointerUp={() => { dragData.current.active = false; }}
+      onPointerLeave={() => { dragData.current.active = false; }}
+    >
+      {gallery.map((src, i) => (
+        <button
+          key={src + i}
+          type="button"
+          onClick={() => {
+            if (dragData.current.moved) return;
+            setIdx(i);
+            if (thumbRef.current) {
+              const child = thumbRef.current.children[i] as HTMLElement;
+              child?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+            }
+          }}
+          aria-label={`View image ${i + 1}`}
+          className={`flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-[12px] border-2 bg-[#fffdf9] sm:h-16 sm:w-16 ${
+            i === idx ? "border-[#C9A96E]" : "border-[rgba(66,29,34,0.18)]"
+          }`}
+        >
+          <img src={src} alt="" className="h-full w-full object-contain p-1.5" />
+        </button>
+      ))}
     </div>
   );
 }
@@ -647,24 +672,22 @@ function QuickViewInfo({
   useEffect(() => setQty(1), [product.id]);
 
   const details: Array<[string, string | undefined]> = [
-    ["SKU", product.sku],
     ["Category", product.category],
-    ["Metal", product.metal],
-    ["Purity", product.purity],
-    ["Metal colour", product.metalColor],
-    ["Gemstone", product.stone],
-    ["Weight", product.weight],
-    ["Certification", product.certification],
+    ...(product.specifications || []).map((s) => [s.name, s.value] as [string, string | undefined]),
   ];
 
   return (
     <div className="flex flex-col p-6 pr-5 md:p-8 md:pr-6">
       <div className="flex items-center gap-2">
-        {product.badge && (
-          <span className="rounded-full bg-[#1a1a2e] px-2 py-[2px] text-[9px] font-semibold tracking-[0.12em] text-white uppercase">
-            {product.badge}
+        {product.flags?.filter((f) => f.badge_label).slice(0, 2).map((flag) => (
+          <span
+            key={flag.id}
+            className="rounded-full px-2 py-[2px] text-[9px] font-semibold tracking-[0.12em] uppercase"
+            style={{ backgroundColor: flag.badge_bg_color || "#1a1a2e", color: flag.badge_text_color || "#ffffff" }}
+          >
+            {flag.badge_label}
           </span>
-        )}
+        ))}
         <p className="eyebrow text-[10px]">{product.category}</p>
       </div>
 
@@ -767,15 +790,6 @@ function QuickViewInfo({
             <p className="mt-3 text-xs leading-relaxed text-[#7a6e64]">{product.fullDescription}</p>
           )}
         </Accordion>
-
-        {product.certification && (
-          <Accordion title="Materials & Certification">
-            <p className="text-xs leading-relaxed text-[#7a6e64]">
-              {product.certification}. Every piece is quality-checked and hallmarked before it
-              leaves our atelier.
-            </p>
-          </Accordion>
-        )}
 
         <Accordion title="Shipping & Returns">
           <p className="text-xs leading-relaxed text-[#7a6e64]">

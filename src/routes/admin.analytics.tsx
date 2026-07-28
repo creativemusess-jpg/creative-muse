@@ -92,7 +92,7 @@ function AnalyticsPage() {
                 <div key={p.id} className="flex items-center justify-between py-3">
                   <div>
                     <p className="text-sm font-medium text-[#1a1a2e]">{p.name}</p>
-                    <p className="text-xs text-gray-400">SKU: {p.sku || "—"}</p>
+                    
                   </div>
                   <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold ${(p.stock_quantity ?? 0) <= 0 ? "bg-red-100 text-red-700" : "bg-amber-100 text-amber-700"}`}>
                     {(p.stock_quantity ?? 0) <= 0 ? "Out of stock" : `${p.stock_quantity ?? 0} left`}

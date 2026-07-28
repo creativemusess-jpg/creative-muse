@@ -110,14 +110,18 @@ function AdminProducts() {
               <Link to="/admin/products/$id" params={{ id: p.id }} className="font-medium text-[#1a1a2e] hover:text-[#c9a96e]">
                 {p.name}
               </Link>
-              {p.badge && <span className="ml-2 rounded bg-[#c9a96e]/10 px-1.5 py-0.5 text-[10px] font-semibold text-[#c9a96e]">{p.badge}</span>}
+              {(p.flags || []).filter((f) => f.badge_label).map((flag) => (
+                <span key={flag.id} className="ml-1 rounded px-1.5 py-0.5 text-[10px] font-semibold" style={{ backgroundColor: flag.badge_bg_color || "#c9a96e", color: flag.badge_text_color || "#ffffff" }}>
+                  {flag.badge_label}
+                </span>
+              ))}
             </div>
           </div>
         );
       },
     },
     { key: "category", label: "Category", render: (p: ProductWithImages) => <span className="text-gray-500">{p.category_name || "—"}</span>, hideOnMobile: true },
-    { key: "sku", label: "SKU", render: (p: ProductWithImages) => <span className="text-gray-500">{p.sku || "—"}</span>, hideOnMobile: true },
+    
     { key: "price", label: "Price", sortable: true, render: (p: ProductWithImages) => <span className="font-medium">{formatPrice(p.current_price)}</span> },
     { key: "stock", label: "Stock", render: (p: ProductWithImages) => (
       <span className={p.stock_quantity !== null && p.stock_quantity <= 5 ? "font-medium text-red-600" : ""}>{p.stock_quantity ?? "—"}</span>

@@ -214,7 +214,7 @@ function orderItems(data: OrderEmailData) {
       </td>
       <td style="padding:12px;border-bottom:1px solid ${BORDER}">
         <div style="font:700 15px Arial,sans-serif;color:${NAVY}">${esc(item.productName)}</div>
-        <div style="font:12px Arial,sans-serif;color:#6d6258;margin-top:4px">SKU: ${esc(item.sku || "—")}</div>
+        
         <div style="font:12px Arial,sans-serif;color:#6d6258;margin-top:4px">Qty: ${item.quantity} · Unit: ${money(item.unitPrice)}</div>
       </td>
       <td align="right" style="padding:12px;border-bottom:1px solid ${BORDER};font:700 14px Arial,sans-serif;color:${NAVY};white-space:nowrap">${money(item.lineTotal)}</td>

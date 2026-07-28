@@ -47,11 +47,9 @@ export function toLegacyProduct(p: ProductWithImages): Product {
     category: "",
     shortDescription: p.short_description || undefined,
     fullDescription: p.full_description || undefined,
-    sku: p.sku || undefined,
     purity: p.gold_purity || undefined,
     metalColor: p.metal_colour || undefined,
     weight: p.gross_weight || undefined,
-    certification: p.certification_type || undefined,
     tags: p.tags || undefined,
   };
 }

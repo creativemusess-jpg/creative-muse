@@ -87,7 +87,7 @@ export function Header() {
               <Link
                 key={item.label}
                 to={item.to}
-                className="shrink-0 whitespace-nowrap rounded-full px-3 py-1.5 text-[12.5px] font-semibold tracking-[0.01em] text-[#2a1e14] transition-colors duration-200 hover:bg-[#fdf8f3] hover:text-[#8B1A1A] xl:px-4 xl:text-[13px]"
+                className="shrink-0 whitespace-nowrap rounded-full px-3 py-1.5 text-[12.5px] font-semibold tracking-[0.01em] text-[#5C1A1A] transition-colors duration-200 hover:bg-[#fdf8f3] hover:text-[#C9A96E] xl:px-4 xl:text-[13px]"
               >
                 {item.label}
               </Link>
@@ -139,7 +139,7 @@ function MobileDrawer({ onClose }: { onClose: () => void }) {
                   <>
                     <button
                       onClick={() => setExpandedIdx(isExpanded ? null : idx)}
-                      className="flex min-h-[48px] w-full items-center justify-between rounded-[16px] px-5 py-3 text-sm font-medium text-[#3a3028] transition-colors hover:bg-[#f5efe8] hover:text-[#8B1A1A]"
+                      className="flex min-h-[48px] w-full items-center justify-between rounded-[16px] px-5 py-3 text-sm font-medium text-[#5C1A1A] transition-colors hover:bg-[#f5efe8] hover:text-[#C9A96E]"
                     >
                       {item.label}
                       {isExpanded ? (
@@ -158,7 +158,7 @@ function MobileDrawer({ onClose }: { onClose: () => void }) {
                             <Link
                               to={item.to}
                               onClick={onClose}
-                              className="flex min-h-[40px] items-center rounded-[12px] px-4 py-2 text-sm font-semibold text-[#8B1A1A] transition-colors hover:bg-[#f5efe8]"
+                              className="flex min-h-[40px] items-center rounded-[12px] px-4 py-2 text-sm font-semibold text-[#5C1A1A] transition-colors hover:bg-[#f5efe8] hover:text-[#C9A96E]"
                           >
                             View All {item.label}
                           </Link>
@@ -167,7 +167,7 @@ function MobileDrawer({ onClose }: { onClose: () => void }) {
                               key={link.label}
                               to={link.to}
                               onClick={onClose}
-                              className="flex min-h-[40px] items-center rounded-[12px] px-4 py-2 text-sm text-[#6b5d52] transition-colors hover:bg-[#f5efe8] hover:text-[#8B1A1A]"
+                              className="flex min-h-[40px] items-center rounded-[12px] px-4 py-2 text-sm text-[#5C1A1A] transition-colors hover:bg-[#f5efe8] hover:text-[#C9A96E]"
                             >
                               {link.label}
                             </Link>
@@ -180,7 +180,7 @@ function MobileDrawer({ onClose }: { onClose: () => void }) {
                   <Link
                     to={item.to}
                     onClick={onClose}
-                    className="flex min-h-[48px] w-full items-center rounded-[16px] px-5 py-3 text-sm font-medium text-[#3a3028] transition-colors hover:bg-[#f5efe8] hover:text-[#C9A96E]"
+                    className="flex min-h-[48px] w-full items-center rounded-[16px] px-5 py-3 text-sm font-medium text-[#5C1A1A] transition-colors hover:bg-[#f5efe8] hover:text-[#C9A96E]"
                   >
                     {item.label}
                   </Link>
@@ -201,7 +201,7 @@ function MobileDrawer({ onClose }: { onClose: () => void }) {
               key={label}
               to={to}
               onClick={onClose}
-              className="flex min-h-[48px] w-full items-center rounded-[16px] px-5 py-3 text-sm text-[#3a3028] hover:bg-[#f5efe8]"
+              className="flex min-h-[48px] w-full items-center rounded-[16px] px-5 py-3 text-sm text-[#5C1A1A] transition-colors hover:bg-[#f5efe8] hover:text-[#C9A96E]"
             >
               {label}
             </Link>

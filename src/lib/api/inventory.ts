@@ -3,9 +3,7 @@ import { supabase } from "../supabase";
 export interface InventoryItem {
   id: string;
   name: string;
-  sku: string | null;
   stock_quantity: number;
-  committed: number;
   low_stock_threshold: number;
   status: string;
   current_price: number;
@@ -29,10 +27,10 @@ export const inventoryApi = {
   async list(threshold = 10): Promise<InventoryItem[]> {
     const { data: products } = await supabase
       .from("products")
-      .select("id, name, sku, stock_quantity, low_stock_threshold, status, current_price, slug, category_id")
+      .select("id, name, stock_quantity, low_stock_threshold, status, current_price, slug, category_id")
       .order("name");
     return (products ?? []).map((p: any) => ({
-      id: p.id, name: p.name, sku: p.sku,
+      id: p.id, name: p.name,
       stock_quantity: p.stock_quantity ?? 0,
       committed: 0, low_stock_threshold: p.low_stock_threshold ?? threshold,
       status: p.status, current_price: p.current_price ?? 0, slug: p.slug,

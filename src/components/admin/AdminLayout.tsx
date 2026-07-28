@@ -7,7 +7,7 @@ import {
   Mail, Tag, Settings, LogOut, Menu, X, Clock,
   ChevronRight, Home, MessageSquare, Layers,
   Search, ExternalLink, Bell, PackageOpen, BarChart3,
-  Percent, UserCog, FileText, Image, Video,
+  Percent, UserCog, FileText, Image, Video, Flag, ListChecks,
 } from "lucide-react";
 import { GlobalSearch } from "./GlobalSearch";
 
@@ -29,6 +29,8 @@ const navItems: NavItem[] = [
   { label: "Subcategories", href: "/admin/subcategories", icon: <Layers className="h-4 w-4" />, permission: "categories" },
   { label: "Collections", href: "/admin/collections", icon: <FileText className="h-4 w-4" />, permission: "products" },
   { label: "Inventory", href: "/admin/inventory", icon: <PackageOpen className="h-4 w-4" />, permission: "products" },
+  { label: "Product Flags", href: "/admin/product-flags", icon: <Flag className="h-4 w-4" />, permission: "products" },
+  { label: "Attributes", href: "/admin/attributes", icon: <ListChecks className="h-4 w-4" />, permission: "products" },
   { label: "Customers", href: "/admin/customers", icon: <Users className="h-4 w-4" />, permission: "customers" },
   { label: "Coupons", href: "/admin/coupons", icon: <Tag className="h-4 w-4" />, permission: "coupons" },
   { label: "Analytics", href: "/admin/analytics", icon: <BarChart3 className="h-4 w-4" />, permission: "*" },

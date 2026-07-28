@@ -1,10 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Heart, ShoppingBag, ChevronRight, ZoomIn, Plus } from "lucide-react";
+import { Heart, ShoppingBag, ChevronRight, ZoomIn, Plus, X, ChevronLeft } from "lucide-react";
 import { PageShell } from "@/components/site/PageHeader";
 import { ProductCard } from "@/components/site/ProductCard";
 import { formatPrice, getRecommendedProducts, type Product, useStorefrontProduct, useStorefrontProducts } from "@/lib/products";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
+import { AnimatePresence, motion } from "framer-motion";
 import { useStore } from "@/lib/store";
 
 export const Route = createFileRoute("/product/$productId")({
@@ -75,12 +76,28 @@ function ProductContent({ product }: { product: Product }) {
   const [accOpen, setAccOpen] = useState<Record<string, boolean>>({
     details: true,
   });
+  const prev = () => setImgIdx((i) => (i - 1 + gallery.length) % gallery.length);
+  const next = () => setImgIdx((i) => (i + 1) % gallery.length);
+  const touchStartX = useRef(0);
+  const thumbRef = useRef<HTMLDivElement>(null);
+  const dragData = useRef({ active: false, startX: 0, scrollLeft: 0, moved: false });
 
   useEffect(() => {
     setImgIdx(0);
     setZoom(false);
     setAccOpen({ details: true });
   }, [product.id]);
+
+  useEffect(() => {
+    if (!zoom) return;
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setZoom(false);
+      if (e.key === "ArrowLeft") setImgIdx((i) => (i - 1 + gallery.length) % gallery.length);
+      if (e.key === "ArrowRight") setImgIdx((i) => (i + 1) % gallery.length);
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [zoom, gallery.length]);
 
   const validUrl = (u: string | undefined | null) => (u && u.trim() ? u : null);
   const displayImage = validUrl(gallery[imgIdx]) || gallery.find((g) => validUrl(g)) || null;
@@ -91,11 +108,7 @@ function ProductContent({ product }: { product: Product }) {
   const details: Array<[string, string | undefined]> = [
     ["Category", product.category],
     ["Collection", product.collection],
-    ["Metal", product.metal],
-    ["Purity", product.purity],
-    ["Metal colour", product.metalColor],
-    ["Gemstone", product.stone],
-    ["Weight", product.weight],
+    ...(product.specifications || []).map((s) => [s.name, s.value] as [string, string | undefined]),
   ];
 
   const toggleAcc = (key: string) => setAccOpen((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -103,21 +116,21 @@ function ProductContent({ product }: { product: Product }) {
   return (
     <PageShell>
       {/* Breadcrumbs */}
-      <div className="mx-auto flex max-w-[1180px] items-center gap-1.5 px-5 pt-6 pb-2 text-[11px] font-semibold tracking-[0.1em] text-[#7a6e64] uppercase sm:px-6">
-        <Link to="/" className="hover:text-[#8B1A1A]">
+      <div className="mx-auto flex max-w-[1180px] items-center gap-1.5 px-5 pt-6 pb-2 text-[11px] font-semibold tracking-[0.1em] text-[#5C1A1A] uppercase sm:px-6">
+        <Link to="/" className="transition-colors hover:text-[#C9A96E]">
           Home
         </Link>
         <ChevronRight className="h-3 w-3" />
-        <Link to="/shop" className="hover:text-[#8B1A1A]">
+        <Link to="/shop" className="transition-colors hover:text-[#C9A96E]">
           Shop
         </Link>
         <ChevronRight className="h-3 w-3" />
-        <span className="text-[#1a1a2e]">{product.name}</span>
+        <span className="text-[#5C1A1A]">{product.name}</span>
       </div>
 
       <section className="mx-auto grid max-w-[1180px] gap-8 px-5 py-6 sm:px-6 lg:grid-cols-[minmax(0,1fr)_minmax(360px,0.8fr)] lg:gap-12 lg:py-12">
         {/* Left — Gallery */}
-        <div>
+        <div className="min-w-0">
           {/* Main image */}
           <div className="relative overflow-hidden rounded-[28px] bg-[#fffdf9] border border-[rgba(66,29,34,0.18)] shadow-[0_8px_24px_rgba(66,29,34,0.06)]">
             <img
@@ -132,16 +145,15 @@ function ProductContent({ product }: { product: Product }) {
                 else { img.src = fallbackImg; img.dataset.fallback = "1"; }
               }}
             />
-            {product.badge && (
-              <span className="absolute left-4 top-4 rounded-full bg-[#421D22] px-2 py-[2px] text-[10px] font-semibold uppercase tracking-[0.14em] text-white">
-                {product.badge}
+            {product.flags?.filter((f) => f.badge_label).slice(0, 1).map((flag) => (
+              <span
+                key={flag.id}
+                className="absolute left-4 top-4 rounded-full px-2 py-[2px] text-[10px] font-semibold uppercase tracking-[0.14em]"
+                style={{ backgroundColor: flag.badge_bg_color || "#421D22", color: flag.badge_text_color || "#ffffff" }}
+              >
+                {flag.badge_label}
               </span>
-            )}
-            {discount > 0 && (
-              <span className="absolute left-4 top-4 mt-7 rounded-full bg-[#7A2533] px-2 py-[2px] text-[10px] font-bold text-white">
-                -{discount}%
-              </span>
-            )}
+            ))}
             <button
               type="button"
               aria-label="Zoom"
@@ -154,23 +166,51 @@ function ProductContent({ product }: { product: Product }) {
 
           {/* Thumbnails */}
           {gallery.length > 1 && (
-            <div className="mt-3 flex gap-2 overflow-x-auto pb-1">
+            <div
+              ref={thumbRef}
+              className="scrollbar-hide mt-3 flex gap-1.5 overflow-x-auto scroll-smooth pb-1 sm:gap-2"
+              onPointerDown={(e) => {
+                const dd = dragData.current;
+                dd.active = true;
+                dd.startX = e.clientX;
+                dd.scrollLeft = e.currentTarget.scrollLeft;
+                dd.moved = false;
+              }}
+              onPointerMove={(e) => {
+                const dd = dragData.current;
+                if (!dd.active) return;
+                const dx = e.clientX - dd.startX;
+                if (Math.abs(dx) > 4) dd.moved = true;
+                e.currentTarget.scrollLeft = dd.scrollLeft - dx;
+              }}
+              onPointerUp={() => { dragData.current.active = false; }}
+              onPointerLeave={() => { dragData.current.active = false; }}
+            >
               {gallery.map((src, i) => (
                 <button
                   key={src + i}
                   type="button"
-                  onClick={() => setImgIdx(i)}
+                  onClick={() => {
+                    if (dragData.current.moved) return;
+                    setImgIdx(i);
+                    if (thumbRef.current) {
+                      const child = thumbRef.current.children[i] as HTMLElement;
+                      child?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+                    }
+                  }}
                   aria-label={`View image ${i + 1}`}
-                  className={`flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-[12px] border-2 bg-[#fffdf9] ${
+                  className={`flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-[12px] border-2 bg-[#fffdf9] sm:h-16 sm:w-16 ${
                     i === imgIdx ? "border-[#C9A96E]" : "border-[rgba(66,29,34,0.18)]"
                   }`}
                 >
                   <img src={safeSrc(src)} alt="" className="h-full w-full object-contain p-1.5" />
                 </button>
               ))}
-
             </div>
           )}
+
+          {/* Wheel handler (passive: false to prevent console warning) */}
+          {gallery.length > 1 && <PassiveWheel targetRef={thumbRef} />}
         </div>
 
         {/* Right — Product Info */}
@@ -296,27 +336,75 @@ function ProductContent({ product }: { product: Product }) {
         </section>
       )}
 
-      {/* Zoom overlay */}
-      {zoom && (
-        <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/85 p-6"
-          onClick={() => setZoom(false)}
-        >
-          <img
-            src={safeSrc(gallery[imgIdx])}
-            alt={product.name}
-            className="max-h-full max-w-full object-contain"
-          />
-          <button
-            type="button"
-            aria-label="Close zoom"
+      {/* Fullscreen gallery viewer */}
+      <AnimatePresence>
+        {zoom && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4 md:p-8"
             onClick={() => setZoom(false)}
-            className="absolute top-6 right-6 flex h-10 w-10 items-center justify-center rounded-full bg-white/95"
+            onTouchStart={(e) => { touchStartX.current = e.touches[0].clientX; }}
+            onTouchEnd={(e) => {
+              const dx = e.changedTouches[0].clientX - touchStartX.current;
+              if (Math.abs(dx) > 50) (dx < 0 ? next : prev)();
+            }}
           >
-            <Plus className="h-4 w-4 rotate-45" />
-          </button>
-        </div>
-      )}
+            {/* Close */}
+            <button
+              type="button"
+              aria-label="Close gallery"
+              onClick={() => setZoom(false)}
+              className="absolute top-4 right-4 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-sm hover:bg-white/20"
+            >
+              <X className="h-5 w-5" />
+            </button>
+
+            {/* Counter */}
+            {gallery.length > 1 && (
+              <span className="absolute top-5 left-1/2 z-10 -translate-x-1/2 rounded-full bg-white/10 px-4 py-1.5 text-sm font-semibold tracking-wider text-white backdrop-blur-sm">
+                {imgIdx + 1} / {gallery.length}
+              </span>
+            )}
+
+            {/* Previous */}
+            {gallery.length > 1 && (
+              <button
+                type="button"
+                aria-label="Previous image"
+                onClick={(e) => { e.stopPropagation(); prev(); }}
+                className="absolute top-1/2 left-3 z-10 -translate-y-1/2 flex h-12 w-12 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-sm hover:bg-white/20"
+              >
+                <ChevronLeft className="h-6 w-6" />
+              </button>
+            )}
+
+            {/* Image */}
+            <img
+              key={imgIdx}
+              src={safeSrc(gallery[imgIdx])}
+              alt={`${product.name} — view ${imgIdx + 1}`}
+              className="max-h-[90vh] max-w-[90vw] select-none object-contain"
+              onClick={(e) => e.stopPropagation()}
+              draggable={false}
+            />
+
+            {/* Next */}
+            {gallery.length > 1 && (
+              <button
+                type="button"
+                aria-label="Next image"
+                onClick={(e) => { e.stopPropagation(); next(); }}
+                className="absolute top-1/2 right-3 z-10 -translate-y-1/2 flex h-12 w-12 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-sm hover:bg-white/20"
+              >
+                <ChevronRight className="h-6 w-6" />
+              </button>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </PageShell>
   );
 }
@@ -358,4 +446,20 @@ function InfoAccordion({
       </div>
     </div>
   );
+}
+
+/* Registers a wheel listener with passive:false to avoid console warning */
+function PassiveWheel({ targetRef }: { targetRef: React.RefObject<HTMLDivElement | null> }) {
+  useEffect(() => {
+    const el = targetRef.current;
+    if (!el) return;
+    const handler = (e: WheelEvent) => {
+      if (!e.deltaY) return;
+      e.preventDefault();
+      el.scrollLeft += e.deltaY;
+    };
+    el.addEventListener("wheel", handler, { passive: false });
+    return () => el.removeEventListener("wheel", handler);
+  }, [targetRef]);
+  return null;
 }

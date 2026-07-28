@@ -676,15 +676,15 @@ function BestSellers() {
   const filtered = (() => {
     switch (active) {
       case "New Arrivals":
-        return products.filter((p) => p.badge === "New");
+        return products.filter((p) => p.flags?.some((f) => f.slug === "new-arrival"));
       case "Wedding":
-        return products.filter((p) => p.badge === "Wedding");
+        return products.filter((p) => p.flags?.some((f) => f.slug === "wedding"));
       case "Trending":
-        return products.filter((p) => p.badge === "Trending");
+        return products.filter((p) => p.flags?.some((f) => f.slug === "trending"));
       default:
         return products
           .filter(
-            (p) => p.badge === "Best Seller" || p.badge === "Trending" || p.badge === "Wedding",
+            (p) => p.flags?.some((f) => f.slug === "best-seller" || f.slug === "trending" || f.slug === "wedding"),
           )
           .slice(0, 8);
     }
@@ -764,7 +764,7 @@ function NewArrivals() {
   const list = useMemo(
     () =>
       products
-        .filter((p) => p.badge === "New")
+        .filter((p) => p.flags?.some((f) => f.slug === "new-arrival"))
         .concat(products)
         .slice(0, 6),
     [products],
@@ -804,7 +804,7 @@ function PremiumArrivals() {
   const list = useMemo(
     () =>
       products
-        .filter((p) => p.badge === "New")
+        .filter((p) => p.flags?.some((f) => f.slug === "new-arrival"))
         .concat(products)
         .slice(0, 6),
     [products],

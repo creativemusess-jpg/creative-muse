@@ -180,7 +180,8 @@ function CheckoutPage() {
   const applyCoupon = async () => {
     if (!couponInput.trim()) return;
     setCouponStatus("loading"); setCouponMsg("");
-    const result = await validateCoupon(couponInput, subtotal, user?.id);
+    const items = lines.map((l) => ({ productId: l.product.id, price: l.product.price }));
+    const result = await validateCoupon(couponInput, subtotal, items, user?.id);
     if (result.isValid) {
       setCouponStatus("valid"); setCouponMsg(result.message);
       setDiscountAmount(result.discountAmount); setCouponCode(result.code); setAppliedCouponId(result.id);
@@ -212,7 +213,7 @@ function CheckoutPage() {
       billingSame,
       billingAddress: billingSame ? null : billingAddress,
       saveAddress: saveAddr,
-      items: lines.map((l) => ({ productId: l.product.id, name: l.product.name, image: l.product.image, sku: l.product.sku || "", qty: l.qty, unitPrice: l.product.price, lineTotal: l.product.price * l.qty })),
+      items: lines.map((l) => ({ productId: l.product.id, name: l.product.name, image: l.product.image, qty: l.qty, unitPrice: l.product.price, lineTotal: l.product.price * l.qty })),
     };
     sessionStorage.setItem("cm_checkout_data", JSON.stringify(checkoutData));
 

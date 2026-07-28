@@ -26,9 +26,80 @@ export interface ValidatedCoupon {
 
 export type { CheckoutTotals } from "../checkout";
 
+async function validateCouponScope(
+  couponId: string,
+  items?: Array<{ productId: string; price: number }>,
+): Promise<{ valid: boolean; message: string }> {
+  const { data: coupon } = await (supabase as any)
+    .from("coupons")
+    .select("coupon_scope")
+    .eq("id", couponId)
+    .maybeSingle();
+
+  const scope = coupon?.coupon_scope || "entire_store";
+  if (scope === "entire_store" || !items || items.length === 0) {
+    return { valid: true, message: "" };
+  }
+
+  const { data: scopes } = await (supabase as any)
+    .from("coupon_scopes")
+    .select("scope_type, scope_id")
+    .eq("coupon_id", couponId);
+
+  if (!scopes || scopes.length === 0) {
+    return { valid: false, message: "This coupon does not apply to any products." };
+  }
+
+  // ROOT CAUSE: Product.id in the frontend is the slug, not the UUID (see productFromDb).
+  // We must map slugs from cart items to real UUIDs before comparing against scopes.
+  const cartSlugs = items.map((i) => i.productId);
+  const { data: productRows } = await (supabase as any)
+    .from("products")
+    .select("id, slug")
+    .in("slug", cartSlugs);
+  const slugToUuid = new Map<string, string>((productRows || []).map((p: any) => [p.slug, p.id]));
+  const cartUuids = cartSlugs.map((slug) => slugToUuid.get(slug)).filter(Boolean) as string[];
+
+  console.log("[CouponScope] Coupon ID:", couponId);
+  console.log("[CouponScope] Scope:", scope);
+  console.log("[CouponScope] Scopes from DB:", JSON.stringify(scopes));
+  console.log("[CouponScope] Cart slugs:", cartSlugs);
+  console.log("[CouponScope] Mapped cart UUIDs:", cartUuids);
+
+  if (scope === "selected_products") {
+    const validProductIds = new Set(
+      scopes.filter((s: any) => s.scope_type === "product" && s.scope_id).map((s: any) => s.scope_id)
+    );
+    console.log("[CouponScope] Valid product UUIDs (from scopes):", [...validProductIds]);
+    const applies = cartUuids.some((uuid) => validProductIds.has(uuid));
+    console.log("[CouponScope] Matching products found:", applies);
+    if (!applies) return { valid: false, message: "This coupon does not apply to any items in your cart." };
+    return { valid: true, message: "" };
+  }
+
+  if (scope === "selected_categories") {
+    const validCategoryIds = new Set(
+      scopes.filter((s: any) => s.scope_type === "category" && s.scope_id).map((s: any) => s.scope_id)
+    );
+    console.log("[CouponScope] Valid category IDs (from scopes):", [...validCategoryIds]);
+    const { data: productCategories } = await (supabase as any)
+      .from("product_categories")
+      .select("product_id, category_id")
+      .in("product_id", cartUuids);
+    const matching = (productCategories || []).filter((pc: any) => validCategoryIds.has(pc.category_id));
+    console.log("[CouponScope] Matching product_categories rows:", matching);
+    const applies = matching.length > 0;
+    if (!applies) return { valid: false, message: "This coupon does not apply to any items in your cart." };
+    return { valid: true, message: "" };
+  }
+
+  return { valid: true, message: "" };
+}
+
 export async function validateCoupon(
   code: string,
   subtotal: number,
+  items?: Array<{ productId: string; price: number }>,
   customerId?: string,
 ): Promise<ValidatedCoupon> {
   const trimmed = code.trim().toUpperCase();
@@ -127,6 +198,40 @@ export async function validateCoupon(
       message: "This coupon has reached its usage limit.",
       discountAmount: 0,
     };
+  }
+
+  console.log("[Coupon] Found coupon:", { id: coupon.id, code: trimmed, scope: coupon.coupon_scope, discount_type: coupon.discount_type, discount_value: coupon.discount_value });
+  console.log("[Coupon] Cart items:", items);
+
+  // Validate percentage discounts cannot exceed 100%
+  if (coupon.discount_type === "percentage" && coupon.discount_value > 100) {
+    return {
+      id: coupon.id,
+      code: trimmed,
+      discountType: "percentage",
+      discountValue: coupon.discount_value,
+      maxDiscount: coupon.max_discount || 0,
+      isValid: false,
+      message: "Invalid coupon configuration: percentage discount exceeds 100%.",
+      discountAmount: 0,
+    };
+  }
+
+  if (items && items.length > 0) {
+    const scopeCheck = await validateCouponScope(coupon.id, items);
+    console.log("[Coupon] Scope check result:", scopeCheck);
+    if (!scopeCheck.valid) {
+      return {
+        id: coupon.id,
+        code: trimmed,
+        discountType: coupon.discount_type,
+        discountValue: coupon.discount_value,
+        maxDiscount: coupon.max_discount || 0,
+        isValid: false,
+        message: scopeCheck.message,
+        discountAmount: 0,
+      };
+    }
   }
 
   if (customerId && coupon.per_user_usage_limit) {
@@ -262,7 +367,6 @@ interface CreateOrderParams {
     productId: string;
     name: string;
     image: string;
-    sku: string;
     qty: number;
     unitPrice: number;
     lineTotal: number;
@@ -370,7 +474,6 @@ export async function createOrder(
       product_id: slugToUuid.get(item.productId) || item.productId,
       product_name: item.name,
       product_image: item.image,
-      product_sku: item.sku,
       quantity: item.qty,
       unit_price: item.unitPrice,
       total_price: item.lineTotal,

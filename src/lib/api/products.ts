@@ -4,7 +4,6 @@ export interface ProductWithImages {
   id: string;
   name: string;
   slug: string;
-  sku: string | null;
   short_description: string | null;
   full_description: string | null;
   current_price: number;
@@ -22,15 +21,8 @@ export interface ProductWithImages {
   gross_weight: string | null;
   net_weight: string | null;
   gemstone: string | null;
-  certification_type: string | null;
-  certification_number: string | null;
   rating_average: number;
   review_count: number;
-  featured: boolean;
-  best_seller: boolean;
-  new_arrival: boolean;
-  trending: boolean;
-  wedding: boolean;
   seo_title: string | null;
   seo_description: string | null;
   focus_keyword: string | null;
@@ -51,6 +43,8 @@ export interface ProductWithImages {
   category_name?: string;
   subcategory_name?: string;
   collection_ids?: string[];
+  flags?: { id: string; name: string; slug: string; badge_label: string | null; badge_bg_color: string | null; badge_text_color: string | null }[];
+  specifications?: { id: string; attribute_definition_id: string; name: string; value: string; sort_order: number }[];
 }
 
 export interface ProductFilters {
@@ -61,11 +55,6 @@ export interface ProductFilters {
   status?: string;
   badge?: string;
   stock?: string;
-  featured?: boolean;
-  best_seller?: boolean;
-  trending?: boolean;
-  wedding?: boolean;
-  new_arrival?: boolean;
   min_price?: number;
   max_price?: number;
   material?: string | string[];
@@ -78,7 +67,6 @@ export interface ProductFilters {
 export interface ProductFormData {
   name: string;
   slug: string;
-  sku?: string;
   short_description?: string;
   full_description?: string;
   current_price: number;
@@ -95,13 +83,6 @@ export interface ProductFormData {
   gross_weight?: string;
   net_weight?: string;
   gemstone?: string;
-  certification_type?: string;
-  certification_number?: string;
-  featured?: boolean;
-  best_seller?: boolean;
-  new_arrival?: boolean;
-  trending?: boolean;
-  wedding?: boolean;
   seo_title?: string;
   seo_description?: string;
   focus_keyword?: string;
@@ -118,14 +99,12 @@ export interface ProductFormData {
 }
 
 const productSelect = `
-  id, name, slug, sku, short_description, full_description,
+  id, name, slug, short_description, full_description,
   current_price, original_price, cost_price, discount_percentage,
   badge, status, stock_quantity, low_stock_threshold,
   material, metal_type, metal_colour, gold_purity,
   gross_weight, net_weight, gemstone,
-  certification_type, certification_number,
   rating_average, review_count,
-  featured, best_seller, new_arrival, trending, wedding,
   seo_title, seo_description, focus_keyword, canonical_url, social_image, image_alt_text,
   subcategory_id, tags,
   published_at, created_at, updated_at,
@@ -144,11 +123,6 @@ function mapProduct(row: any): ProductWithImages {
     stock_quantity: row.stock_quantity ?? null,
     low_stock_threshold: row.low_stock_threshold ?? 5,
     tags: row.tags ?? [],
-    featured: row.featured ?? false,
-    best_seller: row.best_seller ?? false,
-    new_arrival: row.new_arrival ?? false,
-    trending: row.trending ?? false,
-    wedding: row.wedding ?? false,
     focus_keyword: row.focus_keyword ?? null,
     canonical_url: row.canonical_url ?? null,
     social_image: row.social_image ?? null,
@@ -163,16 +137,11 @@ export const productsApi = {
 
     if (filters.search) {
       query = query.or(
-        `name.ilike.%${filters.search}%,sku.ilike.%${filters.search}%,short_description.ilike.%${filters.search}%`,
+        `name.ilike.%${filters.search}%,short_description.ilike.%${filters.search}%`,
       );
     }
     if (filters.status) query = query.eq("status", filters.status);
     if (filters.badge) query = query.eq("badge", filters.badge);
-    if (filters.featured !== undefined) query = query.eq("featured", filters.featured);
-    if (filters.best_seller !== undefined) query = query.eq("best_seller", filters.best_seller);
-    if (filters.trending !== undefined) query = query.eq("trending", filters.trending);
-    if (filters.wedding !== undefined) query = query.eq("wedding", filters.wedding);
-    if (filters.new_arrival !== undefined) query = query.eq("new_arrival", filters.new_arrival);
     if (filters.min_price) query = query.gte("current_price", filters.min_price);
     if (filters.max_price) query = query.lte("current_price", filters.max_price);
 
@@ -332,21 +301,40 @@ export const productsApi = {
     const product = await productsApi.getById(id);
     if (!product) return null;
 
-    const [imagesRes, images360Res, catsRes, collRes] = await Promise.all([
+    const [imagesRes, images360Res, catsRes, collRes, flagsRes, specsRes] = await Promise.all([
       supabase.from("product_images").select("*").eq("product_id", id).order("sort_order" as any),
       supabase.from("product_360_images").select("*").eq("product_id", id).order("frame_order" as any),
       supabase.from("product_categories").select("category_id").eq("product_id", id),
       supabase.from("product_collections").select("collection_id").eq("product_id", id),
+      supabase.from("product_product_flags").select("flag_id").eq("product_id", id),
+      supabase.from("product_attributes").select("*, attribute_definition:attribute_definitions(name)").eq("product_id", id).order("sort_order" as any),
     ]);
     if (imagesRes.error) throw imagesRes.error;
     if (images360Res.error) throw images360Res.error;
     if (catsRes.error) throw catsRes.error;
     if (collRes.error) throw collRes.error;
+    if (flagsRes.error) throw flagsRes.error;
+    if (specsRes.error) throw specsRes.error;
 
     const images = (imagesRes.data as any[]) || [];
     const images360 = (images360Res.data as any[]) || [];
     const categories = (catsRes.data as any[]) || [];
     const collections = (collRes.data as any[]) || [];
+    const flagIds = (flagsRes.data as any[] || []).map((f: any) => f.flag_id);
+
+    let flags: any[] = [];
+    if (flagIds.length > 0) {
+      const { data: flagData } = await supabase.from("product_flags").select("id, name, slug, badge_label, badge_bg_color, badge_text_color").in("id", flagIds);
+      flags = (flagData as any[]) || [];
+    }
+
+    const specifications = ((specsRes.data as any[]) || []).map((s: any) => ({
+      id: s.id,
+      attribute_definition_id: s.attribute_definition_id,
+      name: s.attribute_definition?.name || "",
+      value: s.value,
+      sort_order: s.sort_order,
+    }));
 
     return {
       ...product,
@@ -355,6 +343,8 @@ export const productsApi = {
       main_image: images.find((img: any) => img.is_main) || images[0] || null,
       category_ids: categories.map((c: any) => c.category_id),
       collection_ids: collections.map((c: any) => c.collection_id),
+      flags,
+      specifications,
     };
   },
 
@@ -375,6 +365,23 @@ export const productsApi = {
       const { data: catInfo } = await supabase.from("categories").select("name").eq("id", category_ids[0]).maybeSingle();
       if (catInfo) category_name = (catInfo as any).name;
     }
+    const [flagsRes, specsRes] = await Promise.all([
+      supabase.from("product_product_flags").select("flag_id").eq("product_id", mapped.id),
+      supabase.from("product_attributes").select("*, attribute_definition:attribute_definitions(name)").eq("product_id", mapped.id).order("sort_order" as any),
+    ]);
+    const flagIds = (flagsRes.data as any[] || []).map((f: any) => f.flag_id);
+    let flags: any[] = [];
+    if (flagIds.length > 0) {
+      const { data: flagData } = await supabase.from("product_flags").select("id, name, slug, badge_label, badge_bg_color, badge_text_color").in("id", flagIds);
+      flags = (flagData as any[]) || [];
+    }
+    const specifications = ((specsRes.data as any[]) || []).map((s: any) => ({
+      id: s.id,
+      attribute_definition_id: s.attribute_definition_id,
+      name: s.attribute_definition?.name || "",
+      value: s.value,
+      sort_order: s.sort_order,
+    }));
     return {
       ...mapped,
       images,
@@ -383,6 +390,8 @@ export const productsApi = {
       category_ids,
       category_name,
       collection_ids: [],
+      flags,
+      specifications,
     };
   },
 
@@ -390,7 +399,6 @@ export const productsApi = {
     const payload: any = {
       name: data.name,
       slug: data.slug,
-      sku: data.sku || null,
       short_description: data.short_description || null,
       full_description: data.full_description || null,
       current_price: data.current_price,
@@ -407,13 +415,6 @@ export const productsApi = {
       gross_weight: data.gross_weight || null,
       net_weight: data.net_weight || null,
       gemstone: data.gemstone || null,
-      certification_type: data.certification_type || null,
-      certification_number: data.certification_number || null,
-      featured: data.featured || false,
-      best_seller: data.best_seller || false,
-      new_arrival: data.new_arrival || false,
-      trending: data.trending || false,
-      wedding: data.wedding || false,
       seo_title: data.seo_title || null,
       seo_description: data.seo_description || null,
       focus_keyword: data.focus_keyword || null,
@@ -470,6 +471,9 @@ export const productsApi = {
     delete payload.making_charges;
     delete payload.gst_percentage;
 
+    if (payload.original_price === 0) payload.original_price = null;
+    if (payload.cost_price === 0) payload.cost_price = null;
+
     if (data.status === "active" && data.status !== undefined) {
       payload.published_at = new Date().toISOString();
     }
@@ -505,6 +509,21 @@ export const productsApi = {
     if (data.main_image_url) {
       await supabase.from("product_images").update({ is_main: false } as any).eq("product_id", id).eq("is_main", true);
       await productsApi.addImage(id, data.main_image_url, undefined, true);
+    }
+
+    if (data.gallery_images !== undefined) {
+      await supabase.from("product_images").delete().eq("product_id", id).eq("is_main", false);
+      if (data.gallery_images.length > 0) {
+        const galleryRows = data.gallery_images.map((url, i) => ({
+          product_id: id,
+          url,
+          alt_text: data.name || null,
+          sort_order: i + 1,
+          is_main: false,
+        }));
+        const { error: galErr } = await supabase.from("product_images").insert(galleryRows as any);
+        if (galErr) throw new Error(`Failed to save gallery images: ${galErr.message}`);
+      }
     }
 
     return productsApi.getWithImages(id) as Promise<ProductWithImages>;
@@ -573,7 +592,7 @@ export const productsApi = {
       .select(productSelect)
       .eq("status", "active")
       .or(
-        `name.ilike.%${query}%,sku.ilike.%${query}%,short_description.ilike.%${query}%,full_description.ilike.%${query}%`,
+        `name.ilike.%${query}%,short_description.ilike.%${query}%,full_description.ilike.%${query}%`,
       )
       .order("rating_average" as any, { ascending: false })
       .limit(20);
@@ -581,23 +600,4 @@ export const productsApi = {
     return ((data as any[]) || []).map(mapProduct);
   },
 
-  async getFeatured(): Promise<ProductWithImages[]> {
-    return productsApi.getPublished({ featured: true });
-  },
-
-  async getBestSellers(): Promise<ProductWithImages[]> {
-    return productsApi.getPublished({ best_seller: true });
-  },
-
-  async getNewArrivals(): Promise<ProductWithImages[]> {
-    return productsApi.getPublished({ new_arrival: true });
-  },
-
-  async getTrending(): Promise<ProductWithImages[]> {
-    return productsApi.getPublished({ trending: true });
-  },
-
-  async getWedding(): Promise<ProductWithImages[]> {
-    return productsApi.getPublished({ wedding: true });
-  },
 };

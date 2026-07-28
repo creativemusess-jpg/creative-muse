@@ -1035,7 +1035,7 @@ function OrderDetailPage() {
                       {item.productName || "Unavailable product"}
                     </p>
                     <p className="text-xs text-gray-400">
-                      {item.sku ? <>SKU: {item.sku} · </> : null}
+                      
                       Qty: {item.quantity}
                       {item.unitPrice > 0 ? (
                         <> · ₹{item.unitPrice.toLocaleString("en-IN")} ea.</>

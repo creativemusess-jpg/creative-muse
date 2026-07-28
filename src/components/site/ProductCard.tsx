@@ -6,13 +6,6 @@ import { type Product, formatPrice } from "@/lib/products";
 import { useStore } from "@/lib/store";
 import { productLink } from "@/lib/product-link";
 
-const BADGE_STYLE: Record<NonNullable<Product["badge"]>, string> = {
-  New: "bg-[#421D22] text-white",
-  "Best Seller": "bg-gradient-to-r from-[#421D22] to-[#633039] text-white",
-  Wedding: "bg-[#7A2533] text-white",
-  Trending: "bg-[#421D22] text-white",
-};
-
 export const ProductCard = memo(function ProductCard({
   product,
   index = 0,
@@ -112,14 +105,16 @@ export const ProductCard = memo(function ProductCard({
       </div>
 
       <div className="flex flex-1 flex-col px-2 pt-2 pb-2.5 md:px-3 md:pt-3 md:pb-3.5">
-        <div className="mb-1 flex min-h-[16px] items-center md:mb-1.5 md:min-h-[18px]">
-          {product.badge && (
+        <div className="mb-1 flex min-h-[16px] flex-wrap items-center gap-1 md:mb-1.5 md:min-h-[18px]">
+          {product.flags?.filter((f) => f.badge_label).slice(0, 2).map((flag) => (
             <span
-              className={`inline-flex h-[14px] max-w-full items-center rounded-full px-1.5 text-[6px] leading-none font-semibold tracking-[0.05em] whitespace-nowrap uppercase md:h-[17px] md:px-2 md:text-[8px] md:tracking-[0.08em] ${BADGE_STYLE[product.badge]}`}
+              key={flag.id}
+              className="inline-flex h-[14px] max-w-full items-center rounded-full px-1.5 text-[6px] leading-none font-semibold tracking-[0.05em] whitespace-nowrap uppercase md:h-[17px] md:px-2 md:text-[8px] md:tracking-[0.08em]"
+              style={{ backgroundColor: flag.badge_bg_color || "#1a1a2e", color: flag.badge_text_color || "#ffffff" }}
             >
-              {product.badge}
+              {flag.badge_label}
             </span>
-          )}
+          ))}
         </div>
         <p className="min-h-[13px] truncate text-[9px] tracking-[0.08em] text-[#7a6e64] uppercase md:min-h-[16px] md:text-[10px] md:tracking-[0.1em]">
           {product.metal} · {product.stone}
@@ -137,7 +132,7 @@ export const ProductCard = memo(function ProductCard({
             {product.name}
           </h3>
         )}
-        <div className="mt-1.5 flex min-h-[24px] flex-wrap items-baseline gap-x-1.5 gap-y-1 md:mt-2 md:min-h-[28px] md:gap-x-2">
+        <div className="mt-1.5 flex flex-wrap items-baseline gap-x-1.5 gap-y-1 md:mt-2 md:gap-x-2">
           <span className="text-[14px] font-bold text-[#1a1a2e] md:text-[17px]">
             {formatPrice(product.price)}
           </span>

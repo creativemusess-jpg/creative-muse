@@ -29,7 +29,6 @@ function InventoryPage() {
       setData(d.map((p: any) => ({
         id: p.id,
         product_name: p.name,
-        product_sku: p.sku,
         quantity: p.stock_quantity ?? 0,
         threshold: p.low_stock_threshold ?? 5,
         status: p.status,
@@ -106,12 +105,10 @@ function InventoryPage() {
             emptyMessage="No inventory data"
             searchPlaceholder="Search products..."
             filterFn={(item, term) =>
-              item.product_name?.toLowerCase().includes(term) ||
-              item.product_sku?.toLowerCase().includes(term)
+              item.product_name?.toLowerCase().includes(term)
             }
             columns={[
               { key: "product_name", label: "Product", sortable: true },
-              { key: "product_sku", label: "SKU", render: (val) => <span className="text-xs text-gray-400">{val || "—"}</span> },
               { key: "quantity", label: "Stock", sortable: true, render: (val, row) => {
                 const threshold = row.threshold ?? 5;
                 if (val <= 0) return <span className="font-semibold text-red-600">{val}</span>;
@@ -155,7 +152,7 @@ function InventoryPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40" onClick={() => setAdjustProduct(null)}>
           <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-lg" onClick={(e) => e.stopPropagation()}>
             <h2 className="text-lg font-bold text-[#1a1a2e]">Adjust Stock</h2>
-            <p className="mt-1 text-sm text-gray-500">{adjustProduct.product_name} (SKU: {adjustProduct.product_sku || "—"})</p>
+            <p className="mt-1 text-sm text-gray-500">{adjustProduct.product_name}</p>
             <p className="mt-2 text-xs text-gray-400">Current stock: <strong>{adjustProduct.quantity ?? 0}</strong></p>
             <div className="mt-4 space-y-4">
               <div>

@@ -369,7 +369,6 @@ export interface ProductRow {
   id: string;
   name: string;
   slug: string;
-  sku: string | null;
   short_description: string | null;
   full_description: string | null;
   current_price: number;
@@ -387,15 +386,8 @@ export interface ProductRow {
   gross_weight: string | null;
   net_weight: string | null;
   gemstone: string | null;
-  certification_type: string | null;
-  certification_number: string | null;
   rating_average: number;
   review_count: number;
-  featured: boolean;
-  best_seller: boolean;
-  new_arrival: boolean;
-  trending: boolean;
-  wedding: boolean;
   seo_title: string | null;
   seo_description: string | null;
   focus_keyword: string | null;
@@ -415,7 +407,6 @@ export interface ProductInsert {
   id?: string;
   name: string;
   slug: string;
-  sku?: string | null;
   short_description?: string | null;
   full_description?: string | null;
   current_price: number;
@@ -433,15 +424,8 @@ export interface ProductInsert {
   gross_weight?: string | null;
   net_weight?: string | null;
   gemstone?: string | null;
-  certification_type?: string | null;
-  certification_number?: string | null;
   rating_average?: number;
   review_count?: number;
-  featured?: boolean;
-  best_seller?: boolean;
-  new_arrival?: boolean;
-  trending?: boolean;
-  wedding?: boolean;
   seo_title?: string | null;
   seo_description?: string | null;
   focus_keyword?: string | null;
@@ -457,10 +441,11 @@ export interface ProductInsert {
   updated_by?: string | null;
 }
 
+
+
 export interface ProductUpdate {
   name?: string;
   slug?: string;
-  sku?: string | null;
   short_description?: string | null;
   full_description?: string | null;
   current_price?: number;
@@ -478,15 +463,8 @@ export interface ProductUpdate {
   gross_weight?: string | null;
   net_weight?: string | null;
   gemstone?: string | null;
-  certification_type?: string | null;
-  certification_number?: string | null;
   rating_average?: number;
   review_count?: number;
-  featured?: boolean;
-  best_seller?: boolean;
-  new_arrival?: boolean;
-  trending?: boolean;
-  wedding?: boolean;
   seo_title?: string | null;
   seo_description?: string | null;
   focus_keyword?: string | null;
@@ -703,7 +681,6 @@ export interface OrderItemRow {
   order_id: string;
   product_id: string;
   product_name: string;
-  product_sku: string | null;
   product_image: string | null;
   quantity: number;
   unit_price: number;
@@ -1079,7 +1056,6 @@ export interface OrderItemInsert {
   order_id: string;
   product_id: string;
   product_name: string;
-  product_sku?: string | null;
   product_image?: string | null;
   quantity: number;
   unit_price: number;
@@ -1089,7 +1065,6 @@ export interface OrderItemInsert {
 
 export interface OrderItemUpdate {
   product_name?: string;
-  product_sku?: string | null;
   product_image?: string | null;
   quantity?: number;
   unit_price?: number;
@@ -1292,4 +1267,236 @@ export interface ShoppableReelUpdate {
   is_active?: boolean;
   alt_text?: string | null;
   updated_at?: string;
+}
+
+export interface ProductFlagRow {
+  id: string;
+  name: string;
+  slug: string;
+  badge_label: string | null;
+  badge_bg_color: string;
+  badge_text_color: string;
+  badge_border_color: string | null;
+  icon: string | null;
+  priority: number;
+  status: string;
+  display_order: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ProductFlagInsert {
+  id?: string;
+  name: string;
+  slug: string;
+  badge_label?: string | null;
+  badge_bg_color?: string;
+  badge_text_color?: string;
+  badge_border_color?: string | null;
+  icon?: string | null;
+  priority?: number;
+  status?: string;
+  display_order?: number;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface ProductFlagUpdate {
+  name?: string;
+  slug?: string;
+  badge_label?: string | null;
+  badge_bg_color?: string;
+  badge_text_color?: string;
+  badge_border_color?: string | null;
+  icon?: string | null;
+  priority?: number;
+  status?: string;
+  display_order?: number;
+  updated_at?: string;
+}
+
+export interface ProductProductFlagRow {
+  product_id: string;
+  flag_id: string;
+  created_at: string;
+}
+
+export interface SpecificationDefinitionRow {
+  id: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  field_type: string;
+  options: any;
+  placeholder: string | null;
+  is_required: boolean;
+  is_active: boolean;
+  sort_order: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface SpecificationDefinitionInsert {
+  id?: string;
+  name: string;
+  slug: string;
+  description?: string | null;
+  field_type?: string;
+  options?: any;
+  placeholder?: string | null;
+  is_required?: boolean;
+  is_active?: boolean;
+  sort_order?: number;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface SpecificationDefinitionUpdate {
+  name?: string;
+  slug?: string;
+  description?: string | null;
+  field_type?: string;
+  options?: any;
+  placeholder?: string | null;
+  is_required?: boolean;
+  is_active?: boolean;
+  sort_order?: number;
+  updated_at?: string;
+}
+
+export interface ProductSpecificationRow {
+  id: string;
+  product_id: string;
+  specification_definition_id: string;
+  value: string;
+  sort_order: number;
+  created_at: string;
+}
+
+export interface ProductSpecificationInsert {
+  id?: string;
+  product_id: string;
+  specification_definition_id: string;
+  value: string;
+  sort_order?: number;
+  created_at?: string;
+}
+
+export interface ProductSpecificationUpdate {
+  value?: string;
+  sort_order?: number;
+}
+
+export interface AttributeDefinitionRow {
+  id: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  field_type: string;
+  options: any;
+  placeholder: string | null;
+  is_required: boolean;
+  is_active: boolean;
+  sort_order: number;
+  category_id: string | null;
+  use_as_filter: boolean;
+  show_in_product_list: boolean;
+  is_searchable: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface AttributeDefinitionInsert {
+  id?: string;
+  name: string;
+  slug: string;
+  description?: string | null;
+  field_type?: string;
+  options?: any;
+  placeholder?: string | null;
+  is_required?: boolean;
+  is_active?: boolean;
+  sort_order?: number;
+  category_id?: string | null;
+  use_as_filter?: boolean;
+  show_in_product_list?: boolean;
+  is_searchable?: boolean;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface AttributeDefinitionUpdate {
+  name?: string;
+  slug?: string;
+  description?: string | null;
+  field_type?: string;
+  options?: any;
+  placeholder?: string | null;
+  is_required?: boolean;
+  is_active?: boolean;
+  sort_order?: number;
+  category_id?: string | null;
+  use_as_filter?: boolean;
+  show_in_product_list?: boolean;
+  is_searchable?: boolean;
+  updated_at?: string;
+}
+
+export interface ProductAttributeRow {
+  id: string;
+  product_id: string;
+  attribute_definition_id: string;
+  value: string;
+  sort_order: number;
+  created_at: string;
+}
+
+export interface ProductAttributeInsert {
+  id?: string;
+  product_id: string;
+  attribute_definition_id: string;
+  value: string;
+  sort_order?: number;
+  created_at?: string;
+}
+
+export interface ProductAttributeUpdate {
+  value?: string;
+  sort_order?: number;
+}
+
+export interface CouponScopeRow {
+  id: string;
+  coupon_id: string;
+  scope_type: string;
+  scope_id: string | null;
+  scope_label: string | null;
+  rule_type: string;
+  created_at: string;
+}
+
+export interface CouponScopeInsert {
+  id?: string;
+  coupon_id: string;
+  scope_type: string;
+  scope_id?: string | null;
+  scope_label?: string | null;
+  rule_type?: string;
+  created_at?: string;
+}
+
+export interface CouponRestrictionRow {
+  id: string;
+  coupon_id: string;
+  restriction_type: string;
+  restriction_value: string;
+  created_at: string;
+}
+
+export interface CouponRestrictionInsert {
+  id?: string;
+  coupon_id: string;
+  restriction_type: string;
+  restriction_value: string;
+  created_at?: string;
 }

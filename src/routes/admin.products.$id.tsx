@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
-import { createFileRoute, useParams, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useParams, useNavigate, Link } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { AdminLayout, AdminPageHeader, AdminLoading } from "@/components/admin/AdminLayout";
 import { productsApi, type ProductWithImages, type ProductFormData } from "@/lib/api/products";
 import { categoriesApi } from "@/lib/api/categories";
 import { subcategoriesApi } from "@/lib/api/subcategories";
 import { uploadImage } from "@/lib/api/upload";
-import { Upload, X, Loader2, ImageOff } from "lucide-react";
+import { productFlagsApi } from "@/lib/api/product-flags";
+import { attributesApi } from "@/lib/api/attributes";
+import { Upload, X, Loader2, ImageOff, Plus, Trash2, GripVertical } from "lucide-react";
 
 import { requireAdmin } from "@/lib/auth-guard";
 
@@ -24,20 +26,25 @@ function EditProductPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [attrDefs, setAttrDefs] = useState<any[]>([]);
+  const [productAttrs, setProductAttrs] = useState<{ defId: string; value: string; name: string }[]>([]);
+  const [allFlags, setAllFlags] = useState<any[]>([]);
+  const [selectedFlagIds, setSelectedFlagIds] = useState<string[]>([]);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   useEffect(() => {
+    let cancelled = false;
     Promise.all([
       productsApi.getWithImages(id),
       categoriesApi.list(true),
     ]).then(([p, cats]) => {
+      if (cancelled) return;
       if (p) {
         setProduct(p);
         setForm({
           name: p.name,
           slug: p.slug,
-          sku: p.sku || "",
           short_description: p.short_description || "",
           full_description: p.full_description || "",
           current_price: p.current_price,
@@ -53,13 +60,6 @@ function EditProductPage() {
           gold_purity: p.gold_purity || "",
           gross_weight: p.gross_weight || "",
           gemstone: p.gemstone || "",
-          certification_type: p.certification_type || "",
-          certification_number: (p as any).certification_number || "",
-          featured: p.featured,
-          best_seller: p.best_seller,
-          new_arrival: p.new_arrival,
-          trending: p.trending,
-          wedding: p.wedding,
           seo_title: p.seo_title || "",
           seo_description: p.seo_description || "",
           focus_keyword: p.focus_keyword || "",
@@ -75,7 +75,26 @@ function EditProductPage() {
       }
       setCategories(cats);
       setLoading(false);
-    });
+    }).catch(() => { setLoading(false); });
+
+    Promise.all([
+      attributesApi.listDefinitions(),
+      productFlagsApi.list(),
+      attributesApi.getByProduct(id),
+      productFlagsApi.getByProduct(id),
+    ]).then(([defs, flags, existingAttrs, existingFlags]) => {
+      if (cancelled) return;
+      setAttrDefs(defs || []);
+      setAllFlags(flags || []);
+      if (existingFlags) setSelectedFlagIds(existingFlags.map((f: any) => f.id));
+      setProductAttrs((existingAttrs || []).map((a: any) => ({
+        defId: a.attribute_definition_id,
+        value: a.value,
+        name: a.attribute_definition?.name || "",
+      })));
+    }).catch(() => {});
+
+    return () => { cancelled = true; };
   }, [id]);
 
   useEffect(() => {
@@ -124,11 +143,60 @@ function EditProductPage() {
     if (!form || !form.name || !form.slug) return;
     setSaving(true);
     try {
-      await productsApi.update(id, form);
+      const updated = await productsApi.update(id, form);
+      if (updated) {
+        setProduct(updated);
+        setForm((prev) => prev ? {
+          ...prev,
+          main_image_url: updated.main_image?.url || prev.main_image_url,
+          gallery_images: (updated.images || []).filter((img) => !img.is_main).map((img) => img.url),
+        } : prev);
+      }
+      await productFlagsApi.setProductFlags(id, selectedFlagIds);
+
+      // Auto-create attribute definitions for free-text names
+      const nameToId: Record<string, string> = {};
+      for (const row of productAttrs) {
+        if (row.defId && row.value.trim() && !row.name && !nameToId[row.defId]) {
+          const existing = attrDefs.find((d) => d.name.toLowerCase() === row.defId.toLowerCase());
+          if (existing) {
+            nameToId[row.defId] = existing.id;
+          } else {
+            const slug = row.defId.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+            try {
+              const created = await attributesApi.createDefinition({ name: row.defId, slug, field_type: "text", options: [], is_active: true, sort_order: 0 });
+              nameToId[row.defId] = created.id;
+            } catch { /* ignore */ }
+          }
+        }
+      }
+
+      const allAttrs = productAttrs
+        .filter((r) => r.defId && r.value.trim())
+        .map((r, i) => ({
+          attribute_definition_id: r.name ? r.defId : (nameToId[r.defId] || r.defId),
+          value: r.value.trim(),
+          sort_order: i,
+        }));
+      await attributesApi.setProductAttributes(id, allAttrs);
+
       await queryClient.invalidateQueries({ queryKey: ["products"] });
       await queryClient.invalidateQueries({ queryKey: ["product"] });
       await queryClient.invalidateQueries({ queryKey: ["categories"] });
-      navigate({ to: "/admin/products" });
+      await queryClient.invalidateQueries({ queryKey: ["products", "published", "storefront"] });
+      // Refresh attributes, definitions & flags after save
+      const [freshAttrs, freshDefs, freshFlags] = await Promise.all([
+        attributesApi.getByProduct(id),
+        attributesApi.listDefinitions(),
+        productFlagsApi.getByProduct(id),
+      ]);
+      setAttrDefs(freshDefs || []);
+      setSelectedFlagIds(freshFlags.map((f: any) => f.id));
+      setProductAttrs((freshAttrs || []).map((a: any) => ({
+        defId: a.attribute_definition_id,
+        value: a.value,
+        name: a.attribute_definition?.name || "",
+      })));
     } catch (err: any) {
       alert(err.message);
     } finally {
@@ -143,7 +211,7 @@ function EditProductPage() {
     <AdminLayout>
       <AdminPageHeader
         title={`Edit: ${product.name}`}
-        description={`ID: ${product.id} · SKU: ${product.sku || "—"}`}
+        description={`ID: ${product.id}`}
         actions={
           <button
             type="submit"
@@ -164,9 +232,7 @@ function EditProductPage() {
               <Field label="Product Name" required>
                 <input type="text" value={form.name} onChange={(e) => handleChange("name", e.target.value)} className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#c9a96e]" required />
               </Field>
-              <Field label="SKU">
-                <input type="text" value={form.sku || ""} onChange={(e) => handleChange("sku", e.target.value)} className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#c9a96e]" />
-              </Field>
+
             </div>
             <Field label="Slug" required>
               <input type="text" value={form.slug} onChange={(e) => handleChange("slug", e.target.value)} className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#c9a96e]" required />
@@ -227,44 +293,52 @@ function EditProductPage() {
             </div>
           </Section>
 
-          <Section title="Material">
-            <div className="grid gap-4 sm:grid-cols-2">
-              <Field label="Metal Type">
-                <select value={form.metal_type || ""} onChange={(e) => handleChange("metal_type", e.target.value)} className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#c9a96e]">
-                  <option value="">Select</option>
-                  <option value="Gold">Gold</option>
-                  <option value="Platinum">Platinum</option>
-                  <option value="Silver">Silver</option>
-                </select>
-              </Field>
-              <Field label="Metal Colour">
-                <select value={form.metal_colour || ""} onChange={(e) => handleChange("metal_colour", e.target.value)} className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#c9a96e]">
-                  <option value="">Select</option>
-                  <option value="Yellow Gold">Yellow Gold</option>
-                  <option value="White Gold">White Gold</option>
-                  <option value="Rose Gold">Rose Gold</option>
-                  <option value="Platinum">Platinum</option>
-                </select>
-              </Field>
-              <Field label="Gold Purity">
-                <input type="text" value={form.gold_purity || ""} onChange={(e) => handleChange("gold_purity", e.target.value)} className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#c9a96e]" />
-              </Field>
-              <Field label="Gemstone">
-                <input type="text" value={form.gemstone || ""} onChange={(e) => handleChange("gemstone", e.target.value)} className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#c9a96e]" />
-              </Field>
-              <Field label="Gross Weight">
-                <input type="text" value={form.gross_weight || ""} onChange={(e) => handleChange("gross_weight", e.target.value)} className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#c9a96e]" />
-              </Field>
-              <Field label="Certification">
-                <input type="text" value={form.certification_type || ""} onChange={(e) => handleChange("certification_type", e.target.value)} className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#c9a96e]" />
-              </Field>
-              <Field label="Certification Number">
-                <input type="text" value={(form as any).certification_number || ""} onChange={(e) => handleChange("certification_number", e.target.value)} className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#c9a96e]" />
-              </Field>
-              <Field label="Material">
-                <input type="text" value={form.material || ""} onChange={(e) => handleChange("material", e.target.value)} className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#c9a96e]" />
-              </Field>
-            </div>
+          <Section title="Attributes">
+            <p className="mb-3 text-xs text-gray-400">Add unlimited product attributes. Existing attributes show with a label; type a new name to create a new attribute.</p>
+            {productAttrs.map((row, i) => (
+              <div key={i} className="mb-2 flex items-center gap-2">
+                <span className="cursor-grab text-gray-300"><GripVertical className="h-4 w-4" /></span>
+                {row.name && attrDefs.find((d) => d.id === row.defId) ? (
+                  <span className="flex-1 text-sm font-medium text-gray-700">{row.name}</span>
+                ) : (
+                  <input
+                    type="text"
+                    value={row.defId}
+                    onChange={(e) => {
+                      const next = [...productAttrs];
+                      next[i].defId = e.target.value;
+                      setProductAttrs(next);
+                    }}
+                    placeholder="Attribute name"
+                    className="flex-1 rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#c9a96e]"
+                  />
+                )}
+                <input
+                  type="text"
+                  value={row.value}
+                  onChange={(e) => {
+                    const next = [...productAttrs];
+                    next[i].value = e.target.value;
+                    setProductAttrs(next);
+                  }}
+                  placeholder={row.name ? `Enter ${row.name.toLowerCase()}` : "Value"}
+                  className="flex-1 rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#c9a96e]"
+                />
+                <button type="button" onClick={() => setProductAttrs(productAttrs.filter((_, j) => j !== i))} className="rounded-lg p-2 text-red-400 hover:bg-red-50 hover:text-red-600">
+                  <Trash2 className="h-4 w-4" />
+                </button>
+              </div>
+            ))}
+            <button
+              type="button"
+              onClick={() => setProductAttrs([...productAttrs, { defId: "", value: "", name: "" }])}
+              className="mt-3 flex items-center gap-1 text-sm font-medium text-[#C9A96E] hover:text-[#B8860B]"
+            >
+              <Plus className="h-3.5 w-3.5" /> Add Attribute
+            </button>
+            {attrDefs.length > 0 && (
+              <p className="mt-2 text-xs text-gray-400">Tip: Manage reusable attribute definitions in <Link to="/admin/attributes" className="text-[#C9A96E] hover:underline">Attributes</Link>.</p>
+            )}
           </Section>
 
           <Section title="Media">
@@ -329,12 +403,28 @@ function EditProductPage() {
           </Section>
 
           <Section title="Flags">
-            {(["featured", "best_seller", "new_arrival", "trending", "wedding"] as const).map((flag) => (
-              <label key={flag} className="flex items-center gap-3 py-1.5">
-                <input type="checkbox" checked={form[flag] || false} onChange={(e) => handleChange(flag, e.target.checked)} className="rounded border-gray-300" />
-                <span className="text-sm text-gray-700 capitalize">{flag.replace(/_/g, " ")}</span>
+            {allFlags.filter((f) => f.status === "active").map((flag) => (
+              <label key={flag.id} className="flex items-center gap-3 py-1.5">
+                <input
+                  type="checkbox"
+                  checked={selectedFlagIds.includes(flag.id)}
+                  onChange={(e) => {
+                    if (e.target.checked) setSelectedFlagIds([...selectedFlagIds, flag.id]);
+                    else setSelectedFlagIds(selectedFlagIds.filter((id) => id !== flag.id));
+                  }}
+                  className="rounded border-gray-300"
+                />
+                <span className="text-sm text-gray-700">{flag.name}</span>
+                {flag.badge_label && (
+                  <span className="rounded-full px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider" style={{ backgroundColor: flag.badge_bg_color, color: flag.badge_text_color }}>
+                    {flag.badge_label}
+                  </span>
+                )}
               </label>
             ))}
+            <Link to="/admin/product-flags" className="mt-2 inline-flex items-center gap-1 text-xs font-medium text-[#C9A96E] hover:text-[#B8860B]">
+              Manage Flags →
+            </Link>
           </Section>
 
           <Section title="Tags">

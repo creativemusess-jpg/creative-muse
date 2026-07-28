@@ -151,7 +151,7 @@ export const analyticsApi = {
   async getLowStockProducts(threshold = 10): Promise<any[]> {
     const { data } = await supabase
       .from("products")
-      .select("id, name, sku, stock_quantity, current_price, slug")
+      .select("id, name, stock_quantity, current_price, slug")
       .lte("stock_quantity", threshold)
       .order("stock_quantity", { ascending: true });
     return (data ?? []).map((p: any) => ({

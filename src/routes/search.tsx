@@ -161,7 +161,7 @@ function SearchPage() {
                   No jewellery found for "{query || "your search"}"
                 </h2>
                 <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-[#7a6e64]">
-                  Try a collection, product type, gemstone, metal, SKU or one of these popular
+                  Try a collection, product type, gemstone, metal or one of these popular
                   options.
                 </p>
                 <div className="mt-6 flex flex-wrap justify-center gap-2">

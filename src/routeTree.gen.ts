@@ -41,9 +41,11 @@ import { Route as CategorySlugRouteImport } from './routes/category.$slug'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
 import { Route as AdminSubcategoriesRouteImport } from './routes/admin.subcategories'
+import { Route as AdminSpecificationsRouteImport } from './routes/admin.specifications'
 import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
 import { Route as AdminReelsRouteImport } from './routes/admin.reels'
 import { Route as AdminProductsRouteImport } from './routes/admin.products'
+import { Route as AdminProductFlagsRouteImport } from './routes/admin.product-flags'
 import { Route as AdminOrdersRouteImport } from './routes/admin.orders'
 import { Route as AdminNewsletterRouteImport } from './routes/admin.newsletter'
 import { Route as AdminMediaRouteImport } from './routes/admin.media'
@@ -56,6 +58,7 @@ import { Route as AdminCouponsRouteImport } from './routes/admin.coupons'
 import { Route as AdminCollectionsRouteImport } from './routes/admin.collections'
 import { Route as AdminCategoriesRouteImport } from './routes/admin.categories'
 import { Route as AdminAuditLogsRouteImport } from './routes/admin.audit-logs'
+import { Route as AdminAttributesRouteImport } from './routes/admin.attributes'
 import { Route as AdminAnalyticsRouteImport } from './routes/admin.analytics'
 import { Route as AccountOrdersRouteImport } from './routes/account.orders'
 import { Route as CollectionsSlugSubslugRouteImport } from './routes/collections.$slug.$subslug'
@@ -225,6 +228,11 @@ const AdminSubcategoriesRoute = AdminSubcategoriesRouteImport.update({
   path: '/admin/subcategories',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminSpecificationsRoute = AdminSpecificationsRouteImport.update({
+  id: '/admin/specifications',
+  path: '/admin/specifications',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminSettingsRoute = AdminSettingsRouteImport.update({
   id: '/admin/settings',
   path: '/admin/settings',
@@ -238,6 +246,11 @@ const AdminReelsRoute = AdminReelsRouteImport.update({
 const AdminProductsRoute = AdminProductsRouteImport.update({
   id: '/admin/products',
   path: '/admin/products',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminProductFlagsRoute = AdminProductFlagsRouteImport.update({
+  id: '/admin/product-flags',
+  path: '/admin/product-flags',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminOrdersRoute = AdminOrdersRouteImport.update({
@@ -298,6 +311,11 @@ const AdminCategoriesRoute = AdminCategoriesRouteImport.update({
 const AdminAuditLogsRoute = AdminAuditLogsRouteImport.update({
   id: '/admin/audit-logs',
   path: '/admin/audit-logs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminAttributesRoute = AdminAttributesRouteImport.update({
+  id: '/admin/attributes',
+  path: '/admin/attributes',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminAnalyticsRoute = AdminAnalyticsRouteImport.update({
@@ -369,6 +387,7 @@ export interface FileRoutesByFullPath {
   '/wishlist': typeof WishlistRoute
   '/account/orders': typeof AccountOrdersRouteWithChildren
   '/admin/analytics': typeof AdminAnalyticsRoute
+  '/admin/attributes': typeof AdminAttributesRoute
   '/admin/audit-logs': typeof AdminAuditLogsRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/collections': typeof AdminCollectionsRoute
@@ -381,9 +400,11 @@ export interface FileRoutesByFullPath {
   '/admin/media': typeof AdminMediaRoute
   '/admin/newsletter': typeof AdminNewsletterRoute
   '/admin/orders': typeof AdminOrdersRouteWithChildren
+  '/admin/product-flags': typeof AdminProductFlagsRoute
   '/admin/products': typeof AdminProductsRouteWithChildren
   '/admin/reels': typeof AdminReelsRoute
   '/admin/settings': typeof AdminSettingsRoute
+  '/admin/specifications': typeof AdminSpecificationsRoute
   '/admin/subcategories': typeof AdminSubcategoriesRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/blog/$slug': typeof BlogSlugRoute
@@ -426,6 +447,7 @@ export interface FileRoutesByTo {
   '/wishlist': typeof WishlistRoute
   '/account/orders': typeof AccountOrdersRouteWithChildren
   '/admin/analytics': typeof AdminAnalyticsRoute
+  '/admin/attributes': typeof AdminAttributesRoute
   '/admin/audit-logs': typeof AdminAuditLogsRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/collections': typeof AdminCollectionsRoute
@@ -438,9 +460,11 @@ export interface FileRoutesByTo {
   '/admin/media': typeof AdminMediaRoute
   '/admin/newsletter': typeof AdminNewsletterRoute
   '/admin/orders': typeof AdminOrdersRouteWithChildren
+  '/admin/product-flags': typeof AdminProductFlagsRoute
   '/admin/products': typeof AdminProductsRouteWithChildren
   '/admin/reels': typeof AdminReelsRoute
   '/admin/settings': typeof AdminSettingsRoute
+  '/admin/specifications': typeof AdminSpecificationsRoute
   '/admin/subcategories': typeof AdminSubcategoriesRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/blog/$slug': typeof BlogSlugRoute
@@ -484,6 +508,7 @@ export interface FileRoutesById {
   '/wishlist': typeof WishlistRoute
   '/account/orders': typeof AccountOrdersRouteWithChildren
   '/admin/analytics': typeof AdminAnalyticsRoute
+  '/admin/attributes': typeof AdminAttributesRoute
   '/admin/audit-logs': typeof AdminAuditLogsRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/collections': typeof AdminCollectionsRoute
@@ -496,9 +521,11 @@ export interface FileRoutesById {
   '/admin/media': typeof AdminMediaRoute
   '/admin/newsletter': typeof AdminNewsletterRoute
   '/admin/orders': typeof AdminOrdersRouteWithChildren
+  '/admin/product-flags': typeof AdminProductFlagsRoute
   '/admin/products': typeof AdminProductsRouteWithChildren
   '/admin/reels': typeof AdminReelsRoute
   '/admin/settings': typeof AdminSettingsRoute
+  '/admin/specifications': typeof AdminSpecificationsRoute
   '/admin/subcategories': typeof AdminSubcategoriesRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/blog/$slug': typeof BlogSlugRoute
@@ -543,6 +570,7 @@ export interface FileRouteTypes {
     | '/wishlist'
     | '/account/orders'
     | '/admin/analytics'
+    | '/admin/attributes'
     | '/admin/audit-logs'
     | '/admin/categories'
     | '/admin/collections'
@@ -555,9 +583,11 @@ export interface FileRouteTypes {
     | '/admin/media'
     | '/admin/newsletter'
     | '/admin/orders'
+    | '/admin/product-flags'
     | '/admin/products'
     | '/admin/reels'
     | '/admin/settings'
+    | '/admin/specifications'
     | '/admin/subcategories'
     | '/auth/callback'
     | '/blog/$slug'
@@ -600,6 +630,7 @@ export interface FileRouteTypes {
     | '/wishlist'
     | '/account/orders'
     | '/admin/analytics'
+    | '/admin/attributes'
     | '/admin/audit-logs'
     | '/admin/categories'
     | '/admin/collections'
@@ -612,9 +643,11 @@ export interface FileRouteTypes {
     | '/admin/media'
     | '/admin/newsletter'
     | '/admin/orders'
+    | '/admin/product-flags'
     | '/admin/products'
     | '/admin/reels'
     | '/admin/settings'
+    | '/admin/specifications'
     | '/admin/subcategories'
     | '/auth/callback'
     | '/blog/$slug'
@@ -657,6 +690,7 @@ export interface FileRouteTypes {
     | '/wishlist'
     | '/account/orders'
     | '/admin/analytics'
+    | '/admin/attributes'
     | '/admin/audit-logs'
     | '/admin/categories'
     | '/admin/collections'
@@ -669,9 +703,11 @@ export interface FileRouteTypes {
     | '/admin/media'
     | '/admin/newsletter'
     | '/admin/orders'
+    | '/admin/product-flags'
     | '/admin/products'
     | '/admin/reels'
     | '/admin/settings'
+    | '/admin/specifications'
     | '/admin/subcategories'
     | '/auth/callback'
     | '/blog/$slug'
@@ -714,6 +750,7 @@ export interface RootRouteChildren {
   TrackOrderRoute: typeof TrackOrderRoute
   WishlistRoute: typeof WishlistRoute
   AdminAnalyticsRoute: typeof AdminAnalyticsRoute
+  AdminAttributesRoute: typeof AdminAttributesRoute
   AdminAuditLogsRoute: typeof AdminAuditLogsRoute
   AdminCategoriesRoute: typeof AdminCategoriesRoute
   AdminCollectionsRoute: typeof AdminCollectionsRoute
@@ -726,9 +763,11 @@ export interface RootRouteChildren {
   AdminMediaRoute: typeof AdminMediaRoute
   AdminNewsletterRoute: typeof AdminNewsletterRoute
   AdminOrdersRoute: typeof AdminOrdersRouteWithChildren
+  AdminProductFlagsRoute: typeof AdminProductFlagsRoute
   AdminProductsRoute: typeof AdminProductsRouteWithChildren
   AdminReelsRoute: typeof AdminReelsRoute
   AdminSettingsRoute: typeof AdminSettingsRoute
+  AdminSpecificationsRoute: typeof AdminSpecificationsRoute
   AdminSubcategoriesRoute: typeof AdminSubcategoriesRoute
   AuthCallbackRoute: typeof AuthCallbackRoute
   CategorySlugRoute: typeof CategorySlugRoute
@@ -963,6 +1002,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminSubcategoriesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/specifications': {
+      id: '/admin/specifications'
+      path: '/admin/specifications'
+      fullPath: '/admin/specifications'
+      preLoaderRoute: typeof AdminSpecificationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/settings': {
       id: '/admin/settings'
       path: '/admin/settings'
@@ -982,6 +1028,13 @@ declare module '@tanstack/react-router' {
       path: '/admin/products'
       fullPath: '/admin/products'
       preLoaderRoute: typeof AdminProductsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/product-flags': {
+      id: '/admin/product-flags'
+      path: '/admin/product-flags'
+      fullPath: '/admin/product-flags'
+      preLoaderRoute: typeof AdminProductFlagsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/orders': {
@@ -1066,6 +1119,13 @@ declare module '@tanstack/react-router' {
       path: '/admin/audit-logs'
       fullPath: '/admin/audit-logs'
       preLoaderRoute: typeof AdminAuditLogsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/attributes': {
+      id: '/admin/attributes'
+      path: '/admin/attributes'
+      fullPath: '/admin/attributes'
+      preLoaderRoute: typeof AdminAttributesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/analytics': {
@@ -1248,6 +1308,7 @@ const rootRouteChildren: RootRouteChildren = {
   TrackOrderRoute: TrackOrderRoute,
   WishlistRoute: WishlistRoute,
   AdminAnalyticsRoute: AdminAnalyticsRoute,
+  AdminAttributesRoute: AdminAttributesRoute,
   AdminAuditLogsRoute: AdminAuditLogsRoute,
   AdminCategoriesRoute: AdminCategoriesRoute,
   AdminCollectionsRoute: AdminCollectionsRoute,
@@ -1260,9 +1321,11 @@ const rootRouteChildren: RootRouteChildren = {
   AdminMediaRoute: AdminMediaRoute,
   AdminNewsletterRoute: AdminNewsletterRoute,
   AdminOrdersRoute: AdminOrdersRouteWithChildren,
+  AdminProductFlagsRoute: AdminProductFlagsRoute,
   AdminProductsRoute: AdminProductsRouteWithChildren,
   AdminReelsRoute: AdminReelsRoute,
   AdminSettingsRoute: AdminSettingsRoute,
+  AdminSpecificationsRoute: AdminSpecificationsRoute,
   AdminSubcategoriesRoute: AdminSubcategoriesRoute,
   AuthCallbackRoute: AuthCallbackRoute,
   CategorySlugRoute: CategorySlugRoute,

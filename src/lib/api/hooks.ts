@@ -30,44 +30,35 @@ export function useProductWithImages(id: string) {
   });
 }
 
-export function useFeaturedProducts() {
+export function useProductsByFlag(flagSlug: string) {
   return useQuery({
-    queryKey: ["products", "featured"],
-    queryFn: () => productsApi.getFeatured(),
+    queryKey: ["products", "by-flag", flagSlug],
+    queryFn: async () => {
+      const all = await productsApi.getPublished();
+      return all.filter((p) => p.flags?.some((f) => f.slug === flagSlug));
+    },
     staleTime: 60_000,
   });
+}
+
+export function useFeaturedProducts() {
+  return useProductsByFlag("featured");
 }
 
 export function useBestSellers() {
-  return useQuery({
-    queryKey: ["products", "best-sellers"],
-    queryFn: () => productsApi.getBestSellers(),
-    staleTime: 60_000,
-  });
+  return useProductsByFlag("best-seller");
 }
 
 export function useNewArrivals() {
-  return useQuery({
-    queryKey: ["products", "new-arrivals"],
-    queryFn: () => productsApi.getNewArrivals(),
-    staleTime: 60_000,
-  });
+  return useProductsByFlag("new-arrival");
 }
 
 export function useTrendingProducts() {
-  return useQuery({
-    queryKey: ["products", "trending"],
-    queryFn: () => productsApi.getTrending(),
-    staleTime: 60_000,
-  });
+  return useProductsByFlag("trending");
 }
 
 export function useWeddingProducts() {
-  return useQuery({
-    queryKey: ["products", "wedding"],
-    queryFn: () => productsApi.getWedding(),
-    staleTime: 60_000,
-  });
+  return useProductsByFlag("wedding");
 }
 
 export function useCategories() {

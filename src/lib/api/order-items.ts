@@ -4,7 +4,6 @@ export type NormalizedOrderItem = {
   productId: string | null;
   productName: string;
   productImage: string | null;
-  sku: string | null;
   quantity: number;
   unitPrice: number;
   lineTotal: number;
@@ -22,7 +21,6 @@ export function normalizeOrderItem(raw: any): NormalizedOrderItem {
     productId: raw.product_id || null,
     productName: raw.product_name || "",
     productImage: raw.product_image || null,
-    sku: raw.product_sku || null,
     quantity: raw.quantity || 0,
     unitPrice: raw.unit_price || 0,
     lineTotal: raw.total_price || 0,

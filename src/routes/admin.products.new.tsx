@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { AdminLayout, AdminPageHeader } from "@/components/admin/AdminLayout";
 import { productsApi, type ProductFormData } from "@/lib/api/products";
 import { categoriesApi } from "@/lib/api/categories";
 import { subcategoriesApi } from "@/lib/api/subcategories";
 import { uploadImage } from "@/lib/api/upload";
-import { Upload, X, Loader2, ImageOff } from "lucide-react";
+import { productFlagsApi } from "@/lib/api/product-flags";
+import { attributesApi } from "@/lib/api/attributes";
+import { Upload, X, Loader2, ImageOff, Plus, Trash2, GripVertical } from "lucide-react";
 
 import { requireAdmin } from "@/lib/auth-guard";
 
@@ -18,7 +20,6 @@ export const Route = createFileRoute("/admin/products/new")({
 const initialData: ProductFormData = {
   name: "",
   slug: "",
-  sku: "",
   short_description: "",
   full_description: "",
   current_price: 0,
@@ -31,13 +32,6 @@ const initialData: ProductFormData = {
   gold_purity: "",
   gross_weight: "",
   gemstone: "",
-  certification_type: "",
-  certification_number: "",
-  featured: false,
-  best_seller: false,
-  new_arrival: false,
-  trending: false,
-  wedding: false,
   seo_title: "",
   seo_description: "",
   focus_keyword: "",
@@ -58,11 +52,25 @@ function NewProductPage() {
   const [categories, setCategories] = useState<any[]>([]);
   const [subcategories, setSubcategories] = useState<any[]>([]);
   const [uploading, setUploading] = useState(false);
+  const [attrDefs, setAttrDefs] = useState<any[]>([]);
+  const [productAttrs, setProductAttrs] = useState<{ defId: string; value: string; name: string }[]>([]);
+  const [allFlags, setAllFlags] = useState<any[]>([]);
+  const [selectedFlagIds, setSelectedFlagIds] = useState<string[]>([]);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    categoriesApi.list(true).then(setCategories).catch(() => {});
+    let cancelled = false;
+    categoriesApi.list(true).then((cats) => { if (!cancelled) setCategories(cats); }).catch(() => {});
+    Promise.all([
+      attributesApi.listDefinitions(),
+      productFlagsApi.list(),
+    ]).then(([defs, flags]) => {
+      if (cancelled) return;
+      setAttrDefs(defs || []);
+      setAllFlags(flags || []);
+    }).catch(() => {});
+    return () => { cancelled = true; };
   }, []);
 
   useEffect(() => {
@@ -111,11 +119,40 @@ function NewProductPage() {
     if (!form.name || !form.slug) return;
     setSaving(true);
     try {
-      await productsApi.create(form);
+      const created = await productsApi.create(form);
+      if (created) {
+        await productFlagsApi.setProductFlags(created.id, selectedFlagIds);
+
+        const nameToId: Record<string, string> = {};
+        for (const row of productAttrs) {
+          if (row.defId && row.value.trim() && !row.name && !nameToId[row.defId]) {
+            const existing = attrDefs.find((d) => d.name.toLowerCase() === row.defId.toLowerCase());
+            if (existing) {
+              nameToId[row.defId] = existing.id;
+            } else {
+              const slug = row.defId.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+              try {
+                const created = await attributesApi.createDefinition({ name: row.defId, slug, field_type: "text", options: [], is_active: true, sort_order: 0 });
+                nameToId[row.defId] = created.id;
+              } catch { /* ignore */ }
+            }
+          }
+        }
+
+        const allAttrs = productAttrs
+          .filter((r) => r.defId && r.value.trim())
+          .map((r, i) => ({
+            attribute_definition_id: r.name ? r.defId : (nameToId[r.defId] || r.defId),
+            value: r.value.trim(),
+            sort_order: i,
+          }));
+        await attributesApi.setProductAttributes(created.id, allAttrs);
+      }
       await queryClient.invalidateQueries({ queryKey: ["products"] });
       await queryClient.invalidateQueries({ queryKey: ["product"] });
       await queryClient.invalidateQueries({ queryKey: ["categories"] });
-      navigate({ to: "/admin/products" });
+      await queryClient.invalidateQueries({ queryKey: ["products", "published", "storefront"] });
+      if (created) navigate({ to: `/admin/products/${created.id}` });
     } catch (err: any) {
       alert(err.message);
     } finally {
@@ -164,14 +201,6 @@ function NewProductPage() {
                   onChange={(e) => handleChange("slug", e.target.value)}
                   className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#c9a96e]"
                   required
-                />
-              </Field>
-              <Field label="SKU">
-                <input
-                  type="text"
-                  value={form.sku || ""}
-                  onChange={(e) => handleChange("sku", e.target.value)}
-                  className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#c9a96e]"
                 />
               </Field>
             </div>
@@ -257,84 +286,52 @@ function NewProductPage() {
             </div>
           </Section>
 
-          <Section title="Material & Specifications">
-            <div className="grid gap-4 sm:grid-cols-2">
-              <Field label="Metal Type">
-                <select
-                  value={form.metal_type || ""}
-                  onChange={(e) => handleChange("metal_type", e.target.value)}
-                  className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#c9a96e]"
-                >
-                  <option value="">Select</option>
-                  <option value="Gold">Gold</option>
-                  <option value="Platinum">Platinum</option>
-                  <option value="Silver">Silver</option>
-                </select>
-              </Field>
-              <Field label="Metal Colour">
-                <select
-                  value={form.metal_colour || ""}
-                  onChange={(e) => handleChange("metal_colour", e.target.value)}
-                  className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#c9a96e]"
-                >
-                  <option value="">Select</option>
-                  <option value="Yellow Gold">Yellow Gold</option>
-                  <option value="White Gold">White Gold</option>
-                  <option value="Rose Gold">Rose Gold</option>
-                  <option value="Platinum">Platinum</option>
-                </select>
-              </Field>
-              <Field label="Gold Purity">
+          <Section title="Attributes">
+            <p className="mb-3 text-xs text-gray-400">Add unlimited product attributes. Type a new name to create a new attribute on the fly.</p>
+            {productAttrs.map((row, i) => (
+              <div key={i} className="mb-2 flex items-center gap-2">
+                <span className="cursor-grab text-gray-300"><GripVertical className="h-4 w-4" /></span>
+                {row.name && attrDefs.find((d) => d.id === row.defId) ? (
+                  <span className="flex-1 text-sm font-medium text-gray-700">{row.name}</span>
+                ) : (
+                  <input
+                    type="text"
+                    value={row.defId}
+                    onChange={(e) => {
+                      const next = [...productAttrs];
+                      next[i].defId = e.target.value;
+                      setProductAttrs(next);
+                    }}
+                    placeholder="Attribute name"
+                    className="flex-1 rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#c9a96e]"
+                  />
+                )}
                 <input
                   type="text"
-                  value={form.gold_purity || ""}
-                  onChange={(e) => handleChange("gold_purity", e.target.value)}
-                  className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#c9a96e]"
-                  placeholder="e.g. 22K (916)"
+                  value={row.value}
+                  onChange={(e) => {
+                    const next = [...productAttrs];
+                    next[i].value = e.target.value;
+                    setProductAttrs(next);
+                  }}
+                  placeholder={row.name ? `Enter ${row.name.toLowerCase()}` : "Value"}
+                  className="flex-1 rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#c9a96e]"
                 />
-              </Field>
-              <Field label="Gemstone">
-                <input
-                  type="text"
-                  value={form.gemstone || ""}
-                  onChange={(e) => handleChange("gemstone", e.target.value)}
-                  className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#c9a96e]"
-                />
-              </Field>
-              <Field label="Gross Weight">
-                <input
-                  type="text"
-                  value={form.gross_weight || ""}
-                  onChange={(e) => handleChange("gross_weight", e.target.value)}
-                  className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#c9a96e]"
-                  placeholder="e.g. 3.2 g"
-                />
-              </Field>
-              <Field label="Certification Type">
-                <input
-                  type="text"
-                  value={form.certification_type || ""}
-                  onChange={(e) => handleChange("certification_type", e.target.value)}
-                  className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#c9a96e]"
-                />
-              </Field>
-              <Field label="Certification Number">
-                <input
-                  type="text"
-                  value={form.certification_number || ""}
-                  onChange={(e) => handleChange("certification_number", e.target.value)}
-                  className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#c9a96e]"
-                />
-              </Field>
-              <Field label="Material">
-                <input
-                  type="text"
-                  value={form.material || ""}
-                  onChange={(e) => handleChange("material", e.target.value)}
-                  className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#c9a96e]"
-                />
-              </Field>
-            </div>
+                <button type="button" onClick={() => setProductAttrs(productAttrs.filter((_, j) => j !== i))} className="rounded-lg p-2 text-red-400 hover:bg-red-50 hover:text-red-600">
+                  <Trash2 className="h-4 w-4" />
+                </button>
+              </div>
+            ))}
+            <button
+              type="button"
+              onClick={() => setProductAttrs([...productAttrs, { defId: "", value: "", name: "" }])}
+              className="mt-3 flex items-center gap-1 text-sm font-medium text-[#C9A96E] hover:text-[#B8860B]"
+            >
+              <Plus className="h-3.5 w-3.5" /> Add Attribute
+            </button>
+            {attrDefs.length > 0 && (
+              <p className="mt-2 text-xs text-gray-400">Tip: Manage reusable attribute definitions in <Link to="/admin/attributes" className="text-[#C9A96E] hover:underline">Attributes</Link>.</p>
+            )}
           </Section>
 
           <Section title="Media">
@@ -434,17 +431,28 @@ function NewProductPage() {
           </Section>
 
           <Section title="Flags">
-            {(["featured", "best_seller", "new_arrival", "trending", "wedding"] as const).map((flag) => (
-              <label key={flag} className="flex items-center gap-3 py-1.5">
+            {allFlags.filter((f) => f.status === "active").map((flag) => (
+              <label key={flag.id} className="flex items-center gap-3 py-1.5">
                 <input
                   type="checkbox"
-                  checked={form[flag] || false}
-                  onChange={(e) => handleChange(flag, e.target.checked)}
+                  checked={selectedFlagIds.includes(flag.id)}
+                  onChange={(e) => {
+                    if (e.target.checked) setSelectedFlagIds([...selectedFlagIds, flag.id]);
+                    else setSelectedFlagIds(selectedFlagIds.filter((id) => id !== flag.id));
+                  }}
                   className="rounded border-gray-300"
                 />
-                <span className="text-sm text-gray-700 capitalize">{flag.replace(/_/g, " ")}</span>
+                <span className="text-sm text-gray-700">{flag.name}</span>
+                {flag.badge_label && (
+                  <span className="rounded-full px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider" style={{ backgroundColor: flag.badge_bg_color, color: flag.badge_text_color }}>
+                    {flag.badge_label}
+                  </span>
+                )}
               </label>
             ))}
+            <Link to="/admin/product-flags" className="mt-2 inline-flex items-center gap-1 text-xs font-medium text-[#C9A96E] hover:text-[#B8860B]">
+              Manage Flags →
+            </Link>
           </Section>
 
           <Section title="Tags">

@@ -5,7 +5,7 @@ import { PageHeader, PageShell } from "@/components/site/PageHeader";
 import { formatPrice } from "@/lib/products";
 import { useCartLines, useStore } from "@/lib/store";
 import { useAuth } from "@/lib/auth";
-import { couponsApi } from "@/lib/api/coupons";
+import { validateCoupon } from "@/lib/api/checkout";
 
 export const Route = createFileRoute("/cart")({
   head: () => ({
@@ -33,27 +33,17 @@ function CartPage() {
     setCouponStatus("loading");
     setCouponMsg("");
     try {
-      const list = await couponsApi.list();
-      const found = list.find((c: any) => c.code === coupon.trim().toUpperCase() && c.is_active);
-      if (!found) {
+      const items = lines.map((l) => ({ productId: l.product.id, price: l.product.price }));
+      const result = await validateCoupon(coupon.trim().toUpperCase(), cartSubtotal, items);
+      if (result.isValid) {
+        setDiscount(result.discountAmount);
+        setCouponStatus("valid");
+        setCouponMsg(`Coupon applied! You save ₹${Math.round(result.discountAmount).toLocaleString("en-IN")}.`);
+      } else {
         setCouponStatus("invalid");
-        setCouponMsg("Invalid or expired coupon code.");
+        setCouponMsg(result.message);
         setDiscount(0);
-        return;
       }
-      if (found.min_cart_value && cartSubtotal < found.min_cart_value) {
-        setCouponStatus("invalid");
-        setCouponMsg(`Minimum order value is ₹${Number(found.min_cart_value).toLocaleString("en-IN")}.`);
-        setDiscount(0);
-        return;
-      }
-      let d = found.discount_type === "percentage"
-        ? (cartSubtotal * found.discount_value) / 100
-        : found.discount_value;
-      if (found.max_discount) d = Math.min(d, found.max_discount);
-      setDiscount(d);
-      setCouponStatus("valid");
-      setCouponMsg(`Coupon applied! You save ₹${Math.round(d).toLocaleString("en-IN")}.`);
     } catch {
       setCouponStatus("invalid");
       setCouponMsg("Could not validate coupon. Try again.");

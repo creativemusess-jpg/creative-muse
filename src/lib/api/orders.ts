@@ -78,7 +78,7 @@ export const ordersApi = {
       const { data: itemMatches } = await db()
         .from("order_items")
         .select("order_id")
-        .or(`product_name.ilike.%${searchTerm}%,product_sku.ilike.%${searchTerm}%`);
+        .or(`product_name.ilike.%${searchTerm}%`);
       if (itemMatches?.length) {
         const seen = new Set<string>();
         for (const m of itemMatches) {
@@ -361,7 +361,7 @@ export const ordersApi = {
         order_id: newOrder.id,
         product_id: item.product_id,
         product_name: item.product_name,
-        product_sku: item.product_sku,
+  
         product_image: item.product_image,
         quantity: item.quantity,
         unit_price: item.unit_price,

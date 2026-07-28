@@ -3,7 +3,7 @@ import { Instagram, Facebook, Youtube, MapPin, Phone, Mail } from "lucide-react"
 
 export function Footer() {
   return (
-    <footer className="mt-20 rounded-t-[40px] bg-[#0d0d1a] px-6 pt-20 pb-8 text-[#cfc6b6] sm:px-10">
+    <footer className="mt-20 rounded-t-[40px] bg-[#1A1715] px-6 pt-20 pb-8 text-[#cfc6b6] sm:px-10">
       <div className="mx-auto grid max-w-[1280px] gap-12 lg:grid-cols-4">
         {/* Brand */}
         <div className="lg:col-span-1">
@@ -17,15 +17,15 @@ export function Footer() {
           </p>
           <ul className="mt-6 space-y-2.5 text-[13px] text-[#cfc6b6]">
             <li className="flex items-start gap-2.5">
-              <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#d4c5a9]" />
+              <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#C9A96E]" />
               <span>GF-3/4, Vidhi Square, BPC Road, Vadodara 390020</span>
             </li>
             <li className="flex items-center gap-2.5">
-              <Phone className="h-4 w-4 text-[#e8d5b8]" />
+              <Phone className="h-4 w-4 text-[#C9A96E]" />
               <a href="tel:+919033779867">+91 90337 79867</a>
             </li>
             <li className="flex items-center gap-2.5">
-              <Mail className="h-4 w-4 text-[#e8d5b8]" />
+              <Mail className="h-4 w-4 text-[#C9A96E]" />
               <a href="mailto:hello@creativemuse.in">hello@creativemuse.in</a>
             </li>
           </ul>
@@ -35,7 +35,7 @@ export function Footer() {
                 key={i}
                 href="#"
                 aria-label="social"
-                className="flex h-10 w-10 items-center justify-center rounded-full bg-white/5 text-[#cfc6b6] transition-colors hover:bg-[#e8d5b8] hover:text-[#0d0d1a]"
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-white/5 text-[#cfc6b6] transition-colors hover:bg-[#C9A96E]/20 hover:text-[#C9A96E]"
               >
                 <Ic className="h-4 w-4" />
               </a>
@@ -75,7 +75,7 @@ export function Footer() {
       </div>
 
       <div className="mx-auto mt-16 flex max-w-[1280px] flex-col items-center justify-between gap-6 border-t border-white/10 pt-6 sm:flex-row sm:gap-4">
-        <div className="text-xs text-[#7a6e64]">
+        <div className="text-xs text-[#A09686]">
           <p>© 2026 All Rights Reserved By Creative Muse</p>
           <p className="mt-1">
             Designed &amp; Developed By{" "}
@@ -83,7 +83,7 @@ export function Footer() {
               href="https://apfpuniversal.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[#e8d5b8] hover:underline"
+              className="text-[#C9A96E] hover:underline"
             >
               APFP UNIVERSAL
             </a>
@@ -119,12 +119,12 @@ export function Footer() {
 function FooterCol({ title, links }: { title: string; links: [string, string][] }) {
   return (
     <div>
-      <h4 className="font-display text-base text-white">{title}</h4>
+      <h4 className="font-display text-base text-[#C9A96E]">{title}</h4>
       <span className="gold-divider mt-3" />
-      <ul className="mt-5 space-y-2.5 text-[13px] text-[#9b9082]">
+      <ul className="mt-5 space-y-2.5 text-[13px] text-[#cfc6b6]">
         {links.map(([label, to]) => (
           <li key={label}>
-            <Link to={to} className="transition-colors hover:text-[#e8d5b8]">
+            <Link to={to} className="transition-colors hover:text-[#C9A96E]">
               {label}
             </Link>
           </li>

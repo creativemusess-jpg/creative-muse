@@ -92,7 +92,6 @@ const PackingSlip = forwardRef<HTMLDivElement, PackingSlipProps>(({ order, items
         <thead>
           <tr>
             <th align="left">Product</th>
-            <th align="left">SKU</th>
             <th align="right">Qty</th>
           </tr>
         </thead>
@@ -107,7 +106,6 @@ const PackingSlip = forwardRef<HTMLDivElement, PackingSlipProps>(({ order, items
                   <strong>{item.productName}</strong>
                 </div>
               </td>
-              <td>{item.sku || "-"}</td>
               <td align="right">{item.quantity}</td>
             </tr>
           ))}
