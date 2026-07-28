@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { SlidersHorizontal, X } from "lucide-react";
 import { PageHeader, PageShell } from "@/components/site/PageHeader";
 import { ProductCard } from "@/components/site/ProductCard";
+import { Skeleton } from "@/components/ui/skeleton";
 import { productsApi } from "@/lib/api/products";
 import { productFromDb, type Product } from "@/lib/products";
 import { PriceRangeSlider } from "@/components/site/PriceRangeSlider";
@@ -239,7 +240,7 @@ function ShopPage() {
           <div className="flex items-center justify-between lg:hidden">
             <button
               onClick={() => setMobileOpen((o) => !o)}
-              className="flex items-center gap-2 rounded-full border border-[rgba(66,29,34,0.24)] bg-[#fffdf9] px-4 py-2 text-sm font-semibold text-[#421D22]"
+              className="flex items-center gap-2 rounded-full border border-[rgba(66,29,34,0.24)] bg-[#fffdf9] px-4 py-2 text-sm font-semibold text-[#7A2533]"
             >
               <SlidersHorizontal className="h-4 w-4" />
               Filters
@@ -252,7 +253,7 @@ function ShopPage() {
             {hasActiveFilters && (
               <button
                 onClick={clearFilters}
-                className="text-[11px] font-semibold text-[#421D22] uppercase"
+                className="text-[11px] font-semibold text-[#7A2533] uppercase"
               >
                 Clear All
               </button>
@@ -273,7 +274,7 @@ function ShopPage() {
               {hasActiveFilters && (
                 <button
                   onClick={clearFilters}
-                  className="flex items-center gap-1 text-[11px] font-semibold tracking-wide text-[#421D22] uppercase hover:text-[#7A2533]"
+                  className="flex items-center gap-1 text-[11px] font-semibold tracking-wide text-[#7A2533] uppercase hover:text-[#7A2533]"
                 >
                   <X className="h-3 w-3" />
                   Clear
@@ -309,7 +310,7 @@ function ShopPage() {
               {selectedMetals.length > 0 && (
                 <button
                   onClick={() => pushFilters({ metal: "" })}
-                  className="text-[9px] font-semibold text-[#7a6e64] hover:text-[#421D22]"
+                  className="text-[9px] font-semibold text-[#7a6e64] hover:text-[#7A2533]"
                 >
                   Clear
                 </button>
@@ -326,7 +327,7 @@ function ShopPage() {
                     className={`rounded-full border px-3 py-1.5 text-[12px] font-medium transition-all ${
                       active
                         ? "border-[#421D22] bg-[#421D22] text-white"
-                        : "border-[#e0d8cc] bg-white text-[#3a3028] hover:border-[#421D22] hover:text-[#421D22]"
+                        : "border-[#e0d8cc] bg-white text-[#3a3028] hover:border-[#421D22] hover:text-[#7A2533]"
                     }`}
                   >
                     {m}
@@ -346,7 +347,7 @@ function ShopPage() {
                 {(urlMin || urlMax) && (
                   <button
                     onClick={() => pushFilters({ minPrice: "", maxPrice: "" })}
-                    className="text-[9px] font-semibold text-[#7a6e64] hover:text-[#421D22]"
+                    className="text-[9px] font-semibold text-[#7a6e64] hover:text-[#7A2533]"
                   >
                     Reset
                   </button>
@@ -381,7 +382,7 @@ function ShopPage() {
                 <select
                   value={sort}
                   onChange={(e) => pushFilters({ sort: e.target.value })}
-                  className="w-full appearance-none rounded-full border border-[rgba(66,29,34,0.24)] bg-[#fffdf9] bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%228%22%20viewBox%3D%220%200%2012%208%22%3E%3Cpath%20d%3D%22M1%201.5l5%205%205-5%22%20stroke%3D%22%23421D22%22%20stroke-width%3D%221.5%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3C%2Fsvg%3E')] bg-[length:12px_8px] bg-[right_16px_center] bg-no-repeat px-5 py-2.5 pr-12 text-sm text-[#421D22] focus:outline-none focus:ring-2 focus:ring-[#421D22]/30 sm:w-auto"
+                  className="w-full appearance-none rounded-full border border-[rgba(66,29,34,0.24)] bg-[#fffdf9] bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%228%22%20viewBox%3D%220%200%2012%208%22%3E%3Cpath%20d%3D%22M1%201.5l5%205%205-5%22%20stroke%3D%22%23421D22%22%20stroke-width%3D%221.5%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3C%2Fsvg%3E')] bg-[length:12px_8px] bg-[right_16px_center] bg-no-repeat px-5 py-2.5 pr-12 text-sm text-[#7A2533] focus:outline-none focus:ring-2 focus:ring-[#7A2533]/30 sm:w-auto"
                 >
                   {SORT_OPTIONS.map((o) => (
                     <option key={o}>{o}</option>
@@ -391,8 +392,15 @@ function ShopPage() {
             </div>
 
             {loading ? (
-              <div className="flex items-center justify-center py-20">
-                <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#c9a96e] border-t-transparent" />
+              <div className="grid grid-cols-2 gap-3 sm:gap-7 sm:grid-cols-2 lg:grid-cols-3 items-stretch">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <div key={i} className="flex flex-col gap-2">
+                    <Skeleton className="aspect-square w-full rounded-[8px]" />
+                    <Skeleton className="h-3 w-3/4" />
+                    <Skeleton className="h-4 w-1/2" />
+                    <Skeleton className="h-8 w-full rounded-full" />
+                  </div>
+                ))}
               </div>
             ) : error ? (
               <div className="rounded-[24px] border border-[#e0d8cc] bg-white px-5 py-16 text-center shadow-[0_4px_16px_rgba(0,0,0,0.04)]">
@@ -453,7 +461,7 @@ function FilterPill({
       className={`rounded-full border px-3 py-1.5 text-[12px] font-medium transition-all ${
         active
           ? "border-[#421D22] bg-[#421D22] text-white"
-          : "border-[#e0d8cc] bg-white text-[#3a3028] hover:border-[#421D22] hover:text-[#421D22]"
+          : "border-[#e0d8cc] bg-white text-[#3a3028] hover:border-[#421D22] hover:text-[#7A2533]"
       }`}
     >
       {children}

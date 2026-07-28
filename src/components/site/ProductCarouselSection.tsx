@@ -260,7 +260,7 @@ export function ProductCarouselSection({
                 api?.scrollPrev();
               }}
               disabled={!api?.canScrollPrev()}
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-[#d8d0c6] bg-[#fdf8f3] text-[#1a1a2e] shadow-[0_6px_14px_rgba(0,0,0,0.07)] transition-all hover:border-[#C9A96E] hover:text-[#8a6a2a] disabled:opacity-40 sm:h-12 sm:w-12"
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-[#d8d0c6] bg-[#fdf8f3] text-[#1a1a2e] shadow-[0_6px_14px_rgba(0,0,0,0.07)] transition-all hover:border-[#C9A96E] hover:text-[#C9A96E] disabled:opacity-40 sm:h-12 sm:w-12"
               aria-label="Previous products"
             >
               <ArrowLeft className="h-4 w-4 sm:h-5 sm:w-5" />
@@ -292,7 +292,7 @@ export function ProductCarouselSection({
                 api?.scrollNext();
               }}
               disabled={!api?.canScrollNext()}
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-[#d8d0c6] bg-[#fdf8f3] text-[#1a1a2e] shadow-[0_6px_14px_rgba(0,0,0,0.07)] transition-all hover:border-[#C9A96E] hover:text-[#8a6a2a] disabled:opacity-40 sm:h-12 sm:w-12"
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-[#d8d0c6] bg-[#fdf8f3] text-[#1a1a2e] shadow-[0_6px_14px_rgba(0,0,0,0.07)] transition-all hover:border-[#C9A96E] hover:text-[#C9A96E] disabled:opacity-40 sm:h-12 sm:w-12"
               aria-label="Next products"
             >
               <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5" />

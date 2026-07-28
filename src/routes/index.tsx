@@ -180,7 +180,7 @@ function Hero() {
                   transition={{ duration: 0.7 }}
                   className="flex flex-col justify-center"
                 >
-                  <span className="inline-flex w-fit items-center gap-2 rounded-full border border-[#C9A96E]/40 bg-white/60 px-4 py-1.5 text-[11px] font-semibold tracking-[0.18em] text-[#8a6a2a] uppercase backdrop-blur-sm">
+                  <span className="inline-flex w-fit items-center gap-2 rounded-full border border-[#C9A96E]/40 bg-white/60 px-4 py-1.5 text-[11px] font-semibold tracking-[0.18em] text-[#C9A96E] uppercase backdrop-blur-sm">
                     <Sparkles className="h-3 w-3" />
                     {slide.badge}
                   </span>
@@ -247,11 +247,11 @@ function Hero() {
                     transition={{ delay: 0.6, duration: 0.6 }}
                     className="absolute top-4 left-2 hidden rounded-[18px] border border-[#C9A96E]/30 bg-white/90 p-3 shadow-[0_8px_32px_rgba(201,169,110,0.2)] backdrop-blur-xl md:block"
                   >
-                    <p className="eyebrow text-[9px] text-[#8a6a2a]">Best Seller</p>
+                    <p className="eyebrow text-[9px] text-[#C9A96E]">Best Seller</p>
                     <p className="font-display mt-1 text-sm font-semibold text-[#1a1a2e]">
                       Aarav Solitaire
                     </p>
-                    <p className="mt-0.5 text-[13px] font-bold text-[#8a6a2a]">{slide.stat}</p>
+                    <p className="mt-0.5 text-[13px] font-bold text-[#C9A96E]">{slide.stat}</p>
                   </motion.div>
 
                   <motion.div
@@ -317,15 +317,20 @@ function TrustBar() {
     [RotateCcw, "30-Day Returns"],
     [Shield, "Secure Payments"],
   ] as const;
+  const prefersReducedMotion = useReducedMotion();
   return (
     <section className="overflow-hidden bg-[#1a1a2e] py-5">
-      <div className="scrollbar-hide mx-auto flex max-w-[1280px] snap-x items-center justify-start gap-x-8 overflow-x-auto px-6 text-[12px] tracking-[0.1em] whitespace-nowrap text-[#E8C98A] uppercase md:flex-wrap md:justify-center md:gap-x-10 md:gap-y-3 md:overflow-visible">
-        {items.map(([Ic, label]) => (
-          <div key={label} className="flex shrink-0 snap-start items-center gap-2.5">
-            <Ic className="h-4 w-4 text-[#C9A96E]" />
-            <span>{label}</span>
-          </div>
-        ))}
+      <div className="mx-auto flex max-w-[1280px] overflow-hidden">
+        <div className={`flex shrink-0 items-center gap-8 whitespace-nowrap px-6 text-[12px] tracking-[0.1em] text-[#C9A96E] uppercase ${prefersReducedMotion ? "flex-wrap justify-center gap-x-10 gap-y-3" : "animate-cm-marquee"}`}>
+          {Array.from({ length: prefersReducedMotion ? 1 : 3 }).flatMap((_, setIdx) =>
+            items.map(([Ic, label], itemIdx) => (
+              <div key={`${setIdx}-${itemIdx}`} className="flex shrink-0 items-center gap-2.5">
+                <Ic className="h-4 w-4 text-[#C9A96E]" />
+                <span>{label}</span>
+              </div>
+            ))
+          )}
+        </div>
       </div>
     </section>
   );
@@ -435,8 +440,36 @@ function ShopByCategory() {
   const { data, isLoading } = useCategories();
   const categoryScrollerRef = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = useReducedMotion();
+  const autoScrollRef = useRef<ReturnType<typeof setInterval> | undefined>(undefined);
+  const [autoPaused, setAutoPaused] = useState(false);
 
   const dbCategories = useMemo(() => data ? deduplicateCategories(data) : [], [data]);
+
+  const startAutoScroll = useCallback(() => {
+    if (autoScrollRef.current) clearInterval(autoScrollRef.current);
+    if (prefersReducedMotion) return;
+    autoScrollRef.current = setInterval(() => {
+      const el = categoryScrollerRef.current;
+      if (!el || el.scrollWidth <= el.clientWidth) return;
+      const maxScroll = el.scrollWidth - el.clientWidth;
+      if (el.scrollLeft >= maxScroll - 2) {
+        el.scrollTo({ left: 0, behavior: "smooth" });
+      } else {
+        el.scrollBy({ left: el.clientWidth * 0.75, behavior: "smooth" });
+      }
+    }, 1800);
+  }, [prefersReducedMotion]);
+
+  const stopAutoScroll = useCallback(() => {
+    if (autoScrollRef.current) clearInterval(autoScrollRef.current);
+    autoScrollRef.current = undefined;
+  }, []);
+
+  useEffect(() => {
+    if (!autoPaused) startAutoScroll();
+    else stopAutoScroll();
+    return stopAutoScroll;
+  }, [autoPaused, startAutoScroll, stopAutoScroll]);
 
   if (isLoading) return null;
 
@@ -507,7 +540,7 @@ function ShopByCategory() {
         <div className="relative mt-10">
           <button
             onClick={() => scrollCategories(-1)}
-            className="absolute left-0 top-1/2 z-10 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-[#d8d0c6] bg-white text-[#1a1a2e] shadow-[0_8px_20px_rgba(0,0,0,0.08)] transition-all hover:border-[#C9A96E] hover:text-[#8a6a2a] md:flex"
+            className="absolute left-0 top-1/2 z-10 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-[#d8d0c6] bg-white text-[#1a1a2e] shadow-[0_8px_20px_rgba(0,0,0,0.08)] transition-all hover:border-[#C9A96E] hover:text-[#C9A96E] md:flex"
             aria-label="Scroll categories left"
           >
             <ArrowLeft className="h-4 w-4" />
@@ -515,6 +548,10 @@ function ShopByCategory() {
 
           <div
             ref={categoryScrollerRef}
+            onMouseEnter={() => setAutoPaused(true)}
+            onMouseLeave={() => setAutoPaused(false)}
+            onTouchStart={() => setAutoPaused(true)}
+            onTouchEnd={() => setAutoPaused(false)}
             className="scrollbar-hide -mx-6 flex snap-x gap-3 overflow-x-auto px-6 pb-2 md:mx-10 md:gap-5 md:px-0"
           >
             {dbCategories.map((cat, i) => (
@@ -533,7 +570,7 @@ function ShopByCategory() {
 
           <button
             onClick={() => scrollCategories(1)}
-            className="absolute right-0 top-1/2 z-10 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-[#d8d0c6] bg-white text-[#1a1a2e] shadow-[0_8px_20px_rgba(0,0,0,0.08)] transition-all hover:border-[#C9A96E] hover:text-[#8a6a2a] md:flex"
+            className="absolute right-0 top-1/2 z-10 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-[#d8d0c6] bg-white text-[#1a1a2e] shadow-[0_8px_20px_rgba(0,0,0,0.08)] transition-all hover:border-[#C9A96E] hover:text-[#C9A96E] md:flex"
             aria-label="Scroll categories right"
           >
             <ArrowRight className="h-4 w-4" />
@@ -549,7 +586,7 @@ function ShopByCategory() {
             </button>
             <button
               onClick={() => scrollCategories(1)}
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-[#C9A96E] bg-white text-[#8a6a2a] shadow-[0_6px_14px_rgba(0,0,0,0.07)] transition-all active:scale-95"
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-[#C9A96E] bg-white text-[#C9A96E] shadow-[0_6px_14px_rgba(0,0,0,0.07)] transition-all active:scale-95"
               aria-label="Scroll categories right"
             >
               <ArrowRight className="h-4 w-4" />
@@ -601,7 +638,7 @@ function FeaturedBanner() {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <p className="eyebrow text-[#E8C98A]">Bridal Edit</p>
+            <p className="eyebrow">Bridal Edit</p>
             <h2 className="font-display mt-3 text-[34px] leading-tight font-semibold text-white sm:text-[44px] lg:text-[48px]">
               The 2025
               <br />
@@ -617,7 +654,7 @@ function FeaturedBanner() {
               </Link>
               <Link
                 to="/contact"
-                className="btn-secondary border-[#E8C98A] text-[#E8C98A] hover:bg-[#E8C98A] hover:text-[#1a1a2e]"
+                className="btn-secondary border-[#C9A96E] text-[#C9A96E] hover:bg-[#C9A96E] hover:text-[#1a1a2e]"
               >
                 Book Consultation
               </Link>
@@ -1118,7 +1155,7 @@ function Newsletter() {
 
   return (
     <section className="mt-10 px-4 sm:px-6">
-      <div className="relative mx-auto max-w-[1320px] overflow-hidden rounded-[40px] bg-gradient-to-br from-[#C9A96E] via-[#d4b27a] to-[#B8860B] px-6 py-16 text-center shadow-[0_24px_64px_rgba(201,169,110,0.3)] sm:py-20">
+      <div className="relative mx-auto max-w-[1320px] overflow-hidden rounded-[40px] bg-gradient-to-br from-[#C9A96E] via-[#c9a96e] to-[#B8860B] px-6 py-16 text-center shadow-[0_24px_64px_rgba(201,169,110,0.3)] sm:py-20">
         <div className="pointer-events-none absolute -top-20 -right-20 h-[300px] w-[300px] rounded-full bg-white/15 blur-[100px]" />
         <Leaf className="absolute top-8 left-10 hidden h-5 w-5 text-white/40 sm:block" />
         <Leaf className="absolute right-12 bottom-10 hidden h-6 w-6 text-white/40 sm:block" />

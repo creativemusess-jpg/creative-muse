@@ -3,6 +3,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Heart, ShoppingBag, ChevronRight, ZoomIn, Plus, X, ChevronLeft } from "lucide-react";
 import { PageShell } from "@/components/site/PageHeader";
 import { ProductCard } from "@/components/site/ProductCard";
+import { Skeleton } from "@/components/ui/skeleton";
 import { formatPrice, getRecommendedProducts, type Product, useStorefrontProduct, useStorefrontProducts } from "@/lib/products";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import { AnimatePresence, motion } from "framer-motion";
@@ -34,8 +35,27 @@ function ProductDetailsPage() {
   if (isLoading) {
     return (
       <PageShell>
-        <section className="mx-auto max-w-[720px] px-6 py-24 text-center">
-          <h1 className="font-display text-4xl font-semibold text-[#1a1a2e]">Loading jewellery...</h1>
+        <section className="mx-auto grid max-w-[1180px] gap-8 px-5 py-6 sm:px-6 lg:grid-cols-[minmax(0,1fr)_minmax(360px,0.8fr)] lg:gap-12 lg:py-12">
+          <div className="min-w-0">
+            <Skeleton className="aspect-square w-full rounded-[28px]" />
+            <div className="mt-3 flex gap-1.5 sm:gap-2">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <Skeleton key={i} className="h-14 w-14 rounded-[12px] sm:h-16 sm:w-16" />
+              ))}
+            </div>
+          </div>
+          <div className="min-w-0 space-y-4">
+            <Skeleton className="h-3 w-24" />
+            <Skeleton className="h-10 w-3/4" />
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-8 w-32" />
+            <Skeleton className="h-12 w-full rounded-full" />
+            <div className="space-y-3 pt-4">
+              <Skeleton className="h-4 w-40" />
+              <Skeleton className="h-3 w-full" />
+              <Skeleton className="h-3 w-5/6" />
+            </div>
+          </div>
         </section>
       </PageShell>
     );
@@ -116,7 +136,7 @@ function ProductContent({ product }: { product: Product }) {
   return (
     <PageShell>
       {/* Breadcrumbs */}
-      <div className="mx-auto flex max-w-[1180px] items-center gap-1.5 px-5 pt-6 pb-2 text-[11px] font-semibold tracking-[0.1em] text-[#5C1A1A] uppercase sm:px-6">
+      <div className="mx-auto flex max-w-[1180px] items-center gap-1.5 px-5 pt-6 pb-2 text-[11px] font-semibold tracking-[0.1em] text-[#7A2533] uppercase sm:px-6">
         <Link to="/" className="transition-colors hover:text-[#C9A96E]">
           Home
         </Link>
@@ -125,7 +145,7 @@ function ProductContent({ product }: { product: Product }) {
           Shop
         </Link>
         <ChevronRight className="h-3 w-3" />
-        <span className="text-[#5C1A1A]">{product.name}</span>
+        <span className="text-[#7A2533]">{product.name}</span>
       </div>
 
       <section className="mx-auto grid max-w-[1180px] gap-8 px-5 py-6 sm:px-6 lg:grid-cols-[minmax(0,1fr)_minmax(360px,0.8fr)] lg:gap-12 lg:py-12">
@@ -250,7 +270,7 @@ function ProductContent({ product }: { product: Product }) {
             <button
               type="button"
               onClick={() => addToCart(product.id, 1)}
-              className="btn-primary flex-1"
+              className="btn-primary flex-1 text-[#7A2533]"
             >
               <ShoppingBag className="h-4 w-4" />
               Add to Cart
@@ -258,7 +278,7 @@ function ProductContent({ product }: { product: Product }) {
             <button
               type="button"
               onClick={() => toggleWishlist(product.id)}
-              className={`btn-secondary flex items-center justify-center gap-2 ${
+              className={`btn-secondary flex items-center justify-center gap-2 text-[#7A2533] ${
                 wishlisted ? "bg-[#C9A96E] text-white border-[#C9A96E]" : ""
               }`}
             >
@@ -281,7 +301,7 @@ function ProductContent({ product }: { product: Product }) {
                       <dt className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#C9A96E]">
                         {k}
                       </dt>
-                      <dd className="text-[#3a3028]">{v}</dd>
+                      <dd className="text-[#7A2533]">{v}</dd>
                     </div>
                   ) : null,
                 )}
@@ -321,7 +341,7 @@ function ProductContent({ product }: { product: Product }) {
       {/* Recommended Products */}
       {recommended.length > 0 && (
         <section className="mx-auto max-w-[1180px] px-5 pb-16 sm:px-6">
-          <h2 className="font-display text-center text-2xl font-semibold text-[#1a1a2e] sm:text-3xl">
+          <h2 className="font-display text-center text-2xl font-semibold text-[#7A2533] sm:text-3xl">
             Recommended For You
           </h2>
           <div className="mt-8">
@@ -431,11 +451,11 @@ function InfoAccordion({
         className="flex w-full items-center justify-between px-4 py-3.5 text-left"
         aria-expanded={open}
       >
-        <span className="text-[12px] font-semibold tracking-[0.14em] text-[#1a1a2e] uppercase">
+        <span className="text-[12px] font-semibold tracking-[0.14em] text-[#7A2533] uppercase">
           {title}
         </span>
         <Plus
-          className={`h-3.5 w-3.5 text-[#C9A96E] transition-transform duration-300 ${
+          className={`h-3.5 w-3.5 text-[#7A2533] transition-transform duration-300 ${
             open ? "rotate-45" : ""
           }`}
         />

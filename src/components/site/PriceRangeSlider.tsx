@@ -143,7 +143,7 @@ export function PriceRangeSlider({ min, max, valueMin, valueMax, onChange, step 
 
       <div className="flex items-center justify-between gap-3">
         <div className="flex flex-1 items-center rounded-[10px] border border-[rgba(66,29,34,0.18)] bg-[#fffdf9] px-2.5 py-1.5">
-          <span className="text-[11px] font-semibold text-[#421D22]">₹</span>
+          <span className="text-[11px] font-semibold text-[#7A2533]">₹</span>
           <input
             type="text"
             inputMode="numeric"
@@ -154,13 +154,13 @@ export function PriceRangeSlider({ min, max, valueMin, valueMax, onChange, step 
               setLocalMin(next);
               onChange(next, localMax);
             }}
-            className="w-full bg-transparent px-1 text-[12px] font-medium text-[#421D22] outline-none"
+            className="w-full bg-transparent px-1 text-[12px] font-medium text-[#7A2533] outline-none"
             aria-label="Minimum price"
           />
         </div>
         <span className="text-[11px] text-[rgba(66,29,34,0.4)]">—</span>
         <div className="flex flex-1 items-center rounded-[10px] border border-[rgba(66,29,34,0.18)] bg-[#fffdf9] px-2.5 py-1.5">
-          <span className="text-[11px] font-semibold text-[#421D22]">₹</span>
+          <span className="text-[11px] font-semibold text-[#7A2533]">₹</span>
           <input
             type="text"
             inputMode="numeric"
@@ -171,7 +171,7 @@ export function PriceRangeSlider({ min, max, valueMin, valueMax, onChange, step 
               setLocalMax(next);
               onChange(localMin, next);
             }}
-            className="w-full bg-transparent px-1 text-[12px] font-medium text-[#421D22] outline-none"
+            className="w-full bg-transparent px-1 text-[12px] font-medium text-[#7A2533] outline-none"
             aria-label="Maximum price"
           />
         </div>

@@ -219,7 +219,7 @@ export function HeaderSearch() {
                 <Link
                   to="/shop"
                   onClick={() => setOpen(false)}
-                  className="rounded-full border border-[#e0d8cc] px-3 py-2 text-[12px] font-semibold text-[#3a3028] hover:border-[#C9A96E] hover:text-[#8a6a2a]"
+                  className="rounded-full border border-[#e0d8cc] px-3 py-2 text-[12px] font-semibold text-[#3a3028] hover:border-[#C9A96E] hover:text-[#C9A96E]"
                 >
                   View All Jewellery
                 </Link>
@@ -237,7 +237,7 @@ function SuggestionLink({ label, q }: { label: string; q: string }) {
     <Link
       to="/search"
       search={{ q }}
-      className="rounded-full border border-[#e0d8cc] px-3 py-2 text-[12px] font-semibold text-[#3a3028] hover:border-[#C9A96E] hover:text-[#8a6a2a]"
+      className="rounded-full border border-[#e0d8cc] px-3 py-2 text-[12px] font-semibold text-[#3a3028] hover:border-[#C9A96E] hover:text-[#C9A96E]"
     >
       {label}
     </Link>

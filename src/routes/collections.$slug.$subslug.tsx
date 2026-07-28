@@ -5,6 +5,7 @@ import { productsApi } from "@/lib/api/products";
 import { subcategoriesApi } from "@/lib/api/subcategories";
 import { productFromDb } from "@/lib/products";
 import { ProductCard } from "@/components/site/ProductCard";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export const Route = createFileRoute("/collections/$slug/$subslug")({
   head: ({ params }) => ({
@@ -35,8 +36,17 @@ function SubcategoryCollectionPage() {
   if (loading) {
     return (
       <PageShell>
-        <div className="flex items-center justify-center py-20">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#c9a96e] border-t-transparent" />
+        <div className="mx-auto max-w-[1280px] px-6 py-20">
+          <div className="grid grid-cols-2 gap-3 sm:gap-6 md:grid-cols-3 lg:grid-cols-4 items-stretch">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} className="flex flex-col gap-2">
+                <Skeleton className="aspect-square w-full rounded-[8px]" />
+                <Skeleton className="h-3 w-3/4" />
+                <Skeleton className="h-4 w-1/2" />
+                <Skeleton className="h-8 w-full rounded-full" />
+              </div>
+            ))}
+          </div>
         </div>
       </PageShell>
     );
@@ -73,7 +83,7 @@ function SubcategoryCollectionPage() {
         </nav>
 
         <div className="mb-8">
-          <h1 className="font-display text-3xl font-semibold text-[#1a1a2e] lg:text-4xl">
+          <h1 className="font-display text-3xl font-semibold text-[#7A2533] lg:text-4xl">
             {subcategory.name}
           </h1>
         </div>

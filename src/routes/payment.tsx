@@ -168,12 +168,12 @@ function PaymentPage() {
   };
 
   if (success) {
-    setTimeout(() => navigate({ to: `/order-success/${success.orderNumber}` }), 500);
+    navigate({ to: `/order-success/${success.orderNumber}` });
     return (
       <PageShell>
         <div className="flex min-h-[60vh] items-center justify-center px-4">
           <div className="text-center">
-            <Loader2 className="mx-auto h-12 w-12 animate-spin text-[#c9a96e]" />
+            <Loader2 className="mx-auto h-12 w-12 animate-spin text-[#7A2533]" />
             <p className="mt-4 text-lg font-medium text-[#1a1a2e]">Processing your order…</p>
           </div>
         </div>

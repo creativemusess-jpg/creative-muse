@@ -2,6 +2,7 @@ import { createFileRoute, Link, useNavigate, Outlet, useMatchRoute } from "@tans
 import { useEffect, useState } from "react";
 import { Package, ChevronRight } from "lucide-react";
 import { PageShell } from "@/components/site/PageHeader";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useAuth } from "@/lib/auth";
 import { storefrontSupabase } from "@/lib/supabase-storefront";
 
@@ -43,8 +44,10 @@ function OrderList() {
 
   if (ordersLoading) {
     return (
-      <div className="flex justify-center py-20">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#C9A96E] border-t-transparent" />
+      <div className="space-y-4 py-10">
+        {Array.from({ length: 3 }).map((_, i) => (
+          <Skeleton key={i} className="h-28 w-full rounded-[16px]" />
+        ))}
       </div>
     );
   }
@@ -107,7 +110,7 @@ function AccountOrdersPage() {
     return (
       <PageShell>
         <div className="flex min-h-[50vh] items-center justify-center">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#C9A96E] border-t-transparent" />
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#7A2533] border-t-transparent" />
         </div>
       </PageShell>
     );

@@ -54,7 +54,7 @@ export const ProductCard = memo(function ProductCard({
         className="relative block shrink-0 text-left"
         aria-label={`Quick view ${product.name}`}
       >
-        <div className="relative flex aspect-square w-full items-center justify-center overflow-hidden bg-white p-0.5 md:p-1">
+        <div className="relative flex aspect-square w-full items-center justify-center overflow-hidden rounded-[6px] bg-white md:rounded-[8px]">
           <img
             src={product.image}
             alt={product.name}
@@ -62,7 +62,7 @@ export const ProductCard = memo(function ProductCard({
             decoding="async"
             width={1024}
             height={1024}
-            className="h-full max-h-full w-full max-w-full object-contain transition-transform duration-700 group-hover:scale-[1.02]"
+            className="h-full max-h-full w-full max-w-full object-contain rounded-[6px] md:rounded-[8px] transition-transform duration-700 group-hover:scale-[1.02]"
             onError={(e) => {
               const t = e.currentTarget;
               if (t.dataset.fallback) {
@@ -152,7 +152,7 @@ export const ProductCard = memo(function ProductCard({
         <button
           type="button"
           onClick={() => addToCart(product.id, 1)}
-          className="mt-auto flex min-h-[34px] w-full items-center justify-center gap-1.5 rounded-[8px] bg-gradient-to-r from-[#C9A96E] to-[#B8860B] text-[10px] font-semibold tracking-[0.07em] text-white uppercase transition-all duration-300 md:min-h-[42px] md:gap-2 md:rounded-full md:text-[12px] md:tracking-[0.12em] hover:md:shadow-[0_12px_32px_rgba(201,169,110,0.4)]"
+          className="mt-auto flex min-h-[34px] w-full items-center justify-center gap-1.5 rounded-[8px] bg-gradient-to-r from-[#C9A96E] to-[#B8860B] text-[10px] font-semibold tracking-[0.07em] text-[#7A2533] uppercase transition-all duration-300 md:min-h-[42px] md:gap-2 md:rounded-full md:text-[12px] md:tracking-[0.12em] hover:md:shadow-[0_12px_32px_rgba(201,169,110,0.4)]"
         >
           <ShoppingBag className="h-3 w-3 md:h-3.5 md:w-3.5" />
           Add to Cart

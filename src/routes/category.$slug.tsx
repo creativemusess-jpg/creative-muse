@@ -4,6 +4,7 @@ import { categoriesApi } from "@/lib/api/categories";
 import { productsApi } from "@/lib/api/products";
 import { productFromDb } from "@/lib/products";
 import { ProductCard } from "@/components/site/ProductCard";
+import { Skeleton } from "@/components/ui/skeleton";
 import { ChevronRight, Home } from "lucide-react";
 import catRings from "@/assets/cat-rings.png";
 import catNecklaces from "@/assets/cat-necklaces.png";
@@ -51,8 +52,15 @@ function CategoryPage() {
     return (
       <div className="min-h-screen bg-[#fdf8f3] pt-32 pb-20">
         <div className="mx-auto max-w-[1280px] px-6">
-          <div className="flex items-center justify-center py-20">
-            <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#c9a96e] border-t-transparent" />
+          <div className="grid grid-cols-2 gap-3 sm:gap-7 md:grid-cols-3 lg:grid-cols-4 items-stretch">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} className="flex flex-col gap-2">
+                <Skeleton className="aspect-square w-full rounded-[8px]" />
+                <Skeleton className="h-3 w-3/4" />
+                <Skeleton className="h-4 w-1/2" />
+                <Skeleton className="h-8 w-full rounded-full" />
+              </div>
+            ))}
           </div>
         </div>
       </div>
@@ -87,7 +95,7 @@ function CategoryPage() {
             Shop
           </Link>
           <ChevronRight className="h-3 w-3" />
-          <span className="text-[#1a1a2e]">{category.name}</span>
+          <span className="text-[#7A2533]">{category.name}</span>
         </nav>
 
         <div className="mb-10 flex flex-col items-center text-center">
@@ -101,13 +109,13 @@ function CategoryPage() {
               />
             </div>
           )}
-          <h1 className="text-3xl font-semibold text-[#1a1a2e]">{category.name}</h1>
+          <h1 className="text-3xl font-semibold text-[#7A2533]">{category.name}</h1>
           {category.description && (
             <p className="mt-3 max-w-xl text-sm leading-relaxed text-gray-500">
               {category.description}
             </p>
           )}
-          <p className="mt-2 text-xs tracking-wider text-[#8a6a2a] uppercase">
+          <p className="mt-2 text-xs tracking-wider text-[#C9A96E] uppercase">
             {products.length} {products.length === 1 ? "product" : "products"}
           </p>
         </div>

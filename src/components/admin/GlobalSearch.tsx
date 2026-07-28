@@ -96,7 +96,7 @@ export function GlobalSearch({ open, onClose }: { open: boolean; onClose: () => 
             onKeyDown={handleKeyDown}
             className="flex-1 border-0 px-3 py-4 text-sm outline-none"
           />
-          {loading && <div className="h-4 w-4 animate-spin rounded-full border-2 border-[#c9a96e] border-t-transparent" />}
+          {loading && <div className="h-4 w-4 animate-spin rounded-full border-2 border-[#7A2533] border-t-transparent" />}
           <button onClick={onClose} className="ml-2 rounded-lg p-1 hover:bg-gray-100">
             <X className="h-4 w-4 text-gray-400" />
           </button>

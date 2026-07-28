@@ -304,6 +304,7 @@ function QuickViewModal() {
   const product = products.find((p) => p.id === quickViewId) ?? null;
   const containerRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLElement | null>(null);
+  const [zoomActive, setZoomActive] = useState(false);
 
   useEffect(() => {
     if (product) {
@@ -376,17 +377,19 @@ function QuickViewModal() {
             transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
             className="relative grid max-h-[88vh] w-full max-w-5xl grid-cols-1 overflow-y-auto scrollbar-thin rounded-[28px] bg-[#fdf8f3] shadow-[0_24px_64px_rgba(0,0,0,0.3)] md:max-h-none md:h-[90vh] md:grid-cols-2 md:grid-rows-[1fr] md:overflow-hidden"
           >
-            <button
-              aria-label="Close"
-              onClick={closeQuickView}
-              className="absolute top-3 right-3 z-30 flex h-9 w-9 items-center justify-center rounded-full border border-[#C9A96E] bg-white shadow-md transition-colors hover:bg-white md:top-4 md:right-4 md:h-10 md:w-10"
-            >
-              <X className="h-4 w-4" />
-            </button>
+            {!zoomActive && (
+              <button
+                aria-label="Close"
+                onClick={closeQuickView}
+                className="absolute top-3 right-3 z-30 flex h-9 w-9 items-center justify-center rounded-full border border-[#C9A96E] bg-white shadow-md transition-colors hover:bg-white md:top-4 md:right-4 md:h-10 md:w-10"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            )}
 
             {/* Left: Sticky media column (desktop) */}
             <div className="md:sticky md:top-0 md:min-w-0 md:self-start">
-              <QuickViewMedia product={product} />
+              <QuickViewMedia product={product} onZoomChange={setZoomActive} />
             </div>
 
             {/* Right: Scrollable info column */}
@@ -410,10 +413,12 @@ function QuickViewModal() {
 }
 
 /* ---------------- Quick View: Media (gallery only) ---------------- */
-function QuickViewMedia({ product }: { product: Product }) {
+function QuickViewMedia({ product, onZoomChange }: { product: Product; onZoomChange?: (v: boolean) => void }) {
   const gallery = [product.image, ...(product.gallery ?? [])];
   const [idx, setIdx] = useState(0);
   const [zoom, setZoom] = useState(false);
+
+  useEffect(() => { onZoomChange?.(zoom); }, [zoom, onZoomChange]);
 
   // Reset on product change
   useEffect(() => {
@@ -721,7 +726,7 @@ function QuickViewInfo({
           <span className="text-sm text-[#7a6e64] line-through">{formatPrice(product.mrp)}</span>
         )}
         {discount > 0 && (
-          <span className="rounded-full bg-[#6b1330] px-2 py-0.5 text-[10px] font-bold text-white">
+          <span className="rounded-full bg-[#7A2533] px-2 py-0.5 text-[10px] font-bold text-white">
             -{discount}%
           </span>
         )}
@@ -750,7 +755,7 @@ function QuickViewInfo({
             <Plus className="h-3.5 w-3.5" />
           </button>
         </div>
-        <button onClick={() => onAdd(qty)} className="btn-primary flex-1">
+        <button onClick={() => onAdd(qty)} className="btn-primary flex-1 text-[#7A2533]">
           Add to Cart
         </button>
         <button
@@ -769,7 +774,7 @@ function QuickViewInfo({
       <Link
         to={productLink(product)?.to ?? "/product/$productId"}
         params={productLink(product)?.params ?? { productId: product.id }}
-        className="mt-5 flex items-center justify-center gap-1.5 text-[11px] font-semibold tracking-[0.16em] text-[#421D22] transition-colors hover:text-[#633039] uppercase"
+        className="mt-5 flex items-center justify-center gap-1.5 text-[11px] font-semibold tracking-[0.16em] text-[#7A2533] transition-colors hover:text-[#7A2533] uppercase"
         onClick={onClose}
       >
         View Full Details
@@ -784,7 +789,7 @@ function QuickViewInfo({
               v ? (
                 <div key={k} className="flex flex-col">
                   <dt className="text-[10px] tracking-[0.12em] text-[#7a6e64] uppercase">{k}</dt>
-                  <dd className="text-[#1a1a2e]">{v}</dd>
+                  <dd className="text-[#7A2533]">{v}</dd>
                 </div>
               ) : null,
             )}
@@ -845,11 +850,11 @@ function Accordion({
         className="flex w-full items-center justify-between px-4 py-3 text-left"
         aria-expanded={open}
       >
-        <span className="text-[11px] font-semibold tracking-[0.14em] text-[#1a1a2e] uppercase">
+        <span className="text-[11px] font-semibold tracking-[0.14em] text-[#7A2533] uppercase">
           {title}
         </span>
         <Plus
-          className={`h-3.5 w-3.5 transition-transform duration-300 ${open ? "rotate-45" : ""}`}
+          className={`h-3.5 w-3.5 text-[#7A2533] transition-transform duration-300 ${open ? "rotate-45" : ""}`}
         />
       </button>
       <div

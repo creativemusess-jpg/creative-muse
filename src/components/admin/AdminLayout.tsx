@@ -101,7 +101,7 @@ export function AdminLayout({ children }: { children: ReactNode }) {
     return (
       <div className="flex h-screen items-center justify-center bg-[#f8f9fa]">
         <div className="flex flex-col items-center gap-3">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#c9a96e] border-t-transparent" />
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#7A2533] border-t-transparent" />
           <p className="text-sm text-gray-500">Loading...</p>
         </div>
       </div>
@@ -250,7 +250,7 @@ export function AdminCard({ title, value, subtitle, icon }: { title: string; val
 export function AdminLoading() {
   return (
     <div className="flex items-center justify-center py-20">
-      <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#c9a96e] border-t-transparent" />
+      <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#7A2533] border-t-transparent" />
     </div>
   );
 }

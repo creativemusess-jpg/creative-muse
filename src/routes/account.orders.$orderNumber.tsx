@@ -3,6 +3,7 @@ import { createFileRoute, Link, useNavigate, useParams } from "@tanstack/react-r
 import { useEffect, useState } from "react";
 import { Check, ChevronLeft, Download, Headphones, Package, Truck } from "lucide-react";
 import { PageShell } from "@/components/site/PageHeader";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useAuth } from "@/lib/auth";
 import { storefrontSupabase } from "@/lib/supabase-storefront";
 import { normalizeOrderItems } from "@/lib/api/order-items";
@@ -91,8 +92,13 @@ function AccountOrderDetailPage() {
   if (loading || !user || pageLoading) {
     return (
       <PageShell>
-        <div className="flex min-h-[50vh] items-center justify-center">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#C9A96E] border-t-transparent" />
+        <div className="mx-auto max-w-[960px] px-6 py-10">
+          <div className="space-y-4">
+            <Skeleton className="h-6 w-48" />
+            <Skeleton className="h-4 w-72" />
+            <Skeleton className="h-40 w-full rounded-[16px]" />
+            <Skeleton className="h-32 w-full rounded-[16px]" />
+          </div>
         </div>
       </PageShell>
     );

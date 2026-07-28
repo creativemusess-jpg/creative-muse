@@ -2,6 +2,7 @@ import { createFileRoute, Link, useNavigate, Outlet, useMatchRoute } from "@tans
 import { useEffect } from "react";
 import { User, Package, LogOut, Mail, Phone, ShieldCheck } from "lucide-react";
 import { PageShell } from "@/components/site/PageHeader";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useAuth } from "@/lib/auth";
 
 export const Route = createFileRoute("/account")({
@@ -84,8 +85,20 @@ function AccountPage() {
   if (loading || !user) {
     return (
       <PageShell>
-        <div className="flex min-h-[50vh] items-center justify-center">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#C9A96E] border-t-transparent" />
+        <div className="mx-auto max-w-[960px] px-6 py-20">
+          <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-start">
+            <Skeleton className="h-20 w-20 rounded-full" />
+            <div className="flex-1 space-y-3">
+              <Skeleton className="h-5 w-48" />
+              <Skeleton className="h-4 w-64" />
+              <Skeleton className="h-4 w-40" />
+            </div>
+          </div>
+          <div className="mt-10 grid gap-4 sm:grid-cols-2">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <Skeleton key={i} className="h-24 w-full rounded-[16px]" />
+            ))}
+          </div>
         </div>
       </PageShell>
     );

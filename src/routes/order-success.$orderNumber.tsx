@@ -96,7 +96,7 @@ function OrderSuccessPage() {
     <PageShell>
       <div className="mx-auto flex min-h-[70vh] max-w-[600px] items-center justify-center px-4 py-20">
         {loading ? (
-          <Loader2 className="h-10 w-10 animate-spin text-[#c9a96e]" />
+          <Loader2 className="h-10 w-10 animate-spin text-[#7A2533]" />
         ) : order ? (
           <div className="w-full text-center">
             <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-green-100">

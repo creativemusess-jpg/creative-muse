@@ -38,7 +38,7 @@ export function PolicyPage({
       <div className="mx-auto flex max-w-[1100px] items-start gap-10 px-6 py-12 sm:py-16 lg:py-20">
         <div className="min-w-0 flex-1">
           <div className="mb-6">
-            <p className="eyebrow text-[10px] tracking-[0.18em] text-[#8a6a2a] uppercase">
+            <p className="eyebrow text-[10px] tracking-[0.18em] uppercase">
               {eyebrow}
             </p>
             <h1 className="font-display mt-2 text-3xl font-bold text-[#1a1a2e] sm:text-4xl">
