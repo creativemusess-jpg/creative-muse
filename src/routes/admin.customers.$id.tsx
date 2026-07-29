@@ -41,7 +41,7 @@ function CustomerDetailPage() {
   return (
     <AdminLayout>
       <div className="mb-4">
-        <Link to="/admin/customers" className="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-[#c9a96e]">
+        <Link to="/admin/customers" className="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-[#7A2533]">
           <ArrowLeft className="h-4 w-4" /> Customers
         </Link>
       </div>

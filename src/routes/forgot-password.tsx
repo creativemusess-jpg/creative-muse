@@ -51,7 +51,7 @@ function ForgotPasswordPage() {
               <form onSubmit={handleSubmit} className="mt-8 space-y-4">
                 <div>
                   <label htmlFor="fp-email" className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Email</label>
-                  <input id="fp-email" type="email" value={email} onChange={(e) => { setEmail(e.target.value); setError(""); }} className="w-full rounded-xl border border-[#e0d8cc] px-4 py-3 text-sm outline-none focus:border-[#c9a96e]" />
+                  <input id="fp-email" type="email" value={email} onChange={(e) => { setEmail(e.target.value); setError(""); }} className="w-full rounded-xl border border-[#e0d8cc] px-4 py-3 text-sm outline-none focus:border-[#7A2533]" />
                 </div>
                 {error && <p className="text-sm text-red-500">{error}</p>}
                 <button type="submit" disabled={loading} className="btn-primary w-full justify-center disabled:opacity-60">
@@ -61,7 +61,7 @@ function ForgotPasswordPage() {
               </form>
               <p className="mt-6 text-center text-sm text-[#7a6e64]">
                 Remember your password?{" "}
-                <Link to="/login" className="font-semibold text-[#c9a96e] underline underline-offset-2">Sign In</Link>
+                <Link to="/login" className="font-semibold text-[#7A2533] underline underline-offset-2">Sign In</Link>
               </p>
             </>
           )}

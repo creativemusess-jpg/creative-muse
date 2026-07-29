@@ -376,7 +376,7 @@ export function NewsletterPopup() {
                     <button
                       onClick={handleCopy}
                       aria-label={copied ? "Copied" : "Copy discount code"}
-                      className="flex h-11 w-11 items-center justify-center rounded-lg border border-[#e0d8cc] bg-white text-[#7a6e64] transition-colors hover:border-[#c9a96e] hover:text-[#c9a96e]"
+                      className="flex h-11 w-11 items-center justify-center rounded-lg border border-[#e0d8cc] bg-white text-[#7a6e64] transition-colors hover:border-[#7A2533] hover:text-[#7A2533]"
                     >
                       {copied ? (
                         <Check className="h-5 w-5 text-green-600" />
@@ -408,7 +408,7 @@ export function NewsletterPopup() {
                 </div>
               ) : (
                 <>
-                  <p className="text-[10px] font-semibold tracking-[0.24em] text-[#c9a96e] uppercase">
+                  <p className="text-[10px] font-semibold tracking-[0.24em] text-[#7A2533] uppercase">
                     Creative Muse
                   </p>
 
@@ -446,7 +446,7 @@ export function NewsletterPopup() {
                         placeholder="Enter your email address"
                         aria-label="Email address"
                         autoComplete="email"
-                        className="w-full rounded-xl border border-[#e0d8cc] bg-white px-4 py-3 text-sm text-[#1a1a2e] outline-none transition-colors focus:border-[#c9a96e] focus:ring-1 focus:ring-[#c9a96e]/30 placeholder:text-[#a09890]"
+                        className="w-full rounded-xl border border-[#e0d8cc] bg-white px-4 py-3 text-sm text-[#1a1a2e] outline-none transition-colors focus:border-[#7A2533] focus:ring-1 focus:ring-[#7A2533]/30 placeholder:text-[#a09890]"
                       />
                     </div>
 
@@ -509,7 +509,7 @@ export function NewsletterPopup() {
                     <Link
                       to="/privacy-policy"
                       onClick={handleClose}
-                      className="text-[#c9a96e] underline underline-offset-2 hover:text-[#b8860b]"
+                      className="text-[#7A2533] underline underline-offset-2 hover:text-[#7A2533]"
                     >
                       Privacy Policy
                     </Link>

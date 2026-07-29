@@ -180,7 +180,7 @@ function Hero() {
                   transition={{ duration: 0.7 }}
                   className="flex flex-col justify-center"
                 >
-                  <span className="inline-flex w-fit items-center gap-2 rounded-full border border-[#C9A96E]/40 bg-white/60 px-4 py-1.5 text-[11px] font-semibold tracking-[0.18em] text-[#C9A96E] uppercase backdrop-blur-sm">
+                  <span className="inline-flex w-fit items-center gap-2 rounded-full border border-[#7A2533]/40 bg-white/60 px-4 py-1.5 text-[11px] font-semibold tracking-[0.18em] text-[#7A2533] uppercase backdrop-blur-sm">
                     <Sparkles className="h-3 w-3" />
                     {slide.badge}
                   </span>
@@ -205,7 +205,7 @@ function Hero() {
                     </Link>
                   </div>
 
-                  <div className="mt-6 flex flex-wrap items-center gap-x-10 gap-y-4 border-t border-[#C9A96E]/20 pt-5">
+                  <div className="mt-6 flex flex-wrap items-center gap-x-10 gap-y-4 border-t border-[#7A2533]/20 pt-5">
                     {[
                       ["15+", "Years of Craft"],
                       ["50K+", "Happy Customers"],
@@ -236,7 +236,7 @@ function Hero() {
                         height={1280}
                         fetchPriority={idx === 0 ? "high" : undefined}
                         decoding="async"
-                        className="h-full w-full rounded-[20px] object-contain drop-shadow-[0_24px_48px_rgba(201,169,110,0.35)]"
+                        className="h-full w-full rounded-[20px] object-contain drop-shadow-[0_24px_48px_rgba(122,37,51,0.35)]"
                       />
                     </div>
                   </div>
@@ -245,13 +245,13 @@ function Hero() {
                     initial={{ opacity: 0, x: -30 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.6, duration: 0.6 }}
-                    className="absolute top-4 left-2 hidden rounded-[18px] border border-[#C9A96E]/30 bg-white/90 p-3 shadow-[0_8px_32px_rgba(201,169,110,0.2)] backdrop-blur-xl md:block"
+                    className="absolute top-4 left-2 hidden rounded-[18px] border border-[#7A2533]/30 bg-white/90 p-3 shadow-[0_8px_32px_rgba(122,37,51,0.2)] backdrop-blur-xl md:block"
                   >
-                    <p className="eyebrow text-[9px] text-[#C9A96E]">Best Seller</p>
+                    <p className="eyebrow text-[9px] text-[#7A2533]">Best Seller</p>
                     <p className="font-display mt-1 text-sm font-semibold text-[#1a1a2e]">
                       Aarav Solitaire
                     </p>
-                    <p className="mt-0.5 text-[13px] font-bold text-[#C9A96E]">{slide.stat}</p>
+                    <p className="mt-0.5 text-[13px] font-bold text-[#7A2533]">{slide.stat}</p>
                   </motion.div>
 
                   <motion.div
@@ -295,7 +295,7 @@ function Hero() {
               key={idx}
               onClick={() => api?.scrollTo(idx)}
               className={`h-2 rounded-full transition-all ${
-                idx === current ? "w-7 bg-[#8B1A1A]" : "w-2 bg-[#C9A96E]/50"
+                idx === current ? "w-7 bg-[#8B1A1A]" : "w-2 bg-[#7A2533]/50"
               }`}
               aria-label={`Go to slide ${idx + 1}`}
             />
@@ -321,11 +321,11 @@ function TrustBar() {
   return (
     <section className="overflow-hidden bg-[#1a1a2e] py-5">
       <div className="mx-auto flex max-w-[1280px] overflow-hidden">
-        <div className={`flex shrink-0 items-center gap-8 whitespace-nowrap px-6 text-[12px] tracking-[0.1em] text-[#C9A96E] uppercase ${prefersReducedMotion ? "flex-wrap justify-center gap-x-10 gap-y-3" : "animate-cm-marquee"}`}>
+        <div className={`flex shrink-0 items-center gap-8 whitespace-nowrap px-6 text-[12px] tracking-[0.1em] text-[#7A2533] uppercase ${prefersReducedMotion ? "flex-wrap justify-center gap-x-10 gap-y-3" : "animate-cm-marquee"}`}>
           {Array.from({ length: prefersReducedMotion ? 1 : 3 }).flatMap((_, setIdx) =>
             items.map(([Ic, label], itemIdx) => (
               <div key={`${setIdx}-${itemIdx}`} className="flex shrink-0 items-center gap-2.5">
-                <Ic className="h-4 w-4 text-[#C9A96E]" />
+                <Ic className="h-4 w-4 text-[#7A2533]" />
                 <span>{label}</span>
               </div>
             ))
@@ -489,7 +489,7 @@ function ShopByCategory() {
     return (
       <Link
         to={`/category/${cat.slug}`}
-        className="group flex h-full flex-col items-center rounded-[24px] border border-transparent bg-white p-3 pb-4 text-center shadow-[0_4px_24px_rgba(0,0,0,0.04)] transition-all duration-500 hover:-translate-y-2 hover:border-[#C9A96E]/50 hover:shadow-[0_20px_60px_rgba(201,169,110,0.22)] active:scale-[0.97] md:p-4 md:pb-5"
+        className="group flex h-full flex-col items-center rounded-[24px] border border-transparent bg-white p-3 pb-4 text-center shadow-[0_4px_24px_rgba(0,0,0,0.04)] transition-all duration-500 hover:-translate-y-2 hover:border-[#7A2533]/50 hover:shadow-[0_20px_60px_rgba(122,37,51,0.22)] active:scale-[0.97] md:p-4 md:pb-5"
       >
         <div className="relative aspect-square w-full overflow-hidden rounded-[18px] bg-gradient-to-br from-[#fdf8f3] to-[#f0e4cd]">
           {img ? (
@@ -507,7 +507,7 @@ function ShopByCategory() {
           ) : (
             <div className="flex h-full w-full items-center justify-center bg-[#f5efe8] p-3">
               <svg
-                className="h-8 w-8 text-[#c9a96e]/20"
+                className="h-8 w-8 text-[#7A2533]/20"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -540,7 +540,7 @@ function ShopByCategory() {
         <div className="relative mt-10">
           <button
             onClick={() => scrollCategories(-1)}
-            className="absolute left-0 top-1/2 z-10 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-[#d8d0c6] bg-white text-[#1a1a2e] shadow-[0_8px_20px_rgba(0,0,0,0.08)] transition-all hover:border-[#C9A96E] hover:text-[#C9A96E] md:flex"
+            className="absolute left-0 top-1/2 z-10 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-[#d8d0c6] bg-white text-[#1a1a2e] shadow-[0_8px_20px_rgba(0,0,0,0.08)] transition-all hover:border-[#7A2533] hover:text-[#7A2533] md:flex"
             aria-label="Scroll categories left"
           >
             <ArrowLeft className="h-4 w-4" />
@@ -570,7 +570,7 @@ function ShopByCategory() {
 
           <button
             onClick={() => scrollCategories(1)}
-            className="absolute right-0 top-1/2 z-10 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-[#d8d0c6] bg-white text-[#1a1a2e] shadow-[0_8px_20px_rgba(0,0,0,0.08)] transition-all hover:border-[#C9A96E] hover:text-[#C9A96E] md:flex"
+            className="absolute right-0 top-1/2 z-10 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-[#d8d0c6] bg-white text-[#1a1a2e] shadow-[0_8px_20px_rgba(0,0,0,0.08)] transition-all hover:border-[#7A2533] hover:text-[#7A2533] md:flex"
             aria-label="Scroll categories right"
           >
             <ArrowRight className="h-4 w-4" />
@@ -586,7 +586,7 @@ function ShopByCategory() {
             </button>
             <button
               onClick={() => scrollCategories(1)}
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-[#C9A96E] bg-white text-[#C9A96E] shadow-[0_6px_14px_rgba(0,0,0,0.07)] transition-all active:scale-95"
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-[#7A2533] bg-white text-[#7A2533] shadow-[0_6px_14px_rgba(0,0,0,0.07)] transition-all active:scale-95"
               aria-label="Scroll categories right"
             >
               <ArrowRight className="h-4 w-4" />
@@ -654,7 +654,7 @@ function FeaturedBanner() {
               </Link>
               <Link
                 to="/contact"
-                className="btn-secondary border-[#C9A96E] text-[#C9A96E] hover:bg-[#C9A96E] hover:text-[#1a1a2e]"
+                className="btn-secondary border-[#7A2533] text-[#7A2533] hover:bg-[#7A2533] hover:text-white"
               >
                 Book Consultation
               </Link>
@@ -727,7 +727,7 @@ function BestSellers() {
                 onClick={() => setActive(t)}
                 className={`flex h-[52px] min-w-[148px] shrink-0 items-center justify-center rounded-[22px] px-4 text-[13px] font-semibold tracking-[0.08em] uppercase transition-all duration-300 md:h-auto md:min-w-0 md:rounded-full md:px-5 md:py-2.5 md:text-[12px] md:tracking-[0.1em] ${
                   active === t
-                    ? "bg-gradient-to-r from-[#C9A96E] to-[#B8860B] text-white shadow-[0_6px_16px_rgba(201,169,110,0.35)]"
+                    ? "bg-[#7A2533] text-white shadow-[0_6px_16px_rgba(122,37,51,0.35)]"
                     : "text-[#7a6e64] hover:text-[#1a1a2e]"
                 }`}
               >
@@ -915,7 +915,7 @@ function VideoBanner() {
   return (
     <section className="mt-20 px-4 sm:px-6">
       <div className="relative mx-auto max-w-[1320px] overflow-hidden rounded-[40px] bg-gradient-to-br from-[#0d0d1a] via-[#1a1a2e] to-[#3a1a3e] px-8 py-28 text-center shadow-[0_24px_64px_rgba(0,0,0,0.3)] sm:py-36">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_30%_40%,rgba(201,169,110,0.25),transparent_60%)]" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_30%_40%,rgba(122,37,51,0.25),transparent_60%)]" />
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_70%_60%,rgba(232,180,160,0.18),transparent_55%)]" />
 
         <motion.div
@@ -964,17 +964,17 @@ function StoreLocation() {
           </h2>
           <div className="mt-6 space-y-4 text-[15px] text-[#3a3028]">
             <div className="flex items-start gap-3">
-              <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-[#C9A96E]" />
+              <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-[#7A2533]" />
               <span>GF-3/4, Vidhi Square Complex, BPC Road, Anand Nagar, Vadodara – 390020</span>
             </div>
             <div className="flex items-start gap-3">
-              <Phone className="mt-0.5 h-5 w-5 shrink-0 text-[#C9A96E]" />
-              <a href="tel:+919033779867" className="hover:text-[#C9A96E]">
+              <Phone className="mt-0.5 h-5 w-5 shrink-0 text-[#7A2533]" />
+              <a href="tel:+919033779867" className="hover:text-[#7A2533]">
                 +91 90337 79867
               </a>
             </div>
             <div className="flex items-start gap-3">
-              <Award className="mt-0.5 h-5 w-5 shrink-0 text-[#C9A96E]" />
+              <Award className="mt-0.5 h-5 w-5 shrink-0 text-[#7A2533]" />
               <span>Mon–Sat: 10AM–8PM · Sunday: 11AM–7PM</span>
             </div>
           </div>
@@ -1000,7 +1000,7 @@ function StoreLocation() {
           transition={{ duration: 0.6 }}
           className="relative flex aspect-[5/4] items-center justify-center overflow-hidden rounded-[28px] bg-[#f5efe8] shadow-[0_12px_40px_rgba(0,0,0,0.08)]"
         >
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(201,169,110,0.18),transparent_60%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(122,37,51,0.18),transparent_60%)]" />
           <svg
             className="absolute inset-0 h-full w-full opacity-20"
             viewBox="0 0 400 320"
@@ -1008,12 +1008,12 @@ function StoreLocation() {
           >
             <path
               d="M0 80 L400 60 M0 160 L400 180 M0 240 L400 220"
-              stroke="#C9A96E"
+              stroke="#7A2533"
               strokeWidth="1"
             />
             <path
               d="M80 0 L100 320 M200 0 L220 320 M320 0 L300 320"
-              stroke="#C9A96E"
+              stroke="#7A2533"
               strokeWidth="1"
             />
           </svg>
@@ -1085,7 +1085,7 @@ function FAQ() {
                 >
                   <span className="font-display text-[15px] font-semibold text-[#1a1a2e]">{q}</span>
                   <span
-                    className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#fdf8f3] text-[#C9A96E] transition-transform duration-300 ${
+                    className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#fdf8f3] text-[#7A2533] transition-transform duration-300 ${
                       isOpen ? "rotate-45" : ""
                     }`}
                   >

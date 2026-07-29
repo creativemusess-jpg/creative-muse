@@ -187,7 +187,7 @@ function CollectionsPage() {
               <Link
                 to="/collections/$slug"
                 params={{ slug: row.slug || "" }}
-                className="text-sm font-medium text-[#1a1a2e] hover:text-[#c9a96e]"
+                className="text-sm font-medium text-[#1a1a2e] hover:text-[#7A2533]"
               >
                 {row.name}
               </Link>
@@ -225,7 +225,7 @@ function CollectionsPage() {
               <div className="flex items-center justify-end gap-1">
                 <button
                   onClick={() => openEdit(row)}
-                  className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-[#c9a96e]"
+                  className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-[#7A2533]"
                   aria-label="Edit collection"
                 >
                   <Edit className="h-4 w-4" />
@@ -262,7 +262,7 @@ function CollectionsPage() {
                   type="text"
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
-                  className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#c9a96e]"
+                  className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]"
                 />
               </div>
               <div>
@@ -271,7 +271,7 @@ function CollectionsPage() {
                   type="text"
                   value={form.slug}
                   onChange={(e) => setForm({ ...form, slug: e.target.value })}
-                  className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#c9a96e]"
+                  className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]"
                 />
               </div>
               <div>
@@ -294,7 +294,7 @@ function CollectionsPage() {
                       </button>
                     </div>
                   ) : (
-                    <label className="flex h-20 w-20 cursor-pointer items-center justify-center rounded-lg border-2 border-dashed border-gray-200 bg-gray-50 text-gray-400 hover:border-[#c9a96e] hover:text-[#c9a96e]">
+                    <label className="flex h-20 w-20 cursor-pointer items-center justify-center rounded-lg border-2 border-dashed border-gray-200 bg-gray-50 text-gray-400 hover:border-[#7A2533] hover:text-[#7A2533]">
                       <input
                         type="file"
                         accept="image/*"
@@ -318,7 +318,7 @@ function CollectionsPage() {
                   value={form.description}
                   onChange={(e) => setForm({ ...form, description: e.target.value })}
                   rows={3}
-                  className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#c9a96e]"
+                  className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]"
                 />
               </div>
             </div>

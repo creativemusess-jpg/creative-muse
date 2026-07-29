@@ -88,7 +88,7 @@ function SearchPage() {
         <div className="grid gap-8 lg:grid-cols-[260px_1fr]">
           <aside className="h-fit rounded-[24px] border border-[#e0d8cc] bg-white p-5 shadow-[0_4px_16px_rgba(0,0,0,0.04)] sm:p-6">
             <div className="mb-5 flex items-center gap-2">
-              <SlidersHorizontal className="h-4 w-4 text-[#C9A96E]" />
+              <SlidersHorizontal className="h-4 w-4 text-[#7A2533]" />
               <h3 className="font-display text-base font-semibold text-[#1a1a2e]">Filters</h3>
             </div>
 
@@ -197,7 +197,7 @@ function FilterPill({
       onClick={onClick}
       className={`rounded-full border px-3 py-1.5 text-[12px] font-medium transition-all ${
         active
-          ? "border-[#C9A96E] bg-[#C9A96E] text-white"
+          ? "border-[#7A2533] bg-[#7A2533] text-white"
           : "border-[#e0d8cc] bg-white text-[#3a3028] hover:border-[#8B1A1A] hover:text-[#8B1A1A]"
       }`}
     >

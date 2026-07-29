@@ -137,11 +137,11 @@ function ProductContent({ product }: { product: Product }) {
     <PageShell>
       {/* Breadcrumbs */}
       <div className="mx-auto flex max-w-[1180px] items-center gap-1.5 px-5 pt-6 pb-2 text-[11px] font-semibold tracking-[0.1em] text-[#7A2533] uppercase sm:px-6">
-        <Link to="/" className="transition-colors hover:text-[#C9A96E]">
+        <Link to="/" className="transition-colors hover:text-[#7A2533]">
           Home
         </Link>
         <ChevronRight className="h-3 w-3" />
-        <Link to="/shop" className="transition-colors hover:text-[#C9A96E]">
+        <Link to="/shop" className="transition-colors hover:text-[#7A2533]">
           Shop
         </Link>
         <ChevronRight className="h-3 w-3" />
@@ -222,7 +222,7 @@ function ProductContent({ product }: { product: Product }) {
                   }}
                   aria-label={`View image ${i + 1}`}
                   className={`flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-[12px] border-2 bg-[#fffdf9] sm:h-16 sm:w-16 ${
-                    i === imgIdx ? "border-[#C9A96E]" : "border-[rgba(66,29,34,0.18)]"
+                    i === imgIdx ? "border-[#7A2533]" : "border-[rgba(66,29,34,0.18)]"
                   }`}
                 >
                   <img src={safeSrc(src)} alt="" loading="lazy" decoding="async" className="h-full w-full object-contain p-1.5" />
@@ -270,7 +270,7 @@ function ProductContent({ product }: { product: Product }) {
             <button
               type="button"
               onClick={() => addToCart(product.id, 1)}
-              className="btn-primary flex-1 text-[#7A2533]"
+              className="btn-primary flex-1"
             >
               <ShoppingBag className="h-4 w-4" />
               Add to Cart
@@ -279,7 +279,7 @@ function ProductContent({ product }: { product: Product }) {
               type="button"
               onClick={() => toggleWishlist(product.id)}
               className={`btn-secondary flex items-center justify-center gap-2 text-[#7A2533] ${
-                wishlisted ? "bg-[#C9A96E] text-white border-[#C9A96E]" : ""
+                wishlisted ? "bg-[#7A2533] text-white border-[#7A2533]" : ""
               }`}
             >
               <Heart className={`h-4 w-4 ${wishlisted ? "fill-white" : ""}`} />
@@ -298,7 +298,7 @@ function ProductContent({ product }: { product: Product }) {
                 {details.map(([k, v]) =>
                   v ? (
                     <div key={k} className="flex flex-col gap-0.5">
-                      <dt className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#C9A96E]">
+                      <dt className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#7A2533]">
                         {k}
                       </dt>
                       <dd className="text-[#7A2533]">{v}</dd>

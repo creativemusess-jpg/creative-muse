@@ -190,32 +190,32 @@ function AdminAttributesPage() {
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <div>
               <label className="mb-1 block text-xs font-medium text-gray-600">Name *</label>
-              <input type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value, slug: editing ? form.slug : e.target.value.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "") })} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#c9a96e]" />
+              <input type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value, slug: editing ? form.slug : e.target.value.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "") })} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#7A2533]" />
             </div>
             <div>
               <label className="mb-1 block text-xs font-medium text-gray-600">Slug</label>
-              <input type="text" value={form.slug} onChange={(e) => setForm({ ...form, slug: e.target.value })} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#c9a96e]" />
+              <input type="text" value={form.slug} onChange={(e) => setForm({ ...form, slug: e.target.value })} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#7A2533]" />
             </div>
             <div>
               <label className="mb-1 block text-xs font-medium text-gray-600">Field Type</label>
-              <select value={form.field_type} onChange={(e) => setForm({ ...form, field_type: e.target.value })} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#c9a96e]">
+              <select value={form.field_type} onChange={(e) => setForm({ ...form, field_type: e.target.value })} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#7A2533]">
                 {FIELD_TYPES.map((ft) => <option key={ft.value} value={ft.value}>{ft.label}</option>)}
               </select>
             </div>
             <div>
               <label className="mb-1 block text-xs font-medium text-gray-600">Category (optional)</label>
-              <select value={form.category_id} onChange={(e) => setForm({ ...form, category_id: e.target.value })} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#c9a96e]">
+              <select value={form.category_id} onChange={(e) => setForm({ ...form, category_id: e.target.value })} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#7A2533]">
                 <option value="">All Categories</option>
                 {categories.map((c: any) => <option key={c.id} value={c.id}>{c.name}</option>)}
               </select>
             </div>
             <div>
               <label className="mb-1 block text-xs font-medium text-gray-600">Placeholder</label>
-              <input type="text" value={form.placeholder} onChange={(e) => setForm({ ...form, placeholder: e.target.value })} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#c9a96e]" />
+              <input type="text" value={form.placeholder} onChange={(e) => setForm({ ...form, placeholder: e.target.value })} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#7A2533]" />
             </div>
             <div>
               <label className="mb-1 block text-xs font-medium text-gray-600">Sort Order</label>
-              <input type="number" value={form.sort_order} onChange={(e) => setForm({ ...form, sort_order: parseInt(e.target.value) || 0 })} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#c9a96e]" />
+              <input type="number" value={form.sort_order} onChange={(e) => setForm({ ...form, sort_order: parseInt(e.target.value) || 0 })} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#7A2533]" />
             </div>
           </div>
 
@@ -234,7 +234,7 @@ function AdminAttributesPage() {
                 ))}
               </div>
               <div className="flex gap-2">
-                <input type="text" value={optionInput} onChange={(e) => setOptionInput(e.target.value)} onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addOption())} placeholder="Type and press Enter" className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#c9a96e]" />
+                <input type="text" value={optionInput} onChange={(e) => setOptionInput(e.target.value)} onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addOption())} placeholder="Type and press Enter" className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#7A2533]" />
                 <button onClick={addOption} className="rounded-lg bg-gray-100 px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-200">Add</button>
               </div>
             </div>

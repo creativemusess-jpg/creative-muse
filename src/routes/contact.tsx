@@ -43,7 +43,7 @@ function ContactPage() {
           <Field label="Phone" type="tel" />
           <div>
             <label className="mb-1.5 block text-xs font-semibold tracking-wider text-[#7a6e64] uppercase">Message</label>
-            <textarea rows={4} className="w-full rounded-[20px] border border-[#e0d8cc] bg-[#fdf8f3] px-4 py-3 text-sm focus:border-[#C9A96E] focus:outline-none" />
+            <textarea rows={4} className="w-full rounded-[20px] border border-[#e0d8cc] bg-[#fdf8f3] px-4 py-3 text-sm focus:border-[#7A2533] focus:outline-none" />
           </div>
           <button type="submit" className="btn-primary w-full">
             <Send className="h-4 w-4" /> {sent ? "Sent — we'll reply soon" : "Send Message"}
@@ -58,7 +58,7 @@ function Field({ label, type }: { label: string; type: string }) {
   return (
     <div>
       <label className="mb-1.5 block text-xs font-semibold tracking-wider text-[#7a6e64] uppercase">{label}</label>
-      <input type={type} required className="w-full rounded-full border border-[#e0d8cc] bg-[#fdf8f3] px-4 py-3 text-sm focus:border-[#C9A96E] focus:outline-none" />
+      <input type={type} required className="w-full rounded-full border border-[#e0d8cc] bg-[#fdf8f3] px-4 py-3 text-sm focus:border-[#7A2533] focus:outline-none" />
     </div>
   );
 }
@@ -67,7 +67,7 @@ function Info({ icon: Ic, title, text }: { icon: typeof MapPin; title: string; t
   return (
     <div className="flex items-start gap-4 rounded-[24px] bg-white p-6 shadow-[0_4px_16px_rgba(0,0,0,0.04)]">
       <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#fdf8f3] to-[#f0e4cd]">
-        <Ic className="h-5 w-5 text-[#C9A96E]" />
+        <Ic className="h-5 w-5 text-[#7A2533]" />
       </div>
       <div>
         <p className="font-display text-base font-semibold text-[#1a1a2e]">{title}</p>

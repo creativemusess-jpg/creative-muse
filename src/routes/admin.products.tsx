@@ -107,11 +107,11 @@ function AdminProducts() {
               )}
             </div>
             <div className="min-w-0">
-              <Link to="/admin/products/$id" params={{ id: p.id }} className="font-medium text-[#1a1a2e] hover:text-[#c9a96e]">
+              <Link to="/admin/products/$id" params={{ id: p.id }} className="font-medium text-[#1a1a2e] hover:text-[#7A2533]">
                 {p.name}
               </Link>
               {(p.flags || []).filter((f) => f.badge_label).map((flag) => (
-                <span key={flag.id} className="ml-1 rounded px-1.5 py-0.5 text-[10px] font-semibold" style={{ backgroundColor: flag.badge_bg_color || "#c9a96e", color: flag.badge_text_color || "#ffffff" }}>
+                <span key={flag.id} className="ml-1 rounded px-1.5 py-0.5 text-[10px] font-semibold" style={{ backgroundColor: flag.badge_bg_color || "#7A2533", color: flag.badge_text_color || "#ffffff" }}>
                   {flag.badge_label}
                 </span>
               ))}
@@ -196,7 +196,7 @@ function AdminProducts() {
         filters={
           <div className="flex gap-2">
             <select value={statusFilter} onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
-              className="rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#c9a96e]">
+              className="rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]">
               <option value="">All Status</option>
               <option value="active">Active</option>
               <option value="draft">Draft</option>

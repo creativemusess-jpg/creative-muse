@@ -124,7 +124,7 @@ export const ProductCard = memo(function ProductCard({
           <Link
             to={productLink(product)!.to}
             params={productLink(product)!.params}
-            className="font-display mt-1 line-clamp-2 min-h-[2.35em] text-[12px] leading-snug font-semibold text-[#1a1a2e] transition-colors hover:text-[#C9A96E] md:mt-1.5 md:min-h-[36px] md:text-[14px]"
+            className="font-display mt-1 line-clamp-2 min-h-[2.35em] text-[12px] leading-snug font-semibold text-[#1a1a2e] transition-colors hover:text-[#7A2533] md:mt-1.5 md:min-h-[36px] md:text-[14px]"
           >
             {product.name}
           </Link>
@@ -152,7 +152,7 @@ export const ProductCard = memo(function ProductCard({
         <button
           type="button"
           onClick={() => addToCart(product.id, 1)}
-          className="mt-auto flex min-h-[34px] w-full items-center justify-center gap-1.5 rounded-[8px] bg-gradient-to-r from-[#C9A96E] to-[#B8860B] text-[10px] font-semibold tracking-[0.07em] text-[#7A2533] uppercase transition-all duration-300 md:min-h-[42px] md:gap-2 md:rounded-full md:text-[12px] md:tracking-[0.12em] hover:md:shadow-[0_12px_32px_rgba(201,169,110,0.4)]"
+          className="mt-auto flex min-h-[34px] w-full items-center justify-center gap-1.5 rounded-[8px] bg-[#7A2533] text-[10px] font-semibold tracking-[0.07em] text-white uppercase transition-all duration-300 md:min-h-[42px] md:gap-2 md:rounded-full md:text-[12px] md:tracking-[0.12em] hover:md:shadow-[0_12px_32px_rgba(122,37,51,0.4)] hover:md:bg-[#5F1C27]"
         >
           <ShoppingBag className="h-3 w-3 md:h-3.5 md:w-3.5" />
           Add to Cart

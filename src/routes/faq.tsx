@@ -33,7 +33,7 @@ export const Route = createFileRoute("/faq")({
                     className="flex w-full items-center justify-between gap-4 px-6 py-5 text-left"
                   >
                     <span className="font-display text-[15px] font-semibold text-[#1a1a2e]">{q}</span>
-                    <span className={`flex h-8 w-8 items-center justify-center rounded-full bg-[#fdf8f3] text-[#C9A96E] transition-transform duration-300 ${isOpen ? "rotate-45" : ""}`}>
+                    <span className={`flex h-8 w-8 items-center justify-center rounded-full bg-[#fdf8f3] text-[#7A2533] transition-transform duration-300 ${isOpen ? "rotate-45" : ""}`}>
                       <Plus className="h-4 w-4" />
                     </span>
                   </button>

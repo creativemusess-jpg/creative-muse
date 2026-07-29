@@ -17,15 +17,15 @@ export function Footer() {
           </p>
           <ul className="mt-6 space-y-2.5 text-[13px] text-[#cfc6b6]">
             <li className="flex items-start gap-2.5">
-              <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#C9A96E]" />
+              <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#7A2533]" />
               <span>GF-3/4, Vidhi Square, BPC Road, Vadodara 390020</span>
             </li>
             <li className="flex items-center gap-2.5">
-              <Phone className="h-4 w-4 text-[#C9A96E]" />
+              <Phone className="h-4 w-4 text-[#7A2533]" />
               <a href="tel:+919033779867">+91 90337 79867</a>
             </li>
             <li className="flex items-center gap-2.5">
-              <Mail className="h-4 w-4 text-[#C9A96E]" />
+              <Mail className="h-4 w-4 text-[#7A2533]" />
               <a href="mailto:hello@creativemuse.in">hello@creativemuse.in</a>
             </li>
           </ul>
@@ -35,7 +35,7 @@ export function Footer() {
                 key={i}
                 href="#"
                 aria-label="social"
-                className="flex h-10 w-10 items-center justify-center rounded-full bg-white/5 text-[#cfc6b6] transition-colors hover:bg-[#C9A96E]/20 hover:text-[#C9A96E]"
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-white/5 text-[#cfc6b6] transition-colors hover:bg-[#7A2533]/20 hover:text-[#7A2533]"
               >
                 <Ic className="h-4 w-4" />
               </a>
@@ -83,7 +83,7 @@ export function Footer() {
               href="https://apfpuniversal.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[#C9A96E] hover:underline"
+              className="text-[#7A2533] hover:underline"
             >
               APFP UNIVERSAL
             </a>
@@ -119,12 +119,12 @@ export function Footer() {
 function FooterCol({ title, links }: { title: string; links: [string, string][] }) {
   return (
     <div>
-      <h4 className="font-display text-base text-[#C9A96E]">{title}</h4>
+      <h4 className="font-display text-base text-[#7A2533]">{title}</h4>
       <span className="gold-divider mt-3" />
       <ul className="mt-5 space-y-2.5 text-[13px] text-[#cfc6b6]">
         {links.map(([label, to]) => (
           <li key={label}>
-            <Link to={to} className="transition-colors hover:text-[#C9A96E]">
+            <Link to={to} className="transition-colors hover:text-[#7A2533]">
               {label}
             </Link>
           </li>

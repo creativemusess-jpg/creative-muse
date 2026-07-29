@@ -32,7 +32,7 @@ const PackingSlip = forwardRef<HTMLDivElement, PackingSlipProps>(({ order, items
       <style>{`
         @page { size: A4 portrait; margin: 14mm; }
         .packing-slip { width: 190mm; min-height: 270mm; background:#fffdf8; padding:18mm; box-sizing:border-box; border:1px solid #ead8b8; }
-        .ps-header { display:flex; justify-content:space-between; align-items:flex-start; border-bottom:1px solid #b7892f; padding-bottom:18px; }
+        .ps-header { display:flex; justify-content:space-between; align-items:flex-start; border-bottom:1px solid #7A2533; padding-bottom:18px; }
         .ps-logo { font:700 42px Georgia,serif; color:#222; letter-spacing:.04em; }
         .ps-title { font:500 30px Georgia,serif; color:#7b5417; text-transform:uppercase; }
         .ps-grid { display:grid; grid-template-columns:1fr 1fr; gap:22px; margin-top:22px; }
@@ -117,11 +117,11 @@ const PackingSlip = forwardRef<HTMLDivElement, PackingSlipProps>(({ order, items
           style={{
             width: 54,
             height: 54,
-            border: "1px solid #b7892f",
+            border: "1px solid #7A2533",
             borderRadius: "50%",
             display: "grid",
             placeItems: "center",
-            color: "#b7892f",
+            color: "#7A2533",
             fontSize: 28,
           }}
         >

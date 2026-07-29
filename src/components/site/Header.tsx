@@ -64,7 +64,7 @@ export const Header = memo(function Header() {
               >
                 <Heart className="h-[20px] w-[20px] text-[#2a1e14]" strokeWidth={1.9} />
                 {wishlistCount > 0 && (
-                  <span className="absolute right-1 top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#C9A96E] px-1 text-[10px] font-semibold text-white">
+                  <span className="absolute right-1 top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#7A2533] px-1 text-[10px] font-semibold text-white">
                     {wishlistCount}
                   </span>
                 )}
@@ -219,7 +219,7 @@ function MobileDrawer({ onClose }: { onClose: () => void }) {
             href="https://wa.me/919033779867"
             target="_blank"
             rel="noreferrer"
-            className="mt-3 flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[#C9A96E] to-[#B8860B] px-5 py-3 text-sm font-semibold text-white"
+            className="mt-3 flex items-center justify-center gap-2 rounded-full bg-[#7A2533] px-5 py-3 text-sm font-semibold text-white hover:bg-[#5F1C27]"
           >
             <MessageCircle className="h-4 w-4" />
             Chat on WhatsApp

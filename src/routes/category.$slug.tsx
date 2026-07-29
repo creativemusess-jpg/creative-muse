@@ -87,11 +87,11 @@ function CategoryPage() {
     <div className="min-h-screen bg-[#fdf8f3] pt-24 pb-20">
       <div className="mx-auto max-w-[1280px] px-6">
         <nav className="flex items-center gap-2 py-4 text-xs text-gray-400">
-          <Link to="/" className="hover:text-[#c9a96e]">
+          <Link to="/" className="hover:text-[#7A2533]">
             <Home className="h-3.5 w-3.5" />
           </Link>
           <ChevronRight className="h-3 w-3" />
-          <Link to="/shop" className="hover:text-[#c9a96e]">
+          <Link to="/shop" className="hover:text-[#7A2533]">
             Shop
           </Link>
           <ChevronRight className="h-3 w-3" />
@@ -115,7 +115,7 @@ function CategoryPage() {
               {category.description}
             </p>
           )}
-          <p className="mt-2 text-xs tracking-wider text-[#C9A96E] uppercase">
+          <p className="mt-2 text-xs tracking-wider text-[#7A2533] uppercase">
             {products.length} {products.length === 1 ? "product" : "products"}
           </p>
         </div>

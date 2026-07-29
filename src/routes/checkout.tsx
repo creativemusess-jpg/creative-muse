@@ -314,7 +314,7 @@ function CheckoutPage() {
           {STEPS.map((step, i) => (
             <div key={step} className="flex items-center gap-2">
               <div className={`flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-full text-[11px] font-bold ${
-                i === 1 ? "bg-[#c9a96e] text-white" : i < 1 ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-400"
+                i === 1 ? "bg-[#7A2533] text-white" : i < 1 ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-400"
               }`}>{i < 1 ? <Check className="h-3.5 w-3.5" /> : i + 1}</div>
               <span className={`hidden sm:inline font-medium ${i === 1 ? "text-[#1a1a2e]" : "text-gray-400"}`}>{step}</span>
               {i < STEPS.length - 1 && <ChevronRight className="h-3 w-3 text-gray-300" />}
@@ -322,16 +322,16 @@ function CheckoutPage() {
           ))}
         </div>
 
-        <p className="text-[11px] font-semibold tracking-[0.24em] text-[#c9a96e] uppercase">Checkout</p>
+        <p className="text-[11px] font-semibold tracking-[0.24em] text-[#7A2533] uppercase">Checkout</p>
         <h1 className="font-display mt-2 text-[32px] font-semibold text-[#1a1a2e]">Delivery Details</h1>
 
         <form onSubmit={handleContinue} className="mt-10 grid gap-10 overflow-hidden lg:grid-cols-[1fr_400px]">
           <div className="space-y-8">
             <div className="rounded-[28px] bg-white p-6 shadow-[0_4px_24px_rgba(0,0,0,0.05)]">
               <h2 className="font-display text-lg font-semibold text-[#1a1a2e] flex items-center gap-2">
-                <MapPin className="h-4 w-4 text-[#c9a96e]" /> Delivery Address
+                <MapPin className="h-4 w-4 text-[#7A2533]" /> Delivery Address
                 {addresses.length > 0 && (
-                  <button type="button" onClick={() => setShowSavedAddresses(!showSavedAddresses)} className="ml-auto text-[11px] font-semibold text-[#c9a96e] uppercase tracking-wider hover:underline">
+                  <button type="button" onClick={() => setShowSavedAddresses(!showSavedAddresses)} className="ml-auto text-[11px] font-semibold text-[#7A2533] uppercase tracking-wider hover:underline">
                     {showSavedAddresses ? "Hide Saved" : `Saved (${addresses.length})`}
                   </button>
                 )}
@@ -345,12 +345,12 @@ function CheckoutPage() {
                       <div
                         key={addr.id}
                         className={`flex items-start gap-3 rounded-xl border p-3 text-left text-sm transition-colors ${
-                          isSelected ? "border-[#c9a96e] bg-[#fdf8f3] ring-1 ring-[#c9a96e]/30" : "border-[#e0d8cc] hover:border-[#c9a96e]/50"
+                          isSelected ? "border-[#7A2533] bg-[#fdf8f3] ring-1 ring-[#7A2533]/30" : "border-[#e0d8cc] hover:border-[#7A2533]/50"
                         }`}
                       >
                         <button type="button" onClick={() => selectSavedAddress(addr)} className="mt-1 shrink-0">
                           <div className={`flex h-4 w-4 items-center justify-center rounded-full border-2 ${
-                            isSelected ? "border-[#c9a96e] bg-[#c9a96e]" : "border-gray-300"
+                            isSelected ? "border-[#7A2533] bg-[#7A2533]" : "border-gray-300"
                           }`}>
                             {isSelected && <div className="h-1.5 w-1.5 rounded-full bg-white" />}
                           </div>
@@ -360,7 +360,7 @@ function CheckoutPage() {
                             <span className="font-semibold text-[#1a1a2e]">{addr.fullName || "Saved Address"}</span>
                             <span className="text-[10px] text-[#7a6e64] flex items-center gap-1">{addressTypeIcon(addr.addressType)}{addr.addressType}</span>
                             {addr.isDefault && (
-                              <span className="inline-flex items-center gap-0.5 rounded-full bg-[#c9a96e]/10 px-2 py-0.5 text-[10px] font-semibold text-[#c9a96e] uppercase">
+                              <span className="inline-flex items-center gap-0.5 rounded-full bg-[#7A2533]/10 px-2 py-0.5 text-[10px] font-semibold text-[#7A2533] uppercase">
                                 <Star className="h-2.5 w-2.5" /> Default
                               </span>
                             )}
@@ -370,14 +370,14 @@ function CheckoutPage() {
                           {addr.phone && <p className="text-xs text-[#7a6e64]">📞 {addr.phone}</p>}
                         </button>
                         <div className="flex shrink-0 flex-col gap-1">
-                          <button type="button" onClick={() => handleEditAddress(addr)} className="rounded-full p-1.5 text-gray-400 hover:bg-[#f5efe8] hover:text-[#c9a96e] transition-colors" title="Edit">
+                          <button type="button" onClick={() => handleEditAddress(addr)} className="rounded-full p-1.5 text-gray-400 hover:bg-[#f5efe8] hover:text-[#7A2533] transition-colors" title="Edit">
                             <Pencil className="h-3.5 w-3.5" />
                           </button>
                           <button type="button" onClick={() => handleDeleteAddress(addr.id)} className="rounded-full p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-500 transition-colors" title="Delete">
                             <Trash2 className="h-3.5 w-3.5" />
                           </button>
                           {!addr.isDefault && (
-                            <button type="button" onClick={() => handleSetDefault(addr.id)} className="rounded-full p-1.5 text-gray-400 hover:bg-[#f5efe8] hover:text-[#c9a96e] transition-colors text-[9px] font-semibold uppercase tracking-wider" title="Set as Default">
+                            <button type="button" onClick={() => handleSetDefault(addr.id)} className="rounded-full p-1.5 text-gray-400 hover:bg-[#f5efe8] hover:text-[#7A2533] transition-colors text-[9px] font-semibold uppercase tracking-wider" title="Set as Default">
                               <Star className="h-3 w-3" />
                             </button>
                           )}
@@ -386,7 +386,7 @@ function CheckoutPage() {
                     );
                   })}
                   <button type="button" onClick={handleAddNew}
-                    className="flex w-full items-center justify-center gap-2 rounded-xl border border-dashed border-[#c9a96e]/40 p-3 text-sm font-medium text-[#c9a96e] hover:bg-[#fdf8f3] transition-colors">
+                    className="flex w-full items-center justify-center gap-2 rounded-xl border border-dashed border-[#7A2533]/40 p-3 text-sm font-medium text-[#7A2533] hover:bg-[#fdf8f3] transition-colors">
                     <Plus className="h-4 w-4" /> Add New Address
                   </button>
                 </div>
@@ -395,13 +395,13 @@ function CheckoutPage() {
               <div className="mt-5 grid gap-4 sm:grid-cols-2">
                 <div className="sm:col-span-2">
                   <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Full Name *</label>
-                  <input value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Your full name" className="w-full rounded-xl border border-[#e0d8cc] px-4 py-3 text-sm outline-none focus:border-[#c9a96e]" />
+                  <input value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Your full name" className="w-full rounded-xl border border-[#e0d8cc] px-4 py-3 text-sm outline-none focus:border-[#7A2533]" />
                 </div>
                 <div className="sm:col-span-2">
                   <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">PIN Code *</label>
                   <div className="relative">
                     <input value={pincodeInput} onChange={(e) => handlePincodeChange(e.target.value)} placeholder="Enter 6-digit PIN code" maxLength={6}
-                      className={`w-full rounded-xl border px-4 py-3 pr-10 text-sm outline-none transition-colors ${pincodeStatus === "verified" ? "border-green-400 bg-green-50" : pincodeStatus === "checking" ? "border-amber-300 bg-amber-50" : pincodeStatus === "not_found" || pincodeStatus === "invalid" ? "border-red-300 bg-red-50" : "border-[#e0d8cc] focus:border-[#c9a96e]"}`} />
+                      className={`w-full rounded-xl border px-4 py-3 pr-10 text-sm outline-none transition-colors ${pincodeStatus === "verified" ? "border-green-400 bg-green-50" : pincodeStatus === "checking" ? "border-amber-300 bg-amber-50" : pincodeStatus === "not_found" || pincodeStatus === "invalid" ? "border-red-300 bg-red-50" : "border-[#e0d8cc] focus:border-[#7A2533]"}`} />
                     <span className="absolute right-3 top-1/2 -translate-y-1/2">
                       {pincodeStatus === "checking" ? <Loader2 className="h-4 w-4 animate-spin text-amber-500" /> : pincodeStatus === "verified" ? <Check className="h-4 w-4 text-green-500" /> : pincodeStatus === "not_found" || pincodeStatus === "invalid" ? <AlertCircle className="h-4 w-4 text-red-500" /> : null}
                     </span>
@@ -412,7 +412,7 @@ function CheckoutPage() {
                   <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">State *</label>
                   <div className="relative">
                     <select value={selectedStateCode} onChange={(e) => handleStateChange(e.target.value)}
-                      className={`w-full appearance-none rounded-xl border px-4 py-3 pr-8 text-sm outline-none focus:border-[#c9a96e] bg-white ${selectedStateCode ? "text-[#1a1a2e]" : "text-[#7a6e64]"}`}>
+                      className={`w-full appearance-none rounded-xl border px-4 py-3 pr-8 text-sm outline-none focus:border-[#7A2533] bg-white ${selectedStateCode ? "text-[#1a1a2e]" : "text-[#7a6e64]"}`}>
                       <option value="">Select state</option>
                       {INDIAN_STATES.map((s) => (<option key={s.code} value={s.code}>{s.name}</option>))}
                     </select>
@@ -423,12 +423,12 @@ function CheckoutPage() {
                   <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">City / District *</label>
                   <div className="relative">
                     {selectedStateCode ? (
-                      <select value={selectedCityId} onChange={(e) => handleCityChange(e.target.value)} className="w-full appearance-none rounded-xl border border-[#e0d8cc] px-4 py-3 pr-8 text-sm outline-none focus:border-[#c9a96e] bg-white">
+                      <select value={selectedCityId} onChange={(e) => handleCityChange(e.target.value)} className="w-full appearance-none rounded-xl border border-[#e0d8cc] px-4 py-3 pr-8 text-sm outline-none focus:border-[#7A2533] bg-white">
                         <option value="">Select city</option>
                         {cityOptions.map((c) => (<option key={c.id} value={c.id}>{c.name}</option>))}
                       </select>
                     ) : (
-                      <input value={address.city} onChange={(e) => setAddress({ ...address, city: e.target.value })} placeholder="Select a state first" className="w-full rounded-xl border border-[#e0d8cc] px-4 py-3 text-sm outline-none focus:border-[#c9a96e]" />
+                      <input value={address.city} onChange={(e) => setAddress({ ...address, city: e.target.value })} placeholder="Select a state first" className="w-full rounded-xl border border-[#e0d8cc] px-4 py-3 text-sm outline-none focus:border-[#7A2533]" />
                     )}
                     <ChevronRight className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 rotate-90 text-[#7a6e64]" />
                   </div>
@@ -437,7 +437,7 @@ function CheckoutPage() {
                   <div className="sm:col-span-2">
                     <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Locality / Post Office</label>
                     <div className="relative">
-                      <select value={selectedLocality} onChange={(e) => handleLocalityChange(e.target.value)} className="w-full appearance-none rounded-xl border border-[#e0d8cc] px-4 py-3 pr-8 text-sm outline-none focus:border-[#c9a96e] bg-white">
+                      <select value={selectedLocality} onChange={(e) => handleLocalityChange(e.target.value)} className="w-full appearance-none rounded-xl border border-[#e0d8cc] px-4 py-3 pr-8 text-sm outline-none focus:border-[#7A2533] bg-white">
                         {pincodeLocations.map((loc, i) => (<option key={i} value={loc.locality}>{loc.locality}{loc.type ? ` (${loc.type})` : ""}</option>))}
                       </select>
                       <ChevronRight className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 rotate-90 text-[#7a6e64]" />
@@ -449,70 +449,70 @@ function CheckoutPage() {
                 )}
                 <div className="sm:col-span-2">
                   <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Address Line 1 *</label>
-                  <input value={address.line1} onChange={(e) => setAddress({ ...address, line1: e.target.value })} placeholder="House / Shop / Building No., Street" className="w-full rounded-xl border border-[#e0d8cc] px-4 py-3 text-sm outline-none focus:border-[#c9a96e]" />
+                  <input value={address.line1} onChange={(e) => setAddress({ ...address, line1: e.target.value })} placeholder="House / Shop / Building No., Street" className="w-full rounded-xl border border-[#e0d8cc] px-4 py-3 text-sm outline-none focus:border-[#7A2533]" />
                 </div>
                 <div className="sm:col-span-2">
                   <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Address Line 2</label>
-                  <input value={address.line2} onChange={(e) => setAddress({ ...address, line2: e.target.value })} placeholder="Apartment, Suite, Unit (optional)" className="w-full rounded-xl border border-[#e0d8cc] px-4 py-3 text-sm outline-none focus:border-[#c9a96e]" />
+                  <input value={address.line2} onChange={(e) => setAddress({ ...address, line2: e.target.value })} placeholder="Apartment, Suite, Unit (optional)" className="w-full rounded-xl border border-[#e0d8cc] px-4 py-3 text-sm outline-none focus:border-[#7A2533]" />
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Landmark</label>
-                  <input value={address.landmark} onChange={(e) => setAddress({ ...address, landmark: e.target.value })} placeholder="Near… (optional)" className="w-full rounded-xl border border-[#e0d8cc] px-4 py-3 text-sm outline-none focus:border-[#c9a96e]" />
+                  <input value={address.landmark} onChange={(e) => setAddress({ ...address, landmark: e.target.value })} placeholder="Near… (optional)" className="w-full rounded-xl border border-[#e0d8cc] px-4 py-3 text-sm outline-none focus:border-[#7A2533]" />
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Phone *</label>
-                  <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder={user.email} className="w-full rounded-xl border border-[#e0d8cc] px-4 py-3 text-sm outline-none focus:border-[#c9a96e]" />
+                  <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder={user.email} className="w-full rounded-xl border border-[#e0d8cc] px-4 py-3 text-sm outline-none focus:border-[#7A2533]" />
                 </div>
               </div>
 
               <label className="mt-4 flex items-center gap-2 text-xs text-[#7a6e64]">
-                <input type="checkbox" checked={saveAddr} onChange={(e) => setSaveAddr(e.target.checked)} className="accent-[#c9a96e]" />
+                <input type="checkbox" checked={saveAddr} onChange={(e) => setSaveAddr(e.target.checked)} className="accent-[#7A2533]" />
                 Save this address for future orders
               </label>
             </div>
 
             <div className="rounded-[28px] bg-white p-6 shadow-[0_4px_24px_rgba(0,0,0,0.05)]">
-              <h2 className="font-display text-lg font-semibold text-[#1a1a2e] flex items-center gap-2"><MapPin className="h-4 w-4 text-[#c9a96e]" /> Billing Address</h2>
+              <h2 className="font-display text-lg font-semibold text-[#1a1a2e] flex items-center gap-2"><MapPin className="h-4 w-4 text-[#7A2533]" /> Billing Address</h2>
               <label className="mt-3 flex items-center gap-2 text-sm">
-                <input type="checkbox" checked={billingSame} onChange={(e) => setBillingSame(e.target.checked)} className="accent-[#c9a96e]" />
+                <input type="checkbox" checked={billingSame} onChange={(e) => setBillingSame(e.target.checked)} className="accent-[#7A2533]" />
                 Billing address same as delivery address
               </label>
               {!billingSame && (
                 <div className="mt-4 grid gap-4 sm:grid-cols-2">
                   <div className="sm:col-span-2">
                     <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Billing Address Line 1 *</label>
-                    <input value={billingAddress.line1} onChange={(e) => setBillingAddress({ ...billingAddress, line1: e.target.value })} className="w-full rounded-xl border border-[#e0d8cc] px-4 py-3 text-sm outline-none focus:border-[#c9a96e]" />
+                    <input value={billingAddress.line1} onChange={(e) => setBillingAddress({ ...billingAddress, line1: e.target.value })} className="w-full rounded-xl border border-[#e0d8cc] px-4 py-3 text-sm outline-none focus:border-[#7A2533]" />
                   </div>
                   <div className="sm:col-span-2">
                     <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Billing Address Line 2</label>
-                    <input value={billingAddress.line2} onChange={(e) => setBillingAddress({ ...billingAddress, line2: e.target.value })} className="w-full rounded-xl border border-[#e0d8cc] px-4 py-3 text-sm outline-none focus:border-[#c9a96e]" />
+                    <input value={billingAddress.line2} onChange={(e) => setBillingAddress({ ...billingAddress, line2: e.target.value })} className="w-full rounded-xl border border-[#e0d8cc] px-4 py-3 text-sm outline-none focus:border-[#7A2533]" />
                   </div>
                   <div>
                     <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">City *</label>
-                    <input value={billingAddress.city} onChange={(e) => setBillingAddress({ ...billingAddress, city: e.target.value })} className="w-full rounded-xl border border-[#e0d8cc] px-4 py-3 text-sm outline-none focus:border-[#c9a96e]" />
+                    <input value={billingAddress.city} onChange={(e) => setBillingAddress({ ...billingAddress, city: e.target.value })} className="w-full rounded-xl border border-[#e0d8cc] px-4 py-3 text-sm outline-none focus:border-[#7A2533]" />
                   </div>
                   <div>
                     <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">State *</label>
-                    <input value={billingAddress.state} onChange={(e) => setBillingAddress({ ...billingAddress, state: e.target.value })} className="w-full rounded-xl border border-[#e0d8cc] px-4 py-3 text-sm outline-none focus:border-[#c9a96e]" />
+                    <input value={billingAddress.state} onChange={(e) => setBillingAddress({ ...billingAddress, state: e.target.value })} className="w-full rounded-xl border border-[#e0d8cc] px-4 py-3 text-sm outline-none focus:border-[#7A2533]" />
                   </div>
                   <div>
                     <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Postal Code *</label>
-                    <input value={billingAddress.postalCode} onChange={(e) => setBillingAddress({ ...billingAddress, postalCode: e.target.value })} className="w-full rounded-xl border border-[#e0d8cc] px-4 py-3 text-sm outline-none focus:border-[#c9a96e]" />
+                    <input value={billingAddress.postalCode} onChange={(e) => setBillingAddress({ ...billingAddress, postalCode: e.target.value })} className="w-full rounded-xl border border-[#e0d8cc] px-4 py-3 text-sm outline-none focus:border-[#7A2533]" />
                   </div>
                 </div>
               )}
             </div>
 
             <div className="rounded-[28px] bg-white p-6 shadow-[0_4px_24px_rgba(0,0,0,0.05)]">
-              <h2 className="font-display text-lg font-semibold text-[#1a1a2e] flex items-center gap-2"><Truck className="h-4 w-4 text-[#c9a96e]" /> Delivery Option</h2>
+              <h2 className="font-display text-lg font-semibold text-[#1a1a2e] flex items-center gap-2"><Truck className="h-4 w-4 text-[#7A2533]" /> Delivery Option</h2>
               <div className="mt-4 space-y-3">
-                <label className={`flex cursor-pointer items-center gap-3 rounded-xl border p-4 transition-colors ${deliveryMethod === "standard" ? "border-[#c9a96e] bg-[#fdf8f3] ring-1 ring-[#c9a96e]/30" : "border-[#e0d8cc] hover:border-[#c9a96e]/50"}`}>
-                  <input type="radio" name="delivery" value="standard" checked={deliveryMethod === "standard"} onChange={(e) => setDeliveryMethod(e.target.value as DeliveryMethod)} className="h-4 w-4 accent-[#c9a96e]" />
+                <label className={`flex cursor-pointer items-center gap-3 rounded-xl border p-4 transition-colors ${deliveryMethod === "standard" ? "border-[#7A2533] bg-[#fdf8f3] ring-1 ring-[#7A2533]/30" : "border-[#e0d8cc] hover:border-[#7A2533]/50"}`}>
+                  <input type="radio" name="delivery" value="standard" checked={deliveryMethod === "standard"} onChange={(e) => setDeliveryMethod(e.target.value as DeliveryMethod)} className="h-4 w-4 accent-[#7A2533]" />
                   <div className="flex-1"><p className="font-medium text-[#1a1a2e]">Standard Insured Delivery</p><p className="text-xs text-[#7a6e64]">Free · 3–5 business days</p></div>
                   <span className="text-sm font-semibold text-green-600">Free</span>
                 </label>
-                <label className={`flex cursor-pointer items-center gap-3 rounded-xl border p-4 transition-colors ${deliveryMethod === "express" ? "border-[#c9a96e] bg-[#fdf8f3] ring-1 ring-[#c9a96e]/30" : "border-[#e0d8cc] hover:border-[#c9a96e]/50"}`}>
-                  <input type="radio" name="delivery" value="express" checked={deliveryMethod === "express"} onChange={(e) => setDeliveryMethod(e.target.value as DeliveryMethod)} className="h-4 w-4 accent-[#c9a96e]" />
+                <label className={`flex cursor-pointer items-center gap-3 rounded-xl border p-4 transition-colors ${deliveryMethod === "express" ? "border-[#7A2533] bg-[#fdf8f3] ring-1 ring-[#7A2533]/30" : "border-[#e0d8cc] hover:border-[#7A2533]/50"}`}>
+                  <input type="radio" name="delivery" value="express" checked={deliveryMethod === "express"} onChange={(e) => setDeliveryMethod(e.target.value as DeliveryMethod)} className="h-4 w-4 accent-[#7A2533]" />
                   <div className="flex-1"><p className="font-medium text-[#1a1a2e]">Express Delivery</p><p className="text-xs text-[#7a6e64]">₹450 · 1–2 business days</p></div>
                   <span className="text-sm font-semibold text-[#1a1a2e]">₹450</span>
                 </label>

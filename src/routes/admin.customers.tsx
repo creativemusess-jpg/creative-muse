@@ -40,7 +40,7 @@ function AdminCustomers() {
       <AdminPageHeader title="Customers" description={`${count} registered customers`} />
       <div className="mb-4 relative flex-1 max-w-sm">
         <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-        <input type="text" placeholder="Search customers..." value={search} onChange={(e) => setSearch(e.target.value)} className="w-full rounded-lg border border-gray-200 py-2 pl-10 pr-4 text-sm outline-none focus:border-[#c9a96e]" />
+        <input type="text" placeholder="Search customers..." value={search} onChange={(e) => setSearch(e.target.value)} className="w-full rounded-lg border border-gray-200 py-2 pl-10 pr-4 text-sm outline-none focus:border-[#7A2533]" />
       </div>
       {loading ? (
         <AdminLoading />
@@ -51,7 +51,7 @@ function AdminCustomers() {
           {customers.map((c) => (
             <tr key={c.id} className="hover:bg-gray-50">
               <td className="px-4 py-3 font-medium text-[#1a1a2e]">
-  <Link to="/admin/customers/$id" params={{ id: c.id }} className="hover:text-[#c9a96e]">{c.full_name || "—"}</Link>
+  <Link to="/admin/customers/$id" params={{ id: c.id }} className="hover:text-[#7A2533]">{c.full_name || "—"}</Link>
 </td>
               <td className="px-4 py-3 text-gray-500">{c.email}</td>
               <td className="px-4 py-3 text-gray-500">{c.phone || "—"}</td>

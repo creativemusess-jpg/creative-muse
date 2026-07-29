@@ -64,7 +64,7 @@ function CategoryCollectionPage() {
       <PageShell>
         <div className="mx-auto max-w-[1280px] px-6 py-20 text-center">
           <h1 className="text-2xl font-bold text-gray-800">Category not found</h1>
-          <Link to="/shop" className="mt-4 inline-block text-[#c9a96e] hover:underline">
+          <Link to="/shop" className="mt-4 inline-block text-[#7A2533] hover:underline">
             Browse all products
           </Link>
         </div>
@@ -76,7 +76,7 @@ function CategoryCollectionPage() {
     <PageShell>
       <div className="mx-auto max-w-[1440px] px-4 py-8 lg:px-8">
         <nav className="mb-4 text-xs text-gray-400">
-          <Link to="/" className="hover:text-[#c9a96e]">
+          <Link to="/" className="hover:text-[#7A2533]">
             Home
           </Link>
           <span className="mx-2">/</span>
@@ -104,7 +104,7 @@ function CategoryCollectionPage() {
               <Link
                 key={sub.id}
                 to={`/collections/${slug}/${sub.slug}`}
-                className="rounded-full border border-gray-200 px-4 py-1.5 text-xs font-semibold text-gray-600 hover:border-[#c9a96e] hover:text-[#c9a96e]"
+                className="rounded-full border border-gray-200 px-4 py-1.5 text-xs font-semibold text-gray-600 hover:border-[#7A2533] hover:text-[#7A2533]"
               >
                 {sub.name}
               </Link>

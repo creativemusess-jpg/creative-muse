@@ -8,7 +8,7 @@ export function AnnouncementBar() {
   const [open, setOpen] = useState(true);
   if (!open) return null;
   return (
-    <div className="relative h-10 overflow-hidden bg-[#1a1a2e] text-[#C9A96E]">
+    <div className="relative h-10 overflow-hidden bg-[#1a1a2e] text-[#7A2533]">
       <div className="flex h-full items-center">
         <div className="flex animate-cm-marquee shrink-0 gap-16 whitespace-nowrap pl-8 text-[11px] tracking-[0.18em] uppercase">
           {Array.from({ length: 4 }).map((_, i) => (
@@ -19,7 +19,7 @@ export function AnnouncementBar() {
       <button
         aria-label="Dismiss announcement"
         onClick={() => setOpen(false)}
-        className="absolute top-1/2 right-3 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full text-[#C9A96E] transition-colors hover:bg-white/10"
+        className="absolute top-1/2 right-3 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full text-[#7A2533] transition-colors hover:bg-white/10"
       >
         <X className="h-3.5 w-3.5" />
       </button>

@@ -230,12 +230,12 @@ function EditProductPage() {
           <Section title="General">
             <div className="grid gap-4 sm:grid-cols-2">
               <Field label="Product Name" required>
-                <input type="text" value={form.name} onChange={(e) => handleChange("name", e.target.value)} className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#c9a96e]" required />
+                <input type="text" value={form.name} onChange={(e) => handleChange("name", e.target.value)} className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#7A2533]" required />
               </Field>
 
             </div>
             <Field label="Slug" required>
-              <input type="text" value={form.slug} onChange={(e) => handleChange("slug", e.target.value)} className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#c9a96e]" required />
+              <input type="text" value={form.slug} onChange={(e) => handleChange("slug", e.target.value)} className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#7A2533]" required />
             </Field>
             <Field label="Category">
               <select
@@ -244,7 +244,7 @@ function EditProductPage() {
                   handleChange("category_ids", e.target.value ? [e.target.value] : []);
                   handleChange("subcategory_id", null);
                 }}
-                className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#c9a96e]"
+                className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#7A2533]"
               >
                 <option value="">Select category</option>
                 {categories.map((c: any) => (
@@ -256,7 +256,7 @@ function EditProductPage() {
               <select
                 value={form.subcategory_id || ""}
                 onChange={(e) => handleChange("subcategory_id", e.target.value || null)}
-                className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#c9a96e]"
+                className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#7A2533]"
                 disabled={!form.category_ids?.[0]}
               >
                 <option value="">{form.category_ids?.[0] ? "Select subcategory" : "Select a category first"}</option>
@@ -266,23 +266,23 @@ function EditProductPage() {
               </select>
             </Field>
             <Field label="Short Description">
-              <textarea value={form.short_description || ""} onChange={(e) => handleChange("short_description", e.target.value)} rows={3} className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#c9a96e]" />
+              <textarea value={form.short_description || ""} onChange={(e) => handleChange("short_description", e.target.value)} rows={3} className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#7A2533]" />
             </Field>
             <Field label="Full Description">
-              <textarea value={form.full_description || ""} onChange={(e) => handleChange("full_description", e.target.value)} rows={6} className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#c9a96e]" />
+              <textarea value={form.full_description || ""} onChange={(e) => handleChange("full_description", e.target.value)} rows={6} className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#7A2533]" />
             </Field>
           </Section>
 
           <Section title="Pricing">
             <div className="grid gap-4 sm:grid-cols-3">
               <Field label="Current Price (₹)" required>
-                <input type="number" value={form.current_price || ""} onChange={(e) => handleChange("current_price", Number(e.target.value))} className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#c9a96e]" required min="0" />
+                <input type="number" value={form.current_price || ""} onChange={(e) => handleChange("current_price", Number(e.target.value))} className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#7A2533]" required min="0" />
               </Field>
               <Field label="Original Price (₹)">
-                <input type="number" value={form.original_price || ""} onChange={(e) => handleChange("original_price", Number(e.target.value))} className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#c9a96e]" min="0" />
+                <input type="number" value={form.original_price || ""} onChange={(e) => handleChange("original_price", Number(e.target.value))} className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#7A2533]" min="0" />
               </Field>
               <Field label="Badge">
-                <select value={form.badge || ""} onChange={(e) => handleChange("badge", e.target.value || null)} className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#c9a96e]">
+                <select value={form.badge || ""} onChange={(e) => handleChange("badge", e.target.value || null)} className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#7A2533]">
                   <option value="">None</option>
                   <option value="New">New</option>
                   <option value="Best Seller">Best Seller</option>
@@ -310,7 +310,7 @@ function EditProductPage() {
                       setProductAttrs(next);
                     }}
                     placeholder="Attribute name"
-                    className="flex-1 rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#c9a96e]"
+                    className="flex-1 rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#7A2533]"
                   />
                 )}
                 <input
@@ -322,7 +322,7 @@ function EditProductPage() {
                     setProductAttrs(next);
                   }}
                   placeholder={row.name ? `Enter ${row.name.toLowerCase()}` : "Value"}
-                  className="flex-1 rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#c9a96e]"
+                  className="flex-1 rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#7A2533]"
                 />
                 <button type="button" onClick={() => setProductAttrs(productAttrs.filter((_, j) => j !== i))} className="rounded-lg p-2 text-red-400 hover:bg-red-50 hover:text-red-600">
                   <Trash2 className="h-4 w-4" />
@@ -332,12 +332,12 @@ function EditProductPage() {
             <button
               type="button"
               onClick={() => setProductAttrs([...productAttrs, { defId: "", value: "", name: "" }])}
-              className="mt-3 flex items-center gap-1 text-sm font-medium text-[#C9A96E] hover:text-[#B8860B]"
+              className="mt-3 flex items-center gap-1 text-sm font-medium text-[#7A2533] hover:text-[#7A2533]"
             >
               <Plus className="h-3.5 w-3.5" /> Add Attribute
             </button>
             {attrDefs.length > 0 && (
-              <p className="mt-2 text-xs text-gray-400">Tip: Manage reusable attribute definitions in <Link to="/admin/attributes" className="text-[#C9A96E] hover:underline">Attributes</Link>.</p>
+              <p className="mt-2 text-xs text-gray-400">Tip: Manage reusable attribute definitions in <Link to="/admin/attributes" className="text-[#7A2533] hover:underline">Attributes</Link>.</p>
             )}
           </Section>
 
@@ -385,7 +385,7 @@ function EditProductPage() {
 
         <div className="space-y-6">
           <Section title="Status">
-            <select value={form.status} onChange={(e) => handleChange("status", e.target.value)} className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#c9a96e]">
+            <select value={form.status} onChange={(e) => handleChange("status", e.target.value)} className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#7A2533]">
               <option value="draft">Draft</option>
               <option value="active">Active</option>
               <option value="out_of_stock">Out of Stock</option>
@@ -395,10 +395,10 @@ function EditProductPage() {
 
           <Section title="Inventory">
             <Field label="Stock Quantity">
-              <input type="number" value={form.stock_quantity ?? ""} onChange={(e) => handleChange("stock_quantity", parseInt(e.target.value) || 0)} className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#c9a96e]" min="0" />
+              <input type="number" value={form.stock_quantity ?? ""} onChange={(e) => handleChange("stock_quantity", parseInt(e.target.value) || 0)} className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#7A2533]" min="0" />
             </Field>
             <Field label="Low Stock Threshold">
-              <input type="number" value={form.low_stock_threshold ?? 5} onChange={(e) => handleChange("low_stock_threshold", parseInt(e.target.value) || 5)} className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#c9a96e]" min="0" />
+              <input type="number" value={form.low_stock_threshold ?? 5} onChange={(e) => handleChange("low_stock_threshold", parseInt(e.target.value) || 5)} className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#7A2533]" min="0" />
             </Field>
           </Section>
 
@@ -422,33 +422,33 @@ function EditProductPage() {
                 )}
               </label>
             ))}
-            <Link to="/admin/product-flags" className="mt-2 inline-flex items-center gap-1 text-xs font-medium text-[#C9A96E] hover:text-[#B8860B]">
+            <Link to="/admin/product-flags" className="mt-2 inline-flex items-center gap-1 text-xs font-medium text-[#7A2533] hover:text-[#7A2533]">
               Manage Flags →
             </Link>
           </Section>
 
           <Section title="Tags">
-            <input type="text" placeholder="Separate tags with commas" value={(form.tags || []).join(", ")} onChange={(e) => handleChange("tags", e.target.value.split(",").map((t) => t.trim()).filter(Boolean))} className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#c9a96e]" />
+            <input type="text" placeholder="Separate tags with commas" value={(form.tags || []).join(", ")} onChange={(e) => handleChange("tags", e.target.value.split(",").map((t) => t.trim()).filter(Boolean))} className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#7A2533]" />
           </Section>
 
           <Section title="SEO">
             <Field label="SEO Title">
-              <input type="text" value={form.seo_title || ""} onChange={(e) => handleChange("seo_title", e.target.value)} className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#c9a96e]" />
+              <input type="text" value={form.seo_title || ""} onChange={(e) => handleChange("seo_title", e.target.value)} className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#7A2533]" />
             </Field>
             <Field label="SEO Description">
-              <textarea value={form.seo_description || ""} onChange={(e) => handleChange("seo_description", e.target.value)} rows={2} className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#c9a96e]" />
+              <textarea value={form.seo_description || ""} onChange={(e) => handleChange("seo_description", e.target.value)} rows={2} className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#7A2533]" />
             </Field>
             <Field label="Focus Keyword">
-              <input type="text" value={form.focus_keyword || ""} onChange={(e) => handleChange("focus_keyword", e.target.value)} className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#c9a96e]" placeholder="e.g. gold necklace" />
+              <input type="text" value={form.focus_keyword || ""} onChange={(e) => handleChange("focus_keyword", e.target.value)} className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#7A2533]" placeholder="e.g. gold necklace" />
             </Field>
             <Field label="Canonical URL">
-              <input type="text" value={form.canonical_url || ""} onChange={(e) => handleChange("canonical_url", e.target.value)} className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#c9a96e]" placeholder="https://example.com/product/slug" />
+              <input type="text" value={form.canonical_url || ""} onChange={(e) => handleChange("canonical_url", e.target.value)} className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#7A2533]" placeholder="https://example.com/product/slug" />
             </Field>
             <Field label="Social Image URL">
-              <input type="text" value={form.social_image || ""} onChange={(e) => handleChange("social_image", e.target.value)} className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#c9a96e]" placeholder="Open Graph image URL" />
+              <input type="text" value={form.social_image || ""} onChange={(e) => handleChange("social_image", e.target.value)} className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#7A2533]" placeholder="Open Graph image URL" />
             </Field>
             <Field label="Image Alt Text">
-              <input type="text" value={form.image_alt_text || ""} onChange={(e) => handleChange("image_alt_text", e.target.value)} className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#c9a96e]" placeholder="Descriptive alt text for main image" />
+              <input type="text" value={form.image_alt_text || ""} onChange={(e) => handleChange("image_alt_text", e.target.value)} className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#7A2533]" placeholder="Descriptive alt text for main image" />
             </Field>
           </Section>
 

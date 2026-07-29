@@ -224,7 +224,7 @@ function AdminHomepage() {
                     {(section.section_key === "hero" || isCarousel || section.section_key === "featured_banner") && (
                       <button
                         onClick={() => toggleEdit(section.section_key)}
-                        className="text-xs text-[#c9a96e] hover:underline"
+                        className="text-xs text-[#7A2533] hover:underline"
                       >
                         {editingSection === section.section_key ? "Close" : "Edit"}
                       </button>
@@ -251,14 +251,14 @@ function AdminHomepage() {
                         value={formState.hero[field] || ""}
                         onChange={(e) => handleHeroFieldChange(field, e.target.value)}
                         rows={3}
-                        className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#c9a96e]"
+                        className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#7A2533]"
                       />
                     ) : (
                       <input
                         type="text"
                         value={formState.hero[field] || ""}
                         onChange={(e) => handleHeroFieldChange(field, e.target.value)}
-                        className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#c9a96e]"
+                        className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#7A2533]"
                       />
                     )}
                   </div>
@@ -287,7 +287,7 @@ function AdminHomepage() {
                   onChange={(e) =>
                     handleCarouselFieldChange(editingSection, "autoScrollEnabled", e.target.checked)
                   }
-                  className="h-4 w-4 rounded border-gray-300 text-[#c9a96e] focus:ring-[#c9a96e]"
+                  className="h-4 w-4 rounded border-gray-300 text-[#7A2533] focus:ring-[#7A2533]"
                 />
                 <span className="text-sm font-medium text-gray-700">Enable Auto-Scroll</span>
               </label>
@@ -299,7 +299,7 @@ function AdminHomepage() {
                   onChange={(e) =>
                     handleCarouselFieldChange(editingSection, "scrollDirection", e.target.value)
                   }
-                  className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#c9a96e]"
+                  className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#7A2533]"
                 >
                   <option value="left">Left → Right</option>
                   <option value="right">Right → Left</option>
@@ -322,7 +322,7 @@ function AdminHomepage() {
                       Math.max(3, Number(e.target.value)),
                     )
                   }
-                  className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#c9a96e]"
+                  className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#7A2533]"
                 />
                 <p className="mt-0.5 text-[11px] text-gray-400">
                   Lower = faster. Recommended: 20–40 seconds.
@@ -336,7 +336,7 @@ function AdminHomepage() {
                   onChange={(e) =>
                     handleCarouselFieldChange(editingSection, "pauseOnHover", e.target.checked)
                   }
-                  className="h-4 w-4 rounded border-gray-300 text-[#c9a96e] focus:ring-[#c9a96e]"
+                  className="h-4 w-4 rounded border-gray-300 text-[#7A2533] focus:ring-[#7A2533]"
                 />
                 <span className="text-sm font-medium text-gray-700">Pause on Hover</span>
               </label>
@@ -348,7 +348,7 @@ function AdminHomepage() {
                   onChange={(e) =>
                     handleCarouselFieldChange(editingSection, "autoResumeEnabled", e.target.checked)
                   }
-                  className="h-4 w-4 rounded border-gray-300 text-[#c9a96e] focus:ring-[#c9a96e]"
+                  className="h-4 w-4 rounded border-gray-300 text-[#7A2533] focus:ring-[#7A2533]"
                 />
                 <span className="text-sm font-medium text-gray-700">Auto-Resume after Interaction</span>
               </label>
@@ -370,7 +370,7 @@ function AdminHomepage() {
                         Math.max(1, Number(e.target.value)),
                       )
                     }
-                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#c9a96e]"
+                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#7A2533]"
                   />
                 </div>
               )}
@@ -423,7 +423,7 @@ function AdminHomepage() {
                       value={img.alt}
                       onChange={(e) => setCtaImages((prev) => prev.map((x, j) => j === i ? { ...x, alt: e.target.value } : x))}
                       placeholder="Alt text for image"
-                      className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#c9a96e]"
+                      className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#7A2533]"
                     />
                   </div>
                 </div>

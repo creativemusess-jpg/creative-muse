@@ -259,7 +259,7 @@ function AdminSettings() {
               <input
                 value={storeName}
                 onChange={(e) => setStoreName(e.target.value)}
-                className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#c9a96e]"
+                className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]"
               />
             </div>
             <div>
@@ -269,7 +269,7 @@ function AdminSettings() {
               <input
                 value={storeEmail}
                 onChange={(e) => setStoreEmail(e.target.value)}
-                className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#c9a96e]"
+                className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]"
               />
             </div>
             <div>
@@ -279,7 +279,7 @@ function AdminSettings() {
               <input
                 value={storePhone}
                 onChange={(e) => setStorePhone(e.target.value)}
-                className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#c9a96e]"
+                className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]"
               />
             </div>
             <div>
@@ -290,7 +290,7 @@ function AdminSettings() {
                 value={storeAddress}
                 onChange={(e) => setStoreAddress(e.target.value)}
                 rows={3}
-                className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#c9a96e]"
+                className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]"
               />
             </div>
           </div>
@@ -306,7 +306,7 @@ function AdminSettings() {
               <input
                 value={newsletterPopupImage}
                 onChange={(e) => setNewsletterPopupImage(e.target.value)}
-                className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#c9a96e]"
+                className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]"
                 placeholder="https://..."
               />
               <p className="mt-1.5 text-[11px] text-gray-400">
@@ -356,7 +356,7 @@ function AdminSettings() {
                   setPreview(null);
                   setEmailResult(null);
                 }}
-                className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#c9a96e]"
+                className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]"
               >
                 <option value="welcome">Welcome Email</option>
                 <option value="order_confirmation">Order Confirmation</option>
@@ -376,7 +376,7 @@ function AdminSettings() {
                 type="email"
                 value={testRecipient}
                 onChange={(e) => setTestRecipient(e.target.value)}
-                className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#c9a96e]"
+                className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]"
                 placeholder="Loaded from EMAIL_TEST_RECIPIENT"
               />
             </div>
@@ -392,7 +392,7 @@ function AdminSettings() {
                     setSelectedOrderId(e.target.value);
                     setPreview(null);
                   }}
-                  className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#c9a96e]"
+                  className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]"
                 >
                   <option value="">Select an existing order</option>
                   {orders.map((order) => (
@@ -427,7 +427,7 @@ function AdminSettings() {
                     setSelectedCustomerId(e.target.value);
                     setPreview(null);
                   }}
-                  className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#c9a96e]"
+                  className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]"
                 >
                   <option value="">Use labelled sample preview data</option>
                   {customers.map((customer) => (
@@ -450,14 +450,14 @@ function AdminSettings() {
                 <button
                   type="button"
                   onClick={() => setPreviewMode("desktop")}
-                  className={`rounded-lg border px-3 py-2 text-xs font-semibold ${previewMode === "desktop" ? "border-[#c9a96e] bg-[#fdf8f3] text-[#1a1a2e]" : "border-gray-200 text-gray-500"}`}
+                  className={`rounded-lg border px-3 py-2 text-xs font-semibold ${previewMode === "desktop" ? "border-[#7A2533] bg-[#fdf8f3] text-[#1a1a2e]" : "border-gray-200 text-gray-500"}`}
                 >
                   Desktop
                 </button>
                 <button
                   type="button"
                   onClick={() => setPreviewMode("mobile")}
-                  className={`rounded-lg border px-3 py-2 text-xs font-semibold ${previewMode === "mobile" ? "border-[#c9a96e] bg-[#fdf8f3] text-[#1a1a2e]" : "border-gray-200 text-gray-500"}`}
+                  className={`rounded-lg border px-3 py-2 text-xs font-semibold ${previewMode === "mobile" ? "border-[#7A2533] bg-[#fdf8f3] text-[#1a1a2e]" : "border-gray-200 text-gray-500"}`}
                 >
                   Mobile
                 </button>
@@ -469,7 +469,7 @@ function AdminSettings() {
                 type="button"
                 onClick={() => handlePreviewEmail()}
                 disabled={!!emailBusy}
-                className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg border border-[#c9a96e] px-4 py-2 text-sm font-semibold text-[#8a681f] hover:bg-[#fdf8f3] disabled:opacity-50"
+                className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg border border-[#7A2533] px-4 py-2 text-sm font-semibold text-[#8a681f] hover:bg-[#fdf8f3] disabled:opacity-50"
               >
                 {emailBusy === "preview" ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
@@ -557,7 +557,7 @@ function AdminSettings() {
             <div className="rounded-xl border border-gray-200 bg-white">
               <div className="flex items-center justify-between border-b border-gray-100 px-4 py-3">
                 <h4 className="flex items-center gap-2 text-sm font-bold text-[#1a1a2e]">
-                  <Mail className="h-4 w-4 text-[#c9a96e]" /> Test Email History
+                  <Mail className="h-4 w-4 text-[#7A2533]" /> Test Email History
                 </h4>
                 <button
                   type="button"
@@ -657,34 +657,34 @@ function AdminSettings() {
           <h3 className="text-lg font-bold text-[#1a1a2e] mb-4">Gift Packaging</h3>
           <div className="space-y-4">
             <div className="flex items-center gap-3">
-              <input type="checkbox" id="gp-enabled" checked={giftCfg.enabled} onChange={(e) => setGiftCfg({ ...giftCfg, enabled: e.target.checked })} className="h-4 w-4 rounded border-gray-300 text-[#c9a96e] focus:ring-[#c9a96e]" />
+              <input type="checkbox" id="gp-enabled" checked={giftCfg.enabled} onChange={(e) => setGiftCfg({ ...giftCfg, enabled: e.target.checked })} className="h-4 w-4 rounded border-gray-300 text-[#7A2533] focus:ring-[#7A2533]" />
               <label htmlFor="gp-enabled" className="text-sm font-medium text-gray-700">Enable Gift Packaging</label>
             </div>
             <div>
               <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Name</label>
-              <input value={giftCfg.name} onChange={(e) => setGiftCfg({ ...giftCfg, name: e.target.value })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#c9a96e]" />
+              <input value={giftCfg.name} onChange={(e) => setGiftCfg({ ...giftCfg, name: e.target.value })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]" />
             </div>
             <div>
               <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Description</label>
-              <textarea value={giftCfg.description} onChange={(e) => setGiftCfg({ ...giftCfg, description: e.target.value })} rows={2} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#c9a96e]" />
+              <textarea value={giftCfg.description} onChange={(e) => setGiftCfg({ ...giftCfg, description: e.target.value })} rows={2} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]" />
             </div>
             <div>
               <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Price (₹)</label>
-              <input type="number" value={giftCfg.price} onChange={(e) => setGiftCfg({ ...giftCfg, price: Number(e.target.value) })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#c9a96e]" />
+              <input type="number" value={giftCfg.price} onChange={(e) => setGiftCfg({ ...giftCfg, price: Number(e.target.value) })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]" />
             </div>
             <div className="flex items-center gap-3">
-              <input type="checkbox" id="gp-msg" checked={giftCfg.allow_gift_message} onChange={(e) => setGiftCfg({ ...giftCfg, allow_gift_message: e.target.checked })} className="h-4 w-4 rounded border-gray-300 text-[#c9a96e] focus:ring-[#c9a96e]" />
+              <input type="checkbox" id="gp-msg" checked={giftCfg.allow_gift_message} onChange={(e) => setGiftCfg({ ...giftCfg, allow_gift_message: e.target.checked })} className="h-4 w-4 rounded border-gray-300 text-[#7A2533] focus:ring-[#7A2533]" />
               <label htmlFor="gp-msg" className="text-sm font-medium text-gray-700">Allow Gift Message</label>
             </div>
             {giftCfg.allow_gift_message && (
               <div>
                 <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Max Message Length</label>
-                <input type="number" value={giftCfg.max_message_length} onChange={(e) => setGiftCfg({ ...giftCfg, max_message_length: Number(e.target.value) })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#c9a96e]" />
+                <input type="number" value={giftCfg.max_message_length} onChange={(e) => setGiftCfg({ ...giftCfg, max_message_length: Number(e.target.value) })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]" />
               </div>
             )}
             <div>
               <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Status</label>
-              <select value={giftCfg.status} onChange={(e) => setGiftCfg({ ...giftCfg, status: e.target.value as "active" | "inactive" })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#c9a96e]">
+              <select value={giftCfg.status} onChange={(e) => setGiftCfg({ ...giftCfg, status: e.target.value as "active" | "inactive" })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]">
                 <option value="active">Active</option>
                 <option value="inactive">Inactive</option>
               </select>
@@ -696,16 +696,16 @@ function AdminSettings() {
           <h3 className="text-lg font-bold text-[#1a1a2e] mb-4">Estimated Delivery</h3>
           <div className="space-y-4">
             <div className="flex items-center gap-3">
-              <input type="checkbox" id="est-enabled" checked={estCfg.enabled} onChange={(e) => setEstCfg({ ...estCfg, enabled: e.target.checked })} className="h-4 w-4 rounded border-gray-300 text-[#c9a96e] focus:ring-[#c9a96e]" />
+              <input type="checkbox" id="est-enabled" checked={estCfg.enabled} onChange={(e) => setEstCfg({ ...estCfg, enabled: e.target.checked })} className="h-4 w-4 rounded border-gray-300 text-[#7A2533] focus:ring-[#7A2533]" />
               <label htmlFor="est-enabled" className="text-sm font-medium text-gray-700">Show Estimated Delivery</label>
             </div>
             <div>
               <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Min Days</label>
-              <input type="number" value={estCfg.min_days} onChange={(e) => setEstCfg({ ...estCfg, min_days: Number(e.target.value) })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#c9a96e]" />
+              <input type="number" value={estCfg.min_days} onChange={(e) => setEstCfg({ ...estCfg, min_days: Number(e.target.value) })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]" />
             </div>
             <div>
               <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Max Days</label>
-              <input type="number" value={estCfg.max_days} onChange={(e) => setEstCfg({ ...estCfg, max_days: Number(e.target.value) })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#c9a96e]" />
+              <input type="number" value={estCfg.max_days} onChange={(e) => setEstCfg({ ...estCfg, max_days: Number(e.target.value) })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]" />
             </div>
           </div>
         </div>

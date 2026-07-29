@@ -94,7 +94,7 @@ function CartDrawer() {
             <div className="flex-1 overflow-y-auto px-6 py-5">
               {lines.length === 0 ? (
                 <EmptyState
-                  icon={<ShoppingBag className="h-8 w-8 text-[#C9A96E]" />}
+                  icon={<ShoppingBag className="h-8 w-8 text-[#7A2533]" />}
                   title="Your cart is empty"
                   copy="Start adding pieces to see them here."
                   cta="Browse Collections"
@@ -123,7 +123,7 @@ function CartDrawer() {
                             <Link
                               to={productLink(p)!.to}
                               params={productLink(p)!.params}
-                              className="font-display truncate text-sm font-semibold text-[#1a1a2e] transition-colors hover:text-[#C9A96E]"
+                              className="font-display truncate text-sm font-semibold text-[#1a1a2e] transition-colors hover:text-[#7A2533]"
                             >
                               {p.name}
                             </Link>
@@ -171,21 +171,21 @@ function CartDrawer() {
                   {/* Trust Features */}
                   <div className="mt-5 grid grid-cols-1 gap-2.5 sm:grid-cols-3">
                     <div className="flex items-center gap-2.5 rounded-[12px] border border-[#e0d8cc] bg-white p-3">
-                      <Truck className="h-4 w-4 shrink-0 text-[#C9A96E]" />
+                      <Truck className="h-4 w-4 shrink-0 text-[#7A2533]" />
                       <div>
                         <p className="text-[11px] font-semibold text-[#1a1a2e]">Free Shipping</p>
                         <p className="text-[9px] text-[#7a6e64]">Free delivery across India.</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-2.5 rounded-[12px] border border-[#e0d8cc] bg-white p-3">
-                      <RotateCcw className="h-4 w-4 shrink-0 text-[#C9A96E]" />
+                      <RotateCcw className="h-4 w-4 shrink-0 text-[#7A2533]" />
                       <div>
                         <p className="text-[11px] font-semibold text-[#1a1a2e]">7-Day Easy Returns</p>
                         <p className="text-[9px] text-[#7a6e64]">Easy return & exchange policy.</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-2.5 rounded-[12px] border border-[#e0d8cc] bg-white p-3">
-                      <ShieldCheck className="h-4 w-4 shrink-0 text-[#C9A96E]" />
+                      <ShieldCheck className="h-4 w-4 shrink-0 text-[#7A2533]" />
                       <div>
                         <p className="text-[11px] font-semibold text-[#1a1a2e]">Secure Checkout</p>
                         <p className="text-[9px] text-[#7a6e64]">100% secure payments with Razorpay.</p>
@@ -198,7 +198,7 @@ function CartDrawer() {
                     <div className="mt-4 rounded-[16px] border border-[#e0d8cc] bg-white p-4">
                       <div className="flex items-start justify-between gap-3">
                         <div className="flex items-start gap-3">
-                          <Package className="mt-0.5 h-5 w-5 shrink-0 text-[#C9A96E]" />
+                          <Package className="mt-0.5 h-5 w-5 shrink-0 text-[#7A2533]" />
                           <div>
                             <p className="text-[13px] font-semibold text-[#1a1a2e]">{giftCfg.name}</p>
                             <p className="mt-0.5 text-[11px] text-[#7a6e64]">{giftCfg.description}</p>
@@ -236,7 +236,7 @@ function CartDrawer() {
                             placeholder="Happy Birthday!"
                             rows={2}
                             maxLength={giftCfg.max_message_length}
-                            className="mt-1.5 w-full rounded-[10px] border border-[#e0d8cc] bg-[#fdf8f3] px-3 py-2 text-[12px] outline-none focus:border-[#C9A96E] resize-none"
+                            className="mt-1.5 w-full rounded-[10px] border border-[#e0d8cc] bg-[#fdf8f3] px-3 py-2 text-[12px] outline-none focus:border-[#7A2533] resize-none"
                           />
                           <p className="mt-1 text-right text-[9px] text-[#7a6e64]">
                             {giftMessage.length}/{giftCfg.max_message_length}
@@ -249,7 +249,7 @@ function CartDrawer() {
                   {/* Estimated Delivery */}
                   {estDelivery?.enabled && (
                     <div className="mt-3 flex items-center gap-2.5 rounded-[12px] border border-[#e0d8cc] bg-white p-3">
-                      <Truck className="h-4 w-4 shrink-0 text-[#C9A96E]" />
+                      <Truck className="h-4 w-4 shrink-0 text-[#7A2533]" />
                       <p className="text-[11px] text-[#1a1a2e]">
                         <span className="font-semibold">Estimated Delivery:</span> Ships in {estDelivery.min_days}–{estDelivery.max_days} Business Days
                       </p>
@@ -333,7 +333,7 @@ function WishlistDrawer() {
             <div className="flex-1 overflow-y-auto px-6 py-5">
               {items.length === 0 ? (
                 <EmptyState
-                  icon={<Heart className="h-8 w-8 text-[#C9A96E]" />}
+                  icon={<Heart className="h-8 w-8 text-[#7A2533]" />}
                   title="No favourites yet"
                   copy="Tap the heart on any piece to save it here."
                   cta="Browse Collections"
@@ -361,7 +361,7 @@ function WishlistDrawer() {
                           <Link
                             to={productLink(p)!.to}
                             params={productLink(p)!.params}
-                            className="font-display truncate text-sm font-semibold text-[#1a1a2e] transition-colors hover:text-[#C9A96E]"
+                            className="font-display truncate text-sm font-semibold text-[#1a1a2e] transition-colors hover:text-[#7A2533]"
                           >
                             {p.name}
                           </Link>
@@ -380,7 +380,7 @@ function WishlistDrawer() {
                               toggleWishlist(p.id);
                               closeWishlist();
                             }}
-                            className="rounded-full bg-gradient-to-r from-[#C9A96E] to-[#B8860B] px-3 py-1.5 text-[10px] font-semibold tracking-[0.1em] text-white uppercase"
+                            className="rounded-full bg-[#7A2533] px-3 py-1.5 text-[10px] font-semibold tracking-[0.1em] text-white uppercase hover:bg-[#5F1C27]"
                           >
                             Move to Cart
                           </button>
@@ -489,7 +489,7 @@ function QuickViewModal() {
               <button
                 aria-label="Close"
                 onClick={closeQuickView}
-                className="absolute top-3 right-3 z-30 flex h-9 w-9 items-center justify-center rounded-full border border-[#C9A96E] bg-white shadow-md transition-colors hover:bg-white md:top-4 md:right-4 md:h-10 md:w-10"
+                className="absolute top-3 right-3 z-30 flex h-9 w-9 items-center justify-center rounded-full border border-[#7A2533] bg-white shadow-md transition-colors hover:bg-white md:top-4 md:right-4 md:h-10 md:w-10"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -755,7 +755,7 @@ function Thumbnails({
           }}
           aria-label={`View image ${i + 1}`}
           className={`flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-[12px] border-2 bg-[#fffdf9] sm:h-16 sm:w-16 ${
-            i === idx ? "border-[#C9A96E]" : "border-[rgba(66,29,34,0.18)]"
+            i === idx ? "border-[#7A2533]" : "border-[rgba(66,29,34,0.18)]"
           }`}
         >
           <img src={src} alt="" loading="lazy" decoding="async" className="h-full w-full object-contain p-1.5" />
@@ -811,7 +811,7 @@ function QuickViewInfo({
         <Link
           to={productLink(product)!.to}
           params={productLink(product)!.params}
-          className="font-display mt-2 text-2xl leading-tight font-semibold text-[#1a1a2e] transition-colors hover:text-[#C9A96E]"
+          className="font-display mt-2 text-2xl leading-tight font-semibold text-[#1a1a2e] transition-colors hover:text-[#7A2533]"
         >
           {product.name}
         </Link>
@@ -863,7 +863,7 @@ function QuickViewInfo({
             <Plus className="h-3.5 w-3.5" />
           </button>
         </div>
-        <button onClick={() => onAdd(qty)} className="btn-primary flex-1 text-[#7A2533]">
+        <button onClick={() => onAdd(qty)} className="btn-primary flex-1">
           Add to Cart
         </button>
         <button
@@ -871,8 +871,8 @@ function QuickViewInfo({
           aria-label="Toggle wishlist"
           className={`flex h-11 w-11 items-center justify-center rounded-full border transition-colors ${
             wishlisted
-              ? "border-[#C9A96E] bg-[#C9A96E] text-white"
-              : "border-[#e0d8cc] text-[#7a6e64] hover:border-[#C9A96E] hover:text-[#C9A96E]"
+              ? "border-[#7A2533] bg-[#7A2533] text-white"
+              : "border-[#e0d8cc] text-[#7a6e64] hover:border-[#7A2533] hover:text-[#7A2533]"
           }`}
         >
           <Heart className={`h-4 w-4 ${wishlisted ? "fill-white" : ""}`} />
@@ -993,7 +993,7 @@ function EmptyState({
 }) {
   return (
     <div className="flex flex-col items-center py-14 text-center">
-      <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white shadow-[0_4px_16px_rgba(201,169,110,0.15)]">
+      <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white shadow-[0_4px_16px_rgba(122,37,51,0.15)]">
         {icon}
       </div>
       <p className="font-display mt-4 text-lg font-semibold text-[#1a1a2e]">{title}</p>

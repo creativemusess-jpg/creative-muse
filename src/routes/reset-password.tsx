@@ -49,14 +49,14 @@ function ResetPasswordPage() {
                 <div>
                   <label htmlFor="rp-password" className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">New Password</label>
                   <div className="relative">
-                    <input id="rp-password" type={showPw ? "text" : "password"} value={password} onChange={(e) => { setPassword(e.target.value); setError(""); }} className="w-full rounded-xl border border-[#e0d8cc] px-4 py-3 pr-12 text-sm outline-none focus:border-[#c9a96e]" autoComplete="new-password" />
+                    <input id="rp-password" type={showPw ? "text" : "password"} value={password} onChange={(e) => { setPassword(e.target.value); setError(""); }} className="w-full rounded-xl border border-[#e0d8cc] px-4 py-3 pr-12 text-sm outline-none focus:border-[#7A2533]" autoComplete="new-password" />
                     <button type="button" onClick={() => setShowPw(!showPw)} aria-label={showPw ? "Hide" : "Show"} className="absolute top-1/2 right-3 -translate-y-1/2 text-[#7a6e64]">{showPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}</button>
                   </div>
                   {password.length > 0 && password.length < 6 && <p className="mt-1 text-xs text-amber-600">At least 6 characters</p>}
                 </div>
                 <div>
                   <label htmlFor="rp-confirm" className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Confirm Password</label>
-                  <input id="rp-confirm" type="password" value={confirm} onChange={(e) => { setConfirm(e.target.value); setError(""); }} className="w-full rounded-xl border border-[#e0d8cc] px-4 py-3 text-sm outline-none focus:border-[#c9a96e]" autoComplete="new-password" />
+                  <input id="rp-confirm" type="password" value={confirm} onChange={(e) => { setConfirm(e.target.value); setError(""); }} className="w-full rounded-xl border border-[#e0d8cc] px-4 py-3 text-sm outline-none focus:border-[#7A2533]" autoComplete="new-password" />
                 </div>
                 {error && <p className="text-sm text-red-500">{error}</p>}
                 <button type="submit" disabled={loading} className="btn-primary w-full justify-center disabled:opacity-60">

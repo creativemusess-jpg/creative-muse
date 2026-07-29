@@ -157,7 +157,7 @@ function AdminCategories() {
                   setForm((f) => ({ ...f, name: e.target.value }));
                   if (!editing) setForm((f) => ({ ...f, slug: e.target.value.toLowerCase().replace(/\s+/g, "-") }));
                 }}
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#c9a96e]"
+                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#7A2533]"
               />
             </div>
             <div>
@@ -166,7 +166,7 @@ function AdminCategories() {
                 type="text"
                 value={form.slug}
                 onChange={(e) => setForm((f) => ({ ...f, slug: e.target.value }))}
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#c9a96e]"
+                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#7A2533]"
               />
             </div>
             <div>
@@ -175,7 +175,7 @@ function AdminCategories() {
                 type="number"
                 value={form.sort_order}
                 onChange={(e) => setForm((f) => ({ ...f, sort_order: parseInt(e.target.value) || 0 }))}
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#c9a96e]"
+                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#7A2533]"
               />
             </div>
             <div className="sm:col-span-2">
@@ -184,7 +184,7 @@ function AdminCategories() {
                 value={form.description}
                 onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
                 rows={2}
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#c9a96e]"
+                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#7A2533]"
               />
             </div>
             <div>
@@ -234,7 +234,7 @@ function AdminCategories() {
                 type="text"
                 value={form.seo_title}
                 onChange={(e) => setForm((f) => ({ ...f, seo_title: e.target.value }))}
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#c9a96e]"
+                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#7A2533]"
               />
             </div>
             <div>
@@ -243,7 +243,7 @@ function AdminCategories() {
                 type="text"
                 value={form.seo_description}
                 onChange={(e) => setForm((f) => ({ ...f, seo_description: e.target.value }))}
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#c9a96e]"
+                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#7A2533]"
               />
             </div>
           </div>
@@ -286,7 +286,7 @@ function AdminCategories() {
               <td className="px-4 py-3 text-gray-500">{cat.slug}</td>
               <td className="px-4 py-3 text-gray-500">{cat.sort_order}</td>
               <td className="px-4 py-3">
-                {cat.featured ? <Star className="h-4 w-4 text-[#c9a96e]" /> : "—"}
+                {cat.featured ? <Star className="h-4 w-4 text-[#7A2533]" /> : "—"}
               </td>
               <td className="px-4 py-3">
                 <span className={`inline-block rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase ${cat.active ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"}`}>

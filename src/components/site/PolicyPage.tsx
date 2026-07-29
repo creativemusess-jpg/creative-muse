@@ -92,7 +92,7 @@ export function PolicySubsection({ id, title, children }: { id: string; title: s
 
 export function PolicyList({ items }: { items: string[] }) {
   return (
-    <ul className="ml-5 list-disc space-y-1.5 text-[15px] leading-[1.8] text-[#3a3028] marker:text-[#C9A96E]">
+    <ul className="ml-5 list-disc space-y-1.5 text-[15px] leading-[1.8] text-[#3a3028] marker:text-[#7A2533]">
       {items.map((item, i) => (
         <li key={i}>{item}</li>
       ))}

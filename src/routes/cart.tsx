@@ -178,7 +178,7 @@ function CartPage() {
               <div className="mt-4 rounded-[20px] border border-[#e0d8cc] bg-white p-4">
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-start gap-3">
-                    <Package className="mt-0.5 h-5 w-5 shrink-0 text-[#C9A96E]" />
+                    <Package className="mt-0.5 h-5 w-5 shrink-0 text-[#7A2533]" />
                     <div>
                       <p className="text-[13px] font-semibold text-[#1a1a2e]">{giftCfg.name}</p>
                       <p className="mt-0.5 text-[11px] text-[#7a6e64]">{giftCfg.description}</p>
@@ -204,7 +204,7 @@ function CartPage() {
                       placeholder="Happy Birthday!"
                       rows={2}
                       maxLength={giftCfg.max_message_length}
-                      className="mt-1.5 w-full rounded-[10px] border border-[#e0d8cc] bg-[#fdf8f3] px-3 py-2 text-[12px] outline-none focus:border-[#C9A96E] resize-none"
+                      className="mt-1.5 w-full rounded-[10px] border border-[#e0d8cc] bg-[#fdf8f3] px-3 py-2 text-[12px] outline-none focus:border-[#7A2533] resize-none"
                     />
                     <p className="mt-1 text-right text-[9px] text-[#7a6e64]">{giftMessage.length}/{giftCfg.max_message_length}</p>
                   </div>
@@ -212,7 +212,7 @@ function CartPage() {
               </div>
             )}
 
-            <div className="rounded-[20px] border border-dashed border-[#C9A96E]/40 bg-[#fdf8f3] p-3">
+            <div className="rounded-[20px] border border-dashed border-[#7A2533]/40 bg-[#fdf8f3] p-3">
               {discountAmount > 0 && couponCode ? (
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
@@ -228,7 +228,7 @@ function CartPage() {
                 </div>
               ) : (
                 <div className="flex items-center gap-2">
-                  <Tag className="h-4 w-4 text-[#C9A96E]" />
+                  <Tag className="h-4 w-4 text-[#7A2533]" />
                   <input
                     value={couponInput}
                     onChange={(e) => { setCouponInput(e.target.value); if (couponStatus !== "idle") { setCouponStatus("idle"); setCouponMsg(""); } }}

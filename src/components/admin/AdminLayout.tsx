@@ -205,7 +205,7 @@ export function AdminLayout({ children }: { children: ReactNode }) {
               <span className="hidden sm:inline">View Site</span>
             </Link>
             <div className="flex items-center gap-2 text-xs text-gray-400">
-              <Link to="/" className="hover:text-[#c9a96e]">Site</Link>
+              <Link to="/" className="hover:text-[#7A2533]">Site</Link>
               <ChevronRight className="h-3 w-3" />
               <span className="font-medium text-gray-900">Admin</span>
             </div>

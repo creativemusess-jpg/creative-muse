@@ -108,7 +108,7 @@ export function HeaderSearch() {
         }}
       >
         <Search
-          className="absolute left-5 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-[#C9A96E]"
+          className="absolute left-5 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-[#7A2533]"
           strokeWidth={1.8}
         />
         <input
@@ -121,7 +121,7 @@ export function HeaderSearch() {
           aria-autocomplete="list"
           aria-expanded={open}
           aria-controls="header-search-results"
-          className="h-10 w-full rounded-full border-[1.5px] border-transparent bg-[#f5efe8] pl-13 pr-12 text-[14px] text-[#2a1e14] placeholder:text-[#6b5d52] transition-all duration-200 focus:border-[#C9A96E] focus:outline-none focus:[box-shadow:0_0_0_4px_rgba(201,169,110,0.12)]"
+          className="h-10 w-full rounded-full border-[1.5px] border-transparent bg-[#f5efe8] pl-13 pr-12 text-[14px] text-[#2a1e14] placeholder:text-[#6b5d52] transition-all duration-200 focus:border-[#7A2533] focus:outline-none focus:[box-shadow:0_0_0_4px_rgba(122,37,51,0.12)]"
           style={{ paddingLeft: 48 }}
         />
         {query && (
@@ -219,7 +219,7 @@ export function HeaderSearch() {
                 <Link
                   to="/shop"
                   onClick={() => setOpen(false)}
-                  className="rounded-full border border-[#e0d8cc] px-3 py-2 text-[12px] font-semibold text-[#3a3028] hover:border-[#C9A96E] hover:text-[#C9A96E]"
+                  className="rounded-full border border-[#e0d8cc] px-3 py-2 text-[12px] font-semibold text-[#3a3028] hover:border-[#7A2533] hover:text-[#7A2533]"
                 >
                   View All Jewellery
                 </Link>
@@ -237,7 +237,7 @@ function SuggestionLink({ label, q }: { label: string; q: string }) {
     <Link
       to="/search"
       search={{ q }}
-      className="rounded-full border border-[#e0d8cc] px-3 py-2 text-[12px] font-semibold text-[#3a3028] hover:border-[#C9A96E] hover:text-[#C9A96E]"
+      className="rounded-full border border-[#e0d8cc] px-3 py-2 text-[12px] font-semibold text-[#3a3028] hover:border-[#7A2533] hover:text-[#7A2533]"
     >
       {label}
     </Link>

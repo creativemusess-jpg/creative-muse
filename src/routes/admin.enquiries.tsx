@@ -57,7 +57,7 @@ function AdminEnquiries() {
       <AdminPageHeader title="Enquiries" description={`${count} enquiries received`} />
       <div className="mb-4 relative flex-1 max-w-sm">
         <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-        <input type="text" placeholder="Search enquiries..." value={search} onChange={(e) => setSearch(e.target.value)} className="w-full rounded-lg border border-gray-200 py-2 pl-10 pr-4 text-sm outline-none focus:border-[#c9a96e]" />
+        <input type="text" placeholder="Search enquiries..." value={search} onChange={(e) => setSearch(e.target.value)} className="w-full rounded-lg border border-gray-200 py-2 pl-10 pr-4 text-sm outline-none focus:border-[#7A2533]" />
       </div>
       {loading ? (
         <AdminLoading />
@@ -99,7 +99,7 @@ function AdminEnquiries() {
               </div>
               <dl className="space-y-3 text-sm">
                 <div><dt className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Name</dt><dd className="text-[#1a1a2e]">{selected.name}</dd></div>
-                <div><dt className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Email</dt><dd className="text-[#1a1a2e]"><a href={`mailto:${selected.email}`} className="text-[#c9a96e] hover:underline">{selected.email}</a></dd></div>
+                <div><dt className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Email</dt><dd className="text-[#1a1a2e]"><a href={`mailto:${selected.email}`} className="text-[#7A2533] hover:underline">{selected.email}</a></dd></div>
                 {selected.phone && <div><dt className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Phone</dt><dd className="text-[#1a1a2e]">{selected.phone}</dd></div>}
                 {selected.subject && <div><dt className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Subject</dt><dd className="text-[#1a1a2e]">{selected.subject}</dd></div>}
                 <div><dt className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Message</dt><dd className="text-[#1a1a2e] text-sm leading-relaxed whitespace-pre-wrap">{selected.message}</dd></div>

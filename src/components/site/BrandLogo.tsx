@@ -41,8 +41,8 @@ export function BrandLogo({ src, compact = false, dark = false, className = "" }
           compact ? "h-9 w-9 text-[13px]" : "h-11 w-11 text-[15px]"
         } ${
           dark
-            ? "border-[#C9A96E]/55 bg-white text-[#1a1a2e]"
-            : "border-[#C9A96E]/45 bg-white text-[#1a1a2e]"
+            ? "border-[#7A2533]/55 bg-white text-[#1a1a2e]"
+            : "border-[#7A2533]/45 bg-white text-[#1a1a2e]"
         }`}
       >
         CM
@@ -55,7 +55,7 @@ export function BrandLogo({ src, compact = false, dark = false, className = "" }
         >
           Creative Muse
         </span>
-        <span className="block text-[9px] font-semibold uppercase tracking-[0.22em] text-[#C9A96E]">
+        <span className="block text-[9px] font-semibold uppercase tracking-[0.22em] text-[#7A2533]">
           Fine Jewellery
         </span>
       </span>

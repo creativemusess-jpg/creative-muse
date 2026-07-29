@@ -268,7 +268,7 @@ function ShopPage() {
           >
             <div className="mb-5 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <SlidersHorizontal className="h-4 w-4 text-[#C9A96E]" />
+                <SlidersHorizontal className="h-4 w-4 text-[#7A2533]" />
                 <h3 className="font-display text-base font-semibold text-[#1a1a2e]">Filters</h3>
               </div>
               {hasActiveFilters && (

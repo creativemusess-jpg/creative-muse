@@ -47,7 +47,7 @@ function AdminMedia() {
       <AdminPageHeader title="Media Library" description={`${count} files`} />
       <div className="mb-4 relative flex-1 max-w-sm">
         <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-        <input type="text" placeholder="Search media..." value={search} onChange={(e) => setSearch(e.target.value)} className="w-full rounded-lg border border-gray-200 py-2 pl-10 pr-4 text-sm outline-none focus:border-[#c9a96e]" />
+        <input type="text" placeholder="Search media..." value={search} onChange={(e) => setSearch(e.target.value)} className="w-full rounded-lg border border-gray-200 py-2 pl-10 pr-4 text-sm outline-none focus:border-[#7A2533]" />
       </div>
       {loading ? (
         <AdminLoading />

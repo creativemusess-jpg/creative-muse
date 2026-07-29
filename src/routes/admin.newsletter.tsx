@@ -102,13 +102,13 @@ function AdminNewsletter() {
             placeholder="Search by email or source..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full rounded-lg border border-gray-200 py-2 pl-10 pr-4 text-sm outline-none focus:border-[#c9a96e]"
+            className="w-full rounded-lg border border-gray-200 py-2 pl-10 pr-4 text-sm outline-none focus:border-[#7A2533]"
           />
         </div>
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#c9a96e]"
+          className="rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]"
         >
           <option value="">All statuses</option>
           <option value="active">Active</option>
@@ -117,7 +117,7 @@ function AdminNewsletter() {
         <select
           value={sourceFilter}
           onChange={(e) => setSourceFilter(e.target.value)}
-          className="rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#c9a96e]"
+          className="rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]"
         >
           <option value="">All sources</option>
           <option value="newsletter_popup">Popup</option>

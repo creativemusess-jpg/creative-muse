@@ -173,7 +173,7 @@ function AdminReels() {
                     <div className="flex gap-2">
                       <button
                         onClick={() => { setEditing(r); setShowForm(true); }}
-                        className="text-xs text-[#c9a96e] hover:underline"
+                        className="text-xs text-[#7A2533] hover:underline"
                       >
                         Edit
                       </button>
@@ -343,7 +343,7 @@ function ReelForm({
                 onChange={handleVideoUpload}
                 className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
               />
-              {uploading && <p className="mt-1 text-xs text-[#c9a96e]">Uploading video...</p>}
+              {uploading && <p className="mt-1 text-xs text-[#7A2533]">Uploading video...</p>}
             </>
           )}
           {videoUrl ? null : (
@@ -356,7 +356,7 @@ function ReelForm({
                 value={videoUrl}
                 onChange={(e) => setVideoUrl(e.target.value)}
                 placeholder="https://example.com/reel.mp4"
-                className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#c9a96e]"
+                className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#7A2533]"
               />
             </>
           )}
@@ -369,7 +369,7 @@ function ReelForm({
             value={posterUrl}
             onChange={(e) => setPosterUrl(e.target.value)}
             placeholder="https://example.com/poster.jpg"
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#c9a96e]"
+            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#7A2533]"
           />
           {posterUrl && <img src={posterUrl} alt="" className="mt-1 h-16 w-16 rounded object-cover" />}
         </div>
@@ -382,7 +382,7 @@ function ReelForm({
             onChange={(e) => { setSearch(e.target.value); setProductId(""); }}
             onFocus={() => { if (products.length > 0) setShowDropdown(true); }}
             placeholder="Search product by name..."
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#c9a96e]"
+            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#7A2533]"
           />
           {productId && !search && (
             <p className="mt-1 text-xs text-green-600">Selected: {productId}</p>
@@ -419,7 +419,7 @@ function ReelForm({
             min={0}
             value={sortOrder}
             onChange={(e) => setSortOrder(Number(e.target.value))}
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#c9a96e]"
+            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#7A2533]"
           />
         </div>
 
@@ -430,7 +430,7 @@ function ReelForm({
             value={altText}
             onChange={(e) => setAltText(e.target.value)}
             placeholder="Describe the video content"
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#c9a96e]"
+            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#7A2533]"
           />
         </div>
 
@@ -440,7 +440,7 @@ function ReelForm({
               type="checkbox"
               checked={isActive}
               onChange={(e) => setIsActive(e.target.checked)}
-              className="h-4 w-4 rounded border-gray-300 text-[#c9a96e] focus:ring-[#c9a96e]"
+              className="h-4 w-4 rounded border-gray-300 text-[#7A2533] focus:ring-[#7A2533]"
             />
             <span className="text-sm text-gray-700">Active</span>
           </label>
