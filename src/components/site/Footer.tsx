@@ -3,7 +3,7 @@ import { Instagram, Facebook, Youtube, MapPin, Phone, Mail } from "lucide-react"
 
 export function Footer() {
   return (
-    <footer className="mt-20 rounded-t-[40px] bg-[#1A1715] px-6 pt-20 pb-8 text-[#cfc6b6] sm:px-10">
+    <footer className="mt-20 rounded-t-[40px] bg-[#1A1715] px-6 pt-20 pb-8 text-white/80 sm:px-10">
       <div className="mx-auto grid max-w-[1280px] gap-12 lg:grid-cols-4">
         {/* Brand */}
         <div className="lg:col-span-1">
@@ -12,10 +12,10 @@ export function Footer() {
             alt="Creative Muse"
             className="h-[64px] w-[64px] object-contain brightness-0 invert md:h-[80px] md:w-[80px]"
           />
-          <p className="mt-5 max-w-xs text-sm leading-relaxed text-[#9b9082]">
+          <p className="mt-5 max-w-xs text-sm leading-relaxed text-white/60">
             Where every gem tells your story. Handcrafted fine jewellery from Vadodara.
           </p>
-          <ul className="mt-6 space-y-2.5 text-[13px] text-[#cfc6b6]">
+          <ul className="mt-6 space-y-2.5 text-[13px] text-white/80">
             <li className="flex items-start gap-2.5">
               <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#7A2533]" />
               <span>GF-3/4, Vidhi Square, BPC Road, Vadodara 390020</span>
@@ -75,7 +75,7 @@ export function Footer() {
       </div>
 
       <div className="mx-auto mt-16 flex max-w-[1280px] flex-col items-center justify-between gap-6 border-t border-white/10 pt-6 sm:flex-row sm:gap-4">
-        <div className="text-xs text-[#A09686]">
+        <div className="text-xs text-white/60">
           <p>© 2026 All Rights Reserved By Creative Muse</p>
           <p className="mt-1">
             Designed &amp; Developed By{" "}
@@ -83,7 +83,7 @@ export function Footer() {
               href="https://apfpuniversal.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[#7A2533] hover:underline"
+              className="text-white hover:underline"
             >
               APFP UNIVERSAL
             </a>
@@ -119,9 +119,9 @@ export function Footer() {
 function FooterCol({ title, links }: { title: string; links: [string, string][] }) {
   return (
     <div>
-      <h4 className="font-display text-base text-[#7A2533]">{title}</h4>
+      <h4 className="font-display text-base text-white">{title}</h4>
       <span className="gold-divider mt-3" />
-      <ul className="mt-5 space-y-2.5 text-[13px] text-[#cfc6b6]">
+      <ul className="mt-5 space-y-2.5 text-[13px] text-white/80">
         {links.map(([label, to]) => (
           <li key={label}>
             <Link to={to} className="transition-colors hover:text-[#7A2533]">

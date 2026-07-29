@@ -321,11 +321,11 @@ function TrustBar() {
   return (
     <section className="overflow-hidden bg-[#1a1a2e] py-5">
       <div className="mx-auto flex max-w-[1280px] overflow-hidden">
-        <div className={`flex shrink-0 items-center gap-8 whitespace-nowrap px-6 text-[12px] tracking-[0.1em] text-[#7A2533] uppercase ${prefersReducedMotion ? "flex-wrap justify-center gap-x-10 gap-y-3" : "animate-cm-marquee"}`}>
+        <div className={`flex shrink-0 items-center gap-8 whitespace-nowrap px-6 text-[12px] tracking-[0.1em] text-white uppercase ${prefersReducedMotion ? "flex-wrap justify-center gap-x-10 gap-y-3" : "animate-cm-marquee"}`}>
           {Array.from({ length: prefersReducedMotion ? 1 : 3 }).flatMap((_, setIdx) =>
             items.map(([Ic, label], itemIdx) => (
               <div key={`${setIdx}-${itemIdx}`} className="flex shrink-0 items-center gap-2.5">
-                <Ic className="h-4 w-4 text-[#7A2533]" />
+                <Ic className="h-4 w-4 text-white" />
                 <span>{label}</span>
               </div>
             ))
