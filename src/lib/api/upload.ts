@@ -4,6 +4,7 @@ const BUCKETS = {
   products: "product-images",
   products360: "product-360-images",
   categories: "category-images",
+  categoryVideos: "category-videos",
 } as const;
 
 export async function uploadImage(

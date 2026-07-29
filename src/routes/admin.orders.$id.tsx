@@ -6,6 +6,7 @@ import { ordersApi } from "@/lib/api/orders";
 import { settingsApi } from "@/lib/api/settings";
 import { StatusBadge, ConfirmDialog, Toast } from "@/components/admin/AdminTable";
 import InvoiceTemplate from "@/components/admin/InvoiceTemplate";
+import { generateInvoicePdf } from "@/lib/invoice-pdf";
 import ShippingLabel from "@/components/admin/ShippingLabel";
 import PackingSlip from "@/components/admin/PackingSlip";
 import { supabase } from "@/lib/supabase";
@@ -357,8 +358,9 @@ function OrderDetailPage() {
     printWindow.document.close();
   };
 
-  const handleDownloadPdf = () => {
-    handlePrint("invoice");
+  const handleDownloadPdf = async () => {
+    if (!data?.order) return;
+    await generateInvoicePdf({ order: data.order, items, invoiceNumber });
   };
 
   const handleSendNotification = async (

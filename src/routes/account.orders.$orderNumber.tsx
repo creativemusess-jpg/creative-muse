@@ -8,6 +8,7 @@ import { useAuth } from "@/lib/auth";
 import { storefrontSupabase } from "@/lib/supabase-storefront";
 import { normalizeOrderItems } from "@/lib/api/order-items";
 import type { NormalizedOrderItem } from "@/lib/api/order-items";
+import { generateInvoicePdf } from "@/lib/invoice-pdf";
 
 export const Route = createFileRoute("/account/orders/$orderNumber")({
   head: ({ params }) => ({ meta: [{ title: `Order #${params.orderNumber} - Creative Muse` }] }),
@@ -124,6 +125,9 @@ function AccountOrderDetailPage() {
 
   const activeStep = statusIndex(order.order_status);
   const delivery = order.delivery_address || order.shipping_address;
+  const handleDownloadInvoice = async () => {
+    await generateInvoicePdf({ order, items });
+  };
 
   return (
     <PageShell>
@@ -290,7 +294,7 @@ function AccountOrderDetailPage() {
               <Truck className="h-4 w-4" /> Track Order
             </Link>
             <button
-              onClick={() => window.print()}
+              onClick={handleDownloadInvoice}
               className="inline-flex items-center justify-center gap-2 rounded-[6px] border border-[#7A2533] px-4 py-3 text-sm font-semibold text-[#7A2533]"
             >
               <Download className="h-4 w-4" /> Download Invoice

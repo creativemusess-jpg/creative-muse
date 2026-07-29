@@ -6,6 +6,7 @@ import { subcategoriesApi } from "@/lib/api/subcategories";
 import { productFromDb } from "@/lib/products";
 import { ProductCard } from "@/components/site/ProductCard";
 import { Skeleton } from "@/components/ui/skeleton";
+import { CategoryHero } from "@/components/site/CategoryHero";
 
 export const Route = createFileRoute("/collections/$slug/$subslug")({
   head: ({ params }) => ({
@@ -66,10 +67,16 @@ function SubcategoryCollectionPage() {
   }
 
   const categoryName = subcategory.category?.name || slug.replace(/-/g, " ");
+  const heroCategory = {
+    ...subcategory.category,
+    name: subcategory.name,
+    description: subcategory.description || subcategory.category?.description,
+  };
 
   return (
     <PageShell>
-      <div className="mx-auto max-w-[1440px] px-4 py-8 lg:px-8">
+      <CategoryHero category={heroCategory} />
+      <div id="products" className="mx-auto max-w-[1440px] px-4 py-8 lg:px-8">
         <nav className="mb-4 text-xs text-gray-400">
           <Link to="/" className="hover:text-[#7A2533]">
             Home
@@ -81,12 +88,6 @@ function SubcategoryCollectionPage() {
           <span className="mx-2">/</span>
           <span className="text-gray-600">{subcategory.name}</span>
         </nav>
-
-        <div className="mb-8">
-          <h1 className="font-display text-3xl font-semibold text-[#7A2533] lg:text-4xl">
-            {subcategory.name}
-          </h1>
-        </div>
 
         {products.length === 0 ? (
           <div className="py-16 text-center">

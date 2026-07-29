@@ -4,6 +4,7 @@ import { CheckCircle, Loader2, Package, ArrowRight, Download, FileText } from "l
 import { PageShell } from "@/components/site/PageHeader";
 import { formatPrice } from "@/lib/products";
 import { supabase } from "@/lib/supabase";
+import { generateInvoicePdf } from "@/lib/invoice-pdf";
 
 const db = () => supabase as any;
 
@@ -76,24 +77,8 @@ function OrderSuccessPage() {
     load();
   }, [orderNumber]);
 
-  const handleDownloadInvoice = () => {
-    const win = window.open("", "_blank");
-    if (!win) { alert("Please allow pop-ups to download the invoice."); return; }
-    const addr = order.delivery_address || {};
-    const business = { name: "Creative Muse", email: "hello@creativemuse.in" };
-    const itemsHtml = items.map((item: any) =>
-      `<tr><td style="padding:6px 8px;border-bottom:1px solid #eee">${item.product_name || "Item"}</td><td style="padding:6px 8px;border-bottom:1px solid #eee;text-align:center">${item.quantity}</td><td style="padding:6px 8px;border-bottom:1px solid #eee;text-align:right">${formatPrice(item.unit_price)}</td><td style="padding:6px 8px;border-bottom:1px solid #eee;text-align:right">${formatPrice(item.total_price)}</td></tr>`
-    ).join("");
-    win.document.write(`<!DOCTYPE html><html><head><title>Invoice ${order.order_number}</title><style>body{font-family:Inter,system-ui,sans-serif;padding:40px;color:#1a1a2e}table{width:100%;border-collapse:collapse;margin:16px 0}th{background:#1a1a2e;color:#fff;padding:8px 10px;text-align:left;font-size:11px}td{font-size:12px}.right{text-align:right}.total{font-size:16px;font-weight:700;border-top:2px solid #1a1a2e;padding-top:8px}.footer{margin-top:30px;padding-top:16px;border-top:1px solid #ddd;font-size:11px;color:#888;text-align:center}h1{font-size:22px;margin:0 0 4px}.header{display:flex;justify-content:space-between;margin-bottom:24px}.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600}.badge-paid{background:#d1fae5;color:#065f46}.badge-pending{background:#fef3c7;color:#92400e}</style></head><body>
-      <div class="header"><div><h1>${business.name}</h1><p>${business.email}</p></div><div><h2 style="color:#7A2533;margin:0">INVOICE</h2><p><strong>Order:</strong> ${order.order_number}</p><p><strong>Date:</strong> ${new Date(order.created_at).toLocaleDateString("en-IN",{year:"numeric",month:"short",day:"numeric"})}</p></div></div>
-      <hr style="border-color:#7A2533" />
-      <p><strong>Bill To:</strong> ${order.customer_name || "Guest"}<br/>${order.customer_email || ""}<br/>${addr.addressLine1 || ""}${addr.city ? ", " + addr.city : ""}${addr.state ? ", " + addr.state : ""}</p>
-      <table><thead><tr><th>Item</th><th style="text-align:center">Qty</th><th style="text-align:right">Price</th><th style="text-align:right">Total</th></tr></thead><tbody>${itemsHtml}</tbody></table>
-      <div style="margin-left:auto;width:300px"><table><tr><td>Subtotal</td><td class="right">${formatPrice(order.subtotal)}</td></tr>${order.shipping_amount > 0 ? `<tr><td>Shipping</td><td class="right">${formatPrice(order.shipping_amount)}</td></tr>` : ""}        ${order.gift_packaging_enabled ? `<tr><td>${order.gift_packaging_name || "Gift Packaging"}</td><td class="right">${formatPrice(order.gift_packaging_price || 0)}</td></tr>` : ""}<tr class="total"><td>Total</td><td class="right">${formatPrice(order.total_amount)}</td></tr></table></div>
-      <div class="footer"><p>Thank you for shopping with Creative Muse!</p><p>Payment: <span class="badge badge-${order.payment_status}">${order.payment_status}</span></p></div>
-    </body></html>`);
-    win.document.close();
-    setTimeout(() => { win.print(); }, 500);
+  const handleDownloadInvoice = async () => {
+    await generateInvoicePdf({ order, items });
   };
 
   return (
@@ -103,8 +88,8 @@ function OrderSuccessPage() {
           <Loader2 className="h-10 w-10 animate-spin text-[#7A2533]" />
         ) : order ? (
           <div className="w-full text-center">
-            <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-green-100">
-              <CheckCircle className="h-10 w-10 text-green-600" />
+            <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-[#7A2533]">
+              <CheckCircle className="h-10 w-10 text-white" />
             </div>
             <h1 className="font-display mt-6 text-3xl font-semibold text-[#1a1a2e]">Thank You for Your Order</h1>
             <p className="mt-2 text-[#7a6e64]">Your jewellery is being prepared with care.</p>

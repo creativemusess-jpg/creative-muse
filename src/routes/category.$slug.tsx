@@ -14,6 +14,7 @@ import catMangalsutra from "@/assets/cat-mangalsutra.png";
 import catPendants from "@/assets/cat-pendants.png";
 import catBangles from "@/assets/cat-bangles.png";
 import catWedding from "@/assets/cat-wedding.png";
+import { CategoryHero } from "@/components/site/CategoryHero";
 
 const CATEGORY_IMAGES: Record<string, string> = {
   Rings: catRings,
@@ -98,23 +99,8 @@ function CategoryPage() {
           <span className="text-[#7A2533]">{category.name}</span>
         </nav>
 
-        <div className="mb-10 flex flex-col items-center text-center">
-          {catImage && (
-            <div className="mb-6 h-28 w-28 overflow-hidden rounded-2xl bg-gradient-to-br from-[#fdf8f3] to-[#f0e4cd] shadow-sm">
-              <img
-                src={catImage}
-                alt={category.name}
-                className="h-full w-full object-contain p-2"
-                decoding="async"
-              />
-            </div>
-          )}
-          <h1 className="text-3xl font-semibold text-[#7A2533]">{category.name}</h1>
-          {category.description && (
-            <p className="mt-3 max-w-xl text-sm leading-relaxed text-gray-500">
-              {category.description}
-            </p>
-          )}
+        <CategoryHero category={{ ...category, image: category.image || catImage }} />
+        <div id="products" className="mb-10 flex flex-col items-center text-center">
           <p className="mt-2 text-xs tracking-wider text-[#7A2533] uppercase">
             {products.length} {products.length === 1 ? "product" : "products"}
           </p>

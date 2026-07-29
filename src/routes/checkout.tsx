@@ -314,7 +314,7 @@ function CheckoutPage() {
           {STEPS.map((step, i) => (
             <div key={step} className="flex items-center gap-2">
               <div className={`flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-full text-[11px] font-bold ${
-                i === 1 ? "bg-[#7A2533] text-white" : i < 1 ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-400"
+                i === 1 ? "bg-[#7A2533] text-white" : i < 1 ? "bg-[#7A2533] text-white" : "bg-gray-100 text-gray-400"
               }`}>{i < 1 ? <Check className="h-3.5 w-3.5" /> : i + 1}</div>
               <span className={`hidden sm:inline font-medium ${i === 1 ? "text-[#1a1a2e]" : "text-gray-400"}`}>{step}</span>
               {i < STEPS.length - 1 && <ChevronRight className="h-3 w-3 text-gray-300" />}
@@ -401,12 +401,12 @@ function CheckoutPage() {
                   <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">PIN Code *</label>
                   <div className="relative">
                     <input value={pincodeInput} onChange={(e) => handlePincodeChange(e.target.value)} placeholder="Enter 6-digit PIN code" maxLength={6}
-                      className={`w-full rounded-xl border px-4 py-3 pr-10 text-sm outline-none transition-colors ${pincodeStatus === "verified" ? "border-green-400 bg-green-50" : pincodeStatus === "checking" ? "border-amber-300 bg-amber-50" : pincodeStatus === "not_found" || pincodeStatus === "invalid" ? "border-red-300 bg-red-50" : "border-[#e0d8cc] focus:border-[#7A2533]"}`} />
+                      className={`w-full rounded-xl border px-4 py-3 pr-10 text-sm outline-none transition-colors ${pincodeStatus === "verified" ? "border-[#7A2533] bg-[#fdf8f3]" : pincodeStatus === "checking" ? "border-amber-300 bg-amber-50" : pincodeStatus === "not_found" || pincodeStatus === "invalid" ? "border-red-300 bg-red-50" : "border-[#e0d8cc] focus:border-[#7A2533]"}`} />
                     <span className="absolute right-3 top-1/2 -translate-y-1/2">
-                      {pincodeStatus === "checking" ? <Loader2 className="h-4 w-4 animate-spin text-amber-500" /> : pincodeStatus === "verified" ? <Check className="h-4 w-4 text-green-500" /> : pincodeStatus === "not_found" || pincodeStatus === "invalid" ? <AlertCircle className="h-4 w-4 text-red-500" /> : null}
+                      {pincodeStatus === "checking" ? <Loader2 className="h-4 w-4 animate-spin text-amber-500" /> : pincodeStatus === "verified" ? <Check className="h-4 w-4 text-[#7A2533]" /> : pincodeStatus === "not_found" || pincodeStatus === "invalid" ? <AlertCircle className="h-4 w-4 text-red-500" /> : null}
                     </span>
                   </div>
-                  {pincodeMsg && <p className={`mt-1 text-[11px] font-medium ${pincodeStatus === "verified" ? "text-green-600" : pincodeStatus === "checking" ? "text-amber-600" : "text-red-600"}`}>{pincodeMsg}</p>}
+                  {pincodeMsg && <p className={`mt-1 text-[11px] font-medium ${pincodeStatus === "verified" ? "text-[#7A2533]" : pincodeStatus === "checking" ? "text-amber-600" : "text-red-600"}`}>{pincodeMsg}</p>}
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">State *</label>
@@ -509,7 +509,7 @@ function CheckoutPage() {
                 <label className={`flex cursor-pointer items-center gap-3 rounded-xl border p-4 transition-colors ${deliveryMethod === "standard" ? "border-[#7A2533] bg-[#fdf8f3] ring-1 ring-[#7A2533]/30" : "border-[#e0d8cc] hover:border-[#7A2533]/50"}`}>
                   <input type="radio" name="delivery" value="standard" checked={deliveryMethod === "standard"} onChange={(e) => setDeliveryMethod(e.target.value as DeliveryMethod)} className="h-4 w-4 accent-[#7A2533]" />
                   <div className="flex-1"><p className="font-medium text-[#1a1a2e]">Standard Insured Delivery</p><p className="text-xs text-[#7a6e64]">Free · 3–5 business days</p></div>
-                  <span className="text-sm font-semibold text-green-600">Free</span>
+                  <span className="text-sm font-semibold text-[#7A2533]">Free</span>
                 </label>
                 <label className={`flex cursor-pointer items-center gap-3 rounded-xl border p-4 transition-colors ${deliveryMethod === "express" ? "border-[#7A2533] bg-[#fdf8f3] ring-1 ring-[#7A2533]/30" : "border-[#e0d8cc] hover:border-[#7A2533]/50"}`}>
                   <input type="radio" name="delivery" value="express" checked={deliveryMethod === "express"} onChange={(e) => setDeliveryMethod(e.target.value as DeliveryMethod)} className="h-4 w-4 accent-[#7A2533]" />

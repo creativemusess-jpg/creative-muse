@@ -11,6 +11,12 @@ interface MegaMenuProps {
 
 export function MegaMenu({ item, idx, total, onClose }: MegaMenuProps) {
   const ref = useRef<HTMLDivElement>(null);
+  const edgeClass =
+    idx <= 1
+      ? "left-0"
+      : idx >= total - 2
+        ? "right-0"
+        : "left-1/2 -translate-x-1/2";
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -20,13 +26,10 @@ export function MegaMenu({ item, idx, total, onClose }: MegaMenuProps) {
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [onClose]);
 
-  const leftPercent = Math.min(Math.max((idx / Math.max(total - 1, 1)) * 100, 4), 60);
-
   return (
     <div
       ref={ref}
-      className="absolute top-full z-50 pt-3"
-      style={{ left: `${leftPercent}%`, transform: "translateX(-16%)" }}
+      className={`absolute top-full z-50 pt-3 ${edgeClass}`}
       onMouseEnter={() => {}}
       onMouseLeave={(e) => {
         const rect = ref.current?.getBoundingClientRect();
@@ -55,6 +58,15 @@ export function MegaMenu({ item, idx, total, onClose }: MegaMenuProps) {
               Shop {item.label}
             </h4>
             <ul className="space-y-0.5 text-sm text-[#3a3028]">
+              <li>
+                <Link
+                  to={item.to}
+                  onClick={onClose}
+                  className="block rounded-[12px] px-3 py-2 font-semibold text-[#7A2533] transition hover:bg-[#fdf8f3]"
+                >
+                  View All {item.label}
+                </Link>
+              </li>
               {item.links.map((link) => (
                 <li key={link.label}>
                   <Link

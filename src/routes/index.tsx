@@ -601,27 +601,124 @@ function ShopByCategory() {
 /* =========================================================
    4. FEATURED BANNER
    ========================================================= */
-const CTA_FALLBACK_IMAGES = [
-  { src: prodPolki, alt: "Royal Polki Bridal Choker" },
-  { src: prodCelestia, alt: "Celestia Drop Bridal Earrings" },
-  { src: prodAarav, alt: "Aarav Solitaire Bridal Ring" },
+const CTA_FALLBACK_VIDEOS = [
+  {
+    src: "/category-videos/necklace-hero.mp4",
+    poster: prodPolki,
+    title: "Bridal necklaces",
+  },
+  {
+    src: "/category-videos/earrings-hero.mp4",
+    poster: prodCelestia,
+    title: "Pearl earrings",
+  },
+  {
+    src: "/category-videos/rings-hero.mp4",
+    poster: prodAarav,
+    title: "Solitaire rings",
+  },
 ];
 
-const CTA_CARD_STYLES = [
-  { top: "0%", left: "10%", rot: -6, delay: 0 },
-  { top: "20%", left: "40%", rot: 4, delay: 0.4 },
-  { top: "45%", left: "5%", rot: -3, delay: 0.8 },
-];
+function HeroVideoCarousel({
+  videos,
+}: {
+  videos: { src: string; poster?: string; title: string }[];
+}) {
+  const [api, setApi] = useState<CarouselApi>();
+  const [current, setCurrent] = useState(0);
+  const prefersReducedMotion = useReducedMotion();
+
+  const slides = videos.length > 0 ? videos : CTA_FALLBACK_VIDEOS;
+
+  const onSelect = useCallback((a: CarouselApi) => {
+    setCurrent(a?.selectedScrollSnap() ?? 0);
+  }, []);
+
+  useEffect(() => {
+    if (!api) return;
+    setCurrent(api.selectedScrollSnap());
+    api.on("select", onSelect);
+    return () => {
+      api.off("select", onSelect);
+    };
+  }, [api, onSelect]);
+
+  useEffect(() => {
+    if (!api || prefersReducedMotion || slides.length < 2) return;
+    const timer = window.setInterval(() => api.scrollNext(), 2800);
+    return () => window.clearInterval(timer);
+  }, [api, prefersReducedMotion, slides.length]);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: 24 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.7, delay: 0.15 }}
+      className="relative min-w-0"
+    >
+      <div className="pointer-events-none absolute inset-y-8 -left-6 w-16 bg-gradient-to-r from-[#1a1a2e] to-transparent" />
+      <div className="pointer-events-none absolute inset-y-8 -right-6 z-10 w-16 bg-gradient-to-l from-[#1a1a2e] to-transparent" />
+
+      <Carousel
+        setApi={setApi}
+        opts={{ loop: true, align: "start" }}
+        className="overflow-hidden"
+        aria-label="Bridal collection video carousel"
+      >
+        <CarouselContent className="-ml-4">
+          {slides.map((video, i) => (
+            <CarouselItem
+              key={`${video.src}-${i}`}
+              className="basis-[76%] pl-4 sm:basis-[54%] lg:basis-[58%] xl:basis-[48%]"
+            >
+              <div className="relative aspect-[4/5] overflow-hidden rounded-[28px] border border-white/10 bg-[#fdf8f3]/10 shadow-[0_24px_64px_rgba(0,0,0,0.35)]">
+                <video
+                  src={video.src}
+                  poster={video.poster}
+                  className="h-full w-full object-cover"
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  preload="metadata"
+                  aria-label={video.title}
+                />
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#1a1a2e]/35 via-transparent to-white/10" />
+                <div className="pointer-events-none absolute bottom-4 left-4 rounded-full border border-white/30 bg-white/15 px-3 py-1 text-[10px] font-semibold tracking-[0.16em] text-white uppercase backdrop-blur-md">
+                  {video.title}
+                </div>
+              </div>
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+      </Carousel>
+
+      <div className="mt-5 flex justify-center gap-2">
+        {slides.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => api?.scrollTo(i)}
+            className={`h-1.5 rounded-full transition-all ${
+              i === current ? "w-7 bg-[#C9A96E]" : "w-1.5 bg-white/35"
+            }`}
+            aria-label={`Show bridal video ${i + 1}`}
+          />
+        ))}
+      </div>
+    </motion.div>
+  );
+}
 
 function FeaturedBanner() {
   const { data: section, isLoading } = useContentSection("featured_banner");
 
-  const ctaImages = useMemo(() => {
-    if (!section?.content?.cta_images) return null;
-    return section.content.cta_images as { src: string; alt: string }[];
+  const ctaVideos = useMemo(() => {
+    if (!section?.content?.cta_videos) return null;
+    return section.content.cta_videos as { src: string; poster?: string; title: string }[];
   }, [section]);
 
-  const images = ctaImages && ctaImages.length === 3 ? ctaImages : CTA_FALLBACK_IMAGES;
+  const videos = ctaVideos && ctaVideos.length > 0 ? ctaVideos : CTA_FALLBACK_VIDEOS;
 
   if (isLoading) return null;
 
@@ -658,27 +755,10 @@ function FeaturedBanner() {
             </div>
           </motion.div>
 
-          <div className="relative hidden h-[420px] lg:block">
-            {CTA_CARD_STYLES.map((c, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 30, rotate: c.rot - 6 }}
-                whileInView={{ opacity: 1, y: 0, rotate: c.rot }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.7, delay: c.delay }}
-                className="absolute h-56 w-44 overflow-hidden rounded-[28px] bg-[#fdf8f3] shadow-[0_24px_64px_rgba(0,0,0,0.3)]"
-                style={{ top: c.top, left: c.left }}
-              >
-                <img
-                  src={images[i].src}
-                  alt={images[i].alt}
-                  className="h-full w-full object-cover"
-                  onError={(e) => {
-                    e.currentTarget.style.display = "none";
-                  }}
-                />
-              </motion.div>
-            ))}
+          <div className="relative min-w-0 lg:h-[420px]">
+            <div className="relative z-10 mx-auto w-full max-w-[620px] lg:absolute lg:inset-y-0 lg:right-0 lg:flex lg:max-w-[560px] lg:items-center">
+              <HeroVideoCarousel videos={videos} />
+            </div>
           </div>
         </div>
       </div>

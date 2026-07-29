@@ -549,9 +549,8 @@ function QuickViewMedia({ product, onZoomChange }: { product: Product; onZoomCha
     touchX.current = null;
   };
 
-  // Keyboard navigation for zoom
+  // Keyboard navigation
   useEffect(() => {
-    if (!zoom) return;
     const handler = (e: KeyboardEvent) => {
       if (e.key === "Escape") setZoom(false);
       if (e.key === "ArrowLeft") setIdx((i) => (i - 1 + gallery.length) % gallery.length);
@@ -559,7 +558,7 @@ function QuickViewMedia({ product, onZoomChange }: { product: Product; onZoomCha
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, [zoom, gallery.length]);
+  }, [gallery.length]);
 
   return (
     <div className="flex flex-col gap-3 p-4 md:p-5">

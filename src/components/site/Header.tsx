@@ -1,5 +1,6 @@
 import { memo, useState, useRef, useCallback, useEffect } from "react";
 import { Link } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import {
   Heart,
   ShoppingBag,
@@ -13,12 +14,65 @@ import {
 } from "lucide-react";
 import { useStore } from "@/lib/store";
 import { useAuth } from "@/lib/auth";
-import { NAV_ITEMS } from "@/lib/navigation";
+import { NAV_ITEMS, type NavItem } from "@/lib/navigation";
+import { categoriesApi } from "@/lib/api/categories";
+import { subcategoriesApi } from "@/lib/api/subcategories";
+import { MegaMenu } from "./MegaMenu";
 
 export const Header = memo(function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [activeMenuIdx, setActiveMenuIdx] = useState<number | null>(null);
+  const closeTimer = useRef<number | null>(null);
   const { cartCount, wishlistCount, openCart, openWishlist } = useStore();
   const { user } = useAuth();
+  const { data: categories = [] } = useQuery({
+    queryKey: ["categories", "nav"],
+    queryFn: () => categoriesApi.list(true),
+    staleTime: 5 * 60 * 1000,
+  });
+  const { data: subcategories = [] } = useQuery({
+    queryKey: ["subcategories", "nav"],
+    queryFn: () => subcategoriesApi.list(true),
+    staleTime: 5 * 60 * 1000,
+  });
+  const dynamicItems: NavItem[] = categories.map((cat: any) => {
+    const links = subcategories
+      .filter((sub: any) => sub.category_id === cat.id)
+      .map((sub: any) => ({
+        label: sub.name,
+        to: `/collections/${cat.slug}/${sub.slug}`,
+      }));
+    return {
+      label: cat.name,
+      to: `/collections/${cat.slug}`,
+      links,
+      featured: {
+        title: cat.banner_heading || cat.name,
+        subtitle: "Collection",
+        description: cat.banner_description || cat.description || "Explore the latest Creative Muse edit.",
+        linkTo: `/collections/${cat.slug}`,
+        linkText: cat.cta_button_text || "Shop now",
+      },
+      offer: {
+        title: "Private Styling",
+        subtitle: "Available",
+        description: "Book a personal jewellery consultation.",
+        linkTo: "/contact",
+        linkText: "Enquire",
+      },
+    };
+  });
+  const navItems = dynamicItems.length > 0 ? dynamicItems : NAV_ITEMS;
+
+  const openMenu = (idx: number) => {
+    if (closeTimer.current) window.clearTimeout(closeTimer.current);
+    setActiveMenuIdx(idx);
+  };
+
+  const scheduleClose = () => {
+    if (closeTimer.current) window.clearTimeout(closeTimer.current);
+    closeTimer.current = window.setTimeout(() => setActiveMenuIdx(null), 180);
+  };
 
   return (
     <>
@@ -81,12 +135,48 @@ export const Header = memo(function Header() {
         </div>
 
         <div className="border-t border-[#e0d8cc]/40">
-          <nav className="scrollbar-hide mx-auto flex max-w-[1440px] items-center justify-center gap-0.5 overflow-x-auto px-2 py-2 lg:px-4" aria-label="Primary">
-            {NAV_ITEMS.map((item) => (
+          <nav
+            className="scrollbar-hide relative mx-auto hidden max-w-[1440px] items-center justify-center gap-0.5 overflow-visible px-2 py-2 lg:flex lg:px-4"
+            aria-label="Primary"
+            onMouseLeave={scheduleClose}
+            onMouseEnter={() => closeTimer.current && window.clearTimeout(closeTimer.current)}
+          >
+            {navItems.map((item, idx) => (
+              <div key={item.label} className="relative">
+                <Link
+                  to={item.to}
+                  onMouseEnter={() => openMenu(idx)}
+                  onFocus={() => openMenu(idx)}
+                  onKeyDown={(e) => {
+                    if (e.key === "ArrowDown") {
+                      e.preventDefault();
+                      openMenu(idx);
+                    }
+                    if (e.key === "Escape") setActiveMenuIdx(null);
+                  }}
+                  aria-haspopup="menu"
+                  aria-expanded={activeMenuIdx === idx}
+                  className="shrink-0 whitespace-nowrap rounded-full px-3 py-1.5 text-[12.5px] font-semibold tracking-[0.01em] text-[#7A2533] transition-colors duration-200 hover:bg-[#fdf8f3] hover:text-[#7A2533] xl:px-4 xl:text-[13px]"
+                >
+                  {item.label}
+                </Link>
+                {activeMenuIdx === idx && (
+                  <MegaMenu
+                    item={item}
+                    idx={idx}
+                    total={navItems.length}
+                    onClose={() => setActiveMenuIdx(null)}
+                  />
+                )}
+              </div>
+            ))}
+          </nav>
+          <nav className="scrollbar-hide mx-auto flex max-w-[1440px] items-center justify-center gap-0.5 overflow-x-auto px-2 py-2 lg:hidden" aria-label="Primary mobile shortcuts">
+            {navItems.map((item) => (
               <Link
                 key={item.label}
                 to={item.to}
-                className="shrink-0 whitespace-nowrap rounded-full px-3 py-1.5 text-[12.5px] font-semibold tracking-[0.01em] text-[#7A2533] transition-colors duration-200 hover:bg-[#fdf8f3] hover:text-[#7A2533] xl:px-4 xl:text-[13px]"
+                className="shrink-0 whitespace-nowrap rounded-full px-3 py-1.5 text-[12.5px] font-semibold tracking-[0.01em] text-[#7A2533] transition-colors duration-200 hover:bg-[#fdf8f3] hover:text-[#7A2533]"
               >
                 {item.label}
               </Link>
@@ -95,12 +185,12 @@ export const Header = memo(function Header() {
         </div>
       </header>
 
-      {mobileOpen && <MobileDrawer onClose={() => setMobileOpen(false)} />}
+      {mobileOpen && <MobileDrawer items={navItems} onClose={() => setMobileOpen(false)} />}
     </>
   );
 });
 
-function MobileDrawer({ onClose }: { onClose: () => void }) {
+function MobileDrawer({ items, onClose }: { items: NavItem[]; onClose: () => void }) {
   const [expandedIdx, setExpandedIdx] = useState<number | null>(null);
   const { user } = useAuth();
 
@@ -129,7 +219,7 @@ function MobileDrawer({ onClose }: { onClose: () => void }) {
         </div>
 
         <nav className="flex-1 space-y-1 overflow-y-auto">
-          {NAV_ITEMS.map((item, idx) => {
+          {items.map((item, idx) => {
             const isExpanded = expandedIdx === idx;
             const hasSubs = item.links.length > 0;
             return (

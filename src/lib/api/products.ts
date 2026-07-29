@@ -192,7 +192,7 @@ export const productsApi = {
     if (products.length > 0) {
       await Promise.all(products.map(async (p) => {
         const [imgs, cats] = await Promise.all([
-          supabase.from("product_images").select("*").eq("product_id", p.id).order("sort_order" as any).limit(1),
+          supabase.from("product_images").select("*").eq("product_id", p.id).order("sort_order" as any),
           supabase.from("product_categories").select("category_id").eq("product_id", p.id),
         ]);
         if (imgs.error) throw imgs.error;

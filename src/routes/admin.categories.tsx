@@ -14,23 +14,33 @@ export const Route = createFileRoute("/admin/categories")({
   component: AdminCategories,
 });
 
+const emptyCategoryForm = {
+  name: "",
+  slug: "",
+  description: "",
+  sort_order: 0,
+  featured: false,
+  active: true,
+  seo_title: "",
+  seo_description: "",
+  image: null as string | null,
+  hero_image: null as string | null,
+  hero_video: null as string | null,
+  banner_heading: "",
+  banner_description: "",
+  cta_button_text: "",
+  cta_link: "",
+  mobile_banner: null as string | null,
+  desktop_banner: null as string | null,
+};
+
 function AdminCategories() {
   const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState<any | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [form, setForm] = useState({
-    name: "",
-    slug: "",
-    description: "",
-    sort_order: 0,
-    featured: false,
-    active: true,
-    seo_title: "",
-    seo_description: "",
-    image: null as string | null,
-  });
+  const [form, setForm] = useState(emptyCategoryForm);
   const [uploading, setUploading] = useState(false);
   const queryClient = useQueryClient();
 
@@ -67,6 +77,29 @@ function AdminCategories() {
     }
   };
 
+  const handleMediaUpload = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    field: "hero_image" | "hero_video" | "mobile_banner" | "desktop_banner",
+  ) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    try {
+      const isVideo = field === "hero_video";
+      const url = await uploadImage(file, isVideo ? "categoryVideos" : "categories", isVideo ? "hero-videos" : "hero-banners");
+      setForm((f) => ({
+        ...f,
+        [field]: url,
+        ...(isVideo ? { hero_image: null } : field === "hero_image" ? { hero_video: null } : {}),
+      }));
+    } catch (err: any) {
+      alert(err.message);
+    } finally {
+      setUploading(false);
+      e.target.value = "";
+    }
+  };
+
   const handleSave = async () => {
     if (!form.name || !form.slug) return;
     setSaving(true);
@@ -81,6 +114,14 @@ function AdminCategories() {
         seo_title: form.seo_title || null,
         seo_description: form.seo_description || null,
         image: form.image,
+        hero_image: form.hero_image,
+        hero_video: form.hero_video,
+        banner_heading: form.banner_heading || null,
+        banner_description: form.banner_description || null,
+        cta_button_text: form.cta_button_text || null,
+        cta_link: form.cta_link || null,
+        mobile_banner: form.mobile_banner,
+        desktop_banner: form.desktop_banner,
       };
       if (editing) {
         await categoriesApi.update(editing.id, payload);
@@ -89,7 +130,7 @@ function AdminCategories() {
       }
       setShowForm(false);
       setEditing(null);
-      setForm({ name: "", slug: "", description: "", sort_order: 0, featured: false, active: true, seo_title: "", seo_description: "", image: null });
+      setForm(emptyCategoryForm);
       await invalidateCaches();
       fetchCategories();
     } catch (err: any) {
@@ -122,6 +163,14 @@ function AdminCategories() {
       seo_title: cat.seo_title || "",
       seo_description: cat.seo_description || "",
       image: cat.image || null,
+      hero_image: cat.hero_image || null,
+      hero_video: cat.hero_video || null,
+      banner_heading: cat.banner_heading || "",
+      banner_description: cat.banner_description || "",
+      cta_button_text: cat.cta_button_text || "",
+      cta_link: cat.cta_link || "",
+      mobile_banner: cat.mobile_banner || null,
+      desktop_banner: cat.desktop_banner || null,
     });
     setShowForm(true);
   };
@@ -133,7 +182,7 @@ function AdminCategories() {
         description={`${categories.length} categories`}
         actions={
           <button
-            onClick={() => { setEditing(null); setForm({ name: "", slug: "", description: "", sort_order: 0, featured: false, active: true, seo_title: "", seo_description: "", image: null }); setShowForm(true); }}
+            onClick={() => { setEditing(null); setForm(emptyCategoryForm); setShowForm(true); }}
             className="flex items-center gap-2 rounded-lg bg-[#1a1a2e] px-4 py-2 text-sm font-semibold text-white hover:bg-[#2d1b4e]"
           >
             <Plus className="h-4 w-4" />
@@ -207,6 +256,85 @@ function AdminCategories() {
                   </label>
                 )}
               </div>
+            </div>
+            <div>
+              <label className="mb-1 block text-xs font-medium text-gray-600">Hero Image</label>
+              <MediaPicker
+                value={form.hero_image}
+                accept="image/*"
+                uploading={uploading}
+                onUpload={(e) => handleMediaUpload(e, "hero_image")}
+                onClear={() => setForm((f) => ({ ...f, hero_image: null }))}
+              />
+            </div>
+            <div>
+              <label className="mb-1 block text-xs font-medium text-gray-600">Hero Video</label>
+              <MediaPicker
+                value={form.hero_video}
+                accept="video/*"
+                uploading={uploading}
+                onUpload={(e) => handleMediaUpload(e, "hero_video")}
+                onClear={() => setForm((f) => ({ ...f, hero_video: null }))}
+                video
+              />
+            </div>
+            <div>
+              <label className="mb-1 block text-xs font-medium text-gray-600">Mobile Banner</label>
+              <MediaPicker
+                value={form.mobile_banner}
+                accept="image/*"
+                uploading={uploading}
+                onUpload={(e) => handleMediaUpload(e, "mobile_banner")}
+                onClear={() => setForm((f) => ({ ...f, mobile_banner: null }))}
+              />
+            </div>
+            <div>
+              <label className="mb-1 block text-xs font-medium text-gray-600">Desktop Banner</label>
+              <MediaPicker
+                value={form.desktop_banner}
+                accept="image/*"
+                uploading={uploading}
+                onUpload={(e) => handleMediaUpload(e, "desktop_banner")}
+                onClear={() => setForm((f) => ({ ...f, desktop_banner: null }))}
+              />
+            </div>
+            <div>
+              <label className="mb-1 block text-xs font-medium text-gray-600">Banner Heading</label>
+              <input
+                type="text"
+                value={form.banner_heading}
+                onChange={(e) => setForm((f) => ({ ...f, banner_heading: e.target.value }))}
+                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#7A2533]"
+              />
+            </div>
+            <div className="sm:col-span-2">
+              <label className="mb-1 block text-xs font-medium text-gray-600">Banner Description</label>
+              <textarea
+                value={form.banner_description}
+                onChange={(e) => setForm((f) => ({ ...f, banner_description: e.target.value }))}
+                rows={2}
+                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#7A2533]"
+              />
+            </div>
+            <div>
+              <label className="mb-1 block text-xs font-medium text-gray-600">CTA Button Text</label>
+              <input
+                type="text"
+                value={form.cta_button_text}
+                onChange={(e) => setForm((f) => ({ ...f, cta_button_text: e.target.value }))}
+                placeholder="View Collection"
+                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#7A2533]"
+              />
+            </div>
+            <div>
+              <label className="mb-1 block text-xs font-medium text-gray-600">CTA Link</label>
+              <input
+                type="text"
+                value={form.cta_link}
+                onChange={(e) => setForm((f) => ({ ...f, cta_link: e.target.value }))}
+                placeholder="#products"
+                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#7A2533]"
+              />
             </div>
             <div className="flex items-end gap-6 pb-2">
               <label className="flex items-center gap-2 cursor-pointer">
@@ -308,5 +436,46 @@ function AdminCategories() {
         </AdminTable>
       )}
     </AdminLayout>
+  );
+}
+
+function MediaPicker({
+  value,
+  accept,
+  uploading,
+  onUpload,
+  onClear,
+  video = false,
+}: {
+  value: string | null;
+  accept: string;
+  uploading: boolean;
+  onUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onClear: () => void;
+  video?: boolean;
+}) {
+  if (value) {
+    return (
+      <div className="relative h-16 w-24 overflow-hidden rounded-lg bg-gray-100">
+        {video ? (
+          <video src={value} className="h-full w-full object-cover" muted playsInline />
+        ) : (
+          <img src={value} alt="Banner preview" className="h-full w-full object-cover" onError={(e) => { e.currentTarget.style.display = "none"; }} />
+        )}
+        <button
+          type="button"
+          onClick={onClear}
+          className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white"
+        >
+          <X className="h-3 w-3" />
+        </button>
+      </div>
+    );
+  }
+  return (
+    <label className="flex h-16 w-24 cursor-pointer items-center justify-center rounded-lg border border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100">
+      {uploading ? <Loader2 className="h-4 w-4 animate-spin text-gray-400" /> : <Upload className="h-4 w-4 text-gray-400" />}
+      <input type="file" accept={accept} onChange={onUpload} className="hidden" />
+    </label>
   );
 }

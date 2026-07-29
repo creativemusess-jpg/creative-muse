@@ -7,6 +7,7 @@ import { subcategoriesApi } from "@/lib/api/subcategories";
 import { productFromDb } from "@/lib/products";
 import { ProductCard } from "@/components/site/ProductCard";
 import { Skeleton } from "@/components/ui/skeleton";
+import { CategoryHero } from "@/components/site/CategoryHero";
 
 export const Route = createFileRoute("/collections/$slug")({
   head: ({ params }) => ({
@@ -74,7 +75,8 @@ function CategoryCollectionPage() {
 
   return (
     <PageShell>
-      <div className="mx-auto max-w-[1440px] px-4 py-8 lg:px-8">
+      <CategoryHero category={category} />
+      <div id="products" className="mx-auto max-w-[1440px] px-4 py-8 lg:px-8">
         <nav className="mb-4 text-xs text-gray-400">
           <Link to="/" className="hover:text-[#7A2533]">
             Home
@@ -82,15 +84,6 @@ function CategoryCollectionPage() {
           <span className="mx-2">/</span>
           <span className="text-gray-600">{category.name}</span>
         </nav>
-
-        <div className="mb-8">
-          <h1 className="font-display text-3xl font-semibold text-[#7A2533] lg:text-4xl">
-            {category.name}
-          </h1>
-          {category.description && (
-            <p className="mt-2 text-sm text-gray-500">{category.description}</p>
-          )}
-        </div>
 
         {subcategories.length > 0 && (
           <div className="mb-8 flex flex-wrap gap-2">

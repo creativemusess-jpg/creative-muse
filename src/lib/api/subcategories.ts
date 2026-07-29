@@ -29,7 +29,7 @@ export const subcategoriesApi = {
   async getById(id: string): Promise<any | null> {
     const { data, error } = await db()
       .from("subcategories")
-      .select("*, category:category_id(name, slug)")
+      .select("*, category:category_id(*)")
       .eq("id", id)
       .maybeSingle();
     if (error || !data) return null;
