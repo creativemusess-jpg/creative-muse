@@ -31,7 +31,7 @@ export const ProductCard = memo(function ProductCard({
       viewport={{ once: true, margin: "-50px" }}
       transition={{ duration: 0.5, delay: (index % 4) * 0.06 }}
       whileHover={prefersReduced ? {} : { y: -8 }}
-      className="group flex h-full min-h-[286px] flex-col overflow-hidden rounded-[16px] bg-white transition-shadow duration-400 sm:min-h-[382px] md:min-h-[410px] md:rounded-[18px] hover:md:shadow-[0_12px_34px_rgba(0,0,0,0.08)]"
+      className="group relative z-0 flex h-full min-h-[286px] flex-col rounded-[16px] bg-white transition-shadow duration-400 sm:min-h-[382px] md:min-h-[410px] md:rounded-[18px] hover:z-20 hover:md:shadow-[0_12px_34px_rgba(0,0,0,0.08)]"
     >
       <div
         role="button"
@@ -54,7 +54,7 @@ export const ProductCard = memo(function ProductCard({
         className="relative block shrink-0 text-left"
         aria-label={`Quick view ${product.name}`}
       >
-        <div className="relative flex aspect-square w-full items-center justify-center overflow-hidden rounded-[16px] bg-white md:rounded-[18px]">
+        <div className="relative flex aspect-square w-full items-center justify-center overflow-hidden rounded-[16px] bg-white group-hover:overflow-visible md:rounded-[18px]">
           <img
             src={product.image}
             alt={product.name}
@@ -83,21 +83,21 @@ export const ProductCard = memo(function ProductCard({
               toggleWishlist(product.id);
             }}
             aria-label="Wishlist"
-            className={`absolute top-1.5 right-1.5 flex h-7 w-7 items-center justify-center rounded-full shadow-[0_4px_12px_rgba(0,0,0,0.08)] transition-all duration-300 md:h-8 md:w-8 ${
+            className={`group/wishlist absolute top-1.5 right-1.5 flex h-7 w-7 items-center justify-center rounded-full shadow-[0_4px_12px_rgba(0,0,0,0.08)] transition-all duration-300 md:h-8 md:w-8 ${
               wishlisted
-                ? "bg-[#421D22] text-white"
-                : "bg-white text-[#421D22] border border-[rgba(66,29,34,0.24)] hover:bg-[#421D22] hover:text-white"
+                ? "bg-[#7A2533] text-white"
+                : "bg-white text-[#7A2533] border border-[rgba(122,37,51,0.24)] hover:bg-[#7A2533] hover:text-white"
             }`}
           >
             <Heart
               className={`h-3 w-3 transition-colors md:h-4 md:w-4 ${
-                wishlisted ? "fill-white text-white" : "text-[#421D22]"
+                wishlisted ? "fill-white text-white" : "text-[#7A2533] group-hover/wishlist:text-white"
               }`}
             />
           </button>
 
           <div className="absolute right-1.5 bottom-1.5 opacity-100 transition-all duration-400 md:translate-y-3 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100">
-            <span className="flex h-7 w-7 items-center justify-center rounded-full border border-[rgba(66,29,34,0.15)] bg-white text-[#421D22] shadow-sm md:h-auto md:w-auto md:rounded-full md:border md:border-[rgba(66,29,34,0.15)] md:bg-white md:px-3.5 md:py-2 md:text-[10px] md:font-semibold md:tracking-[0.14em] md:uppercase">
+            <span className="flex h-7 w-7 items-center justify-center rounded-full border border-[rgba(122,37,51,0.15)] bg-white text-[#7A2533] shadow-sm md:h-auto md:w-auto md:rounded-full md:border md:border-[rgba(122,37,51,0.15)] md:bg-white md:px-3.5 md:py-2 md:text-[10px] md:font-semibold md:tracking-[0.14em] md:uppercase">
               <Eye className="h-3 w-3 md:hidden" />
               <span className="hidden md:inline">Quick View</span>
             </span>

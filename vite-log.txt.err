@@ -1,0 +1,26 @@
+[33mThe plugin "vite-tsconfig-paths" is detected. Vite now supports tsconfig paths resolution natively via the [1mresolve.tsconfigPaths[22m option. You can remove the plugin and set [1mresolve.tsconfigPaths: true[22m in your Vite config instead.[39m
+Error in renderToReadableStream: Error: The render was aborted by the server without a reason.
+    at abort (E:\muse\muse-jewel-craft-main\node_modules\react-dom\cjs\react-dom-server.node.development.js:8594:17)
+    at Object.cancel (E:\muse\muse-jewel-craft-main\node_modules\react-dom\cjs\react-dom-server.node.development.js:10563:23)
+    at invokePromiseCallback (node:internal/webstreams/util:181:10)
+    at Object.cancelAlgorithm (node:internal/webstreams/util:186:23)
+    at readableByteStreamControllerCancelSteps (node:internal/webstreams/readablestream:3146:37)
+    at [kCancel] (node:internal/webstreams/readablestream:1190:12)
+    at readableStreamCancel (node:internal/webstreams/readablestream:2009:39)
+    at readableStreamReaderGenericCancel (node:internal/webstreams/readablestream:2146:10)
+    at ReadableStreamDefaultReader.cancel (node:internal/webstreams/readablestream:890:12)
+    at safeCancelReader (file:///E:/muse/muse-jewel-craft-main/node_modules/@tanstack/router-core/dist/esm/ssr/transformStreamWithRouter.js:68:26) { componentStack: [Getter] }
+Error in renderToReadableStream: Error: The render was aborted by the server without a reason.
+    at abort (E:\muse\muse-jewel-craft-main\node_modules\react-dom\cjs\react-dom-server.node.development.js:8594:17)
+    at Object.cancel (E:\muse\muse-jewel-craft-main\node_modules\react-dom\cjs\react-dom-server.node.development.js:10563:23)
+    at invokePromiseCallback (node:internal/webstreams/util:181:10)
+    at Object.cancelAlgorithm (node:internal/webstreams/util:186:23)
+    at readableByteStreamControllerCancelSteps (node:internal/webstreams/readablestream:3146:37)
+    at [kCancel] (node:internal/webstreams/readablestream:1190:12)
+    at readableStreamCancel (node:internal/webstreams/readablestream:2009:39)
+    at readableStreamReaderGenericCancel (node:internal/webstreams/readablestream:2146:10)
+    at ReadableStreamDefaultReader.cancel (node:internal/webstreams/readablestream:890:12)
+    at safeCancelReader (file:///E:/muse/muse-jewel-craft-main/node_modules/@tanstack/router-core/dist/esm/ssr/transformStreamWithRouter.js:68:26) { componentStack: [Getter] }
+[tanstack-router] These exports from "E:/muse/muse-jewel-craft-main/src/routes/admin.coupons.tsx" will not be code-split and will increase your bundle size:
+- AdminCoupons
+For the best optimization, these items should either have their export statements removed, or be imported from another location that is not a route file.

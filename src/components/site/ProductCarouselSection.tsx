@@ -239,7 +239,7 @@ export function ProductCarouselSection({
             >
               {products.map((p, i) => (
                 <CarouselItem
-                  key={p.id}
+                  key={`${p.id}-${i}`}
                   className="basis-[84%] sm:basis-[46%] md:basis-[44%] lg:basis-1/3 xl:basis-1/4"
                 >
                   <div className="h-full transition-transform duration-400">

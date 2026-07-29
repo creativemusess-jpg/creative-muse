@@ -114,7 +114,7 @@ function AdminReels() {
       <div className="mb-6">
         <button
           onClick={() => { setEditing(null); setShowForm(true); }}
-          className="rounded-lg bg-[#1a1a2e] px-5 py-2 text-sm font-semibold text-white hover:bg-[#2d1b4e]"
+          className="rounded-lg bg-[#7A2533] px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#5F1C27]"
         >
           + Add Reel
         </button>
@@ -165,7 +165,7 @@ function AdminReels() {
                   </td>
                   <td className="px-4 py-3 font-mono text-xs text-gray-600">{r.product_id}</td>
                   <td className="px-4 py-3">
-                    <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase ${r.is_active ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"}`}>
+                    <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase ${r.is_active ? "border border-[#7A2533]/20 bg-[#fff4f5] text-[#7A2533]" : "bg-gray-100 text-gray-500"}`}>
                       {r.is_active ? "Active" : "Inactive"}
                     </span>
                   </td>
@@ -385,7 +385,7 @@ function ReelForm({
             className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#7A2533]"
           />
           {productId && !search && (
-            <p className="mt-1 text-xs text-green-600">Selected: {productId}</p>
+            <p className="mt-1 text-xs text-[#7A2533]">Selected: {productId}</p>
           )}
           {showDropdown && products.length > 0 && (
             <ul className="absolute z-20 mt-1 max-h-48 w-full overflow-y-auto rounded-lg border border-gray-200 bg-white shadow-lg">
@@ -451,7 +451,7 @@ function ReelForm({
         <button
           type="submit"
           disabled={saving || uploading}
-          className="rounded-lg bg-[#1a1a2e] px-6 py-2 text-sm font-semibold text-white hover:bg-[#2d1b4e] disabled:opacity-50"
+          className="rounded-lg bg-[#7A2533] px-6 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#5F1C27] disabled:opacity-50"
         >
           {saving ? "Saving..." : reel ? "Update Reel" : "Create Reel"}
         </button>

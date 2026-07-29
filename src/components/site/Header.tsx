@@ -52,7 +52,7 @@ export const Header = memo(function Header() {
               >
                 <ShoppingBag className="h-[20px] w-[20px] text-[#2a1e14]" strokeWidth={1.9} />
                 {cartCount > 0 && (
-                  <span className="absolute right-1 top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#1a1a2e] px-1 text-[10px] font-semibold text-white">
+                  <span className="absolute right-1 top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#7A2533] px-1 text-[10px] font-semibold text-white">
                     {cartCount}
                   </span>
                 )}

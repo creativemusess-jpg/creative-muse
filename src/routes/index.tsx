@@ -652,10 +652,7 @@ function FeaturedBanner() {
               <Link to="/shop" className="btn-primary">
                 View Collection
               </Link>
-              <Link
-                to="/contact"
-                className="btn-secondary border-[#7A2533] text-[#7A2533] hover:bg-[#7A2533] hover:text-white"
-              >
+              <Link to="/contact" className="btn-primary">
                 Book Consultation
               </Link>
             </div>
@@ -745,7 +742,7 @@ function BestSellers() {
               <CarouselContent className="-ml-3 md:-ml-4">
                 {filtered.map((p, i) => (
                   <CarouselItem
-                    key={p.id}
+                    key={`${p.id}-${i}`}
                     className="basis-[84%] pl-3 sm:basis-[45%] md:basis-1/3 md:pl-4 lg:basis-1/4"
                   >
                     <ProductCard product={p} index={i} />

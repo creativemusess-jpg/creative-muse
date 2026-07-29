@@ -236,14 +236,33 @@ CREATE TABLE customers (
 CREATE TABLE orders (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   order_number TEXT NOT NULL UNIQUE,
+  checkout_attempt_id TEXT UNIQUE,
   customer_id UUID REFERENCES customers(id),
   customer_email TEXT,
   customer_name TEXT,
+  customer_phone TEXT,
+  subtotal DECIMAL(12,2) NOT NULL DEFAULT 0,
   total_amount DECIMAL(12,2) NOT NULL,
   discount_amount DECIMAL(12,2) NOT NULL DEFAULT 0,
   coupon_code TEXT,
+  shipping_amount DECIMAL(12,2) NOT NULL DEFAULT 0,
+  tax_amount DECIMAL(12,2) NOT NULL DEFAULT 0,
+  tax_snapshot JSONB,
+  payment_method TEXT,
   payment_status payment_status NOT NULL DEFAULT 'pending',
   order_status order_status NOT NULL DEFAULT 'pending',
+  delivery_address JSONB,
+  delivery_method TEXT,
+  delivery_state_code TEXT,
+  delivery_city TEXT,
+  delivery_district TEXT,
+  delivery_pincode TEXT,
+  delivery_locality TEXT,
+  delivery_country_code TEXT NOT NULL DEFAULT 'IN',
+  gift_packaging_enabled BOOLEAN NOT NULL DEFAULT false,
+  gift_packaging_price DECIMAL(12,2) NOT NULL DEFAULT 0,
+  gift_packaging_name TEXT NOT NULL DEFAULT '',
+  gift_message TEXT NOT NULL DEFAULT '',
   shipping_address JSONB,
   tracking_id TEXT,
   courier TEXT,
@@ -312,6 +331,21 @@ CREATE TABLE coupons (
   is_active BOOLEAN NOT NULL DEFAULT true,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+
+CREATE TABLE shoppable_reels (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  video_url TEXT NOT NULL,
+  poster_url TEXT,
+  product_id TEXT NOT NULL,
+  sort_order INT NOT NULL DEFAULT 0,
+  is_active BOOLEAN NOT NULL DEFAULT true,
+  alt_text TEXT,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE INDEX idx_shoppable_reels_active_sort ON shoppable_reels(is_active, sort_order);
+CREATE INDEX idx_shoppable_reels_product ON shoppable_reels(product_id);
 
 -- 8. ENQUIRIES & APPOINTMENTS
 -- ============================================================
@@ -383,6 +417,7 @@ ALTER TABLE order_items ENABLE ROW LEVEL SECURITY;
 ALTER TABLE newsletter_subscribers ENABLE ROW LEVEL SECURITY;
 ALTER TABLE reviews ENABLE ROW LEVEL SECURITY;
 ALTER TABLE coupons ENABLE ROW LEVEL SECURITY;
+ALTER TABLE shoppable_reels ENABLE ROW LEVEL SECURITY;
 ALTER TABLE enquiries ENABLE ROW LEVEL SECURITY;
 ALTER TABLE appointments ENABLE ROW LEVEL SECURITY;
 ALTER TABLE site_settings ENABLE ROW LEVEL SECURITY;
@@ -420,6 +455,10 @@ CREATE POLICY "Anyone can read published FAQs" ON faqs
 -- Anyone can read approved reviews
 CREATE POLICY "Anyone can read approved reviews" ON reviews
   FOR SELECT USING (status = 'approved');
+
+-- Anyone can read active shoppable reels
+CREATE POLICY "Anyone can read active shoppable reels" ON shoppable_reels
+  FOR SELECT USING (is_active = true);
 
 -- 10b. Product images are public (linked to active products)
 CREATE POLICY "Anyone can read product images" ON product_images
@@ -543,6 +582,11 @@ CREATE POLICY "Admin full access to orders" ON orders
 
 -- Admin full access to coupons
 CREATE POLICY "Admin full access to coupons" ON coupons
+  FOR ALL USING (public.has_admin_role())
+  WITH CHECK (public.has_admin_role());
+
+-- Admin full access to shoppable reels
+CREATE POLICY "Admin full access to shoppable reels" ON shoppable_reels
   FOR ALL USING (public.has_admin_role())
   WITH CHECK (public.has_admin_role());
 

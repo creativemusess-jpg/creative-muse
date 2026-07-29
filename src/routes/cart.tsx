@@ -212,16 +212,20 @@ function CartPage() {
               </div>
             )}
 
-            <div className="rounded-[20px] border border-dashed border-[#7A2533]/40 bg-[#fdf8f3] p-3">
+            <div className={`mt-5 rounded-[20px] border border-dashed p-3 ${
+              discountAmount > 0 && couponCode
+                ? "border-[#7A2533]/30 bg-[#fff4f5] shadow-[0_8px_24px_rgba(122,37,51,0.06)]"
+                : "border-[#7A2533]/40 bg-[#fdf8f3]"
+            }`}>
               {discountAmount > 0 && couponCode ? (
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <Tag className="h-4 w-4 text-green-600" />
-                    <span className="text-sm font-medium text-green-700">{couponCode}</span>
+                    <Tag className="h-4 w-4 text-[#7A2533]" />
+                    <span className="text-sm font-medium text-[#7A2533]">{couponCode}</span>
                   </div>
                   <button
                     onClick={() => { clearCoupon(); setCouponStatus("idle"); setCouponMsg(""); setCouponInput(""); }}
-                    className="text-[11px] font-semibold text-red-500 hover:underline"
+                    className="text-[11px] font-semibold text-[#7A2533] hover:text-[#5F1C27] hover:underline"
                   >
                     Remove
                   </button>
@@ -238,14 +242,14 @@ function CartPage() {
                   <button
                     onClick={applyCoupon}
                     disabled={couponStatus === "loading"}
-                    className="rounded-full bg-[#1a1a2e] px-3 py-1.5 text-[11px] font-semibold tracking-wider text-white uppercase disabled:opacity-50"
+                    className="rounded-full bg-[#7A2533] px-3 py-1.5 text-[11px] font-semibold tracking-wider text-white uppercase transition-colors hover:bg-[#5F1C27] disabled:opacity-50"
                   >
                     {couponStatus === "loading" ? <Loader2 className="h-3 w-3 animate-spin" /> : "Apply"}
                   </button>
                 </div>
               )}
               {couponMsg && (
-                <p className={`mt-2 text-[11px] font-medium ${couponStatus === "valid" ? "text-green-700" : "text-red-600"}`}>
+                <p className={`mt-2 text-[11px] font-medium ${couponStatus === "valid" ? "text-[#7A2533]" : "text-red-600"}`}>
                   {couponMsg}
                 </p>
               )}

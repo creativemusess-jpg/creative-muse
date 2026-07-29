@@ -186,7 +186,7 @@ export function HeaderSearch() {
                     </span>
                   </span>
                   {product.badge && (
-                    <span className="hidden shrink-0 rounded-full bg-[#1a1a2e] px-2 py-[2px] text-[9px] font-semibold uppercase tracking-[0.1em] text-white sm:inline-flex">
+                    <span className="hidden shrink-0 rounded-full bg-[#7A2533] px-2 py-[2px] text-[9px] font-semibold uppercase tracking-[0.1em] text-white sm:inline-flex">
                       {product.badge}
                     </span>
                   )}
@@ -199,8 +199,8 @@ export function HeaderSearch() {
                 onClick={() => goToSearch()}
                 className={`mt-1 flex w-full items-center justify-center rounded-full px-4 py-3 text-[12px] font-semibold uppercase tracking-[0.14em] transition-colors ${
                   activeIndex === matches.length
-                    ? "bg-[#1a1a2e] text-white"
-                    : "bg-[#f5efe8] text-[#1a1a2e] hover:bg-[#1a1a2e] hover:text-white"
+                    ? "bg-[#7A2533] text-white"
+                    : "bg-[#f5efe8] text-[#1a1a2e] hover:bg-[#7A2533] hover:text-white"
                 }`}
               >
                 View all results for "{trimmedQuery}"

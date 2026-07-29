@@ -146,7 +146,7 @@ function CategoryPage() {
             </p>
             <Link
               to="/shop"
-              className="mt-6 rounded-lg bg-[#1a1a2e] px-6 py-2.5 text-sm font-semibold text-white hover:bg-[#2d1b4e]"
+              className="mt-6 rounded-lg bg-[#7A2533] px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#5F1C27]"
             >
               Browse All Products
             </Link>

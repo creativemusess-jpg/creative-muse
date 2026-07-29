@@ -62,7 +62,7 @@ export function PolicyPage({
       {showTop && (
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          className="fixed bottom-6 right-6 z-50 flex h-11 w-11 items-center justify-center rounded-full bg-[#1a1a2e] text-white shadow-lg transition-colors hover:bg-[#8B1A1A]"
+          className="fixed bottom-6 right-6 z-50 flex h-11 w-11 items-center justify-center rounded-full bg-[#7A2533] text-white shadow-lg transition-colors hover:bg-[#5F1C27]"
           aria-label="Back to top"
         >
           <ChevronUp className="h-5 w-5" />

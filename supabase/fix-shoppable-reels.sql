@@ -22,12 +22,44 @@ CREATE POLICY "Anyone can read active shoppable reels" ON shoppable_reels
 
 DROP POLICY IF EXISTS "Admin full access to shoppable reels" ON shoppable_reels;
 CREATE POLICY "Admin full access to shoppable reels" ON shoppable_reels
-  FOR ALL USING (
-    auth.uid() IN (
-      SELECT user_id FROM admin_role_assignments
-    )
-  );
+  FOR ALL TO authenticated
+  USING (public.has_admin_role())
+  WITH CHECK (public.has_admin_role());
 
-INSERT INTO storage.buckets (id, name, public)
-VALUES ('reel-videos', 'reel-videos', true)
-ON CONFLICT (id) DO NOTHING;
+GRANT SELECT ON shoppable_reels TO anon;
+GRANT SELECT, INSERT, UPDATE, DELETE ON shoppable_reels TO authenticated;
+
+INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+VALUES (
+  'reel-videos',
+  'reel-videos',
+  true,
+  52428800,
+  ARRAY['video/mp4', 'video/webm', 'video/quicktime']
+)
+ON CONFLICT (id) DO UPDATE
+SET
+  public = EXCLUDED.public,
+  file_size_limit = EXCLUDED.file_size_limit,
+  allowed_mime_types = EXCLUDED.allowed_mime_types;
+
+DROP POLICY IF EXISTS "Public read reel-videos" ON storage.objects;
+CREATE POLICY "Public read reel-videos" ON storage.objects
+  FOR SELECT TO public
+  USING (bucket_id = 'reel-videos');
+
+DROP POLICY IF EXISTS "Admin insert reel-videos" ON storage.objects;
+CREATE POLICY "Admin insert reel-videos" ON storage.objects
+  FOR INSERT TO authenticated
+  WITH CHECK (bucket_id = 'reel-videos' AND public.has_admin_role());
+
+DROP POLICY IF EXISTS "Admin update reel-videos" ON storage.objects;
+CREATE POLICY "Admin update reel-videos" ON storage.objects
+  FOR UPDATE TO authenticated
+  USING (bucket_id = 'reel-videos' AND public.has_admin_role())
+  WITH CHECK (bucket_id = 'reel-videos' AND public.has_admin_role());
+
+DROP POLICY IF EXISTS "Admin delete reel-videos" ON storage.objects;
+CREATE POLICY "Admin delete reel-videos" ON storage.objects
+  FOR DELETE TO authenticated
+  USING (bucket_id = 'reel-videos' AND public.has_admin_role());

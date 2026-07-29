@@ -186,7 +186,7 @@ function TrackPage() {
               </button>
               <a
                 href={order.tracking_url || "#"}
-                className="inline-flex items-center justify-center gap-2 rounded-[6px] bg-[#1a1a2e] px-4 py-3 text-sm font-semibold text-white"
+                className="inline-flex items-center justify-center gap-2 rounded-[6px] bg-[#7A2533] px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#5F1C27]"
               >
                 <Truck className="h-4 w-4" /> Shipment Details
               </a>

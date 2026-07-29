@@ -96,7 +96,7 @@ function CategoryCollectionPage() {
           <div className="mb-8 flex flex-wrap gap-2">
             <Link
               to={`.`}
-              className="rounded-full bg-[#1a1a2e] px-4 py-1.5 text-xs font-semibold text-white"
+              className="rounded-full bg-[#7A2533] px-4 py-1.5 text-xs font-semibold text-white"
             >
               All
             </Link>

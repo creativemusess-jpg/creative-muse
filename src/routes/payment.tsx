@@ -226,7 +226,7 @@ function PaymentPage() {
                   const disabled = m.id === "cod" && !codEnabled;
                   return (
                     <button key={m.id} onClick={() => { if (!disabled) { setMethod(m.id); setError(""); } }} disabled={disabled}
-                      className={`flex items-center gap-2 rounded-xl border px-4 py-3 text-sm font-medium transition-colors ${method === m.id ? "border-[#7A2533] bg-[#fdf8f3] text-[#1a1a2e]" : disabled ? "border-gray-100 text-gray-300 cursor-not-allowed" : "border-[#e0d8cc] text-[#7a6e64] hover:border-[#7A2533]/50"}`}>
+                      className={`flex items-center gap-2 rounded-xl border px-4 py-3 text-sm font-medium transition-colors ${method === m.id ? "border-[#7A2533] bg-[#7A2533] text-white shadow-[0_6px_16px_rgba(122,37,51,0.18)]" : disabled ? "border-gray-100 text-gray-300 cursor-not-allowed" : "border-[#e0d8cc] text-[#7a6e64] hover:border-[#7A2533]/50"}`}>
                       <m.icon className="h-4 w-4" /> {m.label}
                     </button>
                   );
@@ -285,7 +285,7 @@ function PaymentPage() {
                   <div className="space-y-4">
                     <div className="flex flex-wrap gap-3">
                       {["Paytm", "Amazon Pay", "Mobikwik", "Freecharge"].map((w) => (
-                        <button key={w} onClick={() => setSelectedWallet(w)} className={`rounded-xl border px-5 py-3 text-sm font-medium transition-colors ${selectedWallet === w ? "border-[#7A2533] bg-[#fdf8f3] text-[#1a1a2e]" : "border-[#e0d8cc] text-[#7a6e64] hover:border-[#7A2533]/50"}`}>{w}</button>
+                        <button key={w} onClick={() => setSelectedWallet(w)} className={`rounded-xl border px-5 py-3 text-sm font-medium transition-colors ${selectedWallet === w ? "border-[#7A2533] bg-[#7A2533] text-white shadow-[0_6px_16px_rgba(122,37,51,0.18)]" : "border-[#e0d8cc] text-[#7a6e64] hover:border-[#7A2533]/50"}`}>{w}</button>
                       ))}
                     </div>
                     <p className="text-xs text-[#7a6e64]">Demo: No real wallet authentication is performed.</p>

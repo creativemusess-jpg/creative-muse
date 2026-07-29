@@ -106,11 +106,11 @@ export function PriceRangeSlider({ min, max, valueMin, valueMax, onChange, step 
       >
         <div className="absolute top-1/2 h-1 w-full -translate-y-1/2 rounded-full bg-[rgba(66,29,34,0.12)]" />
         <div
-          className="absolute top-1/2 h-1 -translate-y-1/2 rounded-full bg-[#421D22]"
+          className="absolute top-1/2 h-1 -translate-y-1/2 rounded-full bg-[#7A2533]"
           style={{ left: `${pctMin}%`, width: `${pctMax - pctMin}%` }}
         />
         <div
-          className="absolute top-1/2 z-10 flex h-6 w-6 -translate-x-1/2 -translate-y-1/2 cursor-grab active:cursor-grabbing items-center justify-center rounded-full bg-white border-2 border-[#421D22] shadow-[0_2px_8px_rgba(66,29,34,0.2)]"
+          className="absolute top-1/2 z-10 flex h-6 w-6 -translate-x-1/2 -translate-y-1/2 cursor-grab active:cursor-grabbing items-center justify-center rounded-full bg-white border-2 border-[#7A2533] shadow-[0_2px_8px_rgba(122,37,51,0.2)]"
           style={{ left: `${pctMin}%` }}
           onPointerDown={onPointerDown("min")}
           tabIndex={0}
@@ -122,10 +122,10 @@ export function PriceRangeSlider({ min, max, valueMin, valueMax, onChange, step 
           aria-valuetext={fmt(localMin)}
           onKeyDown={onKeyDown("min")}
         >
-          <div className="h-2 w-2 rounded-full bg-[#421D22]" />
+          <div className="h-2 w-2 rounded-full bg-[#7A2533]" />
         </div>
         <div
-          className="absolute top-1/2 z-10 flex h-6 w-6 -translate-x-1/2 -translate-y-1/2 cursor-grab active:cursor-grabbing items-center justify-center rounded-full bg-white border-2 border-[#421D22] shadow-[0_2px_8px_rgba(66,29,34,0.2)]"
+          className="absolute top-1/2 z-10 flex h-6 w-6 -translate-x-1/2 -translate-y-1/2 cursor-grab active:cursor-grabbing items-center justify-center rounded-full bg-white border-2 border-[#7A2533] shadow-[0_2px_8px_rgba(122,37,51,0.2)]"
           style={{ left: `${pctMax}%` }}
           onPointerDown={onPointerDown("max")}
           tabIndex={0}
@@ -137,7 +137,7 @@ export function PriceRangeSlider({ min, max, valueMin, valueMax, onChange, step 
           aria-valuetext={fmt(localMax)}
           onKeyDown={onKeyDown("max")}
         >
-          <div className="h-2 w-2 rounded-full bg-[#421D22]" />
+          <div className="h-2 w-2 rounded-full bg-[#7A2533]" />
         </div>
       </div>
 

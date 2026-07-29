@@ -245,7 +245,7 @@ function ShopPage() {
               <SlidersHorizontal className="h-4 w-4" />
               Filters
               {hasActiveFilters && (
-                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#421D22] text-[10px] text-white">
+                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#7A2533] text-[10px] text-white">
                   {selectedMetals.length + (urlMin || urlMax ? 1 : 0)}
                 </span>
               )}
@@ -326,8 +326,8 @@ function ShopPage() {
                     onClick={() => toggleMetal(m)}
                     className={`rounded-full border px-3 py-1.5 text-[12px] font-medium transition-all ${
                       active
-                        ? "border-[#421D22] bg-[#421D22] text-white"
-                        : "border-[#e0d8cc] bg-white text-[#3a3028] hover:border-[#421D22] hover:text-[#7A2533]"
+                        ? "border-[#7A2533] bg-[#7A2533] text-white"
+                        : "border-[#e0d8cc] bg-white text-[#3a3028] hover:border-[#7A2533] hover:text-[#7A2533]"
                     }`}
                   >
                     {m}
@@ -460,8 +460,8 @@ function FilterPill({
       onClick={onClick}
       className={`rounded-full border px-3 py-1.5 text-[12px] font-medium transition-all ${
         active
-          ? "border-[#421D22] bg-[#421D22] text-white"
-          : "border-[#e0d8cc] bg-white text-[#3a3028] hover:border-[#421D22] hover:text-[#7A2533]"
+          ? "border-[#7A2533] bg-[#7A2533] text-white"
+          : "border-[#e0d8cc] bg-white text-[#3a3028] hover:border-[#7A2533] hover:text-[#7A2533]"
       }`}
     >
       {children}

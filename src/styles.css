@@ -142,8 +142,8 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  border: 1px solid #c9a96e;
-  color: #c9a96e;
+  border: 1px solid #7A2533;
+  color: #7A2533;
   background: transparent;
   border-radius: 9999px;
   padding: 0.75rem 1.75rem;
@@ -164,8 +164,8 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  background: #1a1a2e;
-  color: #c9a96e;
+  background: #7A2533;
+  color: #fff;
   border-radius: 9999px;
   padding: 0.875rem 2rem;
   font-size: 13px;
@@ -174,7 +174,9 @@
   letter-spacing: 0.08em;
   transition: all 0.3s ease;
   &:hover {
-    background: #2d1b4e;
+    background: #5F1C27;
+    box-shadow: 0 12px 32px rgba(122, 37, 51, 0.4);
+    transform: translateY(-2px);
   }
 }
 
