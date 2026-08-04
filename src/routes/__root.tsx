@@ -128,11 +128,19 @@ function RootComponent() {
   const location = useLocation();
 
   const isAdminRoute = location.pathname.startsWith("/admin");
+  const isStandaloneAuthRoute =
+    location.pathname === "/forgot-password" || location.pathname === "/reset-password";
 
   return (
     <QueryClientProvider client={queryClient}>
       {isAdminRoute ? (
         <Outlet />
+      ) : isStandaloneAuthRoute ? (
+        <AuthProvider>
+          <AddressProvider>
+            <Outlet />
+          </AddressProvider>
+        </AuthProvider>
       ) : (
         <AuthProvider>
           <AddressProvider>

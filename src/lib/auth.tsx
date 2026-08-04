@@ -25,7 +25,7 @@ type AuthCtx = {
   signUp: (params: { email: string; password: string; fullName: string; phone?: string }) => Promise<{ error: string | null; needsEmailConfirmation?: boolean }>;
   signOut: () => Promise<void>;
   signInWithGoogle: (redirectTo?: string) => Promise<{ error: string | null }>;
-  resetPassword: (email: string) => Promise<{ error: string | null }>;
+  resetPassword: (email: string, mode?: "customer" | "admin") => Promise<{ error: string | null }>;
   updatePassword: (password: string) => Promise<{ error: string | null }>;
   refreshCustomer: () => Promise<void>;
 };
@@ -185,9 +185,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return { error: null };
   }, []);
 
-  const resetPassword = useCallback(async (email: string) => {
+  const resetPassword = useCallback(async (email: string, mode: "customer" | "admin" = "customer") => {
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/reset-password`,
+      redirectTo: `${window.location.origin}/reset-password?mode=${mode}`,
     });
     if (error) return { error: error.message };
     return { error: null };

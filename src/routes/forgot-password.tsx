@@ -1,7 +1,7 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useSearch } from "@tanstack/react-router";
 import { useState } from "react";
 import { Loader2, CheckCircle } from "lucide-react";
-import { PageShell } from "@/components/site/PageHeader";
+import { AuthShell } from "@/components/site/AuthShell";
 import { useAuth } from "@/lib/auth";
 
 export const Route = createFileRoute("/forgot-password")({
@@ -10,6 +10,8 @@ export const Route = createFileRoute("/forgot-password")({
 
 function ForgotPasswordPage() {
   const { resetPassword } = useAuth();
+  const search: any = useSearch({ from: "/forgot-password" });
+  const mode = search.mode === "admin" ? "admin" : "customer";
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -23,7 +25,10 @@ function ForgotPasswordPage() {
     }
     setLoading(true);
     setError("");
-    const result = await resetPassword(email.trim().toLowerCase());
+    try {
+      sessionStorage.setItem("cm_password_reset_mode", mode);
+    } catch {}
+    const result = await resetPassword(email.trim().toLowerCase(), mode);
     if (result.error) {
       setError(result.error);
       setLoading(false);
@@ -34,15 +39,18 @@ function ForgotPasswordPage() {
   };
 
   return (
-    <PageShell>
-      <div className="mx-auto flex min-h-[60vh] max-w-[440px] items-center justify-center px-4 py-20">
-        <div className="w-full rounded-[28px] bg-white p-8 shadow-[0_4px_24px_rgba(0,0,0,0.05)] sm:p-10">
+    <AuthShell>
+      <div className="w-full rounded-[28px] bg-white p-8 shadow-[0_4px_24px_rgba(0,0,0,0.05)] sm:p-10">
           {sent ? (
             <div className="text-center">
-              <CheckCircle className="mx-auto h-12 w-12 text-green-500" />
+              <CheckCircle className="mx-auto h-12 w-12 text-[#7A2533]" />
               <h1 className="font-display mt-4 text-xl font-semibold text-[#1a1a2e]">Check Your Email</h1>
               <p className="mt-2 text-sm text-[#7a6e64]">We've sent a password reset link to <strong>{email}</strong></p>
-              <Link to="/login" className="btn-primary mt-6 inline-flex">Back to Sign In</Link>
+              {mode === "admin" ? (
+                <Link to="/admin/login" className="btn-primary mt-6 inline-flex">Back to Sign In</Link>
+              ) : (
+                <Link to="/login" className="btn-primary mt-6 inline-flex">Back to Sign In</Link>
+              )}
             </div>
           ) : (
             <>
@@ -61,12 +69,15 @@ function ForgotPasswordPage() {
               </form>
               <p className="mt-6 text-center text-sm text-[#7a6e64]">
                 Remember your password?{" "}
-                <Link to="/login" className="font-semibold text-[#7A2533] underline underline-offset-2">Sign In</Link>
+                {mode === "admin" ? (
+                  <Link to="/admin/login" className="font-semibold text-[#7A2533] underline underline-offset-2">Sign In</Link>
+                ) : (
+                  <Link to="/login" className="font-semibold text-[#7A2533] underline underline-offset-2">Sign In</Link>
+                )}
               </p>
             </>
           )}
-        </div>
       </div>
-    </PageShell>
+    </AuthShell>
   );
 }

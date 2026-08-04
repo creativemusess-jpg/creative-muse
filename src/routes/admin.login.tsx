@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { adminApi } from "@/lib/api/admin";
 import { clearGuardCache } from "@/lib/auth-guard";
@@ -8,13 +8,26 @@ export const Route = createFileRoute("/admin/login")({
   component: AdminLoginPage,
 });
 
+const ADMIN_REMEMBER_EMAIL_KEY = "cm_admin_remembered_email";
+
 function AdminLoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+
+  useEffect(() => {
+    try {
+      const rememberedEmail = localStorage.getItem(ADMIN_REMEMBER_EMAIL_KEY);
+      if (rememberedEmail) {
+        setEmail(rememberedEmail);
+        setRememberMe(true);
+      }
+    } catch {}
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,6 +42,13 @@ function AdminLoginPage() {
     try {
       clearGuardCache();
       await adminApi.login(email, password);
+      try {
+        if (rememberMe) {
+          localStorage.setItem(ADMIN_REMEMBER_EMAIL_KEY, email.trim().toLowerCase());
+        } else {
+          localStorage.removeItem(ADMIN_REMEMBER_EMAIL_KEY);
+        }
+      } catch {}
       navigate({ to: "/admin" });
     } catch (err: any) {
       setError(err.message || "Invalid credentials");
@@ -65,7 +85,7 @@ function AdminLoginPage() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="admin@creativemuse.in"
+                placeholder="creativemusess@gmail.com"
                 className="mt-1 block w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#7A2533] focus:ring-1 focus:ring-[#7A2533]"
                 autoComplete="email"
               />
@@ -94,10 +114,15 @@ function AdminLoginPage() {
 
             <div className="flex items-center justify-between">
               <label className="flex items-center gap-2">
-                <input type="checkbox" className="rounded border-gray-300" />
+                <input
+                  type="checkbox"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                  className="rounded border-gray-300 accent-[#7A2533]"
+                />
                 <span className="text-sm text-gray-600">Remember me</span>
               </label>
-              <Link to="/forgot-password" className="text-sm text-[#7A2533] hover:underline">
+              <Link to="/forgot-password" search={{ mode: "admin" }} className="text-sm text-[#7A2533] hover:underline">
                 Forgot password?
               </Link>
             </div>

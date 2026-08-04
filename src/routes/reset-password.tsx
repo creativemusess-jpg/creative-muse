@@ -1,7 +1,7 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { Eye, EyeOff, Loader2, CheckCircle } from "lucide-react";
-import { PageShell } from "@/components/site/PageHeader";
+import { AuthShell } from "@/components/site/AuthShell";
 import { useAuth } from "@/lib/auth";
 
 export const Route = createFileRoute("/reset-password")({
@@ -11,12 +11,31 @@ export const Route = createFileRoute("/reset-password")({
 function ResetPasswordPage() {
   const { updatePassword } = useAuth();
   const navigate = useNavigate();
+  const search: any = useSearch({ from: "/reset-password" });
+  const mode = search.mode === "admin" ? "admin" : "customer";
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [showPw, setShowPw] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+  const [returnMode, setReturnMode] = useState<"customer" | "admin">(mode);
+
+  useEffect(() => {
+    if (mode === "admin") {
+      setReturnMode("admin");
+      try {
+        sessionStorage.setItem("cm_password_reset_mode", "admin");
+      } catch {}
+      return;
+    }
+
+    try {
+      setReturnMode(sessionStorage.getItem("cm_password_reset_mode") === "admin" ? "admin" : "customer");
+    } catch {
+      setReturnMode("customer");
+    }
+  }, [mode]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,16 +47,24 @@ function ResetPasswordPage() {
     if (result.error) { setError(result.error); setLoading(false); return; }
     setSuccess(true);
     setLoading(false);
-    setTimeout(() => navigate({ to: "/login" }), 3000);
+    try {
+      sessionStorage.removeItem("cm_password_reset_mode");
+    } catch {}
+    setTimeout(() => {
+      if (returnMode === "admin") {
+        navigate({ to: "/admin/login" });
+      } else {
+        navigate({ to: "/login" });
+      }
+    }, 3000);
   };
 
   return (
-    <PageShell>
-      <div className="mx-auto flex min-h-[60vh] max-w-[440px] items-center justify-center px-4 py-20">
-        <div className="w-full rounded-[28px] bg-white p-8 shadow-[0_4px_24px_rgba(0,0,0,0.05)] sm:p-10">
+    <AuthShell>
+      <div className="w-full rounded-[28px] bg-white p-8 shadow-[0_4px_24px_rgba(0,0,0,0.05)] sm:p-10">
           {success ? (
             <div className="text-center">
-              <CheckCircle className="mx-auto h-12 w-12 text-green-500" />
+              <CheckCircle className="mx-auto h-12 w-12 text-[#7A2533]" />
               <h1 className="font-display mt-4 text-xl font-semibold text-[#1a1a2e]">Password Updated</h1>
               <p className="mt-2 text-sm text-[#7a6e64]">Redirecting to sign in…</p>
             </div>
@@ -66,8 +93,7 @@ function ResetPasswordPage() {
               </form>
             </>
           )}
-        </div>
       </div>
-    </PageShell>
+    </AuthShell>
   );
 }
