@@ -38,7 +38,7 @@ import {
   type AutoScrollSettings,
 } from "@/components/site/ProductCarouselSection";
 import { useCategories, useContentSection } from "@/lib/api/hooks";
-import { heroMediaApi } from "@/lib/api/heroMedia";
+import { heroMediaApi, HERO_DEFAULT_CONTENT } from "@/lib/api/heroMedia";
 import heroRing from "@/assets/hero-ring.jpg";
 import catRings from "@/assets/cat-rings.png";
 import catNecklaces from "@/assets/cat-necklaces.png";
@@ -122,38 +122,26 @@ function HomePage() {
 /* =========================================================
    1. HERO
    ========================================================= */
-const HERO_SLIDES = [
-  {
-    badge: "Vadodara's Premier Fine Jewellery",
-    title: (
-      <>
-        Where Every Gem
-        <br />
-        <span className="shimmer-text italic">Tells Your Story</span>
-      </>
-    ),
-    desc: "Handcrafted fine jewellery for life's most precious moments. From bridal masterpieces to everyday elegance — designed in Vadodara, treasured for generations.",
-    image: heroRing,
-    imageAlt: "Aarav Solitaire — 18K rose gold diamond ring",
-    stat: "₹48,500",
-    mediaType: "image" as const,
-  },
-  {
-    badge: "Bridal Edit 2025",
-    title: (
-      <>
-        Celebrate Life's
-        <br />
-        <span className="shimmer-text italic">Golden Moments</span>
-      </>
-    ),
-    desc: "Exquisite bridal sets crafted to make your special day unforgettable. Each piece tells a story of love, tradition, and timeless beauty.",
-    image: prodPolki,
-    imageAlt: "Polki Choker — Traditional bridal jewellery",
-    stat: "Starting ₹12,500",
-    mediaType: "image" as const,
-  },
-];
+const HERO_SLIDES = HERO_DEFAULT_CONTENT.map((d, i) => ({
+  badge: d.badge || "",
+  title: d.title || "",
+  highlight: d.highlight || "",
+  desc: d.description || "",
+  price: d.price || "",
+  bestSellerLabel: d.best_seller_label || "",
+  primaryCtaText: d.primary_cta_text || "",
+  primaryCtaLink: d.primary_cta_link || "",
+  secondaryCtaText: d.secondary_cta_text || "",
+  secondaryCtaLink: d.secondary_cta_link || "",
+  stats: d.stats || [],
+  productId: d.product_id || null,
+  image: i === 0 ? heroRing : prodPolki,
+  imageAlt:
+    i === 0
+      ? "Aarav Solitaire — 18K rose gold diamond ring"
+      : "Polki Choker — Traditional bridal jewellery",
+  mediaType: "image" as const,
+}));
 
 function Hero() {
   const [api, setApi] = useState<CarouselApi>();
@@ -172,12 +160,20 @@ function Hero() {
       const fallback = HERO_SLIDES[i % HERO_SLIDES.length];
       return {
         badge: m.badge || fallback.badge,
-        title: fallback.title,
-        desc: fallback.desc,
+        title: m.title || fallback.title,
+        highlight: m.highlight || fallback.highlight,
+        desc: m.description || fallback.desc,
         image: m.media_url,
         imageAlt: m.name || fallback.imageAlt,
-        stat: fallback.stat,
+        price: m.price || fallback.price,
         mediaType: m.media_type,
+        bestSellerLabel: m.best_seller_label || fallback.bestSellerLabel,
+        primaryCtaText: m.primary_cta_text || fallback.primaryCtaText,
+        primaryCtaLink: m.primary_cta_link || fallback.primaryCtaLink,
+        secondaryCtaText: m.secondary_cta_text || fallback.secondaryCtaText,
+        secondaryCtaLink: m.secondary_cta_link || fallback.secondaryCtaLink,
+        stats: m.stats && m.stats.length > 0 ? m.stats : fallback.stats,
+        productId: m.product_id,
       };
     });
   }, [heroMedia]);
@@ -221,6 +217,8 @@ function Hero() {
                     style={{ fontSize: "clamp(28px, 5vw, 52px)" }}
                   >
                     {slide.title}
+                    <br />
+                    <span className="shimmer-text italic">{slide.highlight}</span>
                   </h1>
 
                   <p className="mt-4 max-w-lg text-[14px] leading-relaxed text-[#5a4e44] sm:text-[15px]">
@@ -228,24 +226,42 @@ function Hero() {
                   </p>
 
                   <div className="mt-5 flex flex-wrap gap-3">
-                    <Link to="/shop" className="btn-primary">
-                      Explore Collections
-                    </Link>
-                    <Link to="/contact" className="btn-secondary">
-                      Visit Our Store
-                    </Link>
+                    {slide.primaryCtaLink.startsWith("/") ? (
+                      <Link to={slide.primaryCtaLink as any} className="btn-primary">
+                        {slide.primaryCtaText}
+                      </Link>
+                    ) : (
+                      <a
+                        href={slide.primaryCtaLink}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="btn-primary"
+                      >
+                        {slide.primaryCtaText}
+                      </a>
+                    )}
+                    {slide.secondaryCtaLink.startsWith("/") ? (
+                      <Link to={slide.secondaryCtaLink as any} className="btn-secondary">
+                        {slide.secondaryCtaText}
+                      </Link>
+                    ) : (
+                      <a
+                        href={slide.secondaryCtaLink}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="btn-secondary"
+                      >
+                        {slide.secondaryCtaText}
+                      </a>
+                    )}
                   </div>
 
                   <div className="mt-6 flex flex-wrap items-center gap-x-10 gap-y-4 border-t border-[#7A2533]/20 pt-5">
-                    {[
-                      ["15+", "Years of Craft"],
-                      ["50K+", "Happy Customers"],
-                      ["100%", "Hallmarked Gold"],
-                    ].map(([n, l]) => (
-                      <div key={l}>
-                        <p className="font-display text-2xl font-bold text-[#1a1a2e]">{n}</p>
+                    {slide.stats.map((s) => (
+                      <div key={s.label}>
+                        <p className="font-display text-2xl font-bold text-[#1a1a2e]">{s.number}</p>
                         <p className="text-[11px] tracking-[0.14em] text-[#5a4e44] uppercase">
-                          {l}
+                          {s.label}
                         </p>
                       </div>
                     ))}
@@ -258,32 +274,66 @@ function Hero() {
                   transition={{ duration: 0.8, delay: 0.2 }}
                   className="relative mx-auto flex w-full max-w-[420px] items-center justify-center"
                 >
-                  <div className="glass-panel relative aspect-square w-full overflow-hidden rounded-[28px] p-4 shadow-[0_24px_64px_rgba(0,0,0,0.12)] sm:p-5">
-                    <div className="animate-cm-float flex h-full w-full items-center justify-center">
-                      {slide.mediaType === "video" ? (
-                        <video
-                          src={slide.image}
-                          aria-label={slide.imageAlt}
-                          muted
-                          autoPlay
-                          loop
-                          playsInline
-                          preload="metadata"
-                          className="h-full w-full rounded-[20px] object-contain drop-shadow-[0_24px_48px_rgba(122,37,51,0.35)]"
-                        />
-                      ) : (
-                        <img
-                          src={slide.image}
-                          alt={slide.imageAlt}
-                          width={1024}
-                          height={1280}
-                          fetchPriority={idx === 0 ? "high" : undefined}
-                          decoding="async"
-                          className="h-full w-full rounded-[20px] object-contain drop-shadow-[0_24px_48px_rgba(122,37,51,0.35)]"
-                        />
-                      )}
+                  {slide.productId ? (
+                    <Link
+                      to="/product/$productId"
+                      params={{ productId: slide.productId }}
+                      className="glass-panel group relative block aspect-square w-full overflow-hidden rounded-[28px] p-4 shadow-[0_24px_64px_rgba(0,0,0,0.12)] transition-shadow hover:shadow-[0_24px_64px_rgba(122,37,51,0.28)] sm:p-5"
+                      aria-label={`View ${slide.bestSellerLabel}`}
+                    >
+                      <div className="animate-cm-float flex h-full w-full items-center justify-center">
+                        {slide.mediaType === "video" ? (
+                          <video
+                            src={slide.image}
+                            aria-label={slide.imageAlt}
+                            muted
+                            autoPlay
+                            loop
+                            playsInline
+                            preload="metadata"
+                            className="h-full w-full rounded-[20px] object-contain drop-shadow-[0_24px_48px_rgba(122,37,51,0.35)]"
+                          />
+                        ) : (
+                          <img
+                            src={slide.image}
+                            alt={slide.imageAlt}
+                            width={1024}
+                            height={1280}
+                            fetchPriority={idx === 0 ? "high" : undefined}
+                            decoding="async"
+                            className="h-full w-full rounded-[20px] object-contain drop-shadow-[0_24px_48px_rgba(122,37,51,0.35)] transition-transform duration-500 group-hover:scale-[1.03]"
+                          />
+                        )}
+                      </div>
+                    </Link>
+                  ) : (
+                    <div className="glass-panel relative aspect-square w-full overflow-hidden rounded-[28px] p-4 shadow-[0_24px_64px_rgba(0,0,0,0.12)] sm:p-5">
+                      <div className="animate-cm-float flex h-full w-full items-center justify-center">
+                        {slide.mediaType === "video" ? (
+                          <video
+                            src={slide.image}
+                            aria-label={slide.imageAlt}
+                            muted
+                            autoPlay
+                            loop
+                            playsInline
+                            preload="metadata"
+                            className="h-full w-full rounded-[20px] object-contain drop-shadow-[0_24px_48px_rgba(122,37,51,0.35)]"
+                          />
+                        ) : (
+                          <img
+                            src={slide.image}
+                            alt={slide.imageAlt}
+                            width={1024}
+                            height={1280}
+                            fetchPriority={idx === 0 ? "high" : undefined}
+                            decoding="async"
+                            className="h-full w-full rounded-[20px] object-contain drop-shadow-[0_24px_48px_rgba(122,37,51,0.35)]"
+                          />
+                        )}
+                      </div>
                     </div>
-                  </div>
+                  )}
 
                   <motion.div
                     initial={{ opacity: 0, x: -30 }}
@@ -293,9 +343,9 @@ function Hero() {
                   >
                     <p className="eyebrow text-[9px] text-[#7A2533]">Best Seller</p>
                     <p className="font-display mt-1 text-sm font-semibold text-[#1a1a2e]">
-                      Aarav Solitaire
+                      {slide.bestSellerLabel}
                     </p>
-                    <p className="mt-0.5 text-[13px] font-bold text-[#7A2533]">{slide.stat}</p>
+                    <p className="mt-0.5 text-[13px] font-bold text-[#7A2533]">{slide.price}</p>
                   </motion.div>
 
                   <motion.div

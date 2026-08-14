@@ -3,9 +3,11 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Check, Loader2, UploadCloud, X } from "lucide-react";
 import { AdminLayout, AdminPageHeader, AdminLoading } from "@/components/admin/AdminLayout";
 import { requireAdmin } from "@/lib/auth-guard";
-import { heroMediaApi } from "@/lib/api/heroMedia";
-import type { HeroMediaItem } from "@/lib/api/heroMedia";
+import { heroMediaApi, HERO_DEFAULT_CONTENT } from "@/lib/api/heroMedia";
+import type { HeroMediaItem, HeroContentDefaults } from "@/lib/api/heroMedia";
 import { uploadImage, deleteImage, validateHeroMediaFile } from "@/lib/api/upload";
+import { productsApi } from "@/lib/api/products";
+import { productFromDb } from "@/lib/products";
 
 export const Route = createFileRoute("/admin/hero-media")({
   beforeLoad: requireAdmin,
@@ -61,6 +63,7 @@ function AdminHeroMedia() {
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState<HeroMediaItem | null>(null);
+  const [products, setProducts] = useState<{ slug: string; name: string }[]>([]);
 
   const load = useCallback(async () => {
     try {
@@ -77,6 +80,20 @@ function AdminHeroMedia() {
   useEffect(() => {
     load();
   }, [load]);
+
+  useEffect(() => {
+    productsApi
+      .list({ status: "active", per_page: 200 })
+      .then((res) => {
+        setProducts(
+          (res.data || []).map((p) => {
+            const mapped = productFromDb(p);
+            return { slug: mapped.id, name: mapped.name };
+          }),
+        );
+      })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     if (!saveMessage) return;
@@ -166,6 +183,14 @@ function AdminHeroMedia() {
       {formOpen && (
         <HeroMediaForm
           item={editing}
+          fallback={
+            HERO_DEFAULT_CONTENT[
+              ((editing ? items.findIndex((x) => x.id === editing.id) : items.length) +
+                HERO_DEFAULT_CONTENT.length) %
+                HERO_DEFAULT_CONTENT.length
+            ]
+          }
+          products={products}
           onSave={async () => {
             setFormOpen(false);
             setEditing(null);
@@ -309,10 +334,14 @@ function AdminHeroMedia() {
 
 function HeroMediaForm({
   item,
+  fallback,
+  products,
   onSave,
   onCancel,
 }: {
   item: HeroMediaItem | null;
+  fallback: HeroContentDefaults;
+  products: { slug: string; name: string }[];
   onSave: () => Promise<void>;
   onCancel: () => void;
 }) {
@@ -327,6 +356,25 @@ function HeroMediaForm({
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [title, setTitle] = useState(item?.title || "");
+  const [highlight, setHighlight] = useState(item?.highlight || "");
+  const [description, setDescription] = useState(item?.description || "");
+  const [price, setPrice] = useState(item?.price || "");
+  const [bestSellerLabel, setBestSellerLabel] = useState(item?.best_seller_label || "");
+  const [primaryCtaText, setPrimaryCtaText] = useState(item?.primary_cta_text || "");
+  const [primaryCtaLink, setPrimaryCtaLink] = useState(item?.primary_cta_link || "");
+  const [secondaryCtaText, setSecondaryCtaText] = useState(item?.secondary_cta_text || "");
+  const [secondaryCtaLink, setSecondaryCtaLink] = useState(item?.secondary_cta_link || "");
+  const [productId, setProductId] = useState(item?.product_id || "");
+  const [stats, setStats] = useState<{ number: string; label: string }[]>(
+    item?.stats && item.stats.length
+      ? item.stats.map((s) => ({ number: s.number, label: s.label }))
+      : [
+          { number: "", label: "" },
+          { number: "", label: "" },
+          { number: "", label: "" },
+        ],
+  );
 
   const previewUrl = file ? URL.createObjectURL(file) : item?.media_url || null;
 
@@ -384,6 +432,20 @@ function HeroMediaForm({
         badge: badge.trim() || null,
         sort_order: sortOrder,
         is_active: isActive,
+        title: title.trim() || null,
+        highlight: highlight.trim() || null,
+        description: description.trim() || null,
+        price: price.trim() || null,
+        best_seller_label: bestSellerLabel.trim() || null,
+        primary_cta_text: primaryCtaText.trim() || null,
+        primary_cta_link: primaryCtaLink.trim() || null,
+        secondary_cta_text: secondaryCtaText.trim() || null,
+        secondary_cta_link: secondaryCtaLink.trim() || null,
+        product_id: productId.trim() || null,
+        stats:
+          stats.filter((s) => s.number.trim() || s.label.trim()).length > 0
+            ? stats.map((s) => ({ number: s.number.trim(), label: s.label.trim() }))
+            : null,
       };
       if (item) {
         await heroMediaApi.update(item.id, payload);
@@ -498,6 +560,195 @@ function HeroMediaForm({
               <span className="text-xs text-gray-500">{isActive ? "Visible" : "Hidden"}</span>
             </div>
           </div>
+        </div>
+      </div>
+
+      <div className="mt-5 rounded-lg border border-gray-100 bg-gray-50/60 p-4">
+        <h4 className="mb-3 text-xs font-bold uppercase tracking-wider text-gray-500">
+          Headline &amp; Copy
+        </h4>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-gray-500">
+              Title (line 1)
+            </label>
+            <input
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder={fallback.title || "e.g. Where Every Gem"}
+              className={inputClass}
+            />
+          </div>
+          <div>
+            <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-gray-500">
+              Highlight (line 2, shimmer)
+            </label>
+            <input
+              type="text"
+              value={highlight}
+              onChange={(e) => setHighlight(e.target.value)}
+              placeholder={fallback.highlight || "e.g. Tells Your Story"}
+              className={inputClass}
+            />
+          </div>
+          <div className="sm:col-span-2">
+            <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-gray-500">
+              Description
+            </label>
+            <textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              rows={3}
+              placeholder={fallback.description || undefined}
+              className={inputClass}
+            />
+          </div>
+          <div>
+            <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-gray-500">
+              Price Chip
+            </label>
+            <input
+              type="text"
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
+              placeholder={fallback.price || "e.g. ₹48,500"}
+              className={inputClass}
+            />
+          </div>
+          <div>
+            <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-gray-500">
+              Best Seller Card Label
+            </label>
+            <input
+              type="text"
+              value={bestSellerLabel}
+              onChange={(e) => setBestSellerLabel(e.target.value)}
+              placeholder={fallback.best_seller_label || "e.g. Aarav Solitaire"}
+              className={inputClass}
+            />
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-4 rounded-lg border border-gray-100 bg-gray-50/60 p-4">
+        <h4 className="mb-3 text-xs font-bold uppercase tracking-wider text-gray-500">
+          Call-to-Action Buttons
+        </h4>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-gray-500">
+              Primary Button Text
+            </label>
+            <input
+              type="text"
+              value={primaryCtaText}
+              onChange={(e) => setPrimaryCtaText(e.target.value)}
+              placeholder={fallback.primary_cta_text || "Explore Collections"}
+              className={inputClass}
+            />
+          </div>
+          <div>
+            <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-gray-500">
+              Primary Button Link
+            </label>
+            <input
+              type="text"
+              value={primaryCtaLink}
+              onChange={(e) => setPrimaryCtaLink(e.target.value)}
+              placeholder={fallback.primary_cta_link || "/shop"}
+              className={inputClass}
+            />
+          </div>
+          <div>
+            <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-gray-500">
+              Secondary Button Text
+            </label>
+            <input
+              type="text"
+              value={secondaryCtaText}
+              onChange={(e) => setSecondaryCtaText(e.target.value)}
+              placeholder={fallback.secondary_cta_text || "Visit Our Store"}
+              className={inputClass}
+            />
+          </div>
+          <div>
+            <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-gray-500">
+              Secondary Button Link
+            </label>
+            <input
+              type="text"
+              value={secondaryCtaLink}
+              onChange={(e) => setSecondaryCtaLink(e.target.value)}
+              placeholder={fallback.secondary_cta_link || "/contact"}
+              className={inputClass}
+            />
+          </div>
+        </div>
+        <p className="mt-2 text-[11px] text-gray-400">
+          Internal links start with "/" (e.g. /shop). External links open in a new tab (e.g.
+          https://…).
+        </p>
+      </div>
+
+      <div className="mt-4 rounded-lg border border-gray-100 bg-gray-50/60 p-4">
+        <h4 className="mb-3 text-xs font-bold uppercase tracking-wider text-gray-500">
+          Linked Product
+        </h4>
+        <select
+          value={productId}
+          onChange={(e) => setProductId(e.target.value)}
+          className={inputClass}
+        >
+          <option value="">No linked product (image not clickable)</option>
+          {products.map((p) => (
+            <option key={p.slug} value={p.slug}>
+              {p.name}
+            </option>
+          ))}
+        </select>
+        <p className="mt-2 text-[11px] text-gray-400">
+          When set, the hero image/video opens this product's page.
+        </p>
+      </div>
+
+      <div className="mt-4 rounded-lg border border-gray-100 bg-gray-50/60 p-4">
+        <h4 className="mb-3 text-xs font-bold uppercase tracking-wider text-gray-500">
+          Stats Row
+        </h4>
+        <div className="space-y-3">
+          {stats.map((s, i) => (
+            <div key={i} className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-gray-500">
+                  Number {i + 1}
+                </label>
+                <input
+                  type="text"
+                  value={s.number}
+                  onChange={(e) =>
+                    setStats((prev) => prev.map((x, j) => (j === i ? { ...x, number: e.target.value } : x)))
+                  }
+                  placeholder={fallback.stats?.[i]?.number || "e.g. 15+"}
+                  className={inputClass}
+                />
+              </div>
+              <div>
+                <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-gray-500">
+                  Label {i + 1}
+                </label>
+                <input
+                  type="text"
+                  value={s.label}
+                  onChange={(e) =>
+                    setStats((prev) => prev.map((x, j) => (j === i ? { ...x, label: e.target.value } : x)))
+                  }
+                  placeholder={fallback.stats?.[i]?.label || "e.g. Years of Craft"}
+                  className={inputClass}
+                />
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 

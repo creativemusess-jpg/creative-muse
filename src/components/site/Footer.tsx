@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Instagram, Facebook, Youtube, MapPin, Phone, Mail } from "lucide-react";
+import { Instagram, MapPin, Phone, Mail } from "lucide-react";
 
 export function Footer() {
   return (
@@ -30,16 +30,13 @@ export function Footer() {
             </li>
           </ul>
           <div className="mt-6 flex gap-2.5">
-            {[Instagram, Facebook, Youtube].map((Ic, i) => (
-              <a
-                key={i}
-                href="#"
-                aria-label="social"
-                className="flex h-10 w-10 items-center justify-center rounded-full bg-white/5 text-[#cfc6b6] transition-colors hover:bg-[#7A2533]/20 hover:text-[#7A2533]"
-              >
-                <Ic className="h-4 w-4" />
-              </a>
-            ))}
+            <a
+              href="#"
+              aria-label="Instagram"
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-white/5 text-[#cfc6b6] transition-colors hover:bg-[#7A2533]/20 hover:text-[#7A2533]"
+            >
+              <Instagram className="h-4 w-4" />
+            </a>
           </div>
         </div>
 
