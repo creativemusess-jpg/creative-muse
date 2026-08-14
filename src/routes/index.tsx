@@ -28,6 +28,10 @@ import { ProductCard } from "@/components/site/ProductCard";
 import { ShoppableReelsSection } from "@/components/site/ShoppableReelsSection";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import type { CarouselApi } from "@/components/ui/carousel";
+import {
+  StoreLocationMap,
+  getDirectionsUrl,
+} from "@/components/site/StoreLocationMap";
 import { useStore } from "@/lib/store";
 import {
   ProductCarouselSection,
@@ -1133,6 +1137,8 @@ function VideoBanner() {
    11. STORE LOCATION
    ========================================================= */
 function StoreLocation() {
+  const STORE_LATITUDE = 22.303279;
+  const STORE_LONGITUDE = 73.173392;
   return (
     <section className="bg-[#fdf8f3] py-20">
       <div className="mx-auto grid max-w-[1280px] items-center gap-10 px-6 lg:grid-cols-2">
@@ -1166,7 +1172,7 @@ function StoreLocation() {
           </div>
           <div className="mt-8 flex flex-wrap gap-3">
             <a
-              href="https://maps.google.com/?q=Vidhi+Square+Vadodara"
+              href={getDirectionsUrl(STORE_LATITUDE, STORE_LONGITUDE)}
               target="_blank"
               rel="noreferrer"
               className="btn-primary"
@@ -1184,32 +1190,16 @@ function StoreLocation() {
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="relative flex aspect-[5/4] items-center justify-center overflow-hidden rounded-[28px] bg-[#f5efe8] shadow-[0_12px_40px_rgba(0,0,0,0.08)]"
+          className="relative aspect-[5/4] overflow-hidden rounded-[28px] bg-[#f5efe8] shadow-[0_12px_40px_rgba(0,0,0,0.08)]"
         >
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(122,37,51,0.18),transparent_60%)]" />
-          <svg
-            className="absolute inset-0 h-full w-full opacity-20"
-            viewBox="0 0 400 320"
-            fill="none"
-          >
-            <path
-              d="M0 80 L400 60 M0 160 L400 180 M0 240 L400 220"
-              stroke="#7A2533"
-              strokeWidth="1"
-            />
-            <path
-              d="M80 0 L100 320 M200 0 L220 320 M320 0 L300 320"
-              stroke="#7A2533"
-              strokeWidth="1"
-            />
-          </svg>
-          <div className="relative text-center">
-            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-r from-[#C9A96E] to-[#B8860B] shadow-[0_12px_32px_rgba(201,169,110,0.4)]">
-              <MapPin className="h-7 w-7 text-white" />
-            </div>
-            <p className="font-display mt-4 text-lg text-[#1a1a2e]">Creative Muse</p>
-            <p className="text-xs tracking-[0.18em] text-[#7a6e64] uppercase">Vadodara, Gujarat</p>
-          </div>
+          <StoreLocationMap
+            latitude={STORE_LATITUDE}
+            longitude={STORE_LONGITUDE}
+            storeName="Creative Muse"
+            tagline="Fine Jewellery"
+            address="GF-3/4, Vidhi Square Complex, BPC Road, Anand Nagar, Vadodara – 390020"
+            className="absolute inset-0 h-full w-full"
+          />
         </motion.div>
       </div>
     </section>
