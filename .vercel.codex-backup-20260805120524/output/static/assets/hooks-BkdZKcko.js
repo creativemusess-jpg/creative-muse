@@ -1,0 +1,1 @@
+import{pt as e,y as t}from"./index-SmTfW8Nm.js";import{t as n}from"./content-Dz8Xui-2.js";function r(){return e({queryKey:[`categories`],queryFn:()=>t.list(!0),staleTime:12e4})}function i(t){return e({queryKey:[`content`,`section`,t],queryFn:()=>n.getSection(t),staleTime:300*1e3})}export{i as n,r as t};

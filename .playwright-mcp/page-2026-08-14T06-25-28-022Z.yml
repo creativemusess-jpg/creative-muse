@@ -1,0 +1,24 @@
+- generic [ref=e3]:
+  - generic [ref=e4]:
+    - heading "Creative Muse" [level=1] [ref=e5]
+    - paragraph [ref=e6]: Admin Panel
+  - generic [ref=e7]:
+    - heading "Sign In" [level=2] [ref=e8]
+    - paragraph [ref=e9]: Enter your credentials to access the admin panel
+    - generic [ref=e10]:
+      - generic [ref=e11]:
+        - generic [ref=e12]: Email
+        - textbox "creativemusess@gmail.com" [ref=e13]
+      - generic [ref=e14]:
+        - generic [ref=e15]: Password
+        - generic [ref=e16]:
+          - textbox "••••••••" [ref=e17]
+          - button [ref=e18]
+      - generic [ref=e22]:
+        - generic [ref=e23]:
+          - checkbox "Remember me" [ref=e24]
+          - generic [ref=e25]: Remember me
+        - link "Forgot password?" [ref=e26] [cursor=pointer]:
+          - /url: /forgot-password?mode=admin
+      - button "Sign In" [ref=e27]
+  - paragraph [ref=e28]: © 2026 Creative Muse Fine Jewellery

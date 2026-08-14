@@ -1,0 +1,1 @@
+import{a as e}from"./rolldown-runtime-CNC7AqOf.js";import{t}from"./react-9ZasmZpi.js";import{vt as n}from"./index-SmTfW8Nm.js";var r=e(t());function i(){let e=n();return(0,r.useEffect)(()=>{e({to:`/refund-return-policy`,replace:!0})},[e]),null}export{i as component};

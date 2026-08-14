@@ -1,0 +1,1 @@
+function e(e){if(e?.id)return{to:`/product/$productId`,params:{productId:e.id}}}export{e as t};

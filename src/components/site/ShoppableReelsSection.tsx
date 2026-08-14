@@ -2,8 +2,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Instagram } from "lucide-react";
 import { reelsApi } from "@/lib/api/reels";
-import { productsApi } from "@/lib/api/products";
 import { useStorefrontProducts } from "@/lib/products";
+import type { ShoppableReelRow } from "@/lib/db/types";
 import { ShoppableReelCard } from "./ShoppableReelCard";
 import {
   Carousel,
@@ -12,11 +12,14 @@ import {
   type CarouselApi,
 } from "@/components/ui/carousel";
 
-const SAMPLE_VIDEO =
-  "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4";
-
 const SPEED_SECONDS = 1.8;
 const INACTIVITY_RESUME_SECONDS = 1.5;
+const INSTAGRAM_URL = "https://www.instagram.com/creativemuse2.0/";
+
+interface ReelWithProduct {
+  reel: ShoppableReelRow;
+  product: { id: string; name: string; image: string; slug: string } | null;
+}
 
 function SectionHeading({
   eyebrow,
@@ -42,14 +45,11 @@ function SectionHeading({
 }
 
 export function ShoppableReelsSection() {
-  const { products } = useStorefrontProducts();
   const [api, setApi] = useState<CarouselApi>();
-  const [loading, setLoading] = useState(true);
-  const [reels, setReels] = useState<any[]>([]);
+  const [reels, setReels] = useState<ReelWithProduct[]>([]);
 
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const inactivityRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const sectionRef = useRef<HTMLElement>(null);
   const pointerStart = useRef({ x: 0, y: 0 });
 
   const prefersReducedMotion =
@@ -136,69 +136,52 @@ export function ShoppableReelsSection() {
     };
   }, [stopAutoScroll, clearInactivity]);
 
-  // Fetch reels from API
-  const { data: activeReels } = useQuery({
+  // Fetch active reels from the DB (single source of truth, no fallback data)
+  const {
+    data: activeReels,
+    isLoading: reelsLoading,
+    error: reelsError,
+  } = useQuery({
     queryKey: ["reels", "active"],
     queryFn: () => reelsApi.listActive(),
     staleTime: 5 * 60 * 1000,
   });
 
-  // Enrich reels with product data and fallback
+  // Fetch published storefront products so reels can be matched/linked by slug
+  // (same source the rest of the homepage uses, so images and links stay consistent)
+  const { products: storefrontProducts, isLoading: productsLoading } = useStorefrontProducts();
+
+  // Enrich reels with product data. Reels whose video is missing are skipped
+  // so one broken row never breaks the whole section; reels with a deleted
+  // product still render with an "unavailable" state in the card.
   useEffect(() => {
-    if (!activeReels) return;
-    let cancelled = false;
-    (async () => {
-      try {
-        const productIds = activeReels.map((r: any) => r.product_id).filter(Boolean);
-        let dbProducts: any[] = [];
-        if (productIds.length > 0) {
-          const { data } = await productsApi.list({ per_page: 100 });
-          dbProducts = data || [];
-        }
-        if (cancelled) return;
-        const enriched = activeReels
-          .map((reel: any) => {
-            const product = dbProducts.find(
-              (p: any) => p.id === reel.product_id && p.status === "active",
-            );
-            const mapped = product
-              ? {
-                  id: product.id,
-                  name: product.name,
-                  image: product.main_image?.url || product.images?.[0]?.url || "",
-                  slug: product.slug,
-                }
-              : null;
-            return mapped ? { reel, product: mapped } : null;
-          })
-          .filter(Boolean);
-        if (enriched.length > 0) {
-          if (!cancelled) { setReels(enriched); setLoading(false); }
-          return;
-        }
-      } catch (err) {
-        console.warn("DB reels unavailable, using fallback:", err);
-      }
-      if (cancelled) return;
-      // Fallback to storefront products
-      const fallbackReels = products.slice(0, 8).map((p, i) => ({
-        reel: {
-          id: `fallback-${p.id}`,
-          video_url: SAMPLE_VIDEO,
-          poster_url: p.image,
-          product_id: p.id,
-          sort_order: i,
-          is_active: true,
-          alt_text: `${p.name} — shoppable reel`,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-        },
-        product: { id: p.id, name: p.name, image: p.image, slug: p.id },
-      }));
-      if (!cancelled) { setReels(fallbackReels); setLoading(fallbackReels.length === 0); }
-    })();
-    return () => { cancelled = true; };
-  }, [activeReels, products]);
+    if (reelsLoading) return;
+    if (reelsError) {
+      console.warn("Reels unavailable:", reelsError);
+      setReels([]);
+      return;
+    }
+    const rows = activeReels || [];
+    const enriched = rows
+      .filter((reel) => reel.video_url)
+      .map((reel) => {
+        // Storefront products expose id = product slug (productFromDb sets
+        // id: product.slug), which is what reels store in product_id.
+        const product = storefrontProducts.find((p) => p.id === reel.product_id);
+        const mapped = product
+          ? {
+              id: product.id,
+              name: product.name,
+              image: product.image,
+              slug: product.id,
+            }
+          : null;
+        return { reel, product: mapped };
+      });
+    setReels(enriched);
+  }, [activeReels, storefrontProducts, reelsLoading, reelsError]);
+
+  const loading = reelsLoading || (!!activeReels?.length && productsLoading);
 
   if (loading) {
     return (
@@ -224,7 +207,7 @@ export function ShoppableReelsSection() {
   if (reels.length === 0) return null;
 
   return (
-    <section ref={sectionRef} className="bg-[#fdf8f3] py-12 sm:py-16">
+    <section className="bg-[#fdf8f3] py-12 sm:py-16">
       <div className="mx-auto max-w-[1280px] px-6">
         <SectionHeading
           eyebrow="Shop the Look"
@@ -264,13 +247,13 @@ export function ShoppableReelsSection() {
 
         <div className="mt-8 flex justify-center">
           <a
-            href="https://instagram.com"
+            href={INSTAGRAM_URL}
             target="_blank"
             rel="noreferrer"
             className="btn-secondary inline-flex items-center gap-2"
           >
             <Instagram className="h-4 w-4" />
-            Follow @creativemuse_ on Instagram
+            Follow @creativemuse2.0 on Instagram
           </a>
         </div>
       </div>
