@@ -52,10 +52,12 @@ import { Route as AdminMediaRouteImport } from './routes/admin.media'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AdminInventoryRouteImport } from './routes/admin.inventory'
 import { Route as AdminHomepageRouteImport } from './routes/admin.homepage'
+import { Route as AdminHeroMediaRouteImport } from './routes/admin.hero-media'
 import { Route as AdminEnquiriesRouteImport } from './routes/admin.enquiries'
 import { Route as AdminCustomersRouteImport } from './routes/admin.customers'
 import { Route as AdminCouponsRouteImport } from './routes/admin.coupons'
 import { Route as AdminCollectionsRouteImport } from './routes/admin.collections'
+import { Route as AdminCategoryHeroRouteImport } from './routes/admin.category-hero'
 import { Route as AdminCategoriesRouteImport } from './routes/admin.categories'
 import { Route as AdminAuditLogsRouteImport } from './routes/admin.audit-logs'
 import { Route as AdminAttributesRouteImport } from './routes/admin.attributes'
@@ -283,6 +285,11 @@ const AdminHomepageRoute = AdminHomepageRouteImport.update({
   path: '/admin/homepage',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminHeroMediaRoute = AdminHeroMediaRouteImport.update({
+  id: '/admin/hero-media',
+  path: '/admin/hero-media',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminEnquiriesRoute = AdminEnquiriesRouteImport.update({
   id: '/admin/enquiries',
   path: '/admin/enquiries',
@@ -301,6 +308,11 @@ const AdminCouponsRoute = AdminCouponsRouteImport.update({
 const AdminCollectionsRoute = AdminCollectionsRouteImport.update({
   id: '/admin/collections',
   path: '/admin/collections',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminCategoryHeroRoute = AdminCategoryHeroRouteImport.update({
+  id: '/admin/category-hero',
+  path: '/admin/category-hero',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminCategoriesRoute = AdminCategoriesRouteImport.update({
@@ -390,10 +402,12 @@ export interface FileRoutesByFullPath {
   '/admin/attributes': typeof AdminAttributesRoute
   '/admin/audit-logs': typeof AdminAuditLogsRoute
   '/admin/categories': typeof AdminCategoriesRoute
+  '/admin/category-hero': typeof AdminCategoryHeroRoute
   '/admin/collections': typeof AdminCollectionsRoute
   '/admin/coupons': typeof AdminCouponsRoute
   '/admin/customers': typeof AdminCustomersRouteWithChildren
   '/admin/enquiries': typeof AdminEnquiriesRoute
+  '/admin/hero-media': typeof AdminHeroMediaRoute
   '/admin/homepage': typeof AdminHomepageRoute
   '/admin/inventory': typeof AdminInventoryRoute
   '/admin/login': typeof AdminLoginRoute
@@ -450,10 +464,12 @@ export interface FileRoutesByTo {
   '/admin/attributes': typeof AdminAttributesRoute
   '/admin/audit-logs': typeof AdminAuditLogsRoute
   '/admin/categories': typeof AdminCategoriesRoute
+  '/admin/category-hero': typeof AdminCategoryHeroRoute
   '/admin/collections': typeof AdminCollectionsRoute
   '/admin/coupons': typeof AdminCouponsRoute
   '/admin/customers': typeof AdminCustomersRouteWithChildren
   '/admin/enquiries': typeof AdminEnquiriesRoute
+  '/admin/hero-media': typeof AdminHeroMediaRoute
   '/admin/homepage': typeof AdminHomepageRoute
   '/admin/inventory': typeof AdminInventoryRoute
   '/admin/login': typeof AdminLoginRoute
@@ -511,10 +527,12 @@ export interface FileRoutesById {
   '/admin/attributes': typeof AdminAttributesRoute
   '/admin/audit-logs': typeof AdminAuditLogsRoute
   '/admin/categories': typeof AdminCategoriesRoute
+  '/admin/category-hero': typeof AdminCategoryHeroRoute
   '/admin/collections': typeof AdminCollectionsRoute
   '/admin/coupons': typeof AdminCouponsRoute
   '/admin/customers': typeof AdminCustomersRouteWithChildren
   '/admin/enquiries': typeof AdminEnquiriesRoute
+  '/admin/hero-media': typeof AdminHeroMediaRoute
   '/admin/homepage': typeof AdminHomepageRoute
   '/admin/inventory': typeof AdminInventoryRoute
   '/admin/login': typeof AdminLoginRoute
@@ -573,10 +591,12 @@ export interface FileRouteTypes {
     | '/admin/attributes'
     | '/admin/audit-logs'
     | '/admin/categories'
+    | '/admin/category-hero'
     | '/admin/collections'
     | '/admin/coupons'
     | '/admin/customers'
     | '/admin/enquiries'
+    | '/admin/hero-media'
     | '/admin/homepage'
     | '/admin/inventory'
     | '/admin/login'
@@ -633,10 +653,12 @@ export interface FileRouteTypes {
     | '/admin/attributes'
     | '/admin/audit-logs'
     | '/admin/categories'
+    | '/admin/category-hero'
     | '/admin/collections'
     | '/admin/coupons'
     | '/admin/customers'
     | '/admin/enquiries'
+    | '/admin/hero-media'
     | '/admin/homepage'
     | '/admin/inventory'
     | '/admin/login'
@@ -693,10 +715,12 @@ export interface FileRouteTypes {
     | '/admin/attributes'
     | '/admin/audit-logs'
     | '/admin/categories'
+    | '/admin/category-hero'
     | '/admin/collections'
     | '/admin/coupons'
     | '/admin/customers'
     | '/admin/enquiries'
+    | '/admin/hero-media'
     | '/admin/homepage'
     | '/admin/inventory'
     | '/admin/login'
@@ -753,10 +777,12 @@ export interface RootRouteChildren {
   AdminAttributesRoute: typeof AdminAttributesRoute
   AdminAuditLogsRoute: typeof AdminAuditLogsRoute
   AdminCategoriesRoute: typeof AdminCategoriesRoute
+  AdminCategoryHeroRoute: typeof AdminCategoryHeroRoute
   AdminCollectionsRoute: typeof AdminCollectionsRoute
   AdminCouponsRoute: typeof AdminCouponsRoute
   AdminCustomersRoute: typeof AdminCustomersRouteWithChildren
   AdminEnquiriesRoute: typeof AdminEnquiriesRoute
+  AdminHeroMediaRoute: typeof AdminHeroMediaRoute
   AdminHomepageRoute: typeof AdminHomepageRoute
   AdminInventoryRoute: typeof AdminInventoryRoute
   AdminLoginRoute: typeof AdminLoginRoute
@@ -1079,6 +1105,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminHomepageRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/hero-media': {
+      id: '/admin/hero-media'
+      path: '/admin/hero-media'
+      fullPath: '/admin/hero-media'
+      preLoaderRoute: typeof AdminHeroMediaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/enquiries': {
       id: '/admin/enquiries'
       path: '/admin/enquiries'
@@ -1105,6 +1138,13 @@ declare module '@tanstack/react-router' {
       path: '/admin/collections'
       fullPath: '/admin/collections'
       preLoaderRoute: typeof AdminCollectionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/category-hero': {
+      id: '/admin/category-hero'
+      path: '/admin/category-hero'
+      fullPath: '/admin/category-hero'
+      preLoaderRoute: typeof AdminCategoryHeroRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/categories': {
@@ -1311,10 +1351,12 @@ const rootRouteChildren: RootRouteChildren = {
   AdminAttributesRoute: AdminAttributesRoute,
   AdminAuditLogsRoute: AdminAuditLogsRoute,
   AdminCategoriesRoute: AdminCategoriesRoute,
+  AdminCategoryHeroRoute: AdminCategoryHeroRoute,
   AdminCollectionsRoute: AdminCollectionsRoute,
   AdminCouponsRoute: AdminCouponsRoute,
   AdminCustomersRoute: AdminCustomersRouteWithChildren,
   AdminEnquiriesRoute: AdminEnquiriesRoute,
+  AdminHeroMediaRoute: AdminHeroMediaRoute,
   AdminHomepageRoute: AdminHomepageRoute,
   AdminInventoryRoute: AdminInventoryRoute,
   AdminLoginRoute: AdminLoginRoute,

@@ -1,0 +1,1469 @@
+- generic [active] [ref=e1]:
+  - link "Jump to content" [ref=e2] [cursor=pointer]:
+    - /url: "#bodyContent"
+  - banner [ref=e4]:
+    - generic [ref=e5]:
+      - navigation "Site" [ref=e6]:
+        - generic "Main menu" [ref=e7]:
+          - button "Main menu" [ref=e8] [cursor=pointer]
+          - option "Qafár af"
+          - option "Arbërisht"
+          - option "аԥсшәа"
+          - option "Abron"
+          - option "bahasa ambon"
+          - option "Acèh"
+          - option "Kwéyòl Sent Lisi"
+          - option "عراقي"
+          - option "адыгабзэ"
+          - option "адыгабзэ"
+          - option "تونسي / Tûnsî"
+          - option "تونسي"
+          - option "Tûnsî"
+          - option "Afrikaans"
+          - option "Aghem"
+          - option "Aanteegan an' Baabyuudan"
+          - option "Akan"
+          - option "Gegë"
+          - option "Alemannisch"
+          - option "алтай тил"
+          - option "አማርኛ"
+          - option "Pangcah"
+          - option "aragonés"
+          - option "Ænglisc"
+          - option "Obolo"
+          - option "अंगिका"
+          - option "شامي"
+          - option "العربية"
+          - option "ܐܪܡܝܐ"
+          - option "mapudungun"
+          - option "جازايرية"
+          - option "الدارجة"
+          - option "مصرى"
+          - option "অসমীয়া"
+          - option "American sign language"
+          - option "asturianu"
+          - option "Atikamekw"
+          - option "авар"
+          - option "Kotava"
+          - option "अवधी"
+          - option "Aymar aru"
+          - option "azərbaycanca"
+          - option "تۆرکجه"
+          - option "башҡортса"
+          - option "Tuki"
+          - option "Basa Bali"
+          - option "ᬩᬲᬩᬮᬶ"
+          - option "Boarisch"
+          - option "Basaa"
+          - option "žemaitėška"
+          - option "Bamum"
+          - option "Batak Toba"
+          - option "Batak Toba"
+          - option "Ghomála'"
+          - option "جهلسری بلوچی"
+          - option "wawle"
+          - option "Bikol Central"
+          - option "Bajau Sama"
+          - option "беларуская"
+          - option "беларуская (тарашкевіца)"
+          - option "беларуская (тарашкевіца)"
+          - option "Betawi"
+          - option "Bafut"
+          - option "ରେମସାମ୍"
+          - option "български"
+          - option "हरियाणवी"
+          - option "روچ کپتین بلوچی"
+          - option "भोजपुरी"
+          - option "भोजपुरी"
+          - option "Bislama"
+          - option "Banjar"
+          - option "Baka"
+          - option "Bakoko"
+          - option "Kom"
+          - option "ပအိုဝ်ႏဘာႏသာႏ"
+          - option "bamanankan"
+          - option "বাংলা"
+          - option "བོད་ཡིག"
+          - option "bòo pìkkà"
+          - option "বিষ্ণুপ্রিয়া মণিপুরী"
+          - option "بختیاری"
+          - option "Mka'a"
+          - option "brezhoneg"
+          - option "Bráhuí"
+          - option "bosanski"
+          - option "Batak Mandailing"
+          - option "Iriga Bicolano"
+          - option "Basa Ugi"
+          - option "ᨅᨔ ᨕᨘᨁᨗ"
+          - option "буряад"
+          - option "Medumba"
+          - option "català"
+          - option "Kaqchikel"
+          - option "Carolinian"
+          - option "Chavacano de Zamboanga"
+          - option "𑄌𑄋𑄴𑄟𑄳𑄦"
+          - option "閩東語 / Mìng-dĕ̤ng-ngṳ̄"
+          - option "閩東語（傳統漢字）"
+          - option "Mìng-dĕ̤ng-ngṳ̄ (Bàng-uâ-cê)"
+          - option "нохчийн"
+          - option "Cebuano"
+          - option "Chamoru"
+          - option "chinuk wawa"
+          - option "Chahta anumpa"
+          - option "ᏣᎳᎩ"
+          - option "Tsetsêhestâhese"
+          - option "کوردی"
+          - option "Hakha Chin"
+          - option "corsu"
+          - option "ϯⲙⲉⲧⲣⲉⲙⲛ̀ⲭⲏⲙⲓ"
+          - option "Capiceño"
+          - option "莆仙語 / Pó-sing-gṳ̂"
+          - option "莆仙语（简体）"
+          - option "莆仙語（繁體）"
+          - option "Pó-sing-gṳ̂ (Báⁿ-uā-ci̍)"
+          - option "Nēhiyawēwin / ᓀᐦᐃᔭᐍᐏᐣ"
+          - option "qırımtatarca"
+          - option "къырымтатарджа (Кирилл)"
+          - option "qırımtatarca (Latin)"
+          - option "tatarşa"
+          - option "čeština"
+          - option "kaszëbsczi"
+          - option "словѣньскъ / ⰔⰎⰑⰂⰡⰐⰠⰔⰍⰟ"
+          - option "чӑвашла"
+          - option "Cymraeg"
+          - option "dansk"
+          - option "dagbanli"
+          - option "Deutsch"
+          - option "Österreichisches Deutsch"
+          - option "Schweizer Hochdeutsch"
+          - option "Deutsch (Sie-Form)"
+          - option "Dagaare"
+          - option "Thuɔŋjäŋ"
+          - option "Zazaki"
+          - option "долган тыла"
+          - option "dolnoserbski"
+          - option "ଦେଶିଆ"
+          - option "Kadazandusun"
+          - option "डोटेली"
+          - option "Duala"
+          - option "ދިވެހިބަސް"
+          - option "ཇོང་ཁ"
+          - option "eʋegbe"
+          - option "Efịk"
+          - option "Emiliàn"
+          - option "Ελληνικά"
+          - option "emiliàn e rumagnòl"
+          - option "English" [selected]
+          - option "Canadian English"
+          - option "British English"
+          - option "American English"
+          - option "Esperanto"
+          - option "español"
+          - option "español de América Latina"
+          - option "español (formal)"
+          - option "eesti"
+          - option "Eton"
+          - option "Ejagham"
+          - option "euskara"
+          - option "Ewondo"
+          - option "estremeñu"
+          - option "فارسی"
+          - option "mfantse"
+          - option "Fulfulde"
+          - option "suomi"
+          - option "meänkieli"
+          - option "võro"
+          - option "Na Vosa Vakaviti"
+          - option "kvääni"
+          - option "Fe'fe'"
+          - option "føroyskt"
+          - option "fɔ̀ngbè"
+          - option "français"
+          - option "français cadien"
+          - option "arpetan"
+          - option "Nordfriisk"
+          - option "Oostfräisk"
+          - option "furlan"
+          - option "poor’íŋ belé’ŋ"
+          - option "Frysk"
+          - option "Gaeilge"
+          - option "Ga"
+          - option "Gagauz"
+          - option "贛語"
+          - option "赣语（简体）"
+          - option "贛語（繁體）"
+          - option "kréyòl Gwadloup"
+          - option "kriyòl gwiyannen"
+          - option "Gàidhlig"
+          - option "گوجری"
+          - option "गुज्जरी"
+          - option "galego"
+          - option "на̄ни"
+          - option "گیلکی"
+          - option "Avañe'ẽ"
+          - option "गोंयची कोंकणी / Gõychi Konknni"
+          - option "गोंयची कोंकणी"
+          - option "Gõychi Konknni"
+          - option "Bahasa Hulontalo"
+          - option "𐌲𐌿𐍄𐌹𐍃𐌺"
+          - option "Ghanaian Pidgin"
+          - option "Ἀρχαία ἑλληνικὴ"
+          - option "Alemannisch"
+          - option "ગુજરાતી"
+          - option "wayuunaiki"
+          - option "farefare"
+          - option "gungbe"
+          - option "Gaelg"
+          - option "Gbaya"
+          - option "Hausa"
+          - option "客家語 / Hak-kâ-ngî"
+          - option "客家语（简体）"
+          - option "客家語（繁體）"
+          - option "Hak-kâ-ngî (Pha̍k-fa-sṳ)"
+          - option "Hawaiʻi"
+          - option "עברית"
+          - option "हिन्दी"
+          - option "Fiji Hindi"
+          - option "Fiji Hindi"
+          - option "Ilonggo"
+          - option "kihunde"
+          - option "ہندکو"
+          - option "Hiri Motu"
+          - option "𑢹𑣉𑣉 𑣎𑣋𑣜"
+          - option "Ho"
+          - option "hrvatski"
+          - option "Hunsrik"
+          - option "hornjoserbsce"
+          - option "湘語"
+          - option "Kreyòl ayisyen"
+          - option "magyar"
+          - option "magyar (formal)"
+          - option "հայերեն"
+          - option "Արեւմտահայերէն"
+          - option "Otsiherero"
+          - option "interlingua"
+          - option "Jaku Iban"
+          - option "ibibio"
+          - option "Bahasa Indonesia"
+          - option "Interlingue"
+          - option "Igbo"
+          - option "Igala"
+          - option "ꆇꉙ"
+          - option "Iñupiatun"
+          - option "ᐃᓄᒃᑎᑐᑦ"
+          - option "inuktitut"
+          - option "Ilokano"
+          - option "гӀалгӀай"
+          - option "Ido"
+          - option "íslenska"
+          - option "Isu"
+          - option "medžuslovjansky"
+          - option "меджусловјанскы"
+          - option "medžuslovjansky"
+          - option "italiano"
+          - option "ᐃᓄᒃᑎᑐᑦ / inuktitut"
+          - option "日本語"
+          - option "Patois"
+          - option "la .lojban."
+          - option "jysk"
+          - option "Jawa"
+          - option "ꦗꦮ"
+          - option "ქართული"
+          - option "Qaraqalpaqsha"
+          - option "Taqbaylit"
+          - option "Karai-karai"
+          - option "Jju"
+          - option "адыгэбзэ"
+          - option "адыгэбзэ"
+          - option "Kabɩyɛ"
+          - option "Tyap"
+          - option "kabuverdianu"
+          - option "Kera"
+          - option "Kongo"
+          - option "Kumoring"
+          - option "गेम्येहाक़ गिपन"
+          - option "کھوار"
+          - option "Gĩkũyũ"
+          - option "Kırmancki"
+          - option "Kwanyama"
+          - option "хакас"
+          - option "ဖၠုံလိက်"
+          - option "қазақша"
+          - option "قازاقشا (تٴوتە)"
+          - option "قازاقشا (جۇنگو)"
+          - option "қазақша (кирил)"
+          - option "қазақша (Қазақстан)"
+          - option "qazaqşa (latın)"
+          - option "qazaqşa (Türkïya)"
+          - option "kalaallisut"
+          - option "ភាសាខ្មែរ"
+          - option "ಕನ್ನಡ"
+          - option "Yerwa Kanuri"
+          - option "한국어"
+          - option "조선말"
+          - option "перем коми"
+          - option "kanuri"
+          - option "къарачай-малкъар"
+          - option "Krio"
+          - option "Kinaray-a"
+          - option "karjal"
+          - option "کٲشُر"
+          - option "کٲشُر"
+          - option "कॉशुर"
+          - option "Bafia"
+          - option "Ripoarisch"
+          - option "စှီၤ"
+          - option "kurdî"
+          - option "کوردی (عەرەبی)"
+          - option "kurdî (latînî)"
+          - option "къумукъ"
+          - option "Kʋsaal"
+          - option "коми"
+          - option "kernowek"
+          - option "кыргызча"
+          - option "Latina"
+          - option "Ladino"
+          - option "Lëtzebuergesch"
+          - option "лакку"
+          - option "Nomaande"
+          - option "лезги"
+          - option "Lingua Franca Nova"
+          - option "Luganda"
+          - option "Limburgs"
+          - option "Ligure"
+          - option "Līvõ kēļ"
+          - option "Lampung Api"
+          - option "لەکی"
+          - option "Lakȟótiyapi"
+          - option "Ladin"
+          - option "lombard"
+          - option "lingála"
+          - option "Lamnso'"
+          - option "ລາວ"
+          - option "Silozi"
+          - option "لۊری شومالی"
+          - option "lietuvių"
+          - option "latgaļu"
+          - option "ciluba"
+          - option "Mizo ţawng"
+          - option "لئری دوٙمینی"
+          - option "latviešu"
+          - option "文言"
+          - option "Lazuri"
+          - option "Madhurâ"
+          - option "मगही"
+          - option "मैथिली"
+          - option "Basa Banyumasan"
+          - option "vùn màsànà"
+          - option "Maka"
+          - option "мокшень"
+          - option "Malagasy"
+          - option "Ebon"
+          - option "олык марий"
+          - option "Māori"
+          - option "Minangkabau"
+          - option "македонски"
+          - option "മലയാളം"
+          - option "монгол"
+          - option "manju gisun"
+          - option "manju gisun"
+          - option "ᠮᠠᠨᠵᡠ ᡤᡳᠰᡠᠨ"
+          - option "ꯃꯤꯇꯩ ꯂꯣꯟ"
+          - option "ဘာသာမန်"
+          - option "молдовеняскэ"
+          - option "moore"
+          - option "मराठी"
+          - option "Mara"
+          - option "кырык мары"
+          - option "Bahasa Melayu"
+          - option "بهاس ملايو"
+          - option "Malti"
+          - option "Mundang"
+          - option "Baso Palembang"
+          - option "Mvskoke"
+          - option "Mirandés"
+          - option "မြန်မာဘာသာ"
+          - option "эрзянь"
+          - option "مازِرونی"
+          - option "Dorerin Naoero"
+          - option "Nāhuatl"
+          - option "閩南語 / Bân-lâm-gí"
+          - option "閩南語"
+          - option "閩南語（傳統漢字）"
+          - option "Bân-lâm-gí (Pe̍h-ōe-jī)"
+          - option "Bân-lâm-gí (Tâi-lô)"
+          - option "Napulitano"
+          - option "norsk bokmål"
+          - option "Plattdüütsch"
+          - option "Nedersaksies"
+          - option "नेपाली"
+          - option "नेपाल भाषा"
+          - option "Oshiwambo"
+          - option "Ngémba"
+          - option "Li Niha"
+          - option "కొలామి"
+          - option "Niuē"
+          - option "Nederlands"
+          - option "Nederlands (informeel)"
+          - option "Ngombala"
+          - option "Kwasio"
+          - option "nawdm"
+          - option "norsk nynorsk"
+          - option "Ngiemboon"
+          - option "Nda'nda'"
+          - option "norsk"
+          - option "ᨣᩤᩴᨾᩮᩬᩥᨦ"
+          - option "ногайша"
+          - option "Novial"
+          - option "ߒߞߏ"
+          - option "isiNdebele seSewula"
+          - option "Nouormand"
+          - option "Sesotho sa Leboa"
+          - option "Nupe"
+          - option "Diné bizaad"
+          - option "Chi-Chewa"
+          - option "runyankore"
+          - option "Orunyoro"
+          - option "Nyunga"
+          - option "occitan"
+          - option "Ojibwemowin"
+          - option "livvinkarjala"
+          - option "Oromoo"
+          - option "ଓଡ଼ିଆ"
+          - option "ирон"
+          - option "Wažáže íe"
+          - option "لسان عثمانى"
+          - option "ਪੰਜਾਬੀ"
+          - option "Pangasinan"
+          - option "Kapampangan"
+          - option "Papiamentu"
+          - option "Papiamento"
+          - option "Picard"
+          - option "Naijá"
+          - option "Deitsch"
+          - option "Plautdietsch"
+          - option "Pälzisch"
+          - option "पालि"
+          - option "Norfuk / Pitkern"
+          - option "polski"
+          - option "Piemontèis"
+          - option "پنجابی"
+          - option "Ποντιακά"
+          - option "Nawat"
+          - option "prūsiskan"
+          - option "پښتو"
+          - option "português"
+          - option "português do Brasil"
+          - option "pinayuanan"
+          - option "Runa Simi"
+          - option "Qatzijob\\ʼal"
+          - option "Runa shimi"
+          - option "Rumagnôl"
+          - option "Tarifit"
+          - option "ရခိုင်"
+          - option "rumantsch"
+          - option "romaňi čhib"
+          - option "kaalengo tšimb"
+          - option "romani čhib"
+          - option "ikirundi"
+          - option "română"
+          - option "armãneashti"
+          - option "tarandíne"
+          - option "руски"
+          - option "русский"
+          - option "русиньскый"
+          - option "armãneashti"
+          - option "Vlăheşte"
+          - option "Влахесте"
+          - option "Vlăheşte"
+          - option "мыхаӀбишды"
+          - option "Ikinyarwanda"
+          - option "मारवाड़ी"
+          - option "沖縄口"
+          - option "संस्कृतम्"
+          - option "саха тыла"
+          - option "Sasak"
+          - option "ᱥᱟᱱᱛᱟᱲᱤ"
+          - option "sardu"
+          - option "sicilianu"
+          - option "Scots"
+          - option "سنڌي"
+          - option "Sassaresu"
+          - option "کوردی خوارگ"
+          - option "davvisámegiella"
+          - option "davvisámegiella (Suoma bealde)"
+          - option "davvisámegiella (Norgga bealde)"
+          - option "davvisámegiella (Ruoŧa bealde)"
+          - option "Cmique Itom"
+          - option "Koyraboro Senni"
+          - option "Sängö"
+          - option "žemaitėška"
+          - option "srpskohrvatski / српскохрватски"
+          - option "српскохрватски (ћирилица)"
+          - option "srpskohrvatski (latinica)"
+          - option "Taclḥit"
+          - option "Taclḥit"
+          - option "ⵜⴰⵛⵍⵃⵉⵜ"
+          - option "တႆး"
+          - option "tacawit"
+          - option "tacawit"
+          - option "සිංහල"
+          - option "Simple English"
+          - option "кӣллт са̄мь кӣлл"
+          - option "bidumsámegiella"
+          - option "ubmejesámiengiälla"
+          - option "slovenčina"
+          - option "سرائیکی"
+          - option "سرائیکی"
+          - option "slovenščina"
+          - option "Schläsch"
+          - option "Gagana Samoa"
+          - option "åarjelsaemien"
+          - option "julevsámegiella"
+          - option "anarâškielâ"
+          - option "nuõrttsääʹmǩiõll"
+          - option "chiShona"
+          - option "Soomaaliga"
+          - option "shqip"
+          - option "српски / srpski"
+          - option "српски (ћирилица)"
+          - option "srpski (latinica)"
+          - option "Sranantongo"
+          - option "sardu campidanesu"
+          - option "mbia cheë"
+          - option "SiSwati"
+          - option "Sesotho"
+          - option "Seeltersk"
+          - option "себертатар"
+          - option "Sunda"
+          - option "svenska"
+          - option "ლუშნუ"
+          - option "Kiswahili"
+          - option "ꠍꠤꠟꠐꠤ"
+          - option "ślůnski"
+          - option "Sakizaya"
+          - option "தமிழ்"
+          - option "Tayal"
+          - option "ತುಳು"
+          - option "ᥖᥭᥰ ᥖᥬᥲ ᥑᥨᥒᥰ"
+          - option "తెలుగు"
+          - option "tetun"
+          - option "тоҷикӣ"
+          - option "тоҷикӣ"
+          - option "tojikī"
+          - option "ไทย"
+          - option "काेचिला थारु"
+          - option "ትግርኛ"
+          - option "ትግሬ"
+          - option "Türkmençe"
+          - option "Tagalog"
+          - option "tolışi"
+          - option "толыши"
+          - option "Setswana"
+          - option "lea faka-Tonga"
+          - option "toki pona"
+          - option "Tok Pisin"
+          - option "Tanapag"
+          - option "Türkçe"
+          - option "Ṫuroyo"
+          - option "Seediq"
+          - option "Xitsonga"
+          - option "татарча / tatarça"
+          - option "татарча"
+          - option "tatarça"
+          - option "Orutooro"
+          - option "chiTumbuka"
+          - option "Tunen"
+          - option "Twi"
+          - option "reo tahiti"
+          - option "тыва дыл"
+          - option "ⵜⴰⵎⴰⵣⵉⵖⵜ"
+          - option "удмурт"
+          - option "ئۇيغۇرچە / Uyghurche"
+          - option "ئۇيغۇرچە"
+          - option "Uyghurche"
+          - option "українська"
+          - option "اردو"
+          - option "oʻzbekcha / ўзбекча"
+          - option "ўзбекча"
+          - option "oʻzbekcha"
+          - option "Tshivenda"
+          - option "vèneto"
+          - option "vepsän kel’"
+          - option "Tiếng Việt"
+          - option "West-Vlams"
+          - option "Mainfränkisch"
+          - option "emakhuwa"
+          - option "Volapük"
+          - option "Vaďďa"
+          - option "võro"
+          - option "Vute"
+          - option "walon"
+          - option "wolaytta"
+          - option "Winaray"
+          - option "Pidgin (Cameroon)"
+          - option "Fakaʻuvea"
+          - option "waale"
+          - option "Wolof"
+          - option "吴语"
+          - option "吴语（简体）"
+          - option "吳語（正體）"
+          - option "Wyandot"
+          - option "хальмг"
+          - option "isiXhosa"
+          - option "მარგალური"
+          - option "saisiyat"
+          - option "Nugunu"
+          - option "Yambeta"
+          - option "Yangben"
+          - option "Yemba"
+          - option "ייִדיש"
+          - option "Yorùbá"
+          - option "Nhẽẽgatú"
+          - option "maaya t’aan"
+          - option "粵語"
+          - option "粵语（简体）"
+          - option "粵語（繁體）"
+          - option "Vahcuengh"
+          - option "Zeêuws"
+          - option "ⵜⴰⵎⴰⵣⵉⵖⵜ ⵜⴰⵏⴰⵡⴰⵢⵜ"
+          - option "tamaziɣt tanawayt"
+          - option "中文"
+          - option "文言"
+          - option "中文（中国大陆）"
+          - option "中文（简体）"
+          - option "中文（繁體）"
+          - option "中文（香港）"
+          - option "Bân-lâm-gú"
+          - option "中文（澳門）"
+          - option "中文（马来西亚）"
+          - option "中文（新加坡）"
+          - option "中文（臺灣）"
+          - option "粵語"
+          - option "isiZulu"
+      - link [ref=e12] [cursor=pointer]:
+        - /url: /wiki/Main_Page
+        - img "Wikimedia Commons" [ref=e15]
+    - generic [ref=e16]:
+      - search [ref=e17]:
+        - generic [ref=e20]:
+          - searchbox "Search Wikimedia Commons" [ref=e23]
+          - button "Search" [ref=e25]
+      - navigation "Personal tools" [ref=e26]:
+        - generic [ref=e27]:
+          - list [ref=e30]:
+            - listitem [ref=e31]:
+              - link "English" [ref=e32] [cursor=pointer]:
+                - /url: "#"
+          - list [ref=e37]:
+            - listitem [ref=e38]:
+              - link "Donate" [ref=e39] [cursor=pointer]:
+                - /url: https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=commons.wikimedia.org&uselang=en
+            - listitem [ref=e40]:
+              - link "Create account" [ref=e41] [cursor=pointer]:
+                - /url: /w/index.php?title=Special:CreateAccount&returnto=File%3AVisa+Inc.+logo+%282021%E2%80%93present%29.svg
+            - listitem [ref=e42]:
+              - link "Log in" [ref=e43] [cursor=pointer]:
+                - /url: /w/index.php?title=Special:UserLogin&returnto=File%3AVisa+Inc.+logo+%282021%E2%80%93present%29.svg
+  - generic [ref=e45]:
+    - navigation "Contents" [ref=e49]:
+      - generic [ref=e51]:
+        - generic [ref=e52]:
+          - heading "Contents" [level=2] [ref=e53]
+          - button "Hide Contents" [ref=e54] [cursor=pointer]: hide
+        - list [ref=e55]:
+          - listitem [ref=e56]:
+            - link "Beginning" [ref=e57] [cursor=pointer]:
+              - /url: "#"
+          - listitem [ref=e59]:
+            - link "File" [ref=e60] [cursor=pointer]:
+              - /url: "#file"
+            - list
+          - listitem [ref=e62]:
+            - link "Summary" [ref=e63] [cursor=pointer]:
+              - /url: "#Summary"
+            - list
+          - listitem [ref=e65]:
+            - link "Licensing" [ref=e66] [cursor=pointer]:
+              - /url: "#Licensing"
+            - list
+          - listitem [ref=e68]:
+            - link "File history" [ref=e69] [cursor=pointer]:
+              - /url: "#filehistory"
+            - list
+          - listitem [ref=e71]:
+            - link "File usage on Commons" [ref=e72] [cursor=pointer]:
+              - /url: "#filelinks"
+            - list
+          - listitem [ref=e74]:
+            - link "File usage on other wikis" [ref=e75] [cursor=pointer]:
+              - /url: "#globalusage"
+            - list
+          - listitem [ref=e77]:
+            - link "Metadata" [ref=e78] [cursor=pointer]:
+              - /url: "#metadata"
+            - list
+    - main [ref=e81]:
+      - generic [ref=e82]:
+        - button "Gallery Slideshow" [ref=e85] [cursor=pointer]
+        - heading "File:Visa Inc. logo (2021–present).svg" [level=1] [ref=e88]
+      - generic [ref=e91]:
+        - navigation "Namespaces" [ref=e93]:
+          - list [ref=e96]:
+            - listitem [ref=e97]:
+              - link "File" [ref=e98] [cursor=pointer]:
+                - /url: /wiki/File:Visa_Inc._logo_(2021%E2%80%93present).svg
+            - listitem [ref=e100]:
+              - link "Discussion" [ref=e101] [cursor=pointer]:
+                - /url: /w/index.php?title=File_talk:Visa_Inc._logo_(2021%E2%80%93present).svg&action=edit&redlink=1
+        - generic [ref=e103]:
+          - navigation "Views" [ref=e104]:
+            - list [ref=e107]:
+              - listitem [ref=e108]:
+                - link "Read" [ref=e109] [cursor=pointer]:
+                  - /url: /wiki/File:Visa_Inc._logo_(2021%E2%80%93present).svg
+              - listitem [ref=e111]:
+                - link "Edit" [ref=e112] [cursor=pointer]:
+                  - /url: /w/index.php?title=File:Visa_Inc._logo_(2021%E2%80%93present).svg&action=edit
+              - listitem [ref=e114]:
+                - link "View history" [ref=e115] [cursor=pointer]:
+                  - /url: /w/index.php?title=File:Visa_Inc._logo_(2021%E2%80%93present).svg&action=history
+          - navigation "Page tools" [ref=e117]:
+            - generic [ref=e118]:
+              - button "Tools" [ref=e119] [cursor=pointer]
+              - generic [ref=e120]: Tools
+      - navigation "Appearance" [ref=e125]:
+        - generic [ref=e127]:
+          - generic [ref=e128]:
+            - generic [ref=e129]: Appearance
+            - button "Hide Appearance" [ref=e130] [cursor=pointer]: hide
+          - generic [ref=e131]:
+            - generic [ref=e132]: Text
+            - list [ref=e134]:
+              - listitem [ref=e135]:
+                - generic [ref=e136]:
+                  - generic [ref=e137]:
+                    - generic [ref=e138]:
+                      - radio "Small" [disabled] [ref=e139]
+                      - generic [ref=e141]: Small
+                    - generic [ref=e143]:
+                      - radio "Standard" [disabled] [ref=e144]
+                      - generic [ref=e146]: Standard
+                    - generic [ref=e148]:
+                      - radio "Large" [disabled] [ref=e149]
+                      - generic [ref=e151]: Large
+                  - paragraph [ref=e153]: This page always uses small font size
+          - generic [ref=e154]:
+            - generic [ref=e155]: Width
+            - list [ref=e157]:
+              - listitem [ref=e158]:
+                - generic [ref=e160]:
+                  - generic [ref=e161]:
+                    - radio "Standard" [checked] [ref=e162]
+                    - generic [ref=e164]: Standard
+                  - generic [ref=e166]:
+                    - radio "Wide" [ref=e167]
+                    - generic [ref=e169]: Wide
+          - generic [ref=e171]:
+            - generic [ref=e172]:
+              - text: Color
+              - generic [ref=e173]: (beta)
+            - list [ref=e175]:
+              - listitem [ref=e176]:
+                - generic [ref=e178]:
+                  - generic [ref=e179]:
+                    - radio "Automatic" [ref=e180]
+                    - generic [ref=e182]: Automatic
+                  - generic [ref=e184]:
+                    - radio "Light" [checked] [ref=e185]
+                    - generic [ref=e187]: Light
+                  - generic [ref=e189]:
+                    - radio "Dark" [ref=e190]
+                    - generic [ref=e192]: Dark
+      - generic "File:Visa Inc. logo (2021–present).svg" [ref=e194]:
+        - generic [ref=e195]:
+          - list [ref=e196]:
+            - generic [ref=e197]:
+              - button "Download" [ref=e198] [cursor=pointer]
+              - button "Use this file" [ref=e202] [cursor=pointer]
+              - button "Use this file" [ref=e206] [cursor=pointer]
+              - link "Email a link" [ref=e210] [cursor=pointer]:
+                - /url: mailto:?subject=Visa%20logo%20since%202021&body=https%3A%2F%2Fcommons.wikimedia.org%2Fwiki%2FFile%3AVisa_Inc._logo_(2021%25E2%2580%2593present).svg%0A%0AVisa%20Inc.%2C%20Nikon1803%2C%20Gameposo%2C%20and%20Tokyoship%2C%20Public%20domain%2C%20via%20Wikimedia%20Commons
+              - link "Information" [ref=e214] [cursor=pointer]:
+                - /url: /wiki/Special:MyLanguage/Commons:Reusing_content_outside_Wikimedia
+              - generic "Remove these icons" [ref=e219] [cursor=pointer]
+          - generic [ref=e221]:
+            - link [ref=e222] [cursor=pointer]:
+              - /url: https://upload.wikimedia.org/wikipedia/commons/5/5c/Visa_Inc._logo_%282021%E2%80%93present%29.svg?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=original
+              - img "File:Visa Inc. logo (2021–present).svg" [ref=e223]
+            - generic [ref=e224]:
+              - text: "Size of the above preview of this SVG file:"
+              - link "960 × 311 pixels" [ref=e225] [cursor=pointer]:
+                - /url: https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Visa_Inc._logo_%282021%E2%80%93present%29.svg/960px-Visa_Inc._logo_%282021%E2%80%93present%29.svg.png?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=thumbnail
+              - text: .
+              - generic [ref=e226]:
+                - text: "Other resolutions:"
+                - link "330 × 107 pixels" [ref=e227] [cursor=pointer]:
+                  - /url: https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Visa_Inc._logo_%282021%E2%80%93present%29.svg/330px-Visa_Inc._logo_%282021%E2%80%93present%29.svg.png?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=thumbnail
+                - text: "|"
+                - link "1,280 × 415 pixels" [ref=e228] [cursor=pointer]:
+                  - /url: https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Visa_Inc._logo_%282021%E2%80%93present%29.svg/1280px-Visa_Inc._logo_%282021%E2%80%93present%29.svg.png?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=thumbnail
+                - text: "|"
+                - link "3,840 × 1,245 pixels" [ref=e229] [cursor=pointer]:
+                  - /url: https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Visa_Inc._logo_%282021%E2%80%93present%29.svg/3840px-Visa_Inc._logo_%282021%E2%80%93present%29.svg.png?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=thumbnail
+                - text: .
+          - generic [ref=e230]:
+            - link "Original file" [ref=e232] [cursor=pointer]:
+              - /url: https://upload.wikimedia.org/wikipedia/commons/5/5c/Visa_Inc._logo_%282021%E2%80%93present%29.svg?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=original
+            - text: "(SVG file, nominally 512 × 166 pixels, file size: 852 bytes)"
+            - button "Open in Media Viewer" [ref=e233]
+          - generic [ref=e236]:
+            - tablist [ref=e239]:
+              - tab "File information" [selected] [ref=e240]
+              - tab "Structured data" [ref=e242] [cursor=pointer]
+            - tabpanel "File information" [ref=e246]:
+              - generic [ref=e248]:
+                - heading [level=3] [ref=e249]:
+                  - text: Captions
+                  - button "Edit" [ref=e251] [cursor=pointer]
+                - generic [ref=e252]:
+                  - generic [ref=e253]: English
+                  - generic [ref=e254]: Visa logo since 2021
+                - button "See 2 more languages" [ref=e256] [cursor=pointer]
+              - generic [ref=e259]:
+                - generic [ref=e260]:
+                  - heading "Summary" [level=2] [ref=e261]
+                  - generic [ref=e262]:
+                    - link "edit":
+                      - /url: /w/index.php?title=File:Visa_Inc._logo_(2021%E2%80%93present).svg&action=edit&section=1
+                - table [ref=e264]:
+                  - rowgroup [ref=e265]:
+                    - row [ref=e266]:
+                      - cell "Description" [ref=e267]
+                      - 'cell "English: 2021 variant of 2014 Visa logo" [ref=e268]':
+                        - generic [ref=e269]:
+                          - generic "English" [ref=e270]: "English:"
+                          - text: 2021 variant of 2014 Visa logo
+                    - row [ref=e271]:
+                      - cell "Date" [ref=e272]
+                      - cell [ref=e273]:
+                        - time [ref=e274]: 22 July 2021
+                    - row [ref=e275]:
+                      - cell "Source" [ref=e276]
+                      - cell [ref=e277]:
+                        - text: "Own work using:"
+                        - link "https://www.visa.com/" [ref=e278] [cursor=pointer]:
+                          - /url: https://www.visa.com/
+                    - row [ref=e279]:
+                      - cell "Author" [ref=e280]
+                      - cell [ref=e281]:
+                        - text: Visa Inc.,
+                        - link "Nikon1803" [ref=e282] [cursor=pointer]:
+                          - /url: /wiki/User:Nikon1803
+                        - text: ","
+                        - link "Gameposo" [ref=e283] [cursor=pointer]:
+                          - /url: /wiki/User:Gameposo
+                        - text: ", and"
+                        - link "Tokyoship" [ref=e284] [cursor=pointer]:
+                          - /url: /wiki/User:Tokyoship
+                    - row [ref=e285]:
+                      - cell "Other versions" [ref=e286]
+                      - cell "1992 - 2000 1992 - 2000 1998 - 2006 1998 - 2006 2005 - 2014 2005 - 2014 2014 - 2021 2014 - 2021 2021 - Current 2021 - Current" [ref=e287]:
+                        - list [ref=e288]:
+                          - listitem [ref=e289]:
+                            - link [ref=e292] [cursor=pointer]:
+                              - /url: /wiki/File:Visa_Inc._logo_(1992%E2%80%931999).svg
+                              - img "1992 - 2000" [ref=e293]
+                            - generic [ref=e294]: 1992 - 2000
+                          - listitem [ref=e295]:
+                            - link [ref=e298] [cursor=pointer]:
+                              - /url: /wiki/File:Visa_Inc._logo_(1999%E2%80%932005).svg
+                              - img "1998 - 2006" [ref=e299]
+                            - generic [ref=e300]: 1998 - 2006
+                          - listitem [ref=e301]:
+                            - link [ref=e304] [cursor=pointer]:
+                              - /url: /wiki/File:Visa_Inc._logo_(2005%E2%80%932014).svg
+                              - img "2005 - 2014" [ref=e305]
+                            - generic [ref=e306]: 2005 - 2014
+                          - listitem [ref=e307]:
+                            - link [ref=e310] [cursor=pointer]:
+                              - /url: /wiki/File:Visa_Inc._logo_(2014%E2%80%932021).svg
+                              - img "2014 - 2021" [ref=e311]
+                            - generic [ref=e312]: 2014 - 2021
+                          - listitem [ref=e313]:
+                            - link [ref=e316] [cursor=pointer]:
+                              - /url: /wiki/File:Visa_Inc._logo_(2021%E2%80%93present).svg
+                              - img "2021 - Current" [ref=e317]
+                            - generic [ref=e318]: 2021 - Current
+                    - row [ref=e319]:
+                      - cell "SVG development" [ref=e320]
+                      - cell [ref=e321]:
+                        - generic:
+                          - generic [ref=e322]:
+                            - link [ref=e324] [cursor=pointer]:
+                              - /url: /wiki/File:W3C_grn.svg
+                            - text: The
+                            - link "SVG" [ref=e326] [cursor=pointer]:
+                              - /url: /wiki/Help:SVG
+                            - text: code is
+                            - link "valid" [ref=e328] [cursor=pointer]:
+                              - /url: https://validator.w3.org/check?uri=https%3A%2F%2Fcommons.wikimedia.org%2Fwiki%2FSpecial%3AFilepath%2FVisa_Inc._logo_%282021%25E2%2580%2593present%29.svg&doctype=Inline
+                            - text: .
+                          - generic [ref=e329]:
+                            - link [ref=e331] [cursor=pointer]:
+                              - /url: /wiki/File:Inkscape_to_text.svg
+                            - text: This text-logo was created with
+                            - link "Inkscape" [ref=e333] [cursor=pointer]:
+                              - /url: /wiki/Help:Inkscape
+                            - text: ", and then"
+                            - link "manually" [ref=e334] [cursor=pointer]:
+                              - /url: https://en.wikipedia.org/wiki/Text_editor
+                            - text: edited.
+                - generic [ref=e335]:
+                  - heading "Licensing" [level=2] [ref=e336]
+                  - generic [ref=e337]:
+                    - link "edit":
+                      - /url: /w/index.php?title=File:Visa_Inc._logo_(2021%E2%80%93present).svg&action=edit&section=2
+                - table [ref=e338]:
+                  - rowgroup [ref=e339]:
+                    - row [ref=e340]:
+                      - cell [ref=e341]:
+                        - generic "Public domain" [ref=e343]:
+                          - img "Public domain" [ref=e344]
+                      - cell [ref=e345]:
+                        - generic [ref=e347]:
+                          - text: This logo image consists only of simple geometric shapes or text. It
+                          - generic [ref=e348]:
+                            - text: does not meet the
+                            - link "threshold of originality" [ref=e349] [cursor=pointer]:
+                              - /url: /wiki/Commons:Threshold_of_originality
+                          - text: needed for copyright protection, and is therefore in the
+                          - link "public domain" [ref=e351] [cursor=pointer]:
+                            - /url: https://en.wikipedia.org/wiki/public_domain
+                          - text: . Although it is free of copyright restrictions, this image may still be subject to
+                          - link "other restrictions" [ref=e352] [cursor=pointer]:
+                            - /url: /wiki/Commons:Non-copyright_restrictions
+                          - text: . See
+                          - link "WP:PD § Fonts and typefaces" [ref=e353] [cursor=pointer]:
+                            - /url: https://en.wikipedia.org/wiki/Wikipedia:Public_domain#Fonts_and_typefaces
+                          - text: or
+                          - link "Template talk:PD-textlogo" [ref=e354] [cursor=pointer]:
+                            - /url: /wiki/Template_talk:PD-textlogo
+                          - text: for more information.
+                - table [ref=e355]:
+                  - rowgroup [ref=e356]:
+                    - row [ref=e357]:
+                      - cell "Trademarked" [ref=e358]:
+                        - figure "Trademarked" [ref=e359]:
+                          - link [ref=e360] [cursor=pointer]:
+                            - /url: /wiki/Commons:Non-copyright_restrictions
+                            - img "Trademarked" [ref=e361]
+                      - cell [ref=e362]:
+                        - text: This work includes material that may be
+                        - generic [ref=e363]:
+                          - text: protected as a
+                          - link "trademark" [ref=e364] [cursor=pointer]:
+                            - /url: https://en.wikipedia.org/wiki/en:trademark
+                        - text: in some jurisdictions. If you want to use it, you have to ensure that you have the legal right to do so and that you do not infringe any trademark rights. See our
+                        - link "general disclaimer" [ref=e365] [cursor=pointer]:
+                          - /url: /wiki/Commons:General_disclaimer
+                        - text: .
+                        - generic [ref=e366]:
+                          - text: This tag does not indicate the copyright status of the attached work.
+                          - generic [ref=e367]:
+                            - text: A normal
+                            - link "copyright tag" [ref=e368] [cursor=pointer]:
+                              - /url: /wiki/Special:MyLanguage/Commons:Copyright_tags
+                            - text: is still required.
+                          - generic [ref=e369]:
+                            - text: See
+                            - link "Commons:Licensing" [ref=e370] [cursor=pointer]:
+                              - /url: /wiki/Special:MyLanguage/Commons:Licensing
+                            - text: .
+                - table [ref=e371]:
+                  - rowgroup [ref=e372]:
+                    - row [ref=e373]:
+                      - cell [ref=e374]:
+                        - paragraph [ref=e378]:
+                          - generic "United States" [ref=e380]:
+                            - img "United States" [ref=e381]
+                      - cell [ref=e382]:
+                        - generic [ref=e383]:
+                          - text: There are many logos and trademarks in the United States that are not protected by copyright because they are below the threshold of originality required for copyright protection. There are some cases that even logos and trademarks that have been judged to be copyrighted in foreign countries have also been judged not to be copyrighted in the United States. However, some logos and trademarks are copyrighted in the United States. See
+                          - link "COM:CRT/United States#Threshold of originality" [ref=e384] [cursor=pointer]:
+                            - /url: /wiki/Commons:CRT/United_States#Threshold_of_originality
+                          - text: for more information.
+                        - separator [ref=e385]
+                        - paragraph [ref=e386]:
+                          - generic [ref=e387]:
+                            - link "беларуская (тарашкевіца)" [ref=e388] [cursor=pointer]:
+                              - /url: https://commons.wikimedia.org/wiki/Template:TOO-US/be-tarask
+                            - text: ∙
+                            - link "English" [ref=e389] [cursor=pointer]:
+                              - /url: https://commons.wikimedia.org/wiki/Template:TOO-US/en
+                            - text: ∙
+                            - link "español" [ref=e390] [cursor=pointer]:
+                              - /url: https://commons.wikimedia.org/wiki/Template:TOO-US/es
+                            - text: ∙
+                            - link "français" [ref=e391] [cursor=pointer]:
+                              - /url: https://commons.wikimedia.org/wiki/Template:TOO-US/fr
+                            - text: ∙
+                            - link "日本語" [ref=e392] [cursor=pointer]:
+                              - /url: https://commons.wikimedia.org/wiki/Template:TOO-US/ja
+                            - text: ∙
+                            - link "한국어" [ref=e393] [cursor=pointer]:
+                              - /url: https://commons.wikimedia.org/wiki/Template:TOO-US/ko
+                            - text: ∙
+                            - link "português" [ref=e394] [cursor=pointer]:
+                              - /url: https://commons.wikimedia.org/wiki/Template:TOO-US/pt
+                            - text: ∙
+                            - link "українська" [ref=e395] [cursor=pointer]:
+                              - /url: https://commons.wikimedia.org/wiki/Template:TOO-US/uk
+                            - text: ∙
+                            - link "中文（简体）" [ref=e396] [cursor=pointer]:
+                              - /url: https://commons.wikimedia.org/wiki/Template:TOO-US/zh-hans
+                            - text: ∙
+                            - link "中文（繁體）" [ref=e397] [cursor=pointer]:
+                              - /url: https://commons.wikimedia.org/wiki/Template:TOO-US/zh-hant
+                            - text: ∙
+                            - link "+/−" [ref=e399] [cursor=pointer]:
+                              - /url: https://commons.wikimedia.org/w/index.php?title=Template:TOO-US/lang&action=edit
+              - heading "File history" [level=2] [ref=e400]
+              - generic [ref=e401]:
+                - paragraph [ref=e402]: Click on a date/time to view the file as it appeared at that time.
+                - table [ref=e403]:
+                  - rowgroup [ref=e404]:
+                    - row [ref=e405]:
+                      - columnheader [ref=e406]
+                      - columnheader "Date/Time" [ref=e407]
+                      - columnheader "Thumbnail" [ref=e408]
+                      - columnheader "Dimensions" [ref=e409]
+                      - columnheader "User" [ref=e410]
+                      - columnheader "Comment" [ref=e411]
+                    - row [ref=e412]:
+                      - cell "current" [ref=e413]
+                      - cell [ref=e414]:
+                        - link "02:28, 13 March 2024" [ref=e415] [cursor=pointer]:
+                          - /url: https://upload.wikimedia.org/wikipedia/commons/5/5c/Visa_Inc._logo_%282021%E2%80%93present%29.svg?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=original
+                      - cell [ref=e416]:
+                        - link [ref=e417] [cursor=pointer]:
+                          - /url: https://upload.wikimedia.org/wikipedia/commons/5/5c/Visa_Inc._logo_%282021%E2%80%93present%29.svg?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=original
+                          - img "Thumbnail for version as of 02:28, 13 March 2024" [ref=e418]
+                      - cell "512 × 166 (852 bytes)" [ref=e419]
+                      - cell [ref=e420]:
+                        - link "Colohisto" [ref=e421] [cursor=pointer]:
+                          - /url: /wiki/User:Colohisto
+                        - generic [ref=e423]:
+                          - text: (
+                          - link "talk" [ref=e424] [cursor=pointer]:
+                            - /url: /wiki/User_talk:Colohisto
+                          - text: "|"
+                          - link "contribs" [ref=e425] [cursor=pointer]:
+                            - /url: /wiki/Special:Contributions/Colohisto
+                          - text: )
+                      - cell "Fixed errors" [ref=e426]
+                    - row [ref=e427]:
+                      - cell [ref=e428]
+                      - cell [ref=e429]:
+                        - link "06:53, 3 January 2024" [ref=e430] [cursor=pointer]:
+                          - /url: https://upload.wikimedia.org/wikipedia/commons/archive/5/5c/20240313022810%21Visa_Inc._logo_%282021%E2%80%93present%29.svg
+                      - cell [ref=e431]:
+                        - link [ref=e432] [cursor=pointer]:
+                          - /url: https://upload.wikimedia.org/wikipedia/commons/archive/5/5c/20240313022810%21Visa_Inc._logo_%282021%E2%80%93present%29.svg?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=original
+                          - img "Thumbnail for version as of 06:53, 3 January 2024" [ref=e433]
+                      - cell "512 × 166 (1 KB)" [ref=e434]
+                      - cell [ref=e435]:
+                        - link "Goldsztern" [ref=e436] [cursor=pointer]:
+                          - /url: /wiki/User:Goldsztern
+                        - generic [ref=e438]:
+                          - text: (
+                          - link "talk" [ref=e439] [cursor=pointer]:
+                            - /url: /wiki/User_talk:Goldsztern
+                          - text: "|"
+                          - link "contribs" [ref=e440] [cursor=pointer]:
+                            - /url: /wiki/Special:Contributions/Goldsztern
+                          - text: )
+                      - cell "SVG" [ref=e441]
+                    - row [ref=e442]:
+                      - cell [ref=e443]
+                      - cell [ref=e444]:
+                        - link "08:04, 25 July 2021" [ref=e445] [cursor=pointer]:
+                          - /url: https://upload.wikimedia.org/wikipedia/commons/archive/5/5c/20240103065342%21Visa_Inc._logo_%282021%E2%80%93present%29.svg
+                      - cell [ref=e446]:
+                        - link [ref=e447] [cursor=pointer]:
+                          - /url: https://upload.wikimedia.org/wikipedia/commons/archive/5/5c/20240103065342%21Visa_Inc._logo_%282021%E2%80%93present%29.svg?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=original
+                          - img "Thumbnail for version as of 08:04, 25 July 2021" [ref=e448]
+                      - cell "1,000 × 325 (4 KB)" [ref=e449]
+                      - cell [ref=e450]:
+                        - link "Nikon1803" [ref=e451] [cursor=pointer]:
+                          - /url: /wiki/User:Nikon1803
+                        - generic [ref=e453]:
+                          - text: (
+                          - link "talk" [ref=e454] [cursor=pointer]:
+                            - /url: /wiki/User_talk:Nikon1803
+                          - text: "|"
+                          - link "contribs" [ref=e455] [cursor=pointer]:
+                            - /url: /wiki/Special:Contributions/Nikon1803
+                          - text: )
+                      - cell "Uploaded a work by Visa Inc. from https://www.visa.com/ with UploadWizard" [ref=e456]
+              - paragraph [ref=e458]: You cannot overwrite this file.
+              - heading "File usage on Commons" [level=2] [ref=e459]
+              - generic [ref=e460]:
+                - paragraph [ref=e461]: "The following 6 pages use this file:"
+                - list [ref=e462]:
+                  - listitem [ref=e463]:
+                    - link "User:Minorax/PD textlogo (SVG)/2024 March 11-13" [ref=e464] [cursor=pointer]:
+                      - /url: /wiki/User:Minorax/PD_textlogo_(SVG)/2024_March_11-13
+                  - listitem [ref=e465]:
+                    - link "File:Visa 2021.svg" [ref=e466] [cursor=pointer]:
+                      - /url: /w/index.php?title=File:Visa_2021.svg&redirect=no
+                    - text: (file redirect)
+                  - listitem [ref=e467]:
+                    - link "File:Visa Inc. logo (2005–2014).svg" [ref=e468] [cursor=pointer]:
+                      - /url: /wiki/File:Visa_Inc._logo_(2005%E2%80%932014).svg
+                  - listitem [ref=e469]:
+                    - link "File:Visa Inc. logo (2014–2021).svg" [ref=e470] [cursor=pointer]:
+                      - /url: /wiki/File:Visa_Inc._logo_(2014%E2%80%932021).svg
+                  - listitem [ref=e471]:
+                    - link "File:Visa Inc. logo (2021–present).svg" [ref=e472] [cursor=pointer]:
+                      - /url: /wiki/File:Visa_Inc._logo_(2021%E2%80%93present).svg
+                  - listitem [ref=e473]:
+                    - link "Category:Visa Inc." [ref=e474] [cursor=pointer]:
+                      - /url: /wiki/Category:Visa_Inc.
+              - heading "File usage on other wikis" [level=2] [ref=e475]
+              - generic [ref=e476]:
+                - paragraph [ref=e477]: "The following other wikis use this file:"
+                - list [ref=e478]:
+                  - listitem [ref=e479]:
+                    - text: Usage on ar.wikipedia.org
+                    - list [ref=e480]:
+                      - listitem [ref=e481]:
+                        - link "فيزا" [ref=e482] [cursor=pointer]:
+                          - /url: https://ar.wikipedia.org/wiki/%D9%81%D9%8A%D8%B2%D8%A7
+                  - listitem [ref=e483]:
+                    - text: Usage on arz.wikipedia.org
+                    - list [ref=e484]:
+                      - listitem [ref=e485]:
+                        - link "فيزا" [ref=e486] [cursor=pointer]:
+                          - /url: https://arz.wikipedia.org/wiki/%D9%81%D9%8A%D8%B2%D8%A7
+                  - listitem [ref=e487]:
+                    - text: Usage on be.wikipedia.org
+                    - list [ref=e488]:
+                      - listitem [ref=e489]:
+                        - link "Visa" [ref=e490] [cursor=pointer]:
+                          - /url: https://be.wikipedia.org/wiki/Visa
+                  - listitem [ref=e491]:
+                    - text: Usage on bn.wikipedia.org
+                    - list [ref=e492]:
+                      - listitem [ref=e493]:
+                        - link "ভিসা ইনকর্পোরেটেড" [ref=e494] [cursor=pointer]:
+                          - /url: https://bn.wikipedia.org/wiki/%E0%A6%AD%E0%A6%BF%E0%A6%B8%E0%A6%BE_%E0%A6%87%E0%A6%A8%E0%A6%95%E0%A6%B0%E0%A7%8D%E0%A6%AA%E0%A7%8B%E0%A6%B0%E0%A7%87%E0%A6%9F%E0%A7%87%E0%A6%A1
+                  - listitem [ref=e495]:
+                    - text: Usage on ca.wikipedia.org
+                    - list [ref=e496]:
+                      - listitem [ref=e497]:
+                        - link "Visa" [ref=e498] [cursor=pointer]:
+                          - /url: https://ca.wikipedia.org/wiki/Visa
+                  - listitem [ref=e499]:
+                    - text: Usage on cs.wikipedia.org
+                    - list [ref=e500]:
+                      - listitem [ref=e501]:
+                        - link "Visa" [ref=e502] [cursor=pointer]:
+                          - /url: https://cs.wikipedia.org/wiki/Visa
+                  - listitem [ref=e503]:
+                    - text: Usage on cy.wikipedia.org
+                    - list [ref=e504]:
+                      - listitem [ref=e505]:
+                        - link "VISA" [ref=e506] [cursor=pointer]:
+                          - /url: https://cy.wikipedia.org/wiki/VISA
+                  - listitem [ref=e507]:
+                    - text: Usage on de.wikipedia.org
+                    - list [ref=e508]:
+                      - listitem [ref=e509]:
+                        - link "Dow Jones Industrial Average" [ref=e510] [cursor=pointer]:
+                          - /url: https://de.wikipedia.org/wiki/Dow_Jones_Industrial_Average
+                      - listitem [ref=e511]:
+                        - link "S&P 500" [ref=e512] [cursor=pointer]:
+                          - /url: https://de.wikipedia.org/wiki/S%26P_500
+                      - listitem [ref=e513]:
+                        - link "Dow Jones Composite Average" [ref=e514] [cursor=pointer]:
+                          - /url: https://de.wikipedia.org/wiki/Dow_Jones_Composite_Average
+                      - listitem [ref=e515]:
+                        - link "Visa Inc." [ref=e516] [cursor=pointer]:
+                          - /url: https://de.wikipedia.org/wiki/Visa_Inc.
+                      - listitem [ref=e517]:
+                        - link "Nx-25 Natur-Aktien-Index" [ref=e518] [cursor=pointer]:
+                          - /url: https://de.wikipedia.org/wiki/Nx-25_Natur-Aktien-Index
+                  - listitem [ref=e519]:
+                    - text: Usage on en.wikipedia.org
+                    - list [ref=e520]:
+                      - listitem [ref=e521]:
+                        - link "Visa Inc." [ref=e522] [cursor=pointer]:
+                          - /url: https://en.wikipedia.org/wiki/Visa_Inc.
+                  - listitem [ref=e523]:
+                    - text: Usage on eo.wikipedia.org
+                    - list [ref=e524]:
+                      - listitem [ref=e525]:
+                        - link "Visacard" [ref=e526] [cursor=pointer]:
+                          - /url: https://eo.wikipedia.org/wiki/Visacard
+                  - listitem [ref=e527]:
+                    - text: Usage on es.wikipedia.org
+                    - list [ref=e528]:
+                      - listitem [ref=e529]:
+                        - link "Tarjeta de crédito" [ref=e530] [cursor=pointer]:
+                          - /url: https://es.wikipedia.org/wiki/Tarjeta_de_cr%C3%A9dito
+                      - listitem [ref=e531]:
+                        - link "Visa Inc." [ref=e532] [cursor=pointer]:
+                          - /url: https://es.wikipedia.org/wiki/Visa_Inc.
+                  - listitem [ref=e533]:
+                    - text: Usage on eu.wikipedia.org
+                    - list [ref=e534]:
+                      - listitem [ref=e535]:
+                        - link "Visa Inc." [ref=e536] [cursor=pointer]:
+                          - /url: https://eu.wikipedia.org/wiki/Visa_Inc.
+                  - listitem [ref=e537]:
+                    - text: Usage on fa.wikipedia.org
+                    - list [ref=e538]:
+                      - listitem [ref=e539]:
+                        - link "ویزا کارت" [ref=e540] [cursor=pointer]:
+                          - /url: https://fa.wikipedia.org/wiki/%D9%88%DB%8C%D8%B2%D8%A7_%DA%A9%D8%A7%D8%B1%D8%AA
+                  - listitem [ref=e541]:
+                    - text: Usage on fi.wikipedia.org
+                    - list [ref=e542]:
+                      - listitem [ref=e543]:
+                        - link "Visa (luottoyritys)" [ref=e544] [cursor=pointer]:
+                          - /url: https://fi.wikipedia.org/wiki/Visa_(luottoyritys)
+                  - listitem [ref=e545]:
+                    - text: Usage on fr.wikipedia.org
+                    - list [ref=e546]:
+                      - listitem [ref=e547]:
+                        - link "Visa (entreprise)" [ref=e548] [cursor=pointer]:
+                          - /url: https://fr.wikipedia.org/wiki/Visa_(entreprise)
+                      - listitem [ref=e549]:
+                        - link "Visa Europe" [ref=e550] [cursor=pointer]:
+                          - /url: https://fr.wikipedia.org/wiki/Visa_Europe
+                  - listitem [ref=e551]:
+                    - text: Usage on ga.wikipedia.org
+                    - list [ref=e552]:
+                      - listitem [ref=e553]:
+                        - link "Visa Inc." [ref=e554] [cursor=pointer]:
+                          - /url: https://ga.wikipedia.org/wiki/Visa_Inc.
+                  - listitem [ref=e555]:
+                    - text: Usage on he.wikipedia.org
+                    - list [ref=e556]:
+                      - listitem [ref=e557]:
+                        - link "מדד דאו ג'ונס" [ref=e558] [cursor=pointer]:
+                          - /url: https://he.wikipedia.org/wiki/%D7%9E%D7%93%D7%93_%D7%93%D7%90%D7%95_%D7%92%27%D7%95%D7%A0%D7%A1
+                      - listitem [ref=e559]:
+                        - link "ויזה (חברה)" [ref=e560] [cursor=pointer]:
+                          - /url: https://he.wikipedia.org/wiki/%D7%95%D7%99%D7%96%D7%94_(%D7%97%D7%91%D7%A8%D7%94)
+                  - listitem [ref=e561]:
+                    - text: Usage on hu.wikipedia.org
+                    - list [ref=e562]:
+                      - listitem [ref=e563]:
+                        - link "Visa Inc." [ref=e564] [cursor=pointer]:
+                          - /url: https://hu.wikipedia.org/wiki/Visa_Inc.
+                  - listitem [ref=e565]:
+                    - text: Usage on hy.wikipedia.org
+                    - list [ref=e566]:
+                      - listitem [ref=e567]:
+                        - link "Visa" [ref=e568] [cursor=pointer]:
+                          - /url: https://hy.wikipedia.org/wiki/Visa
+                  - listitem [ref=e569]:
+                    - text: Usage on id.wikipedia.org
+                    - list [ref=e570]:
+                      - listitem [ref=e571]:
+                        - link "Visa Inc." [ref=e572] [cursor=pointer]:
+                          - /url: https://id.wikipedia.org/wiki/Visa_Inc.
+                  - listitem [ref=e573]:
+                    - text: Usage on incubator.wikimedia.org
+                    - list [ref=e574]:
+                      - listitem [ref=e575]:
+                        - link "User:Potatochip08/sandbox/Wikistore/Add to cart" [ref=e576] [cursor=pointer]:
+                          - /url: https://incubator.wikimedia.org/wiki/User:Potatochip08/sandbox/Wikistore/Add_to_cart
+                      - listitem [ref=e577]:
+                        - link "User:Potatochip08/sandbox/Wikistore/Add to cart/pending" [ref=e578] [cursor=pointer]:
+                          - /url: https://incubator.wikimedia.org/wiki/User:Potatochip08/sandbox/Wikistore/Add_to_cart/pending
+                  - listitem [ref=e579]:
+                    - text: Usage on it.wikipedia.org
+                    - list [ref=e580]:
+                      - listitem [ref=e581]:
+                        - link "Visa" [ref=e582] [cursor=pointer]:
+                          - /url: https://it.wikipedia.org/wiki/Visa
+                  - listitem [ref=e583]:
+                    - text: Usage on ja.wikipedia.org
+                    - list [ref=e584]:
+                      - listitem [ref=e585]:
+                        - link "Visa" [ref=e586] [cursor=pointer]:
+                          - /url: https://ja.wikipedia.org/wiki/Visa
+                  - listitem [ref=e587]:
+                    - text: Usage on ja.wikivoyage.org
+                    - list [ref=e588]:
+                      - listitem [ref=e589]:
+                        - link "和泉市" [ref=e590] [cursor=pointer]:
+                          - /url: https://ja.wikivoyage.org/wiki/%E5%92%8C%E6%B3%89%E5%B8%82
+                  - listitem [ref=e591]:
+                    - text: Usage on kk.wikipedia.org
+                    - list [ref=e592]:
+                      - listitem [ref=e593]:
+                        - link "Visa Inc." [ref=e594] [cursor=pointer]:
+                          - /url: https://kk.wikipedia.org/wiki/Visa_Inc.
+                  - listitem [ref=e595]:
+                    - text: Usage on ko.wikipedia.org
+                    - list [ref=e596]:
+                      - listitem [ref=e597]:
+                        - link "현대카드" [ref=e598] [cursor=pointer]:
+                          - /url: https://ko.wikipedia.org/wiki/%ED%98%84%EB%8C%80%EC%B9%B4%EB%93%9C
+                      - listitem [ref=e599]:
+                        - link "직불 카드" [ref=e600] [cursor=pointer]:
+                          - /url: https://ko.wikipedia.org/wiki/%EC%A7%81%EB%B6%88_%EC%B9%B4%EB%93%9C
+                      - listitem [ref=e601]:
+                        - link "JCB (기업)" [ref=e602] [cursor=pointer]:
+                          - /url: https://ko.wikipedia.org/wiki/JCB_(%EA%B8%B0%EC%97%85)
+                      - listitem [ref=e603]:
+                        - link "마스터카드" [ref=e604] [cursor=pointer]:
+                          - /url: https://ko.wikipedia.org/wiki/%EB%A7%88%EC%8A%A4%ED%84%B0%EC%B9%B4%EB%93%9C
+                      - listitem [ref=e605]:
+                        - link "비자 (기업)" [ref=e606] [cursor=pointer]:
+                          - /url: https://ko.wikipedia.org/wiki/%EB%B9%84%EC%9E%90_(%EA%B8%B0%EC%97%85)
+                      - listitem [ref=e607]:
+                        - link "아메리칸 익스프레스" [ref=e608] [cursor=pointer]:
+                          - /url: https://ko.wikipedia.org/wiki/%EC%95%84%EB%A9%94%EB%A6%AC%EC%B9%B8_%EC%9D%B5%EC%8A%A4%ED%94%84%EB%A0%88%EC%8A%A4
+                      - listitem [ref=e609]:
+                        - link "유니온페이" [ref=e610] [cursor=pointer]:
+                          - /url: https://ko.wikipedia.org/wiki/%EC%9C%A0%EB%8B%88%EC%98%A8%ED%8E%98%EC%9D%B4
+                      - listitem [ref=e611]:
+                        - link "카드 보안 코드" [ref=e612] [cursor=pointer]:
+                          - /url: https://ko.wikipedia.org/wiki/%EC%B9%B4%EB%93%9C_%EB%B3%B4%EC%95%88_%EC%BD%94%EB%93%9C
+                      - listitem [ref=e613]:
+                        - link "마에스트로 (직불카드)" [ref=e614] [cursor=pointer]:
+                          - /url: https://ko.wikipedia.org/wiki/%EB%A7%88%EC%97%90%EC%8A%A4%ED%8A%B8%EB%A1%9C_(%EC%A7%81%EB%B6%88%EC%B9%B4%EB%93%9C)
+                      - listitem [ref=e615]:
+                        - link "틀:신용·직불카드" [ref=e616] [cursor=pointer]:
+                          - /url: https://ko.wikipedia.org/wiki/%ED%8B%80:%EC%8B%A0%EC%9A%A9%C2%B7%EC%A7%81%EB%B6%88%EC%B9%B4%EB%93%9C
+                      - listitem [ref=e617]:
+                        - link "시러스 (은행간 네트워크)" [ref=e618] [cursor=pointer]:
+                          - /url: https://ko.wikipedia.org/wiki/%EC%8B%9C%EB%9F%AC%EC%8A%A4_(%EC%9D%80%ED%96%89%EA%B0%84_%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%81%AC)
+                      - listitem [ref=e619]:
+                        - link "디스커버 카드" [ref=e620] [cursor=pointer]:
+                          - /url: https://ko.wikipedia.org/wiki/%EB%94%94%EC%8A%A4%EC%BB%A4%EB%B2%84_%EC%B9%B4%EB%93%9C
+                      - listitem [ref=e621]:
+                        - link "미르 (결제 시스템)" [ref=e622] [cursor=pointer]:
+                          - /url: https://ko.wikipedia.org/wiki/%EB%AF%B8%EB%A5%B4_(%EA%B2%B0%EC%A0%9C_%EC%8B%9C%EC%8A%A4%ED%85%9C)
+                      - listitem [ref=e623]:
+                        - link "비자 인터내셔날 아시아퍼시픽 코리아" [ref=e624] [cursor=pointer]:
+                          - /url: https://ko.wikipedia.org/wiki/%EB%B9%84%EC%9E%90_%EC%9D%B8%ED%84%B0%EB%82%B4%EC%85%94%EB%82%A0_%EC%95%84%EC%8B%9C%EC%95%84%ED%8D%BC%EC%8B%9C%ED%94%BD_%EC%BD%94%EB%A6%AC%EC%95%84
+                      - listitem [ref=e625]:
+                        - link "마스터카드 인터내셔날 코리아" [ref=e626] [cursor=pointer]:
+                          - /url: https://ko.wikipedia.org/wiki/%EB%A7%88%EC%8A%A4%ED%84%B0%EC%B9%B4%EB%93%9C_%EC%9D%B8%ED%84%B0%EB%82%B4%EC%85%94%EB%82%A0_%EC%BD%94%EB%A6%AC%EC%95%84
+                      - listitem [ref=e627]:
+                        - link "결제 단말기" [ref=e628] [cursor=pointer]:
+                          - /url: https://ko.wikipedia.org/wiki/%EA%B2%B0%EC%A0%9C_%EB%8B%A8%EB%A7%90%EA%B8%B0
+                      - listitem [ref=e629]:
+                        - link "EMV" [ref=e630] [cursor=pointer]:
+                          - /url: https://ko.wikipedia.org/wiki/EMV
+                - paragraph [ref=e631]:
+                  - text: View
+                  - link "more global usage" [ref=e632] [cursor=pointer]:
+                    - /url: /wiki/Special:GlobalUsage/Visa_Inc._logo_(2021%E2%80%93present).svg
+                  - text: of this file.
+              - heading "Metadata" [level=2] [ref=e633]
+              - generic [ref=e634]:
+                - paragraph [ref=e635]: This file contains additional information such as Exif metadata which may have been added by the digital camera, scanner, or software program used to create or digitize it. If the file has been modified from its original state, some details such as the timestamp may not fully reflect those of the original file. The timestamp is only as accurate as the clock in the camera, and it may be completely wrong.
+                - table [ref=e636]:
+                  - rowgroup [ref=e637]:
+                    - row [ref=e638]:
+                      - cell [ref=e639]:
+                        - button "Show extended details" [ref=e640] [cursor=pointer]
+        - generic [ref=e641]:
+          - generic [ref=e642]:
+            - link "Categories" [ref=e643] [cursor=pointer]:
+              - /url: /wiki/Special:MyLanguage/Commons:Categories
+            - text: ":"
+            - list [ref=e644]:
+              - listitem [ref=e645]:
+                - link "SVG blue logos" [ref=e646] [cursor=pointer]:
+                  - /url: /wiki/Category:SVG_blue_logos
+              - listitem [ref=e647]:
+                - link "V in logos" [ref=e648] [cursor=pointer]:
+                  - /url: /wiki/Category:V_in_logos
+              - listitem [ref=e649]:
+                - link "Visa Inc. logos" [ref=e650] [cursor=pointer]:
+                  - /url: /wiki/Category:Visa_Inc._logos
+          - generic [ref=e651]:
+            - text: "Hidden categories:"
+            - list [ref=e652]:
+              - listitem [ref=e653]:
+                - link "Valid SVG created with Text Editor" [ref=e654] [cursor=pointer]:
+                  - /url: /wiki/Category:Valid_SVG_created_with_Text_Editor
+              - listitem [ref=e655]:
+                - link "Valid SVG created with Inkscape-hand:Text logos" [ref=e656] [cursor=pointer]:
+                  - /url: /wiki/Category:Valid_SVG_created_with_Inkscape-hand:Text_logos
+              - listitem [ref=e657]:
+                - link "PD textlogo" [ref=e658] [cursor=pointer]:
+                  - /url: /wiki/Category:PD_textlogo
+              - listitem [ref=e659]:
+                - link "SVG simple text logos" [ref=e660] [cursor=pointer]:
+                  - /url: /wiki/Category:SVG_simple_text_logos
+              - listitem [ref=e661]:
+                - link "With trademark" [ref=e662] [cursor=pointer]:
+                  - /url: /wiki/Category:With_trademark
+              - listitem [ref=e663]:
+                - link "TOO-United States" [ref=e664] [cursor=pointer]:
+                  - /url: /wiki/Category:TOO-United_States
+    - contentinfo [ref=e666]:
+      - list [ref=e667]:
+        - listitem [ref=e668]: This page was last edited on 16 February 2026, at 08:53.
+        - listitem [ref=e669]:
+          - text: Files are available under licenses specified on their description page. All structured data from the file namespace is available under the
+          - link "Creative Commons CC0 License" [ref=e670] [cursor=pointer]:
+            - /url: https://creativecommons.org/publicdomain/zero/1.0/
+          - text: ; all unstructured text is available under the
+          - link "Creative Commons Attribution-ShareAlike License" [ref=e671] [cursor=pointer]:
+            - /url: https://creativecommons.org/licenses/by-sa/4.0/
+          - text: ; additional terms may apply. By using this site, you agree to the
+          - link "Terms of Use" [ref=e672] [cursor=pointer]:
+            - /url: https://foundation.wikimedia.org/wiki/Special:MyLanguage/Policy:Terms_of_Use
+          - text: and the
+          - link "Privacy Policy" [ref=e673] [cursor=pointer]:
+            - /url: https://foundation.wikimedia.org/wiki/Special:MyLanguage/Policy:Privacy_policy
+          - text: .
+      - list:
+        - listitem [ref=e674]:
+          - link "Privacy policy" [ref=e675] [cursor=pointer]:
+            - /url: https://foundation.wikimedia.org/wiki/Special:MyLanguage/Policy:Privacy_policy
+        - listitem [ref=e676]:
+          - link "About Wikimedia Commons" [ref=e677] [cursor=pointer]:
+            - /url: /wiki/Commons:Welcome
+        - listitem [ref=e678]:
+          - link "Disclaimers" [ref=e679] [cursor=pointer]:
+            - /url: /wiki/Commons:General_disclaimer
+        - listitem [ref=e680]:
+          - link "Legal & safety contacts" [ref=e681] [cursor=pointer]:
+            - /url: https://foundation.wikimedia.org/wiki/Special:MyLanguage/Legal:Wikimedia_Foundation_Legal_and_Safety_Contact_Information
+        - listitem [ref=e682]:
+          - link "Code of Conduct" [ref=e683] [cursor=pointer]:
+            - /url: https://foundation.wikimedia.org/wiki/Special:MyLanguage/Policy:Universal_Code_of_Conduct
+        - listitem [ref=e684]:
+          - link "Developers" [ref=e685] [cursor=pointer]:
+            - /url: https://developer.wikimedia.org
+        - listitem [ref=e686]:
+          - link "Statistics" [ref=e687] [cursor=pointer]:
+            - /url: https://stats.wikimedia.org/#/commons.wikimedia.org
+        - listitem [ref=e688]:
+          - link "Cookie statement" [ref=e689] [cursor=pointer]:
+            - /url: https://foundation.wikimedia.org/wiki/Special:MyLanguage/Policy:Cookie_statement
+        - listitem [ref=e690]:
+          - link "Mobile view" [ref=e691] [cursor=pointer]:
+            - /url: //commons.wikimedia.org/w/index.php?title=File:Visa_Inc._logo_(2021%E2%80%93present).svg&mobileaction=toggle_view_mobile
+      - list [ref=e692]:
+        - listitem [ref=e693]:
+          - link [ref=e694] [cursor=pointer]:
+            - /url: https://www.wikimedia.org/
+            - img "Wikimedia Foundation" [ref=e696]
+        - listitem [ref=e697]:
+          - link [ref=e698] [cursor=pointer]:
+            - /url: https://www.mediawiki.org/
+            - img "Powered by MediaWiki" [ref=e700]
+  - generic [ref=e701]:
+    - list

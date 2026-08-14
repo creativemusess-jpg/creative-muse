@@ -2,7 +2,7 @@ import { memo, useRef } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { Link } from "@tanstack/react-router";
 import { Heart, ShoppingBag, Eye } from "lucide-react";
-import { type Product, formatPrice } from "@/lib/products";
+import { type Product, formatPrice, PRODUCT_PLACEHOLDER } from "@/lib/products";
 import { useStore } from "@/lib/store";
 import { productLink } from "@/lib/product-link";
 
@@ -69,9 +69,8 @@ export const ProductCard = memo(function ProductCard({
                 t.style.display = "none";
                 return;
               }
-              t.src =
-                "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400'%3E%3Crect fill='white' width='400' height='400'/%3E%3C/svg%3E";
               t.dataset.fallback = "1";
+              t.src = PRODUCT_PLACEHOLDER;
             }}
           />
 
@@ -91,7 +90,9 @@ export const ProductCard = memo(function ProductCard({
           >
             <Heart
               className={`h-3 w-3 transition-colors md:h-4 md:w-4 ${
-                wishlisted ? "fill-white text-white" : "text-[#7A2533] group-hover/wishlist:text-white"
+                wishlisted
+                  ? "fill-white text-white"
+                  : "text-[#7A2533] group-hover/wishlist:text-white"
               }`}
             />
           </button>
@@ -107,15 +108,21 @@ export const ProductCard = memo(function ProductCard({
 
       <div className="flex flex-1 flex-col px-2 pt-2 pb-2.5 md:px-3 md:pt-3 md:pb-3.5">
         <div className="mb-1 flex min-h-[16px] flex-wrap items-center gap-1 md:mb-1.5 md:min-h-[18px]">
-          {product.flags?.filter((f) => f.badge_label).slice(0, 2).map((flag) => (
-            <span
-              key={flag.id}
-              className="inline-flex h-[14px] max-w-full items-center rounded-full px-1.5 text-[6px] leading-none font-semibold tracking-[0.05em] whitespace-nowrap uppercase md:h-[17px] md:px-2 md:text-[8px] md:tracking-[0.08em]"
-              style={{ backgroundColor: flag.badge_bg_color || "#1a1a2e", color: flag.badge_text_color || "#ffffff" }}
-            >
-              {flag.badge_label}
-            </span>
-          ))}
+          {product.flags
+            ?.filter((f) => f.badge_label)
+            .slice(0, 2)
+            .map((flag) => (
+              <span
+                key={flag.id}
+                className="inline-flex h-[14px] max-w-full items-center rounded-full px-1.5 text-[6px] leading-none font-semibold tracking-[0.05em] whitespace-nowrap uppercase md:h-[17px] md:px-2 md:text-[8px] md:tracking-[0.08em]"
+                style={{
+                  backgroundColor: flag.badge_bg_color || "#1a1a2e",
+                  color: flag.badge_text_color || "#ffffff",
+                }}
+              >
+                {flag.badge_label}
+              </span>
+            ))}
         </div>
         <p className="min-h-[13px] truncate text-[9px] tracking-[0.08em] text-[#7a6e64] uppercase md:min-h-[16px] md:text-[10px] md:tracking-[0.1em]">
           {product.metal} · {product.stone}

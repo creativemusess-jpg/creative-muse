@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { useEffect, useMemo, useState, useCallback, useRef } from "react";
 import {
@@ -33,6 +34,7 @@ import {
   type AutoScrollSettings,
 } from "@/components/site/ProductCarouselSection";
 import { useCategories, useContentSection } from "@/lib/api/hooks";
+import { heroMediaApi } from "@/lib/api/heroMedia";
 import heroRing from "@/assets/hero-ring.jpg";
 import catRings from "@/assets/cat-rings.png";
 import catNecklaces from "@/assets/cat-necklaces.png";
@@ -130,6 +132,7 @@ const HERO_SLIDES = [
     image: heroRing,
     imageAlt: "Aarav Solitaire — 18K rose gold diamond ring",
     stat: "₹48,500",
+    mediaType: "image" as const,
   },
   {
     badge: "Bridal Edit 2025",
@@ -144,12 +147,36 @@ const HERO_SLIDES = [
     image: prodPolki,
     imageAlt: "Polki Choker — Traditional bridal jewellery",
     stat: "Starting ₹12,500",
+    mediaType: "image" as const,
   },
 ];
 
 function Hero() {
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
+
+  const { data: heroMedia } = useQuery({
+    queryKey: ["hero", "media"],
+    queryFn: () => heroMediaApi.list(true),
+    staleTime: 5 * 60 * 1000,
+    retry: false,
+  });
+
+  const slides = useMemo(() => {
+    if (!heroMedia || heroMedia.length === 0) return HERO_SLIDES;
+    return heroMedia.map((m, i) => {
+      const fallback = HERO_SLIDES[i % HERO_SLIDES.length];
+      return {
+        badge: m.badge || fallback.badge,
+        title: fallback.title,
+        desc: fallback.desc,
+        image: m.media_url,
+        imageAlt: m.name || fallback.imageAlt,
+        stat: fallback.stat,
+        mediaType: m.media_type,
+      };
+    });
+  }, [heroMedia]);
 
   const onSelect = useCallback((a: CarouselApi) => {
     setCurrent(a?.selectedScrollSnap() ?? 0);
@@ -171,7 +198,7 @@ function Hero() {
 
       <Carousel setApi={setApi} opts={{ loop: true, align: "start" }} className="relative">
         <CarouselContent>
-          {HERO_SLIDES.map((slide, idx) => (
+          {slides.map((slide, idx) => (
             <CarouselItem key={idx}>
               <div className="relative mx-auto grid max-w-[1280px] items-center gap-6 px-6 pt-8 pb-12 md:pt-10 md:pb-16 lg:grid-cols-[55fr_45fr] lg:gap-8 lg:pt-12 lg:pb-16">
                 <motion.div
@@ -229,15 +256,28 @@ function Hero() {
                 >
                   <div className="glass-panel relative aspect-square w-full overflow-hidden rounded-[28px] p-4 shadow-[0_24px_64px_rgba(0,0,0,0.12)] sm:p-5">
                     <div className="animate-cm-float flex h-full w-full items-center justify-center">
-                      <img
-                        src={slide.image}
-                        alt={slide.imageAlt}
-                        width={1024}
-                        height={1280}
-                        fetchPriority={idx === 0 ? "high" : undefined}
-                        decoding="async"
-                        className="h-full w-full rounded-[20px] object-contain drop-shadow-[0_24px_48px_rgba(122,37,51,0.35)]"
-                      />
+                      {slide.mediaType === "video" ? (
+                        <video
+                          src={slide.image}
+                          aria-label={slide.imageAlt}
+                          muted
+                          autoPlay
+                          loop
+                          playsInline
+                          preload="metadata"
+                          className="h-full w-full rounded-[20px] object-contain drop-shadow-[0_24px_48px_rgba(122,37,51,0.35)]"
+                        />
+                      ) : (
+                        <img
+                          src={slide.image}
+                          alt={slide.imageAlt}
+                          width={1024}
+                          height={1280}
+                          fetchPriority={idx === 0 ? "high" : undefined}
+                          decoding="async"
+                          className="h-full w-full rounded-[20px] object-contain drop-shadow-[0_24px_48px_rgba(122,37,51,0.35)]"
+                        />
+                      )}
                     </div>
                   </div>
 
@@ -290,7 +330,7 @@ function Hero() {
         </button>
 
         <div className="absolute bottom-4 left-1/2 z-10 flex -translate-x-1/2 gap-2">
-          {HERO_SLIDES.map((_, idx) => (
+          {slides.map((_, idx) => (
             <button
               key={idx}
               onClick={() => api?.scrollTo(idx)}
@@ -440,36 +480,28 @@ function ShopByCategory() {
   const { data, isLoading } = useCategories();
   const categoryScrollerRef = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = useReducedMotion();
-  const autoScrollRef = useRef<ReturnType<typeof setInterval> | undefined>(undefined);
   const [autoPaused, setAutoPaused] = useState(false);
 
   const dbCategories = useMemo(() => data ? deduplicateCategories(data) : [], [data]);
 
-  const startAutoScroll = useCallback(() => {
-    if (autoScrollRef.current) clearInterval(autoScrollRef.current);
-    if (prefersReducedMotion) return;
-    autoScrollRef.current = setInterval(() => {
-      const el = categoryScrollerRef.current;
-      if (!el || el.scrollWidth <= el.clientWidth) return;
-      const maxScroll = el.scrollWidth - el.clientWidth;
-      if (el.scrollLeft >= maxScroll - 2) {
-        el.scrollTo({ left: 0, behavior: "smooth" });
-      } else {
-        el.scrollBy({ left: el.clientWidth * 0.75, behavior: "smooth" });
-      }
-    }, 1800);
-  }, [prefersReducedMotion]);
-
-  const stopAutoScroll = useCallback(() => {
-    if (autoScrollRef.current) clearInterval(autoScrollRef.current);
-    autoScrollRef.current = undefined;
-  }, []);
-
   useEffect(() => {
-    if (!autoPaused) startAutoScroll();
-    else stopAutoScroll();
-    return stopAutoScroll;
-  }, [autoPaused, startAutoScroll, stopAutoScroll]);
+    if (prefersReducedMotion || autoPaused) return;
+    let raf = 0;
+    let last = performance.now();
+    const tick = (now: number) => {
+      const el = categoryScrollerRef.current;
+      if (el && el.scrollWidth > el.clientWidth) {
+        const dt = Math.min((now - last) / 1000, 0.5);
+        last = now;
+        const max = el.scrollWidth - el.clientWidth;
+        const next = el.scrollLeft + 55 * dt;
+        el.scrollLeft = next >= max ? 0 : next;
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [prefersReducedMotion, autoPaused]);
 
   if (isLoading) return null;
 
@@ -489,9 +521,9 @@ function ShopByCategory() {
     return (
       <Link
         to={`/category/${cat.slug}`}
-        className="group flex h-full flex-col items-center rounded-[24px] border border-transparent bg-white p-3 pb-4 text-center shadow-[0_4px_24px_rgba(0,0,0,0.04)] transition-all duration-500 hover:-translate-y-2 hover:border-[#7A2533]/50 hover:shadow-[0_20px_60px_rgba(122,37,51,0.22)] active:scale-[0.97] md:p-4 md:pb-5"
+        className="group relative flex h-full flex-col items-center rounded-[24px] border border-transparent bg-white p-3 pb-4 text-center shadow-[0_4px_24px_rgba(0,0,0,0.04)] transition-all duration-500 hover:z-10 hover:-translate-y-2 hover:border-[#7A2533]/50 hover:shadow-[0_20px_60px_rgba(122,37,51,0.22)] active:scale-[0.97] md:p-4 md:pb-5"
       >
-        <div className="relative aspect-square w-full overflow-hidden rounded-[18px] bg-gradient-to-br from-[#fdf8f3] to-[#f0e4cd]">
+        <div className="relative aspect-square w-full rounded-[18px] bg-gradient-to-br from-[#fdf8f3] to-[#f0e4cd]">
           {img ? (
             <img
               src={img}
@@ -499,7 +531,7 @@ function ShopByCategory() {
               loading="lazy"
               width={768}
               height={768}
-              className="absolute inset-0 h-full w-full object-contain p-2 transition-transform duration-700 ease-out group-hover:scale-110 md:p-3"
+              className="absolute inset-0 h-full w-full rounded-[18px] object-contain p-2 transition-transform duration-700 ease-out group-hover:scale-110 md:p-3"
               onError={(e) => {
                 e.currentTarget.style.display = "none";
               }}
@@ -548,11 +580,14 @@ function ShopByCategory() {
 
           <div
             ref={categoryScrollerRef}
-            onMouseEnter={() => setAutoPaused(true)}
-            onMouseLeave={() => setAutoPaused(false)}
+            onPointerDown={() => setAutoPaused(true)}
+            onPointerUp={() => setAutoPaused(false)}
+            onPointerCancel={() => setAutoPaused(false)}
+            onPointerLeave={() => setAutoPaused(false)}
             onTouchStart={() => setAutoPaused(true)}
             onTouchEnd={() => setAutoPaused(false)}
-            className="scrollbar-hide -mx-6 flex snap-x gap-3 overflow-x-auto px-6 pb-2 md:mx-10 md:gap-5 md:px-0"
+            onTouchCancel={() => setAutoPaused(false)}
+            className="scrollbar-hide -mx-6 -my-4 flex snap-x gap-3 overflow-x-auto px-6 py-4 md:mx-10 md:gap-5 md:px-0"
           >
             {dbCategories.map((cat, i) => (
               <motion.div
@@ -619,16 +654,29 @@ const CTA_FALLBACK_VIDEOS = [
   },
 ];
 
-function HeroVideoCarousel({
-  videos,
-}: {
-  videos: { src: string; poster?: string; title: string }[];
-}) {
+type BridalCard = {
+  src: string;
+  poster?: string;
+  title: string;
+  mediaType: "image" | "video";
+  productId?: string | null;
+};
+
+function HeroVideoCarousel({ cards }: { cards: BridalCard[] }) {
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
   const prefersReducedMotion = useReducedMotion();
 
-  const slides = videos.length > 0 ? videos : CTA_FALLBACK_VIDEOS;
+  const slides: BridalCard[] =
+    cards.length > 0
+      ? cards
+      : CTA_FALLBACK_VIDEOS.map((v) => ({
+          src: v.src,
+          poster: v.poster,
+          title: v.title,
+          mediaType: "video",
+          productId: null,
+        }));
 
   const onSelect = useCallback((a: CarouselApi) => {
     setCurrent(a?.selectedScrollSnap() ?? 0);
@@ -664,33 +712,58 @@ function HeroVideoCarousel({
         setApi={setApi}
         opts={{ loop: true, align: "start" }}
         className="overflow-hidden"
-        aria-label="Bridal collection video carousel"
+        aria-label="Bridal collection media carousel"
       >
         <CarouselContent className="-ml-4">
-          {slides.map((video, i) => (
-            <CarouselItem
-              key={`${video.src}-${i}`}
-              className="basis-[76%] pl-4 sm:basis-[54%] lg:basis-[58%] xl:basis-[48%]"
-            >
+          {slides.map((card, i) => {
+            const media = (
               <div className="relative aspect-[4/5] overflow-hidden rounded-[28px] border border-white/10 bg-[#fdf8f3]/10 shadow-[0_24px_64px_rgba(0,0,0,0.35)]">
-                <video
-                  src={video.src}
-                  poster={video.poster}
-                  className="h-full w-full object-cover"
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                  preload="metadata"
-                  aria-label={video.title}
-                />
+                {card.mediaType === "image" ? (
+                  <img
+                    src={card.src}
+                    alt={card.title}
+                    loading="lazy"
+                    decoding="async"
+                    className="h-full w-full object-contain"
+                  />
+                ) : (
+                  <video
+                    src={card.src}
+                    poster={card.poster}
+                    className="h-full w-full object-cover"
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    preload="metadata"
+                    aria-label={card.title}
+                  />
+                )}
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#1a1a2e]/35 via-transparent to-white/10" />
                 <div className="pointer-events-none absolute bottom-4 left-4 rounded-full border border-white/30 bg-white/15 px-3 py-1 text-[10px] font-semibold tracking-[0.16em] text-white uppercase backdrop-blur-md">
-                  {video.title}
+                  {card.title}
                 </div>
               </div>
-            </CarouselItem>
-          ))}
+            );
+            return (
+              <CarouselItem
+                key={`${card.src}-${i}`}
+                className="basis-[76%] pl-4 sm:basis-[54%] lg:basis-[58%] xl:basis-[48%]"
+              >
+                {card.productId ? (
+                  <Link
+                    to="/product/$productId"
+                    params={{ productId: card.productId }}
+                    className="block"
+                  >
+                    {media}
+                  </Link>
+                ) : (
+                  media
+                )}
+              </CarouselItem>
+            );
+          })}
         </CarouselContent>
       </Carousel>
 
@@ -702,7 +775,7 @@ function HeroVideoCarousel({
             className={`h-1.5 rounded-full transition-all ${
               i === current ? "w-7 bg-[#C9A96E]" : "w-1.5 bg-white/35"
             }`}
-            aria-label={`Show bridal video ${i + 1}`}
+            aria-label={`Show bridal card ${i + 1}`}
           />
         ))}
       </div>
@@ -713,12 +786,32 @@ function HeroVideoCarousel({
 function FeaturedBanner() {
   const { data: section, isLoading } = useContentSection("featured_banner");
 
-  const ctaVideos = useMemo(() => {
-    if (!section?.content?.cta_videos) return null;
-    return section.content.cta_videos as { src: string; poster?: string; title: string }[];
+  const cards = useMemo<BridalCard[]>(() => {
+    const raw = section?.content?.cards;
+    if (Array.isArray(raw) && raw.length > 0) {
+      return raw
+        .filter((c: any) => c?.media_url && c.active !== false)
+        .sort((a: any, b: any) => (a.sort_order ?? 0) - (b.sort_order ?? 0))
+        .map((c: any) => ({
+          src: c.media_url,
+          poster: c.poster,
+          title: c.title || "Bridal Collection",
+          mediaType: c.media_type === "image" ? "image" : "video",
+          productId: c.product_id || null,
+        }));
+    }
+    const legacy = section?.content?.cta_videos;
+    if (Array.isArray(legacy) && legacy.length > 0) {
+      return legacy.map((v: any) => ({
+        src: v.src,
+        poster: v.poster,
+        title: v.title || "Bridal Collection",
+        mediaType: "video" as const,
+        productId: null,
+      }));
+    }
+    return [];
   }, [section]);
-
-  const videos = ctaVideos && ctaVideos.length > 0 ? ctaVideos : CTA_FALLBACK_VIDEOS;
 
   if (isLoading) return null;
 
@@ -755,9 +848,9 @@ function FeaturedBanner() {
             </div>
           </motion.div>
 
-          <div className="relative min-w-0 lg:h-[420px]">
+<div className="relative min-w-0 lg:h-[420px]">
             <div className="relative z-10 mx-auto w-full max-w-[620px] lg:absolute lg:inset-y-0 lg:right-0 lg:flex lg:max-w-[560px] lg:items-center">
-              <HeroVideoCarousel videos={videos} />
+              <HeroVideoCarousel cards={cards} />
             </div>
           </div>
         </div>
@@ -932,31 +1025,47 @@ function WhyChoose() {
     { icon: Gem, label: "18K Gold Plated" },
   ];
 
+  const renderBenefit = (item: (typeof benefitItems)[number], i: number, extra: string) => (
+    <motion.div
+      key={item.title}
+      initial={{ opacity: 0, y: 16 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-30px" }}
+      transition={{ duration: 0.4, delay: i * 0.04 }}
+      className={`flex min-h-[138px] flex-col items-center justify-center rounded-[22px] bg-[#f9f2e9] p-5 text-center md:min-h-[170px] md:p-6 lg:min-h-[128px] lg:p-4 ${extra}`}
+    >
+      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-[#C9A96E] to-[#B8860B] shadow-[0_8px_24px_rgba(201,169,110,0.3)] md:h-14 md:w-14 lg:h-12 lg:w-12">
+        <item.icon className="h-5 w-5 text-white md:h-6 md:w-6 lg:h-5 lg:w-5" />
+      </div>
+      <h4 className="font-display mt-4 text-[14px] font-semibold text-[#1a1a2e] md:text-[17px] lg:mt-3 lg:text-[15px]">
+        {item.title}
+      </h4>
+    </motion.div>
+  );
+
   return (
     <section className="bg-[#fdf8f3] py-14 md:py-16">
       <div className="mx-auto max-w-[1280px] px-6">
         <SectionHeading eyebrow="The Creative Muse Promise" title="Why Choose Us" />
 
-        {/* Premium Benefit Grid */}
-        <div className="mx-auto max-w-[760px] lg:max-w-[1120px]">
-          <div className="grid grid-cols-2 gap-3 md:gap-5 lg:grid-cols-4 lg:gap-4">
-            {benefitItems.map((item, i) => (
-              <motion.div
-                key={item.title}
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-30px" }}
-                transition={{ duration: 0.4, delay: i * 0.04 }}
-                className="flex min-h-[138px] flex-col items-center justify-center rounded-[22px] bg-[#f9f2e9] p-5 text-center md:min-h-[170px] md:p-6 lg:min-h-[128px] lg:p-4"
-              >
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-[#C9A96E] to-[#B8860B] shadow-[0_8px_24px_rgba(201,169,110,0.3)] md:h-14 md:w-14 lg:h-12 lg:w-12">
-                  <item.icon className="h-5 w-5 text-white md:h-6 md:w-6 lg:h-5 lg:w-5" />
-                </div>
-                <h4 className="font-display mt-4 text-[14px] font-semibold text-[#1a1a2e] md:text-[17px] lg:mt-3 lg:text-[15px]">
-                  {item.title}
-                </h4>
-              </motion.div>
+        {/* Premium Benefit Grid — mobile: seamless auto-scrolling marquee */}
+        <div className="-mx-6 overflow-hidden md:hidden">
+          <div
+            className="animate-cm-marquee flex w-max motion-reduce:animate-none"
+            style={{ animationDuration: "26s" }}
+          >
+            {[0, 1].map((copy) => (
+              <div key={copy} className="flex shrink-0 gap-3 pr-3">
+                {benefitItems.map((item, i) => renderBenefit(item, i, "w-[248px] flex-none"))}
+              </div>
             ))}
+          </div>
+        </div>
+
+        {/* Premium Benefit Grid — tablet & desktop */}
+        <div className="mx-auto hidden max-w-[760px] md:block lg:max-w-[1120px]">
+          <div className="grid grid-cols-2 gap-5 lg:grid-cols-4 lg:gap-4">
+            {benefitItems.map((item, i) => renderBenefit(item, i, ""))}
           </div>
         </div>
 

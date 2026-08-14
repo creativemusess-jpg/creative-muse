@@ -10,6 +10,7 @@ import prodMangalsutra from "@/assets/prod-mangalsutra.jpg";
 import prodJhumka from "@/assets/prod-jhumka.jpg";
 import prodPolki from "@/assets/prod-polki-choker.jpg";
 import { productsApi, type ProductWithImages } from "@/lib/api/products";
+import { supabase } from "./supabase";
 
 export type Product = {
   id: string;
@@ -37,7 +38,14 @@ export type Product = {
   care?: string;
   shippingInfo?: string;
   specifications?: { name: string; value: string }[];
-  flags?: { id: string; name: string; slug: string; badge_label: string | null; badge_bg_color: string | null; badge_text_color: string | null }[];
+  flags?: {
+    id: string;
+    name: string;
+    slug: string;
+    badge_label: string | null;
+    badge_bg_color: string | null;
+    badge_text_color: string | null;
+  }[];
 };
 
 const fmt = (n: number) => "₹" + n.toLocaleString("en-IN");
@@ -242,21 +250,96 @@ const gradientByCategory: Record<string, string> = {
   Pendants: "from-[#fce8eb] to-[#f6d5dc]",
 };
 
-const imageUrl = (image?: { url?: string; image_url?: string } | null) =>
-  image?.url || image?.image_url || "";
+export const PRODUCT_PLACEHOLDER = "/product-placeholder.svg";
+
+const PRODUCT_IMAGE_BUCKET = "product-images";
+const STORAGE_PUBLIC_MARKER = "/storage/v1/object/public/";
+
+function readMediaValue(value: unknown): unknown {
+  if (value && typeof value === "object" && !Array.isArray(value)) {
+    const record = value as Record<string, unknown>;
+    const nested =
+      record.url ??
+      record.image_url ??
+      record.main_image_url ??
+      record.thumbnail_url ??
+      record.path ??
+      record.src;
+    return nested ?? null;
+  }
+  return value;
+}
+
+function buildStorageUrl(path: string): string {
+  let bucket = PRODUCT_IMAGE_BUCKET;
+  let objectPath = path.replace(/^\/+/, "");
+  if (objectPath.startsWith(`${PRODUCT_IMAGE_BUCKET}/`)) {
+    objectPath = objectPath.slice(PRODUCT_IMAGE_BUCKET.length + 1);
+  } else if (objectPath.startsWith("product-360-images/")) {
+    bucket = "product-360-images";
+    objectPath = objectPath.slice("product-360-images/".length);
+  }
+  return supabase.storage.from(bucket).getPublicUrl(objectPath).data.publicUrl;
+}
+
+function stripDoubleUrl(url: string): string {
+  const markerIdx = url.indexOf(STORAGE_PUBLIC_MARKER);
+  if (markerIdx > 0) {
+    const secondScheme = url.indexOf("https://", 8);
+    if (secondScheme > 0 && secondScheme < markerIdx) return url.slice(secondScheme);
+  }
+  return url;
+}
+
+/**
+ * Central product image resolver. Normalizes a single value (or array of
+ * values) found in the DB into a valid, render-ready image URL:
+ *   - full http(s) URL        -> used directly (double prefixes stripped)
+ *   - data: URI               -> used directly
+ *   - root-relative /path     -> public static asset, used directly
+ *   - Supabase storage path   -> resolved to a public Storage URL
+ *   - image object            -> `url`/`image_url`/... extracted
+ *   - image array             -> first valid entry wins
+ * Returns "" only when no usable reference exists.
+ */
+export function getProductImage(value: unknown): string {
+  const raw = readMediaValue(value);
+  if (raw == null) return "";
+  if (Array.isArray(raw)) {
+    for (const item of raw) {
+      const resolved = getProductImage(item);
+      if (resolved) return resolved;
+    }
+    return "";
+  }
+  if (typeof raw !== "string") return "";
+  const trimmed = raw.trim();
+  if (!trimmed) return "";
+  if (trimmed.startsWith("data:")) return trimmed;
+  if (/^https?:\/\//i.test(trimmed)) return stripDoubleUrl(trimmed);
+  if (trimmed.startsWith("/")) return trimmed;
+  return buildStorageUrl(trimmed);
+}
 
 export function productFromDb(product: ProductWithImages): Product {
   const fallback = fallbackBySlug.get(product.slug);
-  const allImages = (product.images || []).map(imageUrl).filter(Boolean);
-  const dbImage = imageUrl(product.main_image) || allImages[0] || "";
+  const allImages = (product.images || []).map(getProductImage).filter(Boolean);
+  const dbImage = getProductImage(product.main_image) || allImages[0] || "";
   const isKnownProduct = fallbackBySlug.has(product.slug);
-  const mainImage = dbImage || (isKnownProduct && fallback?.image ? fallback.image : "");
-  const otherImages = allImages.filter((url) => url !== mainImage);
+  const mainImage =
+    dbImage || (isKnownProduct && fallback?.image ? fallback.image : "") || PRODUCT_PLACEHOLDER;
+  const otherImages = allImages.filter((url) => url && url !== mainImage);
+  const resolved360 = (product.images_360 || []).map(getProductImage).filter(Boolean);
   const category = product.category_name || fallback?.category || "Jewellery";
   return {
     id: product.slug,
     name: product.name,
-    metal: product.material || product.gold_purity || product.metal_type || fallback?.metal || "Fine Jewellery",
+    metal:
+      product.material ||
+      product.gold_purity ||
+      product.metal_type ||
+      fallback?.metal ||
+      "Fine Jewellery",
     stone: product.gemstone || fallback?.stone || "Handcrafted",
     price: product.current_price,
     mrp: product.original_price || product.current_price,
@@ -275,10 +358,13 @@ export function productFromDb(product: ProductWithImages): Product {
     metalColor: product.metal_colour || fallback?.metalColor,
     weight: product.gross_weight || fallback?.weight,
     gallery: otherImages.length > 0 ? otherImages : fallback?.gallery,
-    view360Images: product.images_360?.map(imageUrl).filter(Boolean) || fallback?.view360Images,
+    view360Images: resolved360.length > 0 ? resolved360 : fallback?.view360Images,
     care: fallback?.care,
     shippingInfo: fallback?.shippingInfo,
-    specifications: (product.specifications || []).map((s: any) => ({ name: s.name || s.attribute_definition?.name || "", value: s.value })),
+    specifications: (product.specifications || []).map((s: any) => ({
+      name: s.name || s.attribute_definition?.name || "",
+      value: s.value,
+    })),
     flags: product.flags || undefined,
   };
 }
@@ -290,10 +376,7 @@ export function useStorefrontProducts() {
     staleTime: 5 * 60 * 1000,
   });
 
-  const products = useMemo(
-    () => (query.data ? query.data.map(productFromDb) : []),
-    [query.data],
-  );
+  const products = useMemo(() => (query.data ? query.data.map(productFromDb) : []), [query.data]);
 
   return { ...query, products };
 }

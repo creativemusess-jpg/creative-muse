@@ -22,7 +22,11 @@ export const contentApi = {
   },
 
   async upsertSection(key: string, data: any): Promise<any> {
-    const { data: result, error } = await db().from("homepage_sections").upsert({ section_key: key, ...data, updated_at: new Date().toISOString() }).select().single();
+    const { data: result, error } = await db()
+      .from("homepage_sections")
+      .upsert({ section_key: key, ...data, updated_at: new Date().toISOString() }, { onConflict: "section_key" })
+      .select()
+      .single();
     if (error) throw error;
     return result;
   },

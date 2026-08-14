@@ -3,11 +3,32 @@ import { Link, useLocation, useNavigate } from "@tanstack/react-router";
 import { adminApi, type AdminSession } from "@/lib/api/admin";
 import { clearGuardCache } from "@/lib/auth-guard";
 import {
-  LayoutDashboard, Package, ShoppingCart, Users,
-  Mail, Tag, Settings, LogOut, Menu, X, Clock,
-  ChevronRight, Home, MessageSquare, Layers,
-  Search, ExternalLink, PackageOpen, BarChart3,
-  UserCog, FileText, Image, Video, Flag, ListChecks,
+  LayoutDashboard,
+  Package,
+  ShoppingCart,
+  Users,
+  Mail,
+  Tag,
+  Settings,
+  LogOut,
+  Menu,
+  X,
+  Clock,
+  ChevronRight,
+  Home,
+  MessageSquare,
+  Layers,
+  Search,
+  ExternalLink,
+  PackageOpen,
+  BarChart3,
+  UserCog,
+  FileText,
+  Image,
+  Video,
+  Flag,
+  ListChecks,
+  Clapperboard,
 } from "lucide-react";
 import { GlobalSearch } from "./GlobalSearch";
 
@@ -23,25 +44,127 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { label: "Dashboard", href: "/admin", icon: <LayoutDashboard className="h-4 w-4" /> },
-  { label: "Orders", href: "/admin/orders", icon: <ShoppingCart className="h-4 w-4" />, permission: "orders" },
-  { label: "Products", href: "/admin/products", icon: <Package className="h-4 w-4" />, permission: "products" },
-  { label: "Categories", href: "/admin/categories", icon: <PackageOpen className="h-4 w-4" />, permission: "categories" },
-  { label: "Subcategories", href: "/admin/subcategories", icon: <Layers className="h-4 w-4" />, permission: "categories" },
-  { label: "Collections", href: "/admin/collections", icon: <FileText className="h-4 w-4" />, permission: "products" },
-  { label: "Inventory", href: "/admin/inventory", icon: <PackageOpen className="h-4 w-4" />, permission: "products" },
-  { label: "Product Flags", href: "/admin/product-flags", icon: <Flag className="h-4 w-4" />, permission: "products" },
-  { label: "Attributes", href: "/admin/attributes", icon: <ListChecks className="h-4 w-4" />, permission: "products" },
-  { label: "Customers", href: "/admin/customers", icon: <Users className="h-4 w-4" />, permission: "customers" },
-  { label: "Coupons", href: "/admin/coupons", icon: <Tag className="h-4 w-4" />, permission: "coupons" },
-  { label: "Analytics", href: "/admin/analytics", icon: <BarChart3 className="h-4 w-4" />, permission: "*" },
-  { label: "Content", href: "/admin/homepage", icon: <Home className="h-4 w-4" />, permission: "homepage" },
-  { label: "Enquiries", href: "/admin/enquiries", icon: <MessageSquare className="h-4 w-4" />, permission: "enquiries" },
-  { label: "Newsletter", href: "/admin/newsletter", icon: <Mail className="h-4 w-4" />, permission: "newsletter" },
-  { label: "Media", href: "/admin/media", icon: <Image className="h-4 w-4" />, permission: "media" },
-  { label: "Shoppable Reels", href: "/admin/reels", icon: <Video className="h-4 w-4" />, permission: "homepage" },
+  {
+    label: "Orders",
+    href: "/admin/orders",
+    icon: <ShoppingCart className="h-4 w-4" />,
+    permission: "orders",
+  },
+  {
+    label: "Products",
+    href: "/admin/products",
+    icon: <Package className="h-4 w-4" />,
+    permission: "products",
+  },
+  {
+    label: "Categories",
+    href: "/admin/categories",
+    icon: <PackageOpen className="h-4 w-4" />,
+    permission: "categories",
+  },
+  {
+    label: "Category Hero",
+    href: "/admin/category-hero",
+    icon: <Clapperboard className="h-4 w-4" />,
+    permission: "categories",
+  },
+  {
+    label: "Subcategories",
+    href: "/admin/subcategories",
+    icon: <Layers className="h-4 w-4" />,
+    permission: "categories",
+  },
+  {
+    label: "Collections",
+    href: "/admin/collections",
+    icon: <FileText className="h-4 w-4" />,
+    permission: "products",
+  },
+  {
+    label: "Inventory",
+    href: "/admin/inventory",
+    icon: <PackageOpen className="h-4 w-4" />,
+    permission: "products",
+  },
+  {
+    label: "Product Flags",
+    href: "/admin/product-flags",
+    icon: <Flag className="h-4 w-4" />,
+    permission: "products",
+  },
+  {
+    label: "Attributes",
+    href: "/admin/attributes",
+    icon: <ListChecks className="h-4 w-4" />,
+    permission: "products",
+  },
+  {
+    label: "Customers",
+    href: "/admin/customers",
+    icon: <Users className="h-4 w-4" />,
+    permission: "customers",
+  },
+  {
+    label: "Coupons",
+    href: "/admin/coupons",
+    icon: <Tag className="h-4 w-4" />,
+    permission: "coupons",
+  },
+  {
+    label: "Analytics",
+    href: "/admin/analytics",
+    icon: <BarChart3 className="h-4 w-4" />,
+    permission: "*",
+  },
+  {
+    label: "Content",
+    href: "/admin/homepage",
+    icon: <Home className="h-4 w-4" />,
+    permission: "homepage",
+  },
+  {
+    label: "Enquiries",
+    href: "/admin/enquiries",
+    icon: <MessageSquare className="h-4 w-4" />,
+    permission: "enquiries",
+  },
+  {
+    label: "Newsletter",
+    href: "/admin/newsletter",
+    icon: <Mail className="h-4 w-4" />,
+    permission: "newsletter",
+  },
+  {
+    label: "Media",
+    href: "/admin/media",
+    icon: <Image className="h-4 w-4" />,
+    permission: "media",
+  },
+  {
+    label: "Shoppable Reels",
+    href: "/admin/reels",
+    icon: <Video className="h-4 w-4" />,
+    permission: "homepage",
+  },
+  {
+    label: "Hero Media",
+    href: "/admin/hero-media",
+    icon: <Layers className="h-4 w-4" />,
+    permission: "homepage",
+  },
   { label: "Staff", href: "/admin/staff", icon: <UserCog className="h-4 w-4" />, permission: "*" },
-  { label: "Settings", href: "/admin/settings", icon: <Settings className="h-4 w-4" />, permission: "*" },
-  { label: "Audit Logs", href: "/admin/audit-logs", icon: <Clock className="h-4 w-4" />, permission: "*" },
+  {
+    label: "Settings",
+    href: "/admin/settings",
+    icon: <Settings className="h-4 w-4" />,
+    permission: "*",
+  },
+  {
+    label: "Audit Logs",
+    href: "/admin/audit-logs",
+    icon: <Clock className="h-4 w-4" />,
+    permission: "*",
+  },
 ];
 
 function hasAccess(item: NavItem, session: AdminSession | null): boolean {
@@ -122,7 +245,10 @@ export function AdminLayout({ children }: { children: ReactNode }) {
       <GlobalSearch open={searchOpen} onClose={() => setSearchOpen(false)} />
 
       {sidebarOpen && (
-        <div className="fixed inset-0 z-40 bg-black/50 lg:hidden" onClick={() => setSidebarOpen(false)} />
+        <div
+          className="fixed inset-0 z-40 bg-black/50 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
       )}
 
       <aside
@@ -137,7 +263,10 @@ export function AdminLayout({ children }: { children: ReactNode }) {
             </span>
             <span className="font-display text-base font-bold text-[#1a1a2e]">Admin</span>
           </Link>
-          <button onClick={() => setSidebarOpen(false)} className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 lg:hidden">
+          <button
+            onClick={() => setSidebarOpen(false)}
+            className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 lg:hidden"
+          >
             <X className="h-4 w-4" />
           </button>
         </div>
@@ -149,9 +278,7 @@ export function AdminLayout({ children }: { children: ReactNode }) {
               to={item.href}
               onClick={() => setSidebarOpen(false)}
               className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
-                isActive(item.href)
-                  ? "bg-[#1a1a2e] text-white"
-                  : "text-gray-600 hover:bg-gray-100"
+                isActive(item.href) ? "bg-[#1a1a2e] text-white" : "text-gray-600 hover:bg-gray-100"
               }`}
             >
               {item.icon}
@@ -166,8 +293,12 @@ export function AdminLayout({ children }: { children: ReactNode }) {
               {session.user.email.charAt(0).toUpperCase()}
             </div>
             <div className="flex-1 truncate">
-              <p className="text-sm font-medium text-gray-900 truncate">{session.profile?.full_name || session.user.email}</p>
-              <p className="text-xs text-gray-400 truncate">{session.roles.map((r) => r.name.replace("_", " ")).join(", ")}</p>
+              <p className="text-sm font-medium text-gray-900 truncate">
+                {session.profile?.full_name || session.user.email}
+              </p>
+              <p className="text-xs text-gray-400 truncate">
+                {session.roles.map((r) => r.name.replace("_", " ")).join(", ")}
+              </p>
             </div>
           </div>
           <button
@@ -183,7 +314,10 @@ export function AdminLayout({ children }: { children: ReactNode }) {
       <div className="flex flex-1 flex-col overflow-hidden">
         <header className="flex h-14 items-center justify-between border-b border-gray-200 bg-white px-4 lg:px-6">
           <div className="flex items-center gap-3">
-            <button onClick={() => setSidebarOpen(true)} className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 lg:hidden">
+            <button
+              onClick={() => setSidebarOpen(true)}
+              className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 lg:hidden"
+            >
               <Menu className="h-5 w-5" />
             </button>
             <button
@@ -192,7 +326,9 @@ export function AdminLayout({ children }: { children: ReactNode }) {
             >
               <Search className="h-4 w-4" />
               <span>Search...</span>
-              <span className="rounded border border-gray-200 bg-white px-1.5 py-0.5 text-[10px] font-medium text-gray-400">Ctrl+K</span>
+              <span className="rounded border border-gray-200 bg-white px-1.5 py-0.5 text-[10px] font-medium text-gray-400">
+                Ctrl+K
+              </span>
             </button>
           </div>
           <div className="flex items-center gap-3">
@@ -205,22 +341,30 @@ export function AdminLayout({ children }: { children: ReactNode }) {
               <span className="hidden sm:inline">View Site</span>
             </Link>
             <div className="flex items-center gap-2 text-xs text-gray-400">
-              <Link to="/" className="hover:text-[#7A2533]">Site</Link>
+              <Link to="/" className="hover:text-[#7A2533]">
+                Site
+              </Link>
               <ChevronRight className="h-3 w-3" />
               <span className="font-medium text-gray-900">Admin</span>
             </div>
           </div>
         </header>
 
-        <main className="flex-1 overflow-y-auto p-4 lg:p-6">
-          {children}
-        </main>
+        <main className="flex-1 overflow-y-auto p-4 lg:p-6">{children}</main>
       </div>
     </div>
   );
 }
 
-export function AdminPageHeader({ title, description, actions }: { title: string; description?: string; actions?: ReactNode }) {
+export function AdminPageHeader({
+  title,
+  description,
+  actions,
+}: {
+  title: string;
+  description?: string;
+  actions?: ReactNode;
+}) {
   return (
     <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <div>
@@ -232,7 +376,17 @@ export function AdminPageHeader({ title, description, actions }: { title: string
   );
 }
 
-export function AdminCard({ title, value, subtitle, icon }: { title: string; value: string; subtitle?: string; icon?: ReactNode }) {
+export function AdminCard({
+  title,
+  value,
+  subtitle,
+  icon,
+}: {
+  title: string;
+  value: string;
+  subtitle?: string;
+  icon?: ReactNode;
+}) {
   return (
     <div className="rounded-xl border border-gray-200 bg-white p-5">
       <div className="flex items-start justify-between">
@@ -262,7 +416,12 @@ export function AdminTable({ headers, children }: { headers: string[]; children:
         <thead>
           <tr className="border-b border-gray-100 bg-gray-50">
             {headers.map((h) => (
-              <th key={h} className="px-4 py-3 font-semibold text-gray-600 text-xs uppercase tracking-wider">{h}</th>
+              <th
+                key={h}
+                className="px-4 py-3 font-semibold text-gray-600 text-xs uppercase tracking-wider"
+              >
+                {h}
+              </th>
             ))}
           </tr>
         </thead>

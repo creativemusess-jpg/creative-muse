@@ -10,6 +10,7 @@ type CategoryHeroProps = {
     imageUrl?: string | null;
     hero_image?: string | null;
     hero_video?: string | null;
+    hero_video_mobile?: string | null;
     banner_heading?: string | null;
     banner_description?: string | null;
     cta_button_text?: string | null;
@@ -23,7 +24,9 @@ export function CategoryHero({ category }: CategoryHeroProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [muted, setMuted] = useState(true);
   const [playing, setPlaying] = useState(true);
-  const video = category.hero_video?.trim();
+  const [isMobile, setIsMobile] = useState(false);
+  const desktopVideo = category.hero_video?.trim();
+  const video = (isMobile ? category.hero_video_mobile || desktopVideo : desktopVideo) || "";
   const desktopImage =
     category.desktop_banner?.trim() ||
     category.hero_image?.trim() ||
@@ -35,6 +38,14 @@ export function CategoryHero({ category }: CategoryHeroProps) {
   const description = category.banner_description || category.description;
   const ctaText = category.cta_button_text || "View Collection";
   const ctaLink = category.cta_link || "#products";
+
+  useEffect(() => {
+    const mql = window.matchMedia("(max-width: 767px)");
+    const onMqlChange = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    setIsMobile(mql.matches);
+    mql.addEventListener("change", onMqlChange);
+    return () => mql.removeEventListener("change", onMqlChange);
+  }, []);
 
   useEffect(() => {
     const el = videoRef.current;
@@ -56,6 +67,7 @@ export function CategoryHero({ category }: CategoryHeroProps) {
     <section className="relative mb-8 min-h-[420px] overflow-hidden bg-[#1a1a2e] sm:min-h-[360px] lg:min-h-[440px]">
       {video ? (
         <video
+          key={video}
           ref={videoRef}
           src={video}
           className="absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-700 data-[ready=true]:opacity-100"
@@ -125,8 +137,8 @@ function HeroCopy({
       {description && (
         <p className="mt-4 max-w-lg text-base leading-7 text-white/90 sm:text-lg">{description}</p>
       )}
-      {ctaText && (
-        ctaLink.startsWith("/") ? (
+      {ctaText &&
+        (ctaLink.startsWith("/") ? (
           <Link to={ctaLink} className="btn-primary mt-7 inline-flex">
             {ctaText}
           </Link>
@@ -134,8 +146,7 @@ function HeroCopy({
           <a href={ctaLink} className="btn-primary mt-7 inline-flex">
             {ctaText}
           </a>
-        )
-      )}
+        ))}
       <style>{`@keyframes cmHeroFade{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}`}</style>
     </div>
   );

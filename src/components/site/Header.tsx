@@ -171,7 +171,7 @@ export const Header = memo(function Header() {
               </div>
             ))}
           </nav>
-          <nav className="scrollbar-hide mx-auto flex max-w-[1440px] items-center justify-center gap-0.5 overflow-x-auto px-2 py-2 lg:hidden" aria-label="Primary mobile shortcuts">
+          <nav className="scrollbar-hide mx-auto flex w-full max-w-[1440px] items-center justify-start gap-1 overflow-x-auto px-4 py-2 lg:hidden" aria-label="Primary mobile shortcuts">
             {navItems.map((item) => (
               <Link
                 key={item.label}

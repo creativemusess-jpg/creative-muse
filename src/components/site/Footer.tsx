@@ -91,24 +91,24 @@ export function Footer() {
         </div>
         <div className="grid grid-cols-2 place-items-center gap-x-8 gap-y-4 sm:flex sm:items-center sm:justify-end sm:gap-6">
           <img
-            src="/payment-methods/razorpay.svg"
+            src="/payment-methods/razorpay.png"
             alt="Razorpay"
-            className="h-7 w-auto opacity-90 transition-opacity hover:opacity-100"
+            className="h-7 max-w-[7.5rem] w-auto object-contain brightness-0 invert opacity-90 transition-opacity hover:opacity-100"
           />
           <img
             src="/payment-methods/upi.svg"
             alt="UPI"
-            className="h-7 w-auto opacity-90 transition-opacity hover:opacity-100"
+            className="h-7 w-auto object-contain opacity-90 transition-opacity hover:opacity-100"
           />
           <img
             src="/payment-methods/visa.svg"
             alt="Visa"
-            className="h-7 w-auto opacity-90 transition-opacity hover:opacity-100"
+            className="h-7 w-auto object-contain opacity-90 transition-opacity hover:opacity-100"
           />
           <img
-            src="/payment-methods/mastercard.svg"
+            src="/payment-methods/Mastercard-logo.svg"
             alt="Mastercard"
-            className="h-7 w-auto opacity-90 transition-opacity hover:opacity-100"
+            className="h-7 w-auto object-contain opacity-90 transition-opacity hover:opacity-100"
           />
         </div>
       </div>

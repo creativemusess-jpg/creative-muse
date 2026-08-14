@@ -288,6 +288,7 @@ export interface CategoryRow {
   image: string | null;
   hero_image: string | null;
   hero_video: string | null;
+  hero_video_mobile: string | null;
   banner_heading: string | null;
   banner_description: string | null;
   cta_button_text: string | null;
@@ -312,6 +313,7 @@ export interface CategoryInsert {
   image?: string | null;
   hero_image?: string | null;
   hero_video?: string | null;
+  hero_video_mobile?: string | null;
   banner_heading?: string | null;
   banner_description?: string | null;
   cta_button_text?: string | null;
@@ -335,6 +337,7 @@ export interface CategoryUpdate {
   image?: string | null;
   hero_image?: string | null;
   hero_video?: string | null;
+  hero_video_mobile?: string | null;
   banner_heading?: string | null;
   banner_description?: string | null;
   cta_button_text?: string | null;
@@ -474,8 +477,6 @@ export interface ProductInsert {
   created_by?: string | null;
   updated_by?: string | null;
 }
-
-
 
 export interface ProductUpdate {
   name?: string;

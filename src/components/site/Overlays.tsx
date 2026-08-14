@@ -16,10 +16,19 @@ import {
   Truck,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { formatPrice, type Product, useStorefrontProducts } from "@/lib/products";
+import {
+  formatPrice,
+  PRODUCT_PLACEHOLDER,
+  type Product,
+  useStorefrontProducts,
+} from "@/lib/products";
 import { useCartLines, useStore, useWishlistProducts } from "@/lib/store";
 import { productLink } from "@/lib/product-link";
-import { giftPackagingApi, type GiftPackagingConfig, type EstimatedDeliveryConfig } from "@/lib/api/gift-packaging";
+import {
+  giftPackagingApi,
+  type GiftPackagingConfig,
+  type EstimatedDeliveryConfig,
+} from "@/lib/api/gift-packaging";
 
 /* Cart drawer + Wishlist drawer + Quick View modal — global overlays */
 export function Overlays() {
@@ -55,7 +64,7 @@ function CartDrawer() {
   }, []);
 
   const shipping = cartSubtotal > 5000 || cartSubtotal === 0 ? 0 : 250;
-  const giftPrice = giftPackagingEnabled && giftCfg?.enabled ? (giftCfg?.price || 0) : 0;
+  const giftPrice = giftPackagingEnabled && giftCfg?.enabled ? giftCfg?.price || 0 : 0;
   const total = cartSubtotal + shipping + giftPrice;
 
   return (
@@ -180,7 +189,9 @@ function CartDrawer() {
                     <div className="flex items-center gap-2.5 rounded-[12px] border border-[#e0d8cc] bg-white p-3">
                       <RotateCcw className="h-4 w-4 shrink-0 text-[#7A2533]" />
                       <div>
-                        <p className="text-[11px] font-semibold text-[#1a1a2e]">7-Day Easy Returns</p>
+                        <p className="text-[11px] font-semibold text-[#1a1a2e]">
+                          7-Day Easy Returns
+                        </p>
                         <p className="text-[9px] text-[#7a6e64]">Easy return & exchange policy.</p>
                       </div>
                     </div>
@@ -188,7 +199,9 @@ function CartDrawer() {
                       <ShieldCheck className="h-4 w-4 shrink-0 text-[#7A2533]" />
                       <div>
                         <p className="text-[11px] font-semibold text-[#1a1a2e]">Secure Checkout</p>
-                        <p className="text-[9px] text-[#7a6e64]">100% secure payments with Razorpay.</p>
+                        <p className="text-[9px] text-[#7a6e64]">
+                          100% secure payments with Razorpay.
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -200,9 +213,15 @@ function CartDrawer() {
                         <div className="flex items-start gap-3">
                           <Package className="mt-0.5 h-5 w-5 shrink-0 text-[#7A2533]" />
                           <div>
-                            <p className="text-[13px] font-semibold text-[#1a1a2e]">{giftCfg.name}</p>
-                            <p className="mt-0.5 text-[11px] text-[#7a6e64]">{giftCfg.description}</p>
-                            <p className="mt-1 text-[13px] font-bold text-[#7A2533]">{formatPrice(giftCfg.price)}</p>
+                            <p className="text-[13px] font-semibold text-[#1a1a2e]">
+                              {giftCfg.name}
+                            </p>
+                            <p className="mt-0.5 text-[11px] text-[#7a6e64]">
+                              {giftCfg.description}
+                            </p>
+                            <p className="mt-1 text-[13px] font-bold text-[#7A2533]">
+                              {formatPrice(giftCfg.price)}
+                            </p>
                           </div>
                         </div>
                         <button
@@ -225,7 +244,9 @@ function CartDrawer() {
                       {/* Gift Message */}
                       {giftPackagingEnabled && giftCfg.allow_gift_message && (
                         <div className="mt-3 border-t border-[#e0d8cc]/60 pt-3">
-                          <label className="text-[11px] font-semibold text-[#1a1a2e]">Gift Message</label>
+                          <label className="text-[11px] font-semibold text-[#1a1a2e]">
+                            Gift Message
+                          </label>
                           <textarea
                             value={giftMessage}
                             onChange={(e) => {
@@ -251,7 +272,8 @@ function CartDrawer() {
                     <div className="mt-3 flex items-center gap-2.5 rounded-[12px] border border-[#e0d8cc] bg-white p-3">
                       <Truck className="h-4 w-4 shrink-0 text-[#7A2533]" />
                       <p className="text-[11px] text-[#1a1a2e]">
-                        <span className="font-semibold">Estimated Delivery:</span> Ships in {estDelivery.min_days}–{estDelivery.max_days} Business Days
+                        <span className="font-semibold">Estimated Delivery:</span> Ships in{" "}
+                        {estDelivery.min_days}–{estDelivery.max_days} Business Days
                       </p>
                     </div>
                   )}
@@ -521,12 +543,20 @@ function QuickViewModal() {
 }
 
 /* ---------------- Quick View: Media (gallery only) ---------------- */
-function QuickViewMedia({ product, onZoomChange }: { product: Product; onZoomChange?: (v: boolean) => void }) {
+function QuickViewMedia({
+  product,
+  onZoomChange,
+}: {
+  product: Product;
+  onZoomChange?: (v: boolean) => void;
+}) {
   const gallery = [product.image, ...(product.gallery ?? [])];
   const [idx, setIdx] = useState(0);
   const [zoom, setZoom] = useState(false);
 
-  useEffect(() => { onZoomChange?.(zoom); }, [zoom, onZoomChange]);
+  useEffect(() => {
+    onZoomChange?.(zoom);
+  }, [zoom, onZoomChange]);
 
   // Reset on product change
   useEffect(() => {
@@ -577,6 +607,12 @@ function QuickViewMedia({ product, onZoomChange }: { product: Product; onZoomCha
             className="h-full w-full cursor-zoom-in object-contain p-6 transition-opacity duration-300"
             loading="eager"
             decoding="async"
+            onError={(e) => {
+              const t = e.currentTarget;
+              if (t.dataset.fallback) return;
+              t.dataset.fallback = "1";
+              t.src = PRODUCT_PLACEHOLDER;
+            }}
           />
           {gallery.length > 1 && (
             <>
@@ -613,11 +649,7 @@ function QuickViewMedia({ product, onZoomChange }: { product: Product; onZoomCha
       </div>
 
       {/* Thumbnails */}
-      <Thumbnails
-        gallery={gallery}
-        idx={idx}
-        setIdx={setIdx}
-      />
+      <Thumbnails gallery={gallery} idx={idx} setIdx={setIdx} />
 
       {/* Fullscreen gallery viewer */}
       <AnimatePresence>
@@ -629,7 +661,9 @@ function QuickViewMedia({ product, onZoomChange }: { product: Product; onZoomCha
             transition={{ duration: 0.2 }}
             className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4 md:p-8"
             onClick={() => setZoom(false)}
-            onTouchStart={(e) => { touchX.current = e.touches[0].clientX; }}
+            onTouchStart={(e) => {
+              touchX.current = e.touches[0].clientX;
+            }}
             onTouchEnd={(e) => {
               if (touchX.current == null) return;
               const dx = e.changedTouches[0].clientX - touchX.current;
@@ -659,7 +693,10 @@ function QuickViewMedia({ product, onZoomChange }: { product: Product; onZoomCha
               <button
                 type="button"
                 aria-label="Previous image"
-                onClick={(e) => { e.stopPropagation(); prev(); }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  prev();
+                }}
                 className="absolute top-1/2 left-3 z-10 -translate-y-1/2 flex h-12 w-12 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-sm hover:bg-white/20"
               >
                 <ChevronLeft className="h-6 w-6" />
@@ -681,7 +718,10 @@ function QuickViewMedia({ product, onZoomChange }: { product: Product; onZoomCha
               <button
                 type="button"
                 aria-label="Next image"
-                onClick={(e) => { e.stopPropagation(); next(); }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  next();
+                }}
                 className="absolute top-1/2 right-3 z-10 -translate-y-1/2 flex h-12 w-12 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-sm hover:bg-white/20"
               >
                 <ChevronRight className="h-6 w-6" />
@@ -737,8 +777,12 @@ function Thumbnails({
         if (Math.abs(dx) > 4) dd.moved = true;
         e.currentTarget.scrollLeft = dd.scrollLeft - dx;
       }}
-      onPointerUp={() => { dragData.current.active = false; }}
-      onPointerLeave={() => { dragData.current.active = false; }}
+      onPointerUp={() => {
+        dragData.current.active = false;
+      }}
+      onPointerLeave={() => {
+        dragData.current.active = false;
+      }}
     >
       {gallery.map((src, i) => (
         <button
@@ -757,7 +801,13 @@ function Thumbnails({
             i === idx ? "border-[#7A2533]" : "border-[rgba(66,29,34,0.18)]"
           }`}
         >
-          <img src={src} alt="" loading="lazy" decoding="async" className="h-full w-full object-contain p-1.5" />
+          <img
+            src={src}
+            alt=""
+            loading="lazy"
+            decoding="async"
+            className="h-full w-full object-contain p-1.5"
+          />
         </button>
       ))}
     </div>
@@ -794,15 +844,21 @@ function QuickViewInfo({
   return (
     <div className="flex flex-col p-6 pr-5 md:p-8 md:pr-6">
       <div className="flex items-center gap-2">
-        {product.flags?.filter((f) => f.badge_label).slice(0, 2).map((flag) => (
-          <span
-            key={flag.id}
-            className="rounded-full px-2 py-[2px] text-[9px] font-semibold tracking-[0.12em] uppercase"
-            style={{ backgroundColor: flag.badge_bg_color || "#1a1a2e", color: flag.badge_text_color || "#ffffff" }}
-          >
-            {flag.badge_label}
-          </span>
-        ))}
+        {product.flags
+          ?.filter((f) => f.badge_label)
+          .slice(0, 2)
+          .map((flag) => (
+            <span
+              key={flag.id}
+              className="rounded-full px-2 py-[2px] text-[9px] font-semibold tracking-[0.12em] uppercase"
+              style={{
+                backgroundColor: flag.badge_bg_color || "#1a1a2e",
+                color: flag.badge_text_color || "#ffffff",
+              }}
+            >
+              {flag.badge_label}
+            </span>
+          ))}
         <p className="eyebrow text-[10px]">{product.category}</p>
       </div>
 
