@@ -287,6 +287,24 @@
   animation: cm-marquee 32s linear infinite;
 }
 
+/* Desktop header category navigation — continuous marquee
+   overflow-x: clip keeps the slider within its row without clipping the
+   vertically-dropping mega menus (unlike overflow: hidden / auto). */
+.cm-primary-nav {
+  overflow-x: clip;
+}
+.cm-primary-track {
+  width: max-content;
+}
+.cm-primary-nav:hover .animate-cm-marquee {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .cm-primary-nav .animate-cm-marquee {
+    animation: none;
+  }
+}
+
 /* ============================================
    Store location map (Leaflet)
    ============================================ */
@@ -385,6 +403,8 @@
   color: #7a6e64;
   margin: 10px 0 0;
 }
+.cm-map .leaflet-container .cm-map-popup-btn,
+.cm-map.leaflet-container .cm-map-popup-btn,
 .cm-map-popup-btn {
   display: inline-flex;
   align-items: center;
@@ -400,13 +420,36 @@
   text-transform: uppercase;
   letter-spacing: 0.16em;
   text-decoration: none;
+  border: none;
+  width: max-content;
+  max-width: 100%;
+  white-space: nowrap;
+  cursor: pointer;
   transition: all 0.25s ease;
 }
+.cm-map .leaflet-container .cm-map-popup-btn:hover,
+.cm-map.leaflet-container .cm-map-popup-btn:hover,
 .cm-map-popup-btn:hover {
   background: #5f1c27;
   color: #fff;
   transform: translateY(-1px);
   box-shadow: 0 8px 20px rgba(122, 37, 51, 0.35);
+}
+.cm-map .leaflet-container .cm-map-popup-btn:focus-visible,
+.cm-map.leaflet-container .cm-map-popup-btn:focus-visible,
+.cm-map-popup-btn:focus-visible {
+  outline: 2px solid #7a2533;
+  outline-offset: 2px;
+  background: #5f1c27;
+  color: #fff;
+}
+.cm-map .leaflet-container .cm-map-popup-btn:active,
+.cm-map.leaflet-container .cm-map-popup-btn:active,
+.cm-map-popup-btn:active {
+  background: #4e1720;
+  color: #fff;
+  transform: translateY(0);
+  box-shadow: none;
 }
 
 .cm-map-marker {

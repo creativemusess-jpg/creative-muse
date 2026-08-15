@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import { useEffect, useMemo, useState, useCallback, useRef } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import {
   Sparkles,
   Award,
@@ -39,6 +39,7 @@ import {
 } from "@/components/site/ProductCarouselSection";
 import { useCategories, useContentSection } from "@/lib/api/hooks";
 import { heroMediaApi, HERO_DEFAULT_CONTENT } from "@/lib/api/heroMedia";
+import { useInfiniteCarousel } from "@/lib/useInfiniteCarousel";
 import heroRing from "@/assets/hero-ring.jpg";
 import catRings from "@/assets/cat-rings.png";
 import catNecklaces from "@/assets/cat-necklaces.png";
@@ -532,43 +533,17 @@ function deduplicateCategories(cats: any[]): any[] {
 
 function ShopByCategory() {
   const { data, isLoading } = useCategories();
-  const categoryScrollerRef = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = useReducedMotion();
-  const [autoPaused, setAutoPaused] = useState(false);
+  const {
+    scrollerRef: categoryScrollerRef,
+    scrollByStep,
+  } = useInfiniteCarousel<HTMLDivElement>({ speed: 55 });
 
   const dbCategories = useMemo(() => data ? deduplicateCategories(data) : [], [data]);
-
-  useEffect(() => {
-    if (prefersReducedMotion || autoPaused) return;
-    let raf = 0;
-    let last = performance.now();
-    const tick = (now: number) => {
-      const el = categoryScrollerRef.current;
-      if (el && el.scrollWidth > el.clientWidth) {
-        const dt = Math.min((now - last) / 1000, 0.5);
-        last = now;
-        const max = el.scrollWidth - el.clientWidth;
-        const next = el.scrollLeft + 55 * dt;
-        el.scrollLeft = next >= max ? 0 : next;
-      }
-      raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [prefersReducedMotion, autoPaused]);
 
   if (isLoading) return null;
 
   const d = prefersReducedMotion ? 0 : undefined;
-
-  function scrollCategories(direction: -1 | 1) {
-    const el = categoryScrollerRef.current;
-    if (!el) return;
-    el.scrollBy({
-      left: direction * Math.max(el.clientWidth * 0.75, 260),
-      behavior: prefersReducedMotion ? "auto" : "smooth",
-    });
-  }
 
   function renderCard(cat: any) {
     const img = cat.imageUrl || CATEGORY_IMAGES[cat.name] || null;
@@ -625,7 +600,7 @@ function ShopByCategory() {
 
         <div className="relative mt-10">
           <button
-            onClick={() => scrollCategories(-1)}
+            onClick={() => scrollByStep(-1)}
             className="absolute left-0 top-1/2 z-10 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-[#d8d0c6] bg-white text-[#1a1a2e] shadow-[0_8px_20px_rgba(0,0,0,0.08)] transition-all hover:border-[#7A2533] hover:text-[#7A2533] md:flex"
             aria-label="Scroll categories left"
           >
@@ -634,23 +609,16 @@ function ShopByCategory() {
 
           <div
             ref={categoryScrollerRef}
-            onPointerDown={() => setAutoPaused(true)}
-            onPointerUp={() => setAutoPaused(false)}
-            onPointerCancel={() => setAutoPaused(false)}
-            onPointerLeave={() => setAutoPaused(false)}
-            onTouchStart={() => setAutoPaused(true)}
-            onTouchEnd={() => setAutoPaused(false)}
-            onTouchCancel={() => setAutoPaused(false)}
-            className="scrollbar-hide -mx-6 -my-4 flex snap-x gap-3 overflow-x-auto px-6 py-4 md:mx-10 md:gap-5 md:px-0"
+            className="scrollbar-hide -mx-6 -my-4 flex gap-3 overflow-x-auto px-6 py-4 md:mx-10 md:gap-5 md:px-0"
           >
-            {dbCategories.map((cat, i) => (
+            {[...dbCategories, ...dbCategories].map((cat, i) => (
               <motion.div
-                key={cat.id}
+                key={`${i}-${cat.id}`}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-50px" }}
                 transition={{ duration: d ?? 0.4, delay: d ?? i * 0.05 }}
-                className="w-[42vw] min-w-[150px] max-w-[180px] shrink-0 snap-start md:w-[190px] md:min-w-[190px] md:max-w-none lg:w-[210px] lg:min-w-[210px]"
+                className="w-[42vw] min-w-[150px] max-w-[180px] shrink-0 md:w-[190px] md:min-w-[190px] md:max-w-none lg:w-[210px] lg:min-w-[210px]"
               >
                 {renderCard(cat)}
               </motion.div>
@@ -658,7 +626,7 @@ function ShopByCategory() {
           </div>
 
           <button
-            onClick={() => scrollCategories(1)}
+            onClick={() => scrollByStep(1)}
             className="absolute right-0 top-1/2 z-10 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-[#d8d0c6] bg-white text-[#1a1a2e] shadow-[0_8px_20px_rgba(0,0,0,0.08)] transition-all hover:border-[#7A2533] hover:text-[#7A2533] md:flex"
             aria-label="Scroll categories right"
           >
@@ -667,14 +635,14 @@ function ShopByCategory() {
 
           <div className="mt-6 flex justify-center gap-4 md:hidden">
             <button
-              onClick={() => scrollCategories(-1)}
+              onClick={() => scrollByStep(-1)}
               className="flex h-10 w-10 items-center justify-center rounded-full border border-[#d8d0c6] bg-white text-[#1a1a2e] shadow-[0_6px_14px_rgba(0,0,0,0.07)] transition-all active:scale-95"
               aria-label="Scroll categories left"
             >
               <ArrowLeft className="h-4 w-4" />
             </button>
             <button
-              onClick={() => scrollCategories(1)}
+              onClick={() => scrollByStep(1)}
               className="flex h-10 w-10 items-center justify-center rounded-full border border-[#7A2533] bg-white text-[#7A2533] shadow-[0_6px_14px_rgba(0,0,0,0.07)] transition-all active:scale-95"
               aria-label="Scroll categories right"
             >

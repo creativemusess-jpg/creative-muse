@@ -1,4 +1,5 @@
 import { memo, useState, useRef, useCallback, useEffect } from "react";
+import { useReducedMotion } from "framer-motion";
 import { Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -17,12 +18,14 @@ import { useAuth } from "@/lib/auth";
 import { NAV_ITEMS, type NavItem } from "@/lib/navigation";
 import { categoriesApi } from "@/lib/api/categories";
 import { subcategoriesApi } from "@/lib/api/subcategories";
+import { useInfiniteCarousel } from "@/lib/useInfiniteCarousel";
 import { MegaMenu } from "./MegaMenu";
 
 export const Header = memo(function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [activeMenuIdx, setActiveMenuIdx] = useState<number | null>(null);
   const closeTimer = useRef<number | null>(null);
+  const { scrollerRef } = useInfiniteCarousel<HTMLElement>({ speed: 30 });
   const { cartCount, wishlistCount, openCart, openWishlist } = useStore();
   const { user } = useAuth();
   const { data: categories = [] } = useQuery({
@@ -63,6 +66,30 @@ export const Header = memo(function Header() {
     };
   });
   const navItems = dynamicItems.length > 0 ? dynamicItems : NAV_ITEMS;
+
+  const reducedMotion = !!useReducedMotion();
+  const [desktopMarquee, setDesktopMarquee] = useState(false);
+  const desktopViewportRef = useRef<HTMLDivElement>(null);
+  const desktopTrackRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const view = desktopViewportRef.current;
+    const track = desktopTrackRef.current;
+    if (!view || !track) return;
+    const check = () => setDesktopMarquee(track.scrollWidth > view.clientWidth + 1);
+    check();
+    const ro = new ResizeObserver(check);
+    ro.observe(view);
+    ro.observe(track);
+    window.addEventListener("resize", check);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", check);
+    };
+  }, [navItems.length]);
+
+  const useMarquee = desktopMarquee && !reducedMotion;
+  const desktopNavItems = [...navItems, ...navItems];
 
   const openMenu = (idx: number) => {
     if (closeTimer.current) window.clearTimeout(closeTimer.current);
@@ -135,46 +162,59 @@ export const Header = memo(function Header() {
         </div>
 
         <div className="border-t border-[#e0d8cc]/40">
-          <nav
-            className="scrollbar-hide relative mx-auto hidden max-w-[1440px] items-center justify-center gap-0.5 overflow-visible px-2 py-2 lg:flex lg:px-4"
-            aria-label="Primary"
+          <div
+            ref={desktopViewportRef}
+            className="cm-primary-nav relative mx-auto hidden max-w-[1040px] px-2 py-2 lg:block lg:px-4"
             onMouseLeave={scheduleClose}
             onMouseEnter={() => closeTimer.current && window.clearTimeout(closeTimer.current)}
           >
-            {navItems.map((item, idx) => (
-              <div key={item.label} className="relative">
-                <Link
-                  to={item.to}
-                  onMouseEnter={() => openMenu(idx)}
-                  onFocus={() => openMenu(idx)}
-                  onKeyDown={(e) => {
-                    if (e.key === "ArrowDown") {
-                      e.preventDefault();
-                      openMenu(idx);
-                    }
-                    if (e.key === "Escape") setActiveMenuIdx(null);
-                  }}
-                  aria-haspopup="menu"
-                  aria-expanded={activeMenuIdx === idx}
-                  className="shrink-0 whitespace-nowrap rounded-full px-3 py-1.5 text-[12.5px] font-semibold tracking-[0.01em] text-[#7A2533] transition-colors duration-200 hover:bg-[#fdf8f3] hover:text-[#7A2533] xl:px-4 xl:text-[13px]"
-                >
-                  {item.label}
-                </Link>
-                {activeMenuIdx === idx && (
-                  <MegaMenu
-                    item={item}
-                    idx={idx}
-                    total={navItems.length}
-                    onClose={() => setActiveMenuIdx(null)}
-                  />
-                )}
+            <nav className="flex items-center justify-center gap-0.5" aria-label="Primary">
+              <div
+                ref={desktopTrackRef}
+                className={`cm-primary-track flex shrink-0 items-center gap-0.5 whitespace-nowrap ${
+                  useMarquee ? "animate-cm-marquee" : ""
+                }`}
+              >
+                {desktopNavItems.map((item, idx) => (
+                  <div key={`${idx}-${item.label}`} className="relative">
+                    <Link
+                      to={item.to}
+                      onMouseEnter={() => openMenu(idx % navItems.length)}
+                      onFocus={() => openMenu(idx % navItems.length)}
+                      onKeyDown={(e) => {
+                        if (e.key === "ArrowDown") {
+                          e.preventDefault();
+                          openMenu(idx % navItems.length);
+                        }
+                        if (e.key === "Escape") setActiveMenuIdx(null);
+                      }}
+                      aria-haspopup="menu"
+                      aria-expanded={activeMenuIdx === idx % navItems.length}
+                      className="shrink-0 whitespace-nowrap rounded-full px-3 py-1.5 text-[12.5px] font-semibold tracking-[0.01em] text-[#7A2533] transition-colors duration-200 hover:bg-[#fdf8f3] hover:text-[#7A2533] xl:px-4 xl:text-[13px]"
+                    >
+                      {item.label}
+                    </Link>
+                  </div>
+                ))}
               </div>
-            ))}
-          </nav>
-          <nav className="scrollbar-hide mx-auto flex w-full max-w-[1440px] items-center justify-start gap-1 overflow-x-auto px-4 py-2 lg:hidden" aria-label="Primary mobile shortcuts">
-            {navItems.map((item) => (
+            </nav>
+            {activeMenuIdx !== null && navItems[activeMenuIdx] && (
+              <MegaMenu
+                item={navItems[activeMenuIdx]}
+                idx={activeMenuIdx}
+                total={navItems.length}
+                onClose={() => setActiveMenuIdx(null)}
+              />
+            )}
+          </div>
+          <nav
+            ref={scrollerRef}
+            className="scrollbar-hide mx-auto flex w-full max-w-[1440px] items-center justify-start gap-1 overflow-x-auto px-4 py-2 lg:hidden"
+            aria-label="Primary mobile shortcuts"
+          >
+            {[...navItems, ...navItems].map((item, i) => (
               <Link
-                key={item.label}
+                key={`${i}-${item.label}`}
                 to={item.to}
                 className="shrink-0 whitespace-nowrap rounded-full px-3 py-1.5 text-[12.5px] font-semibold tracking-[0.01em] text-[#7A2533] transition-colors duration-200 hover:bg-[#fdf8f3] hover:text-[#7A2533]"
               >
