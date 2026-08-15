@@ -22,7 +22,6 @@ import {
   ExternalLink,
   PackageOpen,
   BarChart3,
-  UserCog,
   FileText,
   Image,
   Video,
@@ -152,7 +151,6 @@ const navItems: NavItem[] = [
     icon: <Layers className="h-4 w-4" />,
     permission: "homepage",
   },
-  { label: "Staff", href: "/admin/staff", icon: <UserCog className="h-4 w-4" />, permission: "*" },
   {
     label: "Settings",
     href: "/admin/settings",

@@ -299,11 +299,6 @@
 .cm-primary-nav:hover .animate-cm-marquee {
   animation-play-state: paused;
 }
-@media (prefers-reduced-motion: reduce) {
-  .cm-primary-nav .animate-cm-marquee {
-    animation: none;
-  }
-}
 
 /* ============================================
    Store location map (Leaflet)

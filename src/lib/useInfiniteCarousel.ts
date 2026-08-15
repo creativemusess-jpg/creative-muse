@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useReducedMotion } from "framer-motion";
 
 interface InfiniteCarouselOptions {
   /** pixels per second while auto-scrolling */
@@ -16,7 +15,6 @@ export const useInfiniteCarousel = <T extends HTMLElement>({
   const [el, setEl] = useState<T | null>(null);
   const pausedRef = useRef(false);
   const resumeTimerRef = useRef<number>(0);
-  const reducedMotion = !!useReducedMotion();
   const [duplicateContent, setDuplicateContent] = useState(false);
 
   /** becomes active once the element mounts (allows late mounting, e.g. render-after-load) */
@@ -101,7 +99,7 @@ export const useInfiniteCarousel = <T extends HTMLElement>({
 
     const tick = (now: number) => {
       raf = requestAnimationFrame(tick);
-      if (!visible || pausedRef.current || reducedMotion) return;
+      if (!visible || pausedRef.current) return;
       const dt = Math.min((now - last) / 1000, 0.5);
       last = now;
       if (el.scrollWidth <= el.clientWidth + 1) return;
@@ -126,7 +124,7 @@ export const useInfiniteCarousel = <T extends HTMLElement>({
       el.removeEventListener("touchend", scheduleResume);
       el.removeEventListener("touchcancel", scheduleResume);
     };
-  }, [el, reducedMotion, speed, resumeDelayMs]);
+  }, [el, speed, resumeDelayMs]);
 
   const scrollByStep = (direction: -1 | 1) => {
     const current = elRef.current;
@@ -134,7 +132,7 @@ export const useInfiniteCarousel = <T extends HTMLElement>({
     const W = measureSetWidth(current);
     if (W <= 0) return;
     const step = Math.max(current.clientWidth * 0.75, 280);
-    const behavior: ScrollBehavior = reducedMotion ? "auto" : "smooth";
+    const behavior: ScrollBehavior = "smooth";
     const cur = current.scrollLeft;
     const target = cur + direction * step;
     const wraps = target >= W || target < 0;

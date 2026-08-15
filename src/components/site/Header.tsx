@@ -1,5 +1,4 @@
 import { memo, useState, useRef, useCallback, useEffect } from "react";
-import { useReducedMotion } from "framer-motion";
 import { Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -67,7 +66,6 @@ export const Header = memo(function Header() {
   });
   const navItems = dynamicItems.length > 0 ? dynamicItems : NAV_ITEMS;
 
-  const reducedMotion = !!useReducedMotion();
   const [desktopMarquee, setDesktopMarquee] = useState(false);
   const desktopViewportRef = useRef<HTMLDivElement>(null);
   const desktopTrackRef = useRef<HTMLDivElement>(null);
@@ -88,7 +86,7 @@ export const Header = memo(function Header() {
     };
   }, [navItems.length]);
 
-  const useMarquee = desktopMarquee && !reducedMotion;
+  const useMarquee = desktopMarquee;
   const desktopNavItems = [...navItems, ...navItems];
 
   const openMenu = (idx: number) => {
