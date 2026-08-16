@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, type ReactNode } from "react";
+import { useState, useEffect, useRef, createContext, useContext, type ReactNode } from "react";
 import { Link, useLocation, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { adminApi, type AdminSession } from "@/lib/api/admin";
@@ -202,8 +202,22 @@ function hasAccess(item: NavItem, session: AdminSession | null): boolean {
 }
 
 export function AdminLayout({ children }: { children: ReactNode }) {
-  const [session, setSession] = useState<AdminSession | null>(null);
-  const [loading, setLoading] = useState(true);
+  if (useInAdminShell()) return <>{children}</>;
+  return <AdminShell>{children}</AdminShell>;
+}
+
+const AdminShellCtx = createContext(false);
+
+function useInAdminShell() {
+  return useContext(AdminShellCtx);
+}
+
+function AdminShell({ children }: { children: ReactNode }) {
+  // Initialize synchronously from the module-level session cache so that
+  // re-mounts never flash a loading gate / blank screen while the shell
+  // rebuilds. The session effect below is still the source of truth.
+  const [session, setSession] = useState<AdminSession | null>(() => cachedSessionValue ?? null);
+  const [loading, setLoading] = useState(() => cachedSessionValue === undefined);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
@@ -216,6 +230,7 @@ export function AdminLayout({ children }: { children: ReactNode }) {
     queryFn: () => notificationsApi.list({ limit: 15 }),
     refetchInterval: 30_000,
     refetchOnWindowFocus: true,
+    staleTime: 15_000,
   });
   const notifications: AdminNotification[] = notifQuery.data ?? [];
   const unreadCount = notifications.filter((n) => !n.is_read).length;
@@ -228,6 +243,7 @@ export function AdminLayout({ children }: { children: ReactNode }) {
     },
     refetchInterval: 60_000,
     refetchOnWindowFocus: true,
+    staleTime: 30_000,
   });
   const pendingOrdersCount = pendingOrdersQuery.data ?? 0;
 
@@ -342,8 +358,9 @@ export function AdminLayout({ children }: { children: ReactNode }) {
     .map((item) => ({ ...item, badgeCount: badgeFor[item.href] }));
 
   return (
-    <div className="flex h-screen overflow-hidden bg-gray-50">
-      <GlobalSearch open={searchOpen} onClose={() => setSearchOpen(false)} />
+    <AdminShellCtx.Provider value={true}>
+      <div className="flex h-screen overflow-hidden bg-gray-50">
+        <GlobalSearch open={searchOpen} onClose={() => setSearchOpen(false)} />
 
       {sidebarOpen && (
         <div
@@ -558,6 +575,7 @@ export function AdminLayout({ children }: { children: ReactNode }) {
         <main className="flex-1 overflow-y-auto p-4 lg:p-6">{children}</main>
       </div>
     </div>
+    </AdminShellCtx.Provider>
   );
 }
 

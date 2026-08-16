@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { Search, Package, ShoppingCart, Users, Tag, Layers, X } from "lucide-react";
 import { productsApi } from "@/lib/api/products";
 import { ordersApi } from "@/lib/api/orders";
@@ -18,6 +18,7 @@ export function GlobalSearch({ open, onClose }: { open: boolean; onClose: () => 
   const [loading, setLoading] = useState(false);
   const [selectedIdx, setSelectedIdx] = useState(-1);
   const inputRef = useRef<HTMLInputElement>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (open) {
@@ -65,7 +66,7 @@ export function GlobalSearch({ open, onClose }: { open: boolean; onClose: () => 
     if (e.key === "ArrowDown") { e.preventDefault(); setSelectedIdx((i) => Math.min(i + 1, results.length - 1)); }
     if (e.key === "ArrowUp") { e.preventDefault(); setSelectedIdx((i) => Math.max(i - 1, 0)); }
     if (e.key === "Enter" && selectedIdx >= 0) {
-      window.location.href = results[selectedIdx].href;
+      navigate({ to: results[selectedIdx].href as any });
       onClose();
     }
     if (e.key === "Escape") onClose();

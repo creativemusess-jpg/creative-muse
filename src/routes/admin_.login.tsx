@@ -4,7 +4,7 @@ import { adminApi } from "@/lib/api/admin";
 import { clearGuardCache } from "@/lib/auth-guard";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 
-export const Route = createFileRoute("/admin/login")({
+export const Route = createFileRoute("/admin_/login")({
   component: AdminLoginPage,
 });
 
