@@ -4,7 +4,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { AdminLayout, AdminPageHeader, AdminLoading } from "@/components/admin/AdminLayout";
 import { DataTable, StatusBadge, ConfirmDialog } from "@/components/admin/AdminTable";
 import { productsApi, type ProductWithImages } from "@/lib/api/products";
-import { Plus, Eye, Edit3, ImageOff, Archive, RotateCcw } from "lucide-react";
+import { Plus, Eye, Edit3, ImageOff, Archive } from "lucide-react";
 
 import { requireAdmin } from "@/lib/auth-guard";
 
@@ -40,7 +40,7 @@ function AdminProducts() {
         sort_order: "desc",
         per_page: perPage,
         page,
-      });
+      }, { excludeArchived: !statusFilter });
       setProducts(result.data);
       setCount(result.count);
     } catch (err) {
@@ -62,16 +62,6 @@ function AdminProducts() {
       await productsApi.archiveProduct(recycleConfirm.id);
       await queryClient.invalidateQueries({ queryKey: ["products"] });
       setRecycleConfirm(null);
-      fetchProducts();
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const handleRestore = async (id: string) => {
-    try {
-      await productsApi.restoreProduct(id);
-      await queryClient.invalidateQueries({ queryKey: ["products"] });
       fetchProducts();
     } catch (err) {
       console.error(err);
@@ -153,15 +143,9 @@ function AdminProducts() {
           <Link to="/product/$productId" params={{ productId: p.slug }} target="_blank" className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600" title="Preview">
             <Eye className="h-4 w-4" />
           </Link>
-          <button onClick={() => {
-            if (p.status === "archived") {
-              handleRestore(p.id);
-            } else {
-              setRecycleConfirm({ id: p.id, name: p.name });
-            }
-          }}
-            className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600" title={p.status === "archived" ? "Restore from Recycle Bin" : "Move to Recycle Bin"}>
-            {p.status === "archived" ? <RotateCcw className="h-4 w-4" /> : <Archive className="h-4 w-4" />}
+          <button onClick={() => setRecycleConfirm({ id: p.id, name: p.name })}
+            className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600" title="Move to Recycle Bin">
+            <Archive className="h-4 w-4" />
           </button>
           <Link to="/admin/products/$id" params={{ id: p.id }} className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600" title="Edit">
             <Edit3 className="h-4 w-4" />
@@ -222,7 +206,6 @@ function AdminProducts() {
               <option value="active">Active</option>
               <option value="draft">Draft</option>
               <option value="out_of_stock">Out of Stock</option>
-              <option value="archived">Recycle Bin</option>
             </select>
           </div>
         }
@@ -234,11 +217,6 @@ function AdminProducts() {
             <button onClick={() => handleBulkStatus("archived")} className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium hover:bg-gray-50">
               Move to Recycle Bin
             </button>
-            {statusFilter === "archived" && (
-              <button onClick={() => handleBulkStatus("active")} className="rounded-lg border border-green-200 px-3 py-1.5 text-xs font-medium text-green-700 hover:bg-green-50">
-                Restore
-              </button>
-            )}
           </div>
         }
       />

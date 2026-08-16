@@ -1,19 +1,16 @@
 import { useState, useEffect } from "react";
-import { createFileRoute, Link, redirect } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { AdminLayout, AdminPageHeader, AdminLoading } from "@/components/admin/AdminLayout";
 import { analyticsApi, type DashboardMetrics } from "@/lib/api/analytics";
 import { StatusBadge } from "@/components/admin/AdminTable";
+import { requireAdmin } from "@/lib/auth-guard";
 import {
   Package, ShoppingCart, Users, Mail, TrendingUp, DollarSign, Clock,
   AlertTriangle, ArrowUpRight, Tag, Home,
 } from "lucide-react";
 
 export const Route = createFileRoute("/admin/")({
-  beforeLoad: async () => {
-    const { adminApi } = await import("@/lib/api/admin");
-    const session = await adminApi.getSession();
-    if (!session) throw redirect({ to: "/admin/login" });
-  },
+  beforeLoad: requireAdmin,
   component: AdminDashboard,
 });
 

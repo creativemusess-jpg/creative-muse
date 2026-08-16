@@ -154,12 +154,15 @@ function mapProduct(row: any): ProductWithImages {
 }
 
 export const productsApi = {
-  async list(filters: ProductFilters = {}, opts: { publicOnly?: boolean } = {}): Promise<{ data: ProductWithImages[]; count: number }> {
+  async list(filters: ProductFilters = {}, opts: { publicOnly?: boolean; excludeArchived?: boolean } = {}): Promise<{ data: ProductWithImages[]; count: number }> {
     let query = supabase.from("products").select(productSelect, { count: "exact" });
 
     if (opts.publicOnly) {
       // Restrict to storefront-visible rows: active AND schedule arrived.
       query = query.eq("status", "active").or(visibilityOrFilter());
+    } else if (opts.excludeArchived && !filters.status) {
+      // Admin list default: hide recycled (archived) rows unless explicitly filtered.
+      query = query.not("status", "eq", "archived");
     }
 
     if (filters.search) {

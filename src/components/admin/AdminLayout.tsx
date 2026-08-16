@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { adminApi, type AdminSession } from "@/lib/api/admin";
 import { clearGuardCache } from "@/lib/auth-guard";
+import { supabase } from "@/lib/supabase";
 import { notificationsApi, type AdminNotification } from "@/lib/api/notifications";
 import { ordersApi } from "@/lib/api/orders";
 import {
@@ -275,6 +276,25 @@ export function AdminLayout({ children }: { children: ReactNode }) {
       if (!s) navigate({ to: "/admin/login" });
     });
   }, [navigate]);
+
+  useEffect(() => {
+    const channel = supabase
+      .channel("admin-live")
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "notifications" },
+        () => queryClient.invalidateQueries({ queryKey: ["admin", "notifications"] }),
+      )
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "orders" },
+        () => queryClient.invalidateQueries({ queryKey: ["admin", "orders", "pending-count"] }),
+      )
+      .subscribe();
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [queryClient]);
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
