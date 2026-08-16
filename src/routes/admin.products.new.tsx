@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { AdminLayout, AdminPageHeader } from "@/components/admin/AdminLayout";
+import { PublishControl } from "@/components/admin/PublishControl";
 import { productsApi, type ProductFormData } from "@/lib/api/products";
 import { categoriesApi } from "@/lib/api/categories";
 import { subcategoriesApi } from "@/lib/api/subcategories";
@@ -44,6 +45,7 @@ const initialData: ProductFormData = {
   collection_ids: [],
   main_image_url: "",
   gallery_images: [],
+  publish_at: null,
 };
 
 function NewProductPage() {
@@ -84,6 +86,10 @@ function NewProductPage() {
 
   const handleChange = (field: keyof ProductFormData, value: any) => {
     setForm((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handlePublishChange = (p: { status: string; publish_at: string | null }) => {
+    setForm((prev) => ({ ...prev, status: p.status, publish_at: p.publish_at }));
   };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -397,16 +403,7 @@ function NewProductPage() {
 
         <div className="space-y-6">
           <Section title="Status">
-            <select
-              value={form.status}
-              onChange={(e) => handleChange("status", e.target.value)}
-              className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#7A2533]"
-            >
-              <option value="draft">Draft</option>
-              <option value="active">Active</option>
-              <option value="out_of_stock">Out of Stock</option>
-              <option value="archived">Archived</option>
-            </select>
+            <PublishControl status={form.status} publish_at={form.publish_at} onChange={handlePublishChange} />
           </Section>
 
           <Section title="Inventory">

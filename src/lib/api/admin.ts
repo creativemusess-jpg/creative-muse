@@ -12,6 +12,15 @@ export interface AdminSession {
   permissions: string[];
 }
 
+// Last session that was fully verified against the DB. Used to survive a
+// transient DB/network error during re-validation so a valid admin is never
+// bounced to the login page because of a momentary glitch.
+let lastKnownAdminSession: AdminSession | null = null;
+
+export function clearLastKnownAdminSession() {
+  lastKnownAdminSession = null;
+}
+
 export const adminApi = {
   async login(email: string, password: string): Promise<AdminSession> {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
@@ -28,44 +37,81 @@ export const adminApi = {
 
   async logout(): Promise<void> {
     await supabase.auth.signOut();
+    lastKnownAdminSession = null;
   },
 
   async getSession(): Promise<AdminSession | null> {
-    const { data: sessionData } = await supabase.auth.getSession();
-    const session = sessionData.session;
-    if (!session?.user) return null;
-
-    const { data: profile } = await db()
-      .from("profiles")
-      .select("*")
-      .eq("id", session.user.id)
-      .single();
-
-    let assignmentRows: any[] = [];
-    try {
-      const { data: assignments } = await db()
-        .from("admin_role_assignments")
-        .select("role_id")
-        .eq("user_id", session.user.id);
-      assignmentRows = (assignments as any[]) || [];
-    } catch {
+    // getUser() resolves the persisted session and automatically refreshes the
+    // access token when it is stale. Using getSession() alone can return an
+    // expired-but-still-stored token, which would then fail the profile/role
+    // lookups below and be misinterpreted as "not an admin" -> unexpected logout.
+    const { data: userData, error: userError } = await supabase.auth.getUser();
+    const sessionUser = userData.user;
+    if (userError || !sessionUser) {
       return null;
     }
+    const uid = sessionUser.id;
 
-    if (assignmentRows.length === 0) return null;
+    // Best-effort profile lookup — a missing/errored profile must not sign an
+    // admin out (the original code allowed a null profile already).
+    const profileRes = await db()
+      .from("profiles")
+      .select("*")
+      .eq("id", uid)
+      .maybeSingle();
+    const profile = profileRes.data ?? null;
 
-    const roleIds = assignmentRows.map((a: any) => a.role_id);
-    const { data: roles } = await db().from("admin_roles").select("*").in("id", roleIds);
+    // Verify admin role membership. Returns "no-admin" when the lookup
+    // SUCCEEDS but finds no assignments (the real "not an admin" case), and
+    // throws on any DB/network error so the caller can retry instead of
+    // treating an infrastructure hiccup as a signed-out admin.
+    const verifyRoles = async (): Promise<AdminSession | "no-admin"> => {
+      const { data: assignments, error } = await db()
+        .from("admin_role_assignments")
+        .select("role_id")
+        .eq("user_id", uid);
+      if (error) throw error;
+      if (!assignments || (assignments as any[]).length === 0) return "no-admin";
 
-    const adminRoles = (roles as any[]) || [];
-    const permissions = adminRoles.flatMap((r: any) => r.permissions || []);
+      const roleIds = (assignments as any[]).map((a: any) => a.role_id);
+      const rolesRes = await db().from("admin_roles").select("*").in("id", roleIds);
+      if (rolesRes.error) throw rolesRes.error;
 
-    return {
-      user: { id: session.user.id, email: session.user.email ?? "" },
-      profile: (profile as any) || null,
-      roles: adminRoles,
-      permissions: [...new Set(permissions as string[])],
+      const adminRoles = (rolesRes.data as any[]) || [];
+      const permissions = Array.from(new Set(adminRoles.flatMap((r: any) => r.permissions || [])));
+      return {
+        user: { id: uid, email: sessionUser.email ?? "" },
+        profile: (profile as any) || null,
+        roles: adminRoles,
+        permissions: permissions as string[],
+      };
     };
+
+    for (let attempt = 0; attempt < 2; attempt++) {
+      try {
+        const result = await verifyRoles();
+        if (result === "no-admin") return null;
+        lastKnownAdminSession = result;
+        return result;
+      } catch {
+        if (attempt === 0) {
+          // Likely an expired mid-flight access token or a network blip. Force
+          // a token refresh and retry once before concluding anything.
+          try {
+            await supabase.auth.refreshSession();
+          } catch {
+            /* ignore */
+          }
+          continue;
+        }
+        // Still failing after a token refresh. Never bounce an admin who was
+        // just verified; reuse the last known-good session so the login
+        // redirect fires only for a genuinely invalid/expired auth session or
+        // an intentional sign-out.
+        return lastKnownAdminSession;
+      }
+    }
+    return null;
   },
 
   async getCurrentUser(): Promise<AdminSession | null> {

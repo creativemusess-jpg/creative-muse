@@ -34,7 +34,7 @@ function AdminDashboard() {
     { title: "Revenue Today", value: `₹${(m?.revenueToday ?? 0).toLocaleString("en-IN")}`, subtitle: "Today", icon: <TrendingUp className="h-8 w-8" /> },
     { title: "Revenue This Month", value: `₹${(m?.revenueThisMonth ?? 0).toLocaleString("en-IN")}`, subtitle: `${m?.totalOrders ?? 0} total orders`, icon: <Clock className="h-8 w-8" /> },
     { title: "Avg. Order Value", value: `₹${Math.round(m?.averageOrderValue ?? 0).toLocaleString("en-IN")}`, icon: <ArrowUpRight className="h-8 w-8" /> },
-    { title: "Active Products", value: String(m?.activeProducts ?? 0), subtitle: `${m?.draftProducts ?? 0} draft`, icon: <Package className="h-8 w-8" /> },
+    { title: "Active Products", value: String(m?.activeProducts ?? 0), subtitle: `${m?.draftProducts ?? 0} draft · ${m?.archivedProducts ?? 0} in recycle bin`, icon: <Package className="h-8 w-8" /> },
     { title: "Orders", value: String(m?.totalOrders ?? 0), subtitle: `${m?.pendingOrders ?? 0} pending`, icon: <ShoppingCart className="h-8 w-8" /> },
     { title: "Customers", value: String(m?.totalCustomers ?? 0), icon: <Users className="h-8 w-8" /> },
     { title: "Newsletter", value: String(m?.subscriberCount ?? 0), subtitle: "subscribers", icon: <Mail className="h-8 w-8" /> },

@@ -44,9 +44,11 @@ import { Route as AdminSubcategoriesRouteImport } from './routes/admin.subcatego
 import { Route as AdminSpecificationsRouteImport } from './routes/admin.specifications'
 import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
 import { Route as AdminReelsRouteImport } from './routes/admin.reels'
+import { Route as AdminRecycleBinRouteImport } from './routes/admin.recycle-bin'
 import { Route as AdminProductsRouteImport } from './routes/admin.products'
 import { Route as AdminProductFlagsRouteImport } from './routes/admin.product-flags'
 import { Route as AdminOrdersRouteImport } from './routes/admin.orders'
+import { Route as AdminNotificationsRouteImport } from './routes/admin.notifications'
 import { Route as AdminNewsletterRouteImport } from './routes/admin.newsletter'
 import { Route as AdminMediaRouteImport } from './routes/admin.media'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
@@ -245,6 +247,11 @@ const AdminReelsRoute = AdminReelsRouteImport.update({
   path: '/admin/reels',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRecycleBinRoute = AdminRecycleBinRouteImport.update({
+  id: '/admin/recycle-bin',
+  path: '/admin/recycle-bin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminProductsRoute = AdminProductsRouteImport.update({
   id: '/admin/products',
   path: '/admin/products',
@@ -258,6 +265,11 @@ const AdminProductFlagsRoute = AdminProductFlagsRouteImport.update({
 const AdminOrdersRoute = AdminOrdersRouteImport.update({
   id: '/admin/orders',
   path: '/admin/orders',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminNotificationsRoute = AdminNotificationsRouteImport.update({
+  id: '/admin/notifications',
+  path: '/admin/notifications',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminNewsletterRoute = AdminNewsletterRouteImport.update({
@@ -413,9 +425,11 @@ export interface FileRoutesByFullPath {
   '/admin/login': typeof AdminLoginRoute
   '/admin/media': typeof AdminMediaRoute
   '/admin/newsletter': typeof AdminNewsletterRoute
+  '/admin/notifications': typeof AdminNotificationsRoute
   '/admin/orders': typeof AdminOrdersRouteWithChildren
   '/admin/product-flags': typeof AdminProductFlagsRoute
   '/admin/products': typeof AdminProductsRouteWithChildren
+  '/admin/recycle-bin': typeof AdminRecycleBinRoute
   '/admin/reels': typeof AdminReelsRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/specifications': typeof AdminSpecificationsRoute
@@ -475,9 +489,11 @@ export interface FileRoutesByTo {
   '/admin/login': typeof AdminLoginRoute
   '/admin/media': typeof AdminMediaRoute
   '/admin/newsletter': typeof AdminNewsletterRoute
+  '/admin/notifications': typeof AdminNotificationsRoute
   '/admin/orders': typeof AdminOrdersRouteWithChildren
   '/admin/product-flags': typeof AdminProductFlagsRoute
   '/admin/products': typeof AdminProductsRouteWithChildren
+  '/admin/recycle-bin': typeof AdminRecycleBinRoute
   '/admin/reels': typeof AdminReelsRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/specifications': typeof AdminSpecificationsRoute
@@ -538,9 +554,11 @@ export interface FileRoutesById {
   '/admin/login': typeof AdminLoginRoute
   '/admin/media': typeof AdminMediaRoute
   '/admin/newsletter': typeof AdminNewsletterRoute
+  '/admin/notifications': typeof AdminNotificationsRoute
   '/admin/orders': typeof AdminOrdersRouteWithChildren
   '/admin/product-flags': typeof AdminProductFlagsRoute
   '/admin/products': typeof AdminProductsRouteWithChildren
+  '/admin/recycle-bin': typeof AdminRecycleBinRoute
   '/admin/reels': typeof AdminReelsRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/specifications': typeof AdminSpecificationsRoute
@@ -602,9 +620,11 @@ export interface FileRouteTypes {
     | '/admin/login'
     | '/admin/media'
     | '/admin/newsletter'
+    | '/admin/notifications'
     | '/admin/orders'
     | '/admin/product-flags'
     | '/admin/products'
+    | '/admin/recycle-bin'
     | '/admin/reels'
     | '/admin/settings'
     | '/admin/specifications'
@@ -664,9 +684,11 @@ export interface FileRouteTypes {
     | '/admin/login'
     | '/admin/media'
     | '/admin/newsletter'
+    | '/admin/notifications'
     | '/admin/orders'
     | '/admin/product-flags'
     | '/admin/products'
+    | '/admin/recycle-bin'
     | '/admin/reels'
     | '/admin/settings'
     | '/admin/specifications'
@@ -726,9 +748,11 @@ export interface FileRouteTypes {
     | '/admin/login'
     | '/admin/media'
     | '/admin/newsletter'
+    | '/admin/notifications'
     | '/admin/orders'
     | '/admin/product-flags'
     | '/admin/products'
+    | '/admin/recycle-bin'
     | '/admin/reels'
     | '/admin/settings'
     | '/admin/specifications'
@@ -788,9 +812,11 @@ export interface RootRouteChildren {
   AdminLoginRoute: typeof AdminLoginRoute
   AdminMediaRoute: typeof AdminMediaRoute
   AdminNewsletterRoute: typeof AdminNewsletterRoute
+  AdminNotificationsRoute: typeof AdminNotificationsRoute
   AdminOrdersRoute: typeof AdminOrdersRouteWithChildren
   AdminProductFlagsRoute: typeof AdminProductFlagsRoute
   AdminProductsRoute: typeof AdminProductsRouteWithChildren
+  AdminRecycleBinRoute: typeof AdminRecycleBinRoute
   AdminReelsRoute: typeof AdminReelsRoute
   AdminSettingsRoute: typeof AdminSettingsRoute
   AdminSpecificationsRoute: typeof AdminSpecificationsRoute
@@ -1049,6 +1075,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminReelsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/recycle-bin': {
+      id: '/admin/recycle-bin'
+      path: '/admin/recycle-bin'
+      fullPath: '/admin/recycle-bin'
+      preLoaderRoute: typeof AdminRecycleBinRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/products': {
       id: '/admin/products'
       path: '/admin/products'
@@ -1068,6 +1101,13 @@ declare module '@tanstack/react-router' {
       path: '/admin/orders'
       fullPath: '/admin/orders'
       preLoaderRoute: typeof AdminOrdersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/notifications': {
+      id: '/admin/notifications'
+      path: '/admin/notifications'
+      fullPath: '/admin/notifications'
+      preLoaderRoute: typeof AdminNotificationsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/newsletter': {
@@ -1362,9 +1402,11 @@ const rootRouteChildren: RootRouteChildren = {
   AdminLoginRoute: AdminLoginRoute,
   AdminMediaRoute: AdminMediaRoute,
   AdminNewsletterRoute: AdminNewsletterRoute,
+  AdminNotificationsRoute: AdminNotificationsRoute,
   AdminOrdersRoute: AdminOrdersRouteWithChildren,
   AdminProductFlagsRoute: AdminProductFlagsRoute,
   AdminProductsRoute: AdminProductsRouteWithChildren,
+  AdminRecycleBinRoute: AdminRecycleBinRoute,
   AdminReelsRoute: AdminReelsRoute,
   AdminSettingsRoute: AdminSettingsRoute,
   AdminSpecificationsRoute: AdminSpecificationsRoute,

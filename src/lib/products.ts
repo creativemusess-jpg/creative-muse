@@ -387,6 +387,8 @@ export function useStorefrontProduct(slug: string) {
     queryFn: async () => {
       const product = await productsApi.getWithImagesBySlug(slug);
       if (!product || product.status !== "active") return null;
+      // Scheduled product not yet live: treat as unavailable on the storefront.
+      if (product.publish_at && new Date(product.publish_at).getTime() > Date.now()) return null;
       return productFromDb(product);
     },
     enabled: !!slug,

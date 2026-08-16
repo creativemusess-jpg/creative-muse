@@ -1,7 +1,10 @@
 import { useState, useEffect, useRef, type ReactNode } from "react";
 import { Link, useLocation, useNavigate } from "@tanstack/react-router";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { adminApi, type AdminSession } from "@/lib/api/admin";
 import { clearGuardCache } from "@/lib/auth-guard";
+import { notificationsApi, type AdminNotification } from "@/lib/api/notifications";
+import { ordersApi } from "@/lib/api/orders";
 import {
   LayoutDashboard,
   Package,
@@ -28,6 +31,9 @@ import {
   Flag,
   ListChecks,
   Clapperboard,
+  Bell,
+  Trash2,
+  CheckCheck,
 } from "lucide-react";
 import { GlobalSearch } from "./GlobalSearch";
 
@@ -39,7 +45,19 @@ interface NavItem {
   href: string;
   icon: ReactNode;
   permission?: string;
+  badgeCount?: number;
 }
+
+const timeAgo = (iso: string): string => {
+  const seconds = Math.max(0, Math.floor((Date.now() - new Date(iso).getTime()) / 1000));
+  if (seconds < 60) return "just now";
+  const mins = Math.floor(seconds / 60);
+  if (mins < 60) return `${mins}m ago`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.floor(hours / 24);
+  return days === 1 ? "yesterday" : `${days}d ago`;
+};
 
 const navItems: NavItem[] = [
   { label: "Dashboard", href: "/admin", icon: <LayoutDashboard className="h-4 w-4" /> },
@@ -54,6 +72,17 @@ const navItems: NavItem[] = [
     href: "/admin/products",
     icon: <Package className="h-4 w-4" />,
     permission: "products",
+  },
+  {
+    label: "Recycle Bin",
+    href: "/admin/recycle-bin",
+    icon: <Trash2 className="h-4 w-4" />,
+    permission: "products",
+  },
+  {
+    label: "Notifications",
+    href: "/admin/notifications",
+    icon: <Bell className="h-4 w-4" />,
   },
   {
     label: "Categories",
@@ -176,8 +205,56 @@ export function AdminLayout({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [notifOpen, setNotifOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
+  const notifQuery = useQuery({
+    queryKey: ["admin", "notifications"],
+    queryFn: () => notificationsApi.list({ limit: 15 }),
+    refetchInterval: 30_000,
+    refetchOnWindowFocus: true,
+  });
+  const notifications: AdminNotification[] = notifQuery.data ?? [];
+  const unreadCount = notifications.filter((n) => !n.is_read).length;
+
+  const pendingOrdersQuery = useQuery({
+    queryKey: ["admin", "orders", "pending-count"],
+    queryFn: async () => {
+      const result = await ordersApi.list({ status: "pending", per_page: 1, page: 1 });
+      return result.count;
+    },
+    refetchInterval: 60_000,
+    refetchOnWindowFocus: true,
+  });
+  const pendingOrdersCount = pendingOrdersQuery.data ?? 0;
+
+  const handleNotificationClick = async (n: AdminNotification) => {
+    setNotifOpen(false);
+    if (!n.is_read) {
+      try {
+        await notificationsApi.markRead(n.id);
+        queryClient.invalidateQueries({ queryKey: ["admin", "notifications"] });
+      } catch {
+        /* ignore */
+      }
+    }
+    if (n.entity_type === "order" && n.entity_id) {
+      navigate({ to: "/admin/orders/$id", params: { id: n.entity_id } });
+    } else {
+      navigate({ to: "/admin/notifications" });
+    }
+  };
+
+  const handleMarkAllRead = async () => {
+    try {
+      await notificationsApi.markAllRead();
+      queryClient.invalidateQueries({ queryKey: ["admin", "notifications"] });
+    } catch {
+      /* ignore */
+    }
+  };
 
   useEffect(() => {
     if (!cachedSessionPromise) {
@@ -236,7 +313,13 @@ export function AdminLayout({ children }: { children: ReactNode }) {
     return location.pathname.startsWith(href);
   };
 
-  const visibleItems = navItems.filter((item) => hasAccess(item, session));
+  const badgeFor: Record<string, number> = {
+    "/admin/orders": pendingOrdersCount,
+    "/admin/notifications": unreadCount,
+  };
+  const visibleItems = navItems
+    .filter((item) => hasAccess(item, session))
+    .map((item) => ({ ...item, badgeCount: badgeFor[item.href] }));
 
   return (
     <div className="flex h-screen overflow-hidden bg-gray-50">
@@ -280,7 +363,16 @@ export function AdminLayout({ children }: { children: ReactNode }) {
               }`}
             >
               {item.icon}
-              {item.label}
+              <span className="flex-1">{item.label}</span>
+              {!!item.badgeCount && (
+                <span
+                  className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${
+                    isActive(item.href) ? "bg-white text-[#1a1a2e]" : "bg-[#7A2533] text-white"
+                  }`}
+                >
+                  {item.badgeCount}
+                </span>
+              )}
             </Link>
           ))}
         </nav>
@@ -330,6 +422,101 @@ export function AdminLayout({ children }: { children: ReactNode }) {
             </button>
           </div>
           <div className="flex items-center gap-3">
+            <div className="relative">
+              <button
+                onClick={() => setNotifOpen((o) => !o)}
+                className="relative rounded-lg p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+                title="Notifications"
+              >
+                <Bell className="h-5 w-5" />
+                {unreadCount > 0 && (
+                  <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white">
+                    {unreadCount}
+                  </span>
+                )}
+              </button>
+
+              {notifOpen && (
+                <>
+                  <div className="fixed inset-0 z-40" onClick={() => setNotifOpen(false)} />
+                  <div className="absolute right-0 z-50 mt-2 w-[26rem] max-w-[calc(100vw-2rem)] overflow-hidden rounded-xl border border-gray-200 bg-white shadow-xl">
+                    <div className="flex items-center justify-between border-b border-gray-100 px-4 py-3">
+                      <div className="flex items-center gap-2">
+                        <Bell className="h-4 w-4 text-[#7A2533]" />
+                        <span className="text-sm font-bold text-[#1a1a2e]">Notifications</span>
+                        {unreadCount > 0 && (
+                          <span className="rounded-full bg-[#7A2533] px-2 py-0.5 text-[10px] font-bold text-white">
+                            {unreadCount} new
+                          </span>
+                        )}
+                      </div>
+                      {unreadCount > 0 && (
+                        <button
+                          onClick={handleMarkAllRead}
+                          className="flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-medium text-[#7A2533] hover:bg-[#7A2533]/5"
+                        >
+                          <CheckCheck className="h-3.5 w-3.5" /> Mark all read
+                        </button>
+                      )}
+                    </div>
+
+                    <div className="max-h-[22rem] overflow-y-auto">
+                      {notifications.length === 0 ? (
+                        <div className="px-4 py-10 text-center">
+                          <p className="text-sm font-medium text-gray-500">No notifications yet</p>
+                          <p className="mt-1 text-xs text-gray-400">New orders will appear here.</p>
+                        </div>
+                      ) : (
+                        notifications.map((n) => (
+                          <button
+                            key={n.id}
+                            onClick={() => handleNotificationClick(n)}
+                            className={`flex w-full items-start gap-3 border-b border-gray-50 px-4 py-3 text-left transition-colors hover:bg-gray-50 ${
+                              !n.is_read ? "bg-[#7A2533]/5" : ""
+                            }`}
+                          >
+                            <span
+                              className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${
+                                n.is_read ? "bg-gray-300" : "bg-[#7A2533]"
+                              }`}
+                            />
+                            <span className="min-w-0 flex-1">
+                              <span
+                                className={`block text-sm ${
+                                  n.is_read ? "font-medium text-gray-600" : "font-semibold text-[#1a1a2e]"
+                                }`}
+                              >
+                                {n.title}
+                              </span>
+                              {n.message && (
+                                <span className="mt-0.5 block truncate text-xs text-gray-500">{n.message}</span>
+                              )}
+                              <span className="mt-0.5 block text-[10px] uppercase tracking-wider text-gray-400">
+                                {timeAgo(n.created_at)}
+                              </span>
+                            </span>
+                            {!n.is_read && (
+                              <span className="shrink-0 rounded-full bg-[#7A2533] px-2 py-0.5 text-[9px] font-bold text-white">
+                                NEW
+                              </span>
+                            )}
+                          </button>
+                        ))
+                      )}
+                    </div>
+
+                    <Link
+                      to="/admin/notifications"
+                      onClick={() => setNotifOpen(false)}
+                      className="block border-t border-gray-100 px-4 py-2.5 text-center text-xs font-semibold text-[#7A2533] hover:bg-gray-50"
+                    >
+                      View all notifications →
+                    </Link>
+                  </div>
+                </>
+              )}
+            </div>
+
             <Link
               to="/"
               target="_blank"

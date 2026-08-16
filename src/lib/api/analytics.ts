@@ -13,6 +13,7 @@ export interface DashboardMetrics {
   totalProducts: number;
   activeProducts: number;
   draftProducts: number;
+  archivedProducts: number;
   outOfStockProducts: number;
   lowStockProducts: number;
   totalCustomers: number;
@@ -36,7 +37,7 @@ export const analyticsApi = {
     const [
       salesRes, ordersRes, pendingRes, paidRes, unfulfilledRes,
       fulfilledRes, deliveredRes, cancelledRes, refundedRes,
-      productsRes, activeRes, draftRes, oosRes,
+      productsRes, activeRes, draftRes, archivedRes, oosRes,
       customersRes, subsRes, topProductsRes, todayRes, weekRes, monthRes,
     ] = await Promise.all([
       supabase.from("orders").select("total_amount").not("order_status", "eq", "cancelled"),
@@ -51,6 +52,7 @@ export const analyticsApi = {
       supabase.from("products").select("id", { count: "exact", head: true }),
       supabase.from("products").select("id", { count: "exact", head: true }).eq("status", "active"),
       supabase.from("products").select("id", { count: "exact", head: true }).eq("status", "draft"),
+      supabase.from("products").select("id", { count: "exact", head: true }).eq("status", "archived"),
       supabase.from("products").select("id", { count: "exact", head: true }).eq("status", "out_of_stock"),
       supabase.from("customers").select("id", { count: "exact", head: true }),
       supabase.from("newsletter_subscribers").select("id", { count: "exact", head: true }).eq("status", "active"),
@@ -107,7 +109,8 @@ export const analyticsApi = {
       fulfilledOrders: fulfilledRes.count ?? 0, deliveredOrders: deliveredRes.count ?? 0,
       cancelledOrders: cancelledRes.count ?? 0, refundedOrders: refundedRes.count ?? 0,
       totalProducts: productsRes.count ?? 0, activeProducts: activeRes.count ?? 0,
-      draftProducts: draftRes.count ?? 0, outOfStockProducts: oosRes.count ?? 0,
+      draftProducts: draftRes.count ?? 0, archivedProducts: archivedRes.count ?? 0,
+      outOfStockProducts: oosRes.count ?? 0,
       lowStockProducts: 0, totalCustomers: customersRes.count ?? 0,
       subscriberCount: subsRes.count ?? 0, averageOrderValue,
       revenueToday, revenueThisWeek, revenueThisMonth,

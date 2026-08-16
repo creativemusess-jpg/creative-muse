@@ -113,6 +113,11 @@ export interface Database {
         Insert: OrderNotificationInsert;
         Update: OrderNotificationUpdate;
       };
+      notifications: {
+        Row: NotificationRow;
+        Insert: NotificationInsert;
+        Update: NotificationUpdate;
+      };
       coupons: {
         Row: CouponRow;
         Insert: CouponInsert;
@@ -434,6 +439,9 @@ export interface ProductRow {
   subcategory_id: string | null;
   tags: string[];
   published_at: string | null;
+  publish_at: string | null;
+  archived_at: string | null;
+  archived_by: string | null;
   created_at: string;
   updated_at: string;
   created_by: string | null;
@@ -472,6 +480,9 @@ export interface ProductInsert {
   subcategory_id?: string | null;
   tags?: string[];
   published_at?: string | null;
+  publish_at?: string | null;
+  archived_at?: string | null;
+  archived_by?: string | null;
   created_at?: string;
   updated_at?: string;
   created_by?: string | null;
@@ -509,6 +520,9 @@ export interface ProductUpdate {
   subcategory_id?: string | null;
   tags?: string[];
   published_at?: string | null;
+  publish_at?: string | null;
+  archived_at?: string | null;
+  archived_by?: string | null;
   updated_at?: string;
   created_by?: string | null;
   updated_by?: string | null;
@@ -1260,6 +1274,40 @@ export interface OrderNotificationUpdate {
   source?: string;
   metadata?: Json;
   updated_at?: string;
+}
+
+export interface NotificationRow {
+  id: string;
+  type: string;
+  title: string;
+  message: string | null;
+  entity_type: string | null;
+  entity_id: string | null;
+  is_read: boolean;
+  read_at: string | null;
+  created_at: string;
+}
+
+export interface NotificationInsert {
+  id?: string;
+  type: string;
+  title: string;
+  message?: string | null;
+  entity_type?: string | null;
+  entity_id?: string | null;
+  is_read?: boolean;
+  read_at?: string | null;
+  created_at?: string;
+}
+
+export interface NotificationUpdate {
+  type?: string;
+  title?: string;
+  message?: string | null;
+  entity_type?: string | null;
+  entity_id?: string | null;
+  is_read?: boolean;
+  read_at?: string | null;
 }
 
 export interface CouponInsert {

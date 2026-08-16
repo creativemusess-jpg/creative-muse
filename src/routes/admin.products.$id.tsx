@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { createFileRoute, useParams, useNavigate, Link } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { AdminLayout, AdminPageHeader, AdminLoading } from "@/components/admin/AdminLayout";
+import { PublishControl } from "@/components/admin/PublishControl";
 import { productsApi, type ProductWithImages, type ProductFormData } from "@/lib/api/products";
 import { categoriesApi } from "@/lib/api/categories";
 import { subcategoriesApi } from "@/lib/api/subcategories";
@@ -71,6 +72,7 @@ function EditProductPage() {
           subcategory_id: p.subcategory_id || null,
           main_image_url: p.main_image?.url || "",
           gallery_images: (p.images || []).filter((img) => !img.is_main).map((img) => img.url),
+          publish_at: p.publish_at || null,
         });
       }
       setCategories(cats);
@@ -108,6 +110,10 @@ function EditProductPage() {
 
   const handleChange = (field: keyof ProductFormData, value: any) => {
     setForm((prev) => prev ? { ...prev, [field]: value } : prev);
+  };
+
+  const handlePublishChange = (p: { status: string; publish_at: string | null }) => {
+    setForm((prev) => prev ? { ...prev, status: p.status, publish_at: p.publish_at } : prev);
   };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -385,12 +391,7 @@ function EditProductPage() {
 
         <div className="space-y-6">
           <Section title="Status">
-            <select value={form.status} onChange={(e) => handleChange("status", e.target.value)} className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#7A2533]">
-              <option value="draft">Draft</option>
-              <option value="active">Active</option>
-              <option value="out_of_stock">Out of Stock</option>
-              <option value="archived">Archived</option>
-            </select>
+            <PublishControl status={form.status} publish_at={form.publish_at} onChange={handlePublishChange} />
           </Section>
 
           <Section title="Inventory">

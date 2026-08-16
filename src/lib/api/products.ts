@@ -1,4 +1,5 @@
 import { supabase } from "../supabase";
+import { adminApi } from "./admin";
 
 export interface ProductWithImages {
   id: string;
@@ -32,6 +33,9 @@ export interface ProductWithImages {
   subcategory_id: string | null;
   tags: string[];
   published_at: string | null;
+  publish_at: string | null;
+  archived_at: string | null;
+  archived_by: string | null;
   created_at: string;
   updated_at: string;
   created_by: string | null;
@@ -96,6 +100,7 @@ export interface ProductFormData {
   main_image_url?: string;
   gallery_images?: string[];
   images_360?: string[];
+  publish_at?: string | null;
 }
 
 const productSelect = `
@@ -107,9 +112,26 @@ const productSelect = `
   rating_average, review_count,
   seo_title, seo_description, focus_keyword, canonical_url, social_image, image_alt_text,
   subcategory_id, tags,
-  published_at, created_at, updated_at,
+  published_at, publish_at, archived_at, archived_by, created_at, updated_at,
   created_by, updated_by
 `;
+
+// A product is publicly visible only when it is active AND its schedule has
+// arrived (publish_at is NULL = no scheduling restriction).
+function visibilityOrFilter(now = new Date().toISOString()): string {
+  return `publish_at.is.null,publish_at.lte.${now}`;
+}
+
+async function logAction(action: string, entityId?: string, oldValues?: any, newValues?: any) {
+  try {
+    await adminApi.logAction(action, "product", entityId, oldValues, newValues);
+  } catch {}
+}
+
+async function getAdminUser() {
+  const { data } = await supabase.auth.getUser();
+  return data.user;
+}
 
 function mapProduct(row: any): ProductWithImages {
   return {
@@ -132,8 +154,13 @@ function mapProduct(row: any): ProductWithImages {
 }
 
 export const productsApi = {
-  async list(filters: ProductFilters = {}): Promise<{ data: ProductWithImages[]; count: number }> {
+  async list(filters: ProductFilters = {}, opts: { publicOnly?: boolean } = {}): Promise<{ data: ProductWithImages[]; count: number }> {
     let query = supabase.from("products").select(productSelect, { count: "exact" });
+
+    if (opts.publicOnly) {
+      // Restrict to storefront-visible rows: active AND schedule arrived.
+      query = query.eq("status", "active").or(visibilityOrFilter());
+    }
 
     if (filters.search) {
       query = query.or(
@@ -250,11 +277,11 @@ export const productsApi = {
   },
 
   async getPublished(filters: Omit<ProductFilters, "status"> = {}): Promise<ProductWithImages[]> {
-    return productsApi.list({ ...filters, status: "active" }).then((r) => r.data);
+    return productsApi.list({ ...filters, status: "active" }, { publicOnly: true }).then((r) => r.data);
   },
 
   async getFacets(categorySlug?: string): Promise<{ metals: string[]; minPrice: number; maxPrice: number }> {
-    let query = supabase.from("products").select("material, current_price").eq("status", "active");
+    let query = supabase.from("products").select("material, current_price").eq("status", "active").or(visibilityOrFilter());
 
     if (categorySlug) {
       const { data: cat } = await supabase.from("categories").select("id").eq("slug", categorySlug).maybeSingle();
@@ -370,6 +397,8 @@ export const productsApi = {
       .from("products")
       .select(`${productSelect}, product_images(*)`)
       .eq("slug", slug)
+      .eq("status", "active")
+      .or(visibilityOrFilter())
       .maybeSingle();
     if (error || !data) return null;
     const raw = data as any;
@@ -413,6 +442,15 @@ export const productsApi = {
   },
 
   async create(data: ProductFormData): Promise<ProductWithImages> {
+    const now = new Date();
+    const status = data.status || "draft";
+    const publishAt = data.publish_at && data.publish_at.trim() !== "" ? data.publish_at : null;
+    const isScheduled = publishAt !== null && new Date(publishAt).getTime() > now.getTime();
+    // A future schedule must be "active" under the hood so read-time visibility
+    // flips it public when the time arrives (status active + publish_at <= now).
+    const effectiveStatus = isScheduled ? "active" : status;
+    const adminUser = effectiveStatus === "archived" ? await getAdminUser() : null;
+
     const payload: any = {
       name: data.name,
       slug: data.slug,
@@ -422,7 +460,7 @@ export const productsApi = {
       original_price: data.original_price || null,
       cost_price: data.cost_price || null,
       badge: data.badge || null,
-      status: data.status || "draft",
+      status: effectiveStatus,
       stock_quantity: data.stock_quantity ?? null,
       low_stock_threshold: data.low_stock_threshold ?? 5,
       material: data.material || null,
@@ -440,7 +478,10 @@ export const productsApi = {
       image_alt_text: data.image_alt_text || null,
       subcategory_id: data.subcategory_id || null,
       tags: data.tags || [],
-      published_at: data.status === "active" ? new Date().toISOString() : null,
+      publish_at: isScheduled ? publishAt : null,
+      published_at: !isScheduled && effectiveStatus === "active" ? now.toISOString() : null,
+      archived_at: effectiveStatus === "archived" ? now.toISOString() : null,
+      archived_by: effectiveStatus === "archived" ? adminUser?.id ?? null : null,
     };
     const { data: result, error } = await supabase.from("products").insert(payload).select().single();
     if (error) throw error;
@@ -475,11 +516,20 @@ export const productsApi = {
       if (collErr) throw new Error(`Failed to assign collection: ${collErr.message}`);
     }
 
+    await logAction(isScheduled ? "product_scheduled" : "product_created", product.id, null, {
+      status: effectiveStatus,
+      publish_at: isScheduled ? publishAt : null,
+    });
+
     return productsApi.getWithImages(product.id) as Promise<ProductWithImages>;
   },
 
   async update(id: string, data: Partial<ProductFormData>): Promise<ProductWithImages> {
-    const payload: any = { ...data, updated_at: new Date().toISOString() };
+    const now = new Date();
+    const { data: before } = await supabase.from("products").select("status, publish_at, archived_at").eq("id", id).maybeSingle();
+    const prevStatus = (before as any)?.status;
+
+    const payload: any = { ...data, updated_at: now.toISOString() };
     delete payload.category_ids;
     delete payload.collection_ids;
     delete payload.main_image_url;
@@ -491,8 +541,37 @@ export const productsApi = {
     if (payload.original_price === 0) payload.original_price = null;
     if (payload.cost_price === 0) payload.cost_price = null;
 
-    if (data.status === "active" && data.status !== undefined) {
-      payload.published_at = new Date().toISOString();
+    // --- Publishing semantics -------------------------------------------------
+    const requestedStatus = payload.status ?? prevStatus;
+    const publishAtRaw = payload.publish_at;
+    const publishAt =
+      publishAtRaw === undefined || publishAtRaw === null || String(publishAtRaw).trim() === ""
+        ? null
+        : String(publishAtRaw).trim();
+    const isScheduled =
+      publishAt !== null && new Date(publishAt).getTime() > now.getTime();
+
+    // A future schedule is really "active wait until publish_at" so read-time
+    // visibility turns it public at the right moment. A past/invalid schedule is
+    // treated as publish-now (cleared) to avoid a permanently hidden "scheduled".
+    if (requestedStatus === "active" || isScheduled) {
+      payload.status = "active";
+      payload.publish_at = isScheduled ? publishAt : null;
+      payload.published_at = isScheduled ? null : now.toISOString();
+    } else if (requestedStatus === "archived") {
+      payload.status = "archived";
+      payload.publish_at = null;
+      payload.archived_at = (before as any)?.archived_at || now.toISOString();
+      payload.archived_by = (await getAdminUser())?.id ?? null;
+    } else {
+      payload.status = requestedStatus || "draft";
+      payload.publish_at = null;
+    }
+
+    // Clearing the archive when leaving the archived state.
+    if (prevStatus === "archived" && payload.status !== "archived") {
+      payload.archived_at = null;
+      payload.archived_by = null;
     }
 
     const { data: result, error } = await supabase
@@ -543,23 +622,94 @@ export const productsApi = {
       }
     }
 
+    await logAction(
+      payload.status === "active" && isScheduled ? "product_scheduled" : "product_updated",
+      id,
+      before ? { status: before.status, publish_at: before.publish_at } : undefined,
+      { status: payload.status, publish_at: payload.publish_at, is_archived: payload.status === "archived" },
+    );
+
     return productsApi.getWithImages(id) as Promise<ProductWithImages>;
   },
 
   async updateStatus(id: string, status: string): Promise<void> {
+    const now = new Date();
+    const { data: before } = await supabase.from("products").select("status, publish_at, archived_at").eq("id", id).maybeSingle();
+    const prevStatus = (before as any)?.status;
+
+    const payload: any = { status, updated_at: now.toISOString() };
+    let action = `product_status_${status}`;
+
+    if (status === "archived") {
+      payload.archived_at = now.toISOString();
+      payload.archived_by = (await getAdminUser())?.id ?? null;
+      action = "product_archived";
+    } else if (prevStatus === "archived" && status !== "archived") {
+      // Restoring: clear the archive stamp. If a schedule is still pending,
+      // keep it (the product re-hides until publish_at); otherwise it is live now.
+      payload.archived_at = null;
+      payload.archived_by = null;
+      if (status === "active") {
+        const publishAt = (before as any)?.publish_at;
+        const pending = publishAt && new Date(publishAt).getTime() > now.getTime();
+        if (!pending) payload.published_at = now.toISOString();
+        action = "product_restored";
+      } else {
+        action = "product_restored";
+      }
+    } else if (status === "active") {
+      const publishAt = (before as any)?.publish_at;
+      const pending = publishAt && new Date(publishAt).getTime() > now.getTime();
+      if (pending) {
+        action = "product_scheduled";
+      } else {
+        payload.publish_at = null;
+        payload.published_at = now.toISOString();
+        action = "product_published";
+      }
+    }
+
     const { error } = await supabase
       .from("products")
-      .update({ status, updated_at: new Date().toISOString() } as any)
+      .update(payload)
       .eq("id", id);
     if (error) throw error;
+    await logAction(action, id, before ? { status: before.status, publish_at: before.publish_at } : undefined, { status, publish_at: payload.publish_at });
   },
 
   async bulkUpdateStatus(ids: string[], status: string): Promise<void> {
-    const { error } = await supabase
-      .from("products")
-      .update({ status, updated_at: new Date().toISOString() } as any)
-      .in("id", ids);
+    for (const id of ids) {
+      await productsApi.updateStatus(id, status);
+    }
+  },
+
+  async archiveProduct(id: string): Promise<void> {
+    await productsApi.updateStatus(id, "archived");
+  },
+
+  async restoreProduct(id: string): Promise<void> {
+    await productsApi.updateStatus(id, "active");
+  },
+
+  async previousOrderCounts(ids: string[]): Promise<Record<string, number>> {
+    if (ids.length === 0) return {};
+    const { data, error } = await supabase
+      .from("order_items")
+      .select("product_id, order_id")
+      .in("product_id", ids);
     if (error) throw error;
+    // Count DISTINCT historical orders per product so recycled products keep
+    // their real order history (multiple line items in one order count once).
+    const ordersByProduct = new Map<string, Set<string>>();
+    for (const row of (data as any[]) || []) {
+      if (!row.order_id) continue;
+      const set = ordersByProduct.get(row.product_id) || new Set<string>();
+      set.add(row.order_id);
+      ordersByProduct.set(row.product_id, set);
+    }
+    const counts: Record<string, number> = {};
+    for (const [pid, set] of ordersByProduct) counts[pid] = set.size;
+    return counts;
   },
 
   async delete(id: string): Promise<void> {
@@ -608,6 +758,7 @@ export const productsApi = {
       .from("products")
       .select(productSelect)
       .eq("status", "active")
+      .or(visibilityOrFilter())
       .or(
         `name.ilike.%${query}%,short_description.ilike.%${query}%,full_description.ilike.%${query}%`,
       )

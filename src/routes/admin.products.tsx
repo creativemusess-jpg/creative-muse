@@ -4,7 +4,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { AdminLayout, AdminPageHeader, AdminLoading } from "@/components/admin/AdminLayout";
 import { DataTable, StatusBadge, ConfirmDialog } from "@/components/admin/AdminTable";
 import { productsApi, type ProductWithImages } from "@/lib/api/products";
-import { Plus, Eye, Edit3, Trash2, ImageOff, CheckCircle, XCircle } from "lucide-react";
+import { Plus, Eye, Edit3, ImageOff, Archive, RotateCcw } from "lucide-react";
 
 import { requireAdmin } from "@/lib/auth-guard";
 
@@ -25,7 +25,7 @@ function AdminProducts() {
   const [statusFilter, setStatusFilter] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
   const [selected, setSelected] = useState<Set<string>>(new Set());
-  const [deleteConfirm, setDeleteConfirm] = useState<{ id: string; name: string } | null>(null);
+  const [recycleConfirm, setRecycleConfirm] = useState<{ id: string; name: string } | null>(null);
   const [page, setPage] = useState(1);
   const perPage = 20;
 
@@ -56,38 +56,40 @@ function AdminProducts() {
 
   const totalPages = Math.ceil(count / perPage);
 
-  const handleDelete = async () => {
-    if (!deleteConfirm) return;
+  const handleMoveToRecycle = async () => {
+    if (!recycleConfirm) return;
     try {
-      await productsApi.delete(deleteConfirm.id);
+      await productsApi.archiveProduct(recycleConfirm.id);
       await queryClient.invalidateQueries({ queryKey: ["products"] });
-      setDeleteConfirm(null);
+      setRecycleConfirm(null);
       fetchProducts();
     } catch (err) {
       console.error(err);
     }
   };
 
-  const handleBulkDelete = async () => {
-    const ids = Array.from(selected);
-    if (!window.confirm(`Delete ${ids.size ?? ids.length} products?`)) return;
+  const handleRestore = async (id: string) => {
     try {
-      await Promise.all(ids.map((id) => productsApi.delete(id)));
+      await productsApi.restoreProduct(id);
+      await queryClient.invalidateQueries({ queryKey: ["products"] });
+      fetchProducts();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleBulkStatus = async (status: string) => {
+    const ids = Array.from(selected);
+    try {
+      await productsApi.bulkUpdateStatus(ids, status);
       await queryClient.invalidateQueries({ queryKey: ["products"] });
       setSelected(new Set());
       fetchProducts();
     } catch (err) { console.error(err); }
   };
 
-  const handleBulkStatus = async (status: string) => {
-    const ids = Array.from(selected);
-    try {
-      await Promise.all(ids.map((id) => productsApi.updateStatus(id, status)));
-      await queryClient.invalidateQueries({ queryKey: ["products"] });
-      setSelected(new Set());
-      fetchProducts();
-    } catch (err) { console.error(err); }
-  };
+  const isScheduled = (p: ProductWithImages) =>
+    !!p.publish_at && new Date(p.publish_at).getTime() > Date.now();
 
   const formatPrice = (n: number) => "₹" + n.toLocaleString("en-IN");
 
@@ -126,7 +128,23 @@ function AdminProducts() {
     { key: "stock", label: "Stock", render: (p: ProductWithImages) => (
       <span className={p.stock_quantity !== null && p.stock_quantity <= 5 ? "font-medium text-red-600" : ""}>{p.stock_quantity ?? "—"}</span>
     )},
-    { key: "status", label: "Status", render: (p: ProductWithImages) => <StatusBadge status={p.status} /> },
+    { key: "status", label: "Status", render: (p: ProductWithImages) => (
+      <div className="space-y-1">
+        <StatusBadge status={p.status} />
+        {isScheduled(p) && (
+          <div className="text-[11px] font-medium text-[#7A2533]">
+            Scheduled —{" "}
+            {new Date(p.publish_at!).toLocaleString("en-IN", {
+              day: "numeric",
+              month: "short",
+              year: "numeric",
+              hour: "numeric",
+              minute: "2-digit",
+            })}
+          </div>
+        )}
+      </div>
+    ) },
     { key: "updated", label: "Updated", render: (p: ProductWithImages) => <span className="text-xs text-gray-500">{new Date(p.updated_at).toLocaleDateString()}</span>, hideOnMobile: true },
     {
       key: "actions", label: "", className: "text-right",
@@ -135,17 +153,19 @@ function AdminProducts() {
           <Link to="/product/$productId" params={{ productId: p.slug }} target="_blank" className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600" title="Preview">
             <Eye className="h-4 w-4" />
           </Link>
-          <button onClick={() => productsApi.updateStatus(p.id, p.status === "active" ? "archived" : "active").then(() => fetchProducts())}
-            className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600" title={p.status === "active" ? "Archive" : "Publish"}>
-            {p.status === "active" ? <XCircle className="h-4 w-4" /> : <CheckCircle className="h-4 w-4" />}
+          <button onClick={() => {
+            if (p.status === "archived") {
+              handleRestore(p.id);
+            } else {
+              setRecycleConfirm({ id: p.id, name: p.name });
+            }
+          }}
+            className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600" title={p.status === "archived" ? "Restore from Recycle Bin" : "Move to Recycle Bin"}>
+            {p.status === "archived" ? <RotateCcw className="h-4 w-4" /> : <Archive className="h-4 w-4" />}
           </button>
           <Link to="/admin/products/$id" params={{ id: p.id }} className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600" title="Edit">
             <Edit3 className="h-4 w-4" />
           </Link>
-          <button onClick={() => setDeleteConfirm({ id: p.id, name: p.name })}
-            className="rounded-lg p-1.5 text-red-300 hover:bg-red-50 hover:text-red-500" title="Delete">
-            <Trash2 className="h-4 w-4" />
-          </button>
         </div>
       ),
     },
@@ -156,12 +176,13 @@ function AdminProducts() {
   return (
     <AdminLayout>
       <ConfirmDialog
-        open={!!deleteConfirm}
-        onClose={() => setDeleteConfirm(null)}
-        onConfirm={handleDelete}
-        title="Delete Product"
-        message={`Delete "${deleteConfirm?.name}"? This cannot be undone.`}
-        confirmLabel="Delete"
+        open={!!recycleConfirm}
+        onClose={() => setRecycleConfirm(null)}
+        onConfirm={handleMoveToRecycle}
+        title="Move to Recycle Bin"
+        message={`Move "${recycleConfirm?.name}" to the recycle bin? It will be hidden from the storefront, but all of its data and historical orders are preserved. It can be restored anytime.`}
+        confirmLabel="Move to Recycle Bin"
+        variant="primary"
       />
 
       <AdminPageHeader
@@ -201,7 +222,7 @@ function AdminProducts() {
               <option value="active">Active</option>
               <option value="draft">Draft</option>
               <option value="out_of_stock">Out of Stock</option>
-              <option value="archived">Archived</option>
+              <option value="archived">Recycle Bin</option>
             </select>
           </div>
         }
@@ -211,11 +232,13 @@ function AdminProducts() {
               Publish
             </button>
             <button onClick={() => handleBulkStatus("archived")} className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium hover:bg-gray-50">
-              Archive
+              Move to Recycle Bin
             </button>
-            <button onClick={handleBulkDelete} className="rounded-lg border border-red-200 px-3 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50">
-              Delete
-            </button>
+            {statusFilter === "archived" && (
+              <button onClick={() => handleBulkStatus("active")} className="rounded-lg border border-green-200 px-3 py-1.5 text-xs font-medium text-green-700 hover:bg-green-50">
+                Restore
+              </button>
+            )}
           </div>
         }
       />
