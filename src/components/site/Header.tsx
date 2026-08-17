@@ -188,7 +188,7 @@ export const Header = memo(function Header() {
                       }}
                       aria-haspopup="menu"
                       aria-expanded={activeMenuIdx === idx % navItems.length}
-                      className="shrink-0 whitespace-nowrap rounded-full px-3 py-1.5 text-[12.5px] font-semibold tracking-[0.01em] text-[#7A2533] transition-colors duration-200 hover:bg-[#fdf8f3] hover:text-[#7A2533] xl:px-4 xl:text-[13px]"
+                      className="shrink-0 whitespace-nowrap rounded-full px-3 py-1.5 text-[12.5px] font-semibold tracking-[0.01em] text-[#9C544D] transition-colors duration-200 hover:bg-[#fdf8f3] hover:text-[#9C544D] xl:px-4 xl:text-[13px]"
                     >
                       {item.label}
                     </Link>
@@ -214,7 +214,7 @@ export const Header = memo(function Header() {
               <Link
                 key={`${i}-${item.label}`}
                 to={item.to}
-                className="shrink-0 whitespace-nowrap rounded-full px-3 py-1.5 text-[12.5px] font-semibold tracking-[0.01em] text-[#7A2533] transition-colors duration-200 hover:bg-[#fdf8f3] hover:text-[#7A2533]"
+                className="shrink-0 whitespace-nowrap rounded-full px-3 py-1.5 text-[12.5px] font-semibold tracking-[0.01em] text-[#9C544D] transition-colors duration-200 hover:bg-[#fdf8f3] hover:text-[#9C544D]"
               >
                 {item.label}
               </Link>

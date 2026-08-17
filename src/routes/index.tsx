@@ -208,7 +208,7 @@ function Hero() {
                   transition={{ duration: 0.7 }}
                   className="flex flex-col justify-center"
                 >
-                  <span className="inline-flex w-fit items-center gap-2 rounded-full border border-[#7A2533]/40 bg-white/60 px-4 py-1.5 text-[11px] font-semibold tracking-[0.18em] text-[#7A2533] uppercase backdrop-blur-sm">
+                  <span className="inline-flex w-fit items-center gap-2 rounded-full border border-[#9C544D]/40 bg-white/60 px-4 py-1.5 text-[11px] font-semibold tracking-[0.18em] text-[#9C544D] uppercase backdrop-blur-sm">
                     <Sparkles className="h-3 w-3" />
                     {slide.badge}
                   </span>
@@ -219,7 +219,7 @@ function Hero() {
                   >
                     {slide.title}
                     <br />
-                    <span className="shimmer-text italic">{slide.highlight}</span>
+                    <span className="shimmer-text italic" style={{ background: "#9C544D", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>{slide.highlight}</span>
                   </h1>
 
                   <p className="mt-4 max-w-lg text-[14px] leading-relaxed text-[#5a4e44] sm:text-[15px]">
@@ -228,7 +228,7 @@ function Hero() {
 
                   <div className="mt-5 flex flex-wrap gap-3">
                     {slide.primaryCtaLink.startsWith("/") ? (
-                      <Link to={slide.primaryCtaLink as any} className="btn-primary">
+                      <Link to={slide.primaryCtaLink as any} className="btn-primary" style={{ backgroundColor: "#9C544D", color: "#ffffff" }}>
                         {slide.primaryCtaText}
                       </Link>
                     ) : (
@@ -237,12 +237,13 @@ function Hero() {
                         target="_blank"
                         rel="noreferrer"
                         className="btn-primary"
+                        style={{ backgroundColor: "#9C544D", color: "#ffffff" }}
                       >
                         {slide.primaryCtaText}
                       </a>
                     )}
                     {slide.secondaryCtaLink.startsWith("/") ? (
-                      <Link to={slide.secondaryCtaLink as any} className="btn-secondary">
+                      <Link to={slide.secondaryCtaLink as any} className="btn-secondary" style={{ borderColor: "#9C544D", color: "#9C544D", backgroundColor: "transparent" }}>
                         {slide.secondaryCtaText}
                       </Link>
                     ) : (
@@ -251,6 +252,7 @@ function Hero() {
                         target="_blank"
                         rel="noreferrer"
                         className="btn-secondary"
+                        style={{ borderColor: "#9C544D", color: "#9C544D", backgroundColor: "transparent" }}
                       >
                         {slide.secondaryCtaText}
                       </a>
@@ -279,7 +281,7 @@ function Hero() {
                     <Link
                       to="/product/$productId"
                       params={{ productId: slide.productId }}
-                      className="glass-panel group relative block aspect-square w-full overflow-hidden rounded-[28px] p-4 shadow-[0_24px_64px_rgba(0,0,0,0.12)] transition-shadow hover:shadow-[0_24px_64px_rgba(122,37,51,0.28)] sm:p-5"
+                      className="glass-panel group relative block aspect-square w-full overflow-hidden rounded-[28px] p-4 shadow-[0_24px_64px_rgba(0,0,0,0.12)] transition-shadow hover:shadow-[0_24px_64px_rgba(156,84,77,0.28)] sm:p-5"
                       aria-label={`View ${slide.bestSellerLabel}`}
                     >
                       <div className="animate-cm-float flex h-full w-full items-center justify-center">
@@ -292,7 +294,7 @@ function Hero() {
                             loop
                             playsInline
                             preload="metadata"
-                            className="h-full w-full rounded-[20px] object-contain drop-shadow-[0_24px_48px_rgba(122,37,51,0.35)]"
+                            className="h-full w-full rounded-[20px] object-contain drop-shadow-[0_24px_48px_rgba(156,84,77,0.35)]"
                           />
                         ) : (
                           <img
@@ -302,7 +304,7 @@ function Hero() {
                             height={1280}
                             fetchPriority={idx === 0 ? "high" : undefined}
                             decoding="async"
-                            className="h-full w-full rounded-[20px] object-contain drop-shadow-[0_24px_48px_rgba(122,37,51,0.35)] transition-transform duration-500 group-hover:scale-[1.03]"
+                            className="h-full w-full rounded-[20px] object-contain drop-shadow-[0_24px_48px_rgba(156,84,77,0.35)] transition-transform duration-500 group-hover:scale-[1.03]"
                           />
                         )}
                       </div>
@@ -319,7 +321,7 @@ function Hero() {
                             loop
                             playsInline
                             preload="metadata"
-                            className="h-full w-full rounded-[20px] object-contain drop-shadow-[0_24px_48px_rgba(122,37,51,0.35)]"
+                            className="h-full w-full rounded-[20px] object-contain drop-shadow-[0_24px_48px_rgba(156,84,77,0.35)]"
                           />
                         ) : (
                           <img
@@ -329,7 +331,7 @@ function Hero() {
                             height={1280}
                             fetchPriority={idx === 0 ? "high" : undefined}
                             decoding="async"
-                            className="h-full w-full rounded-[20px] object-contain drop-shadow-[0_24px_48px_rgba(122,37,51,0.35)]"
+                            className="h-full w-full rounded-[20px] object-contain drop-shadow-[0_24px_48px_rgba(156,84,77,0.35)]"
                           />
                         )}
                       </div>
@@ -340,13 +342,13 @@ function Hero() {
                     initial={{ opacity: 0, x: -30 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.6, duration: 0.6 }}
-                    className="absolute top-4 left-2 hidden rounded-[18px] border border-[#7A2533]/30 bg-white/90 p-3 shadow-[0_8px_32px_rgba(122,37,51,0.2)] backdrop-blur-xl md:block"
+                    className="absolute top-4 left-2 hidden rounded-[18px] border border-[#9C544D]/30 bg-white/90 p-3 shadow-[0_8px_32px_rgba(156,84,77,0.2)] backdrop-blur-xl md:block"
                   >
-                    <p className="eyebrow text-[9px] text-[#7A2533]">Best Seller</p>
+                    <p className="eyebrow text-[9px] text-[#9C544D]">Best Seller</p>
                     <p className="font-display mt-1 text-sm font-semibold text-[#1a1a2e]">
                       {slide.bestSellerLabel}
                     </p>
-                    <p className="mt-0.5 text-[13px] font-bold text-[#7A2533]">{slide.price}</p>
+                    <p className="mt-0.5 text-[13px] font-bold text-[#9C544D]">{slide.price}</p>
                   </motion.div>
 
                   <motion.div
@@ -390,7 +392,7 @@ function Hero() {
               key={idx}
               onClick={() => api?.scrollTo(idx)}
               className={`h-2 rounded-full transition-all ${
-                idx === current ? "w-7 bg-[#8B1A1A]" : "w-2 bg-[#7A2533]/50"
+                idx === current ? "w-7 bg-[#9C544D]" : "w-2 bg-[#7A2533]/50"
               }`}
               aria-label={`Go to slide ${idx + 1}`}
             />
