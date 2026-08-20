@@ -33,7 +33,7 @@
   --color-navy: #1a1a2e;
   --color-navy-light: #2d1b4e;
   --color-gold: #c9a96e;
-  --color-gold-dark: #7A2533;
+  --color-gold-dark: #7a2533;
   --color-gold-light: #e8c98a;
   --color-rose: #e8b4a0;
   --color-cream: #fdf8f3;
@@ -53,9 +53,9 @@
 
   --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.06);
   --shadow-card-hover: 0 20px 60px rgba(0, 0, 0, 0.12);
-  --shadow-gold: 0 12px 32px rgba(122,37,51, 0.35);
+  --shadow-gold: 0 12px 32px rgba(122, 37, 51, 0.35);
   --shadow-float: 0 24px 64px rgba(0, 0, 0, 0.1);
-  --shadow-glass: 0 8px 32px rgba(122,37,51, 0.15);
+  --shadow-glass: 0 8px 32px rgba(122, 37, 51, 0.15);
   --shadow-header: 0 4px 16px rgba(0, 0, 0, 0.08);
 }
 
@@ -121,7 +121,7 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  background: #7A2533;
+  background: #7a2533;
   color: #fff;
   border-radius: 9999px;
   padding: 0.875rem 2rem;
@@ -131,7 +131,7 @@
   letter-spacing: 0.08em;
   transition: all 0.3s ease;
   &:hover {
-    background: #5F1C27;
+    background: #5f1c27;
     box-shadow: 0 12px 32px rgba(122, 37, 51, 0.4);
     transform: translateY(-2px);
   }
@@ -142,8 +142,8 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  border: 1px solid #7A2533;
-  color: #7A2533;
+  border: 1px solid #7a2533;
+  color: #7a2533;
   background: transparent;
   border-radius: 9999px;
   padding: 0.75rem 1.75rem;
@@ -153,9 +153,9 @@
   letter-spacing: 0.08em;
   transition: all 0.3s ease;
   &:hover {
-    background: #7A2533;
+    background: #7a2533;
     color: #fff;
-    border-color: #7A2533;
+    border-color: #7a2533;
   }
 }
 
@@ -164,7 +164,7 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  background: #7A2533;
+  background: #7a2533;
   color: #fff;
   border-radius: 9999px;
   padding: 0.875rem 2rem;
@@ -174,14 +174,14 @@
   letter-spacing: 0.08em;
   transition: all 0.3s ease;
   &:hover {
-    background: #5F1C27;
+    background: #5f1c27;
     box-shadow: 0 12px 32px rgba(122, 37, 51, 0.4);
     transform: translateY(-2px);
   }
 }
 
 @utility shimmer-text {
-  background: linear-gradient(90deg, #7A2533, #8B1A1A, #7A2533, #5F1C27);
+  background: linear-gradient(90deg, #7a2533, #8b1a1a, #7a2533, #5f1c27);
   background-size: 200% auto;
   -webkit-background-clip: text;
   background-clip: text;
@@ -193,7 +193,7 @@
   display: inline-block;
   width: 48px;
   height: 2px;
-  background: linear-gradient(90deg, transparent, #7A2533, transparent);
+  background: linear-gradient(90deg, transparent, #7a2533, transparent);
 }
 
 @utility eyebrow {
@@ -202,13 +202,13 @@
   font-weight: 600;
   letter-spacing: 0.24em;
   text-transform: uppercase;
-  color: #7A2533;
+  color: #7a2533;
 }
 
 @utility glass-panel {
   background: rgba(255, 255, 255, 0.6);
   backdrop-filter: blur(20px);
-  border: 1px solid rgba(122,37,51, 0.3);
+  border: 1px solid rgba(122, 37, 51, 0.3);
 }
 
 @utility scrollbar-hide {
@@ -287,22 +287,73 @@
   animation: cm-marquee 32s linear infinite;
 }
 
-/* Desktop header category navigation — continuous marquee
+/* Desktop header category navigation — static row
    overflow-x: clip keeps the slider within its row without clipping the
    vertically-dropping mega menus (unlike overflow: hidden / auto). */
 .cm-primary-nav {
   overflow-x: clip;
 }
-.cm-primary-track {
-  width: max-content;
+
+.banner-cta {
+  min-width: 0;
+  padding: 6px 14px;
+  font-size: 10px;
+  line-height: 1.2;
+  white-space: nowrap;
 }
-.cm-primary-nav:hover .animate-cm-marquee {
-  animation-play-state: paused;
+@media (min-width: 640px) {
+  .banner-cta {
+    padding: 0.75rem 1.75rem;
+    font-size: 13px;
+  }
+}
+
+/* ============================================
+   Hero banner carousel
+   ============================================ */
+
+/* The FRAME owns the banner size — an uploaded image never changes it.
+   Frames match the live first banner (source of truth):
+   desktop/tablet: 1920 x 700 (≈2.74:1 landscape), mobile: 1080 x 1350 (4:5). */
+.cm-hero-frame {
+  width: 100%;
+  aspect-ratio: 1920 / 700;
+}
+@media (max-width: 767.98px) {
+  .cm-hero-frame {
+    aspect-ratio: 1080 / 1350;
+  }
+}
+
+/* The whole slide is one link (semantic, no nested interactive elements).
+   The visual SHOP NOW chip is a styled <span> inside the link. */
+.cm-hero-slide-link {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+.cm-hero-slide-link:focus-visible {
+  outline: 2px solid #9c544d;
+  outline-offset: -3px;
+  border-radius: inherit;
+}
+.cm-hero-cta {
+  position: absolute;
+  z-index: 10;
+  pointer-events: none;
 }
 
 /* ============================================
    Store location map (Leaflet)
    ============================================ */
+
+/* Contain Leaflet's internal panes/controls (z-index up to 1000) inside this
+   element's own stacking context so they can never paint above the sticky
+   website header (z-50). isolation: isolate needs no z-index magic and does
+   not affect map interaction or positioning. */
+.cm-map {
+  isolation: isolate;
+}
 
 .cm-map .leaflet-container,
 .cm-map-marker ~ .leaflet-container {

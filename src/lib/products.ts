@@ -37,6 +37,7 @@ export type Product = {
   view360Images?: string[];
   care?: string;
   shippingInfo?: string;
+  cardLabel?: string;
   specifications?: { name: string; value: string }[];
   flags?: {
     id: string;
@@ -361,6 +362,7 @@ export function productFromDb(product: ProductWithImages): Product {
     view360Images: resolved360.length > 0 ? resolved360 : fallback?.view360Images,
     care: fallback?.care,
     shippingInfo: fallback?.shippingInfo,
+    cardLabel: product.card_label?.trim() || undefined,
     specifications: (product.specifications || []).map((s: any) => ({
       name: s.name || s.attribute_definition?.name || "",
       value: s.value,

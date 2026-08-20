@@ -1,4 +1,4 @@
-import { memo, useState, useRef, useCallback, useEffect } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -17,16 +17,61 @@ import { useAuth } from "@/lib/auth";
 import { NAV_ITEMS, type NavItem } from "@/lib/navigation";
 import { categoriesApi } from "@/lib/api/categories";
 import { subcategoriesApi } from "@/lib/api/subcategories";
-import { useInfiniteCarousel } from "@/lib/useInfiniteCarousel";
 import { MegaMenu } from "./MegaMenu";
 
 export const Header = memo(function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [activeMenuIdx, setActiveMenuIdx] = useState<number | null>(null);
+  const [hidden, setHidden] = useState(false);
   const closeTimer = useRef<number | null>(null);
-  const { scrollerRef } = useInfiniteCarousel<HTMLElement>({ speed: 30 });
   const { cartCount, wishlistCount, openCart, openWishlist } = useStore();
   const { user } = useAuth();
+
+  // Auto-hide: hide while scrolling down, reappear on scroll up / when the
+  // user stops / near the top. Never hides while a menu or the drawer is open.
+  useEffect(() => {
+    if (activeMenuIdx !== null || mobileOpen) {
+      setHidden(false);
+      return;
+    }
+    const HIDE_TOP = 200;
+    const HIDE_DELTA = 6;
+    const STOP_DELAY = 400;
+    let lastY = window.scrollY;
+    let ticking = false;
+    let stopTimer = 0;
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const y = window.scrollY;
+      const delta = y - lastY;
+      if (Math.abs(delta) < 2) {
+        lastY = y;
+        ticking = false;
+        return;
+      }
+      if (stopTimer) window.clearTimeout(stopTimer);
+      if (y <= HIDE_TOP || delta < 0) {
+        setHidden(false);
+      } else if (delta >= HIDE_DELTA) {
+        setHidden(true);
+      }
+      lastY = y;
+      stopTimer = window.setTimeout(() => setHidden(false), STOP_DELAY);
+      ticking = false;
+    };
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      raf = requestAnimationFrame(update);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+      if (stopTimer) window.clearTimeout(stopTimer);
+    };
+  }, [activeMenuIdx, mobileOpen]);
   const { data: categories = [] } = useQuery({
     queryKey: ["categories", "nav"],
     queryFn: () => categoriesApi.list(true),
@@ -51,7 +96,8 @@ export const Header = memo(function Header() {
       featured: {
         title: cat.banner_heading || cat.name,
         subtitle: "Collection",
-        description: cat.banner_description || cat.description || "Explore the latest Creative Muse edit.",
+        description:
+          cat.banner_description || cat.description || "Explore the latest Creative Muse edit.",
         linkTo: `/collections/${cat.slug}`,
         linkText: cat.cta_button_text || "Shop now",
       },
@@ -66,31 +112,9 @@ export const Header = memo(function Header() {
   });
   const navItems = dynamicItems.length > 0 ? dynamicItems : NAV_ITEMS;
 
-  const [desktopMarquee, setDesktopMarquee] = useState(false);
-  const desktopViewportRef = useRef<HTMLDivElement>(null);
-  const desktopTrackRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const view = desktopViewportRef.current;
-    const track = desktopTrackRef.current;
-    if (!view || !track) return;
-    const check = () => setDesktopMarquee(track.scrollWidth > view.clientWidth + 1);
-    check();
-    const ro = new ResizeObserver(check);
-    ro.observe(view);
-    ro.observe(track);
-    window.addEventListener("resize", check);
-    return () => {
-      ro.disconnect();
-      window.removeEventListener("resize", check);
-    };
-  }, [navItems.length]);
-
-  const useMarquee = desktopMarquee;
-  const desktopNavItems = [...navItems, ...navItems];
-
   const openMenu = (idx: number) => {
     if (closeTimer.current) window.clearTimeout(closeTimer.current);
+    setHidden(false);
     setActiveMenuIdx(idx);
   };
 
@@ -101,21 +125,33 @@ export const Header = memo(function Header() {
 
   return (
     <>
-      <header className="sticky top-0 z-50" style={{ background: "#fdf8f3" }}>
+      <header
+        className={`sticky top-0 z-50 bg-[#9C544D] transition-transform duration-300 ease-out will-change-transform motion-reduce:transition-none ${
+          hidden ? "-translate-y-full" : "translate-y-0"
+        }`}
+        style={{ backgroundColor: "#9C544D" }}
+      >
         <div className="mx-auto max-w-[1440px] px-4 lg:px-8">
           <div className="grid grid-cols-[1fr_auto_1fr] items-center py-2.5 lg:py-3">
             <div className="flex items-center lg:hidden">
               <button
-                onClick={() => setMobileOpen(true)}
-                className="flex h-11 w-11 items-center justify-center rounded-full hover:bg-[#f5efe8]"
+                onClick={() => {
+                  setHidden(false);
+                  setMobileOpen(true);
+                }}
+                className="flex h-11 w-11 items-center justify-center rounded-full hover:bg-white/15"
                 aria-label="Open menu"
               >
-                <Menu className="h-5 w-5 text-[#2a1e14]" />
+                <Menu className="h-5 w-5 text-white" />
               </button>
             </div>
             <div className="hidden lg:block" />
 
-            <Link to="/" className="flex items-center justify-center" aria-label="Creative Muse — Home">
+            <Link
+              to="/"
+              className="flex items-center justify-center"
+              aria-label="Creative Muse — Home"
+            >
               <img
                 src="/favicon.ico"
                 alt="Creative Muse"
@@ -126,68 +162,62 @@ export const Header = memo(function Header() {
             <div className="flex items-center justify-end gap-1 md:gap-2 lg:gap-4">
               <button
                 onClick={openCart}
-                className="relative flex h-11 w-11 items-center justify-center rounded-full hover:bg-[#f5efe8]"
+                className="relative flex h-11 w-11 items-center justify-center rounded-full hover:bg-white/15"
                 aria-label="Cart"
               >
-                <ShoppingBag className="h-[20px] w-[20px] text-[#2a1e14]" strokeWidth={1.9} />
+                <ShoppingBag className="h-[20px] w-[20px] text-white" strokeWidth={1.9} />
                 {cartCount > 0 && (
-                  <span className="absolute right-1 top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#7A2533] px-1 text-[10px] font-semibold text-white">
+                  <span className="absolute right-1 top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-white px-1 text-[10px] font-semibold text-[#9C544D]">
                     {cartCount}
                   </span>
                 )}
               </button>
               <button
                 onClick={openWishlist}
-                className="relative hidden h-11 w-11 items-center justify-center rounded-full hover:bg-[#f5efe8] md:flex"
+                className="relative hidden h-11 w-11 items-center justify-center rounded-full hover:bg-white/15 md:flex"
                 aria-label="Wishlist"
               >
-                <Heart className="h-[20px] w-[20px] text-[#2a1e14]" strokeWidth={1.9} />
+                <Heart className="h-[20px] w-[20px] text-white" strokeWidth={1.9} />
                 {wishlistCount > 0 && (
-                  <span className="absolute right-1 top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#7A2533] px-1 text-[10px] font-semibold text-white">
+                  <span className="absolute right-1 top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-white px-1 text-[10px] font-semibold text-[#9C544D]">
                     {wishlistCount}
                   </span>
                 )}
               </button>
               <Link
                 to={user ? "/account" : "/login"}
-                className="hidden h-11 w-11 items-center justify-center rounded-full hover:bg-[#f5efe8] md:flex"
+                className="hidden h-11 w-11 items-center justify-center rounded-full hover:bg-white/15 md:flex"
                 aria-label={user ? "Account" : "Login"}
               >
-                <User className="h-[20px] w-[20px] text-[#2a1e14]" strokeWidth={1.9} />
+                <User className="h-[20px] w-[20px] text-white" strokeWidth={1.9} />
               </Link>
             </div>
           </div>
         </div>
 
-        <div className="border-t border-[#e0d8cc]/40">
+        <div className="border-t border-[#e0d8cc]/40 bg-[#fdf8f3]">
           <div
-            ref={desktopViewportRef}
             className="cm-primary-nav relative mx-auto hidden max-w-[1040px] px-2 py-2 lg:block lg:px-4"
             onMouseLeave={scheduleClose}
             onMouseEnter={() => closeTimer.current && window.clearTimeout(closeTimer.current)}
           >
             <nav className="flex items-center justify-center gap-0.5" aria-label="Primary">
-              <div
-                ref={desktopTrackRef}
-                className={`cm-primary-track flex shrink-0 items-center gap-0.5 whitespace-nowrap ${
-                  useMarquee ? "animate-cm-marquee" : ""
-                }`}
-              >
-                {desktopNavItems.map((item, idx) => (
+              <div className="flex items-center gap-0.5 whitespace-nowrap">
+                {navItems.map((item, idx) => (
                   <div key={`${idx}-${item.label}`} className="relative">
                     <Link
                       to={item.to}
-                      onMouseEnter={() => openMenu(idx % navItems.length)}
-                      onFocus={() => openMenu(idx % navItems.length)}
+                      onMouseEnter={() => openMenu(idx)}
+                      onFocus={() => openMenu(idx)}
                       onKeyDown={(e) => {
                         if (e.key === "ArrowDown") {
                           e.preventDefault();
-                          openMenu(idx % navItems.length);
+                          openMenu(idx);
                         }
                         if (e.key === "Escape") setActiveMenuIdx(null);
                       }}
                       aria-haspopup="menu"
-                      aria-expanded={activeMenuIdx === idx % navItems.length}
+                      aria-expanded={activeMenuIdx === idx}
                       className="shrink-0 whitespace-nowrap rounded-full px-3 py-1.5 text-[12.5px] font-semibold tracking-[0.01em] text-[#9C544D] transition-colors duration-200 hover:bg-[#fdf8f3] hover:text-[#9C544D] xl:px-4 xl:text-[13px]"
                     >
                       {item.label}
@@ -206,11 +236,10 @@ export const Header = memo(function Header() {
             )}
           </div>
           <nav
-            ref={scrollerRef}
             className="scrollbar-hide mx-auto flex w-full max-w-[1440px] items-center justify-start gap-1 overflow-x-auto px-4 py-2 lg:hidden"
             aria-label="Primary mobile shortcuts"
           >
-            {[...navItems, ...navItems].map((item, i) => (
+            {navItems.map((item, i) => (
               <Link
                 key={`${i}-${item.label}`}
                 to={item.to}
@@ -281,11 +310,11 @@ function MobileDrawer({ items, onClose }: { items: NavItem[]; onClose: () => voi
                         style={{ animation: "cmAccordionIn 200ms ease-out" }}
                       >
                         <style>{`@keyframes cmAccordionIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}`}</style>
-                          <div className="ml-3 border-l-2 border-[#8B1A1A]/30 pl-3">
-                            <Link
-                              to={item.to}
-                              onClick={onClose}
-                              className="flex min-h-[40px] items-center rounded-[12px] px-4 py-2 text-sm font-semibold text-[#7A2533] transition-colors hover:bg-[#f5efe8] hover:text-[#7A2533]"
+                        <div className="ml-3 border-l-2 border-[#8B1A1A]/30 pl-3">
+                          <Link
+                            to={item.to}
+                            onClick={onClose}
+                            className="flex min-h-[40px] items-center rounded-[12px] px-4 py-2 text-sm font-semibold text-[#7A2533] transition-colors hover:bg-[#f5efe8] hover:text-[#7A2533]"
                           >
                             View All {item.label}
                           </Link>
@@ -322,7 +351,10 @@ function MobileDrawer({ items, onClose }: { items: NavItem[]; onClose: () => voi
             { label: "Wishlist", to: "/wishlist" as const },
             { label: "Shop All", to: "/shop" as const },
             { label: "Collections", to: "/collections" as const },
-            { label: user ? "Account" : "Login", to: user ? ("/account" as const) : ("/login" as const) },
+            {
+              label: user ? "Account" : "Login",
+              to: user ? ("/account" as const) : ("/login" as const),
+            },
           ].map(({ label, to }) => (
             <Link
               key={label}

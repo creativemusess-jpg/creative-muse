@@ -16,19 +16,6 @@ type SortOption = (typeof SORT_OPTIONS)[number];
 const sortFromUrl = (s: unknown): string =>
   SORT_OPTIONS.includes(s as SortOption) ? (s as SortOption) : "Featured";
 
-const CAT_SLUG_MAP: Record<string, string> = {
-  All: "",
-  Earrings: "earrings",
-  Necklace: "necklace",
-  Rings: "rings",
-  Hoops: "hoops",
-  Earcuffs: "earcuffs",
-  Kada: "kada",
-  Bracelets: "bracelets",
-};
-
-const knownCategoryNames = new Set(Object.keys(CAT_SLUG_MAP));
-
 function stripEmpty(params: Record<string, string>): Record<string, string> {
   const out: Record<string, string> = {};
   for (const [k, v] of Object.entries(params)) {
@@ -79,7 +66,6 @@ function ShopPage() {
   const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [retryTick, setRetryTick] = useState(0);
 
-  const selectedCat = urlCat;
   const selectedMetals = useMemo(
     () => (urlMetal ? urlMetal.split(",").filter(Boolean) : []),
     [urlMetal],
@@ -101,16 +87,17 @@ function ShopPage() {
   );
 
   const { data: catsData } = useCategories();
-  const dbCategories = useMemo(
-    () => (catsData || []).filter((c: any) => knownCategoryNames.has(c.name)),
-    [catsData],
+  const dbCategories = useMemo(() => catsData || [], [catsData]);
+
+  const activeCategory = useMemo(
+    () => dbCategories.find((c) => c.slug === urlCat || c.name === urlCat),
+    [dbCategories, urlCat],
   );
+  const selectedCatSlug = activeCategory?.slug || urlCat || "";
 
   // Fetch products when category changes (on first load + category switch)
   useEffect(() => {
-    const catSlug = selectedCat
-      ? CAT_SLUG_MAP[selectedCat] || selectedCat.toLowerCase()
-      : undefined;
+    const catSlug = selectedCatSlug || undefined;
 
     const abort = new AbortController();
     setLoading(true);
@@ -131,7 +118,7 @@ function ShopPage() {
     })();
 
     return () => abort.abort();
-  }, [selectedCat, retryTick]);
+  }, [selectedCatSlug, retryTick]);
 
   // Compute facets from the actual loaded products
   const availableMetals = useMemo(() => {
@@ -230,7 +217,7 @@ function ShopPage() {
     <PageShell>
       <PageHeader
         eyebrow="Collection"
-        title={selectedCat || "All Jewellery"}
+        title={activeCategory?.name || selectedCatSlug || "All Jewellery"}
         subtitle="Explore handcrafted pieces, certified and made to be treasured."
       />
 
@@ -285,14 +272,19 @@ function ShopPage() {
             {/* Category */}
             <p className="eyebrow mb-3 text-[10px]">Category</p>
             <div className="flex flex-wrap gap-2">
-              {["All", ...dbCategories.map((c: any) => c.name)].map((name) => (
+              {["All", ...dbCategories.map((c) => c.name)].map((name) => (
                 <FilterPill
                   key={name}
-                  active={(!selectedCat && name === "All") || selectedCat === name}
+                  active={
+                    (!urlCat && name === "All") ||
+                    (selectedCatSlug !== "" && name === activeCategory?.name)
+                  }
                   onClick={() => {
                     setMobileOpen(false);
+                    const cat =
+                      name === "All" ? "" : dbCategories.find((c) => c.name === name)?.slug || "";
                     pushFilters({
-                      category: name === "All" ? "" : name,
+                      category: cat,
                       metal: "",
                       minPrice: "",
                       maxPrice: "",

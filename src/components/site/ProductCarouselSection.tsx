@@ -243,7 +243,7 @@ export function ProductCarouselSection({
                   className="basis-[84%] sm:basis-[46%] md:basis-[44%] lg:basis-1/3 xl:basis-1/4"
                 >
                   <div className="h-full transition-transform duration-400">
-                    <ProductCard product={p} index={i} pointerStart={pointerStart} />
+                    <ProductCard product={p} index={i} />
                   </div>
                 </CarouselItem>
               ))}

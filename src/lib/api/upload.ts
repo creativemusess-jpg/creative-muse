@@ -6,6 +6,7 @@ const BUCKETS = {
   categories: "category-images",
   categoryVideos: "category-videos",
   heroMedia: "hero-media",
+  homepageBanners: "homepage-banners",
 } as const;
 
 export async function uploadImage(
@@ -37,6 +38,17 @@ export async function deleteImage(
 
 const HERO_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
 const HERO_VIDEO_TYPES = ["video/mp4", "video/webm"];
+const BANNER_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
+
+export function validateBannerFile(file: File): string | null {
+  if (!BANNER_IMAGE_TYPES.includes(file.type)) {
+    return "Unsupported image format. Use JPG, PNG or WEBP.";
+  }
+  if (file.size > 5 * 1024 * 1024) {
+    return "Image is too large. Maximum size is 5 MB (recommended under 1 MB).";
+  }
+  return null;
+}
 
 export function validateHeroMediaFile(file: File, kind: "image" | "video"): string | null {
   if (kind === "image") {

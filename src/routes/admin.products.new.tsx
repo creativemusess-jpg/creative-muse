@@ -46,6 +46,7 @@ const initialData: ProductFormData = {
   main_image_url: "",
   gallery_images: [],
   publish_at: null,
+  card_label: "",
 };
 
 function NewProductPage() {
@@ -55,7 +56,9 @@ function NewProductPage() {
   const [subcategories, setSubcategories] = useState<any[]>([]);
   const [uploading, setUploading] = useState(false);
   const [attrDefs, setAttrDefs] = useState<any[]>([]);
-  const [productAttrs, setProductAttrs] = useState<{ defId: string; value: string; name: string }[]>([]);
+  const [productAttrs, setProductAttrs] = useState<
+    { defId: string; value: string; name: string }[]
+  >([]);
   const [allFlags, setAllFlags] = useState<any[]>([]);
   const [selectedFlagIds, setSelectedFlagIds] = useState<string[]>([]);
   const navigate = useNavigate();
@@ -63,22 +66,31 @@ function NewProductPage() {
 
   useEffect(() => {
     let cancelled = false;
-    categoriesApi.list(true).then((cats) => { if (!cancelled) setCategories(cats); }).catch(() => {});
-    Promise.all([
-      attributesApi.listDefinitions(),
-      productFlagsApi.list(),
-    ]).then(([defs, flags]) => {
-      if (cancelled) return;
-      setAttrDefs(defs || []);
-      setAllFlags(flags || []);
-    }).catch(() => {});
-    return () => { cancelled = true; };
+    categoriesApi
+      .list(true)
+      .then((cats) => {
+        if (!cancelled) setCategories(cats);
+      })
+      .catch(() => {});
+    Promise.all([attributesApi.listDefinitions(), productFlagsApi.list()])
+      .then(([defs, flags]) => {
+        if (cancelled) return;
+        setAttrDefs(defs || []);
+        setAllFlags(flags || []);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   useEffect(() => {
     const catId = form.category_ids?.[0];
     if (catId) {
-      subcategoriesApi.listByCategory(catId, true).then(setSubcategories).catch(() => {});
+      subcategoriesApi
+        .listByCategory(catId, true)
+        .then(setSubcategories)
+        .catch(() => {});
     } else {
       setSubcategories([]);
     }
@@ -136,11 +148,23 @@ function NewProductPage() {
             if (existing) {
               nameToId[row.defId] = existing.id;
             } else {
-              const slug = row.defId.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+              const slug = row.defId
+                .toLowerCase()
+                .replace(/\s+/g, "-")
+                .replace(/[^a-z0-9-]/g, "");
               try {
-                const created = await attributesApi.createDefinition({ name: row.defId, slug, field_type: "text", options: [], is_active: true, sort_order: 0 });
+                const created = await attributesApi.createDefinition({
+                  name: row.defId,
+                  slug,
+                  field_type: "text",
+                  options: [],
+                  is_active: true,
+                  sort_order: 0,
+                });
                 nameToId[row.defId] = created.id;
-              } catch { /* ignore */ }
+              } catch {
+                /* ignore */
+              }
             }
           }
         }
@@ -148,7 +172,7 @@ function NewProductPage() {
         const allAttrs = productAttrs
           .filter((r) => r.defId && r.value.trim())
           .map((r, i) => ({
-            attribute_definition_id: r.name ? r.defId : (nameToId[r.defId] || r.defId),
+            attribute_definition_id: r.name ? r.defId : nameToId[r.defId] || r.defId,
             value: r.value.trim(),
             sort_order: i,
           }));
@@ -193,7 +217,14 @@ function NewProductPage() {
                 value={form.name}
                 onChange={(e) => {
                   handleChange("name", e.target.value);
-                  if (!form.slug) handleChange("slug", e.target.value.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, ""));
+                  if (!form.slug)
+                    handleChange(
+                      "slug",
+                      e.target.value
+                        .toLowerCase()
+                        .replace(/\s+/g, "-")
+                        .replace(/[^a-z0-9-]/g, ""),
+                    );
                 }}
                 className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#7A2533]"
                 required
@@ -221,7 +252,9 @@ function NewProductPage() {
               >
                 <option value="">Select category</option>
                 {categories.map((c: any) => (
-                  <option key={c.id} value={c.id}>{c.name}</option>
+                  <option key={c.id} value={c.id}>
+                    {c.name}
+                  </option>
                 ))}
               </select>
             </Field>
@@ -232,11 +265,24 @@ function NewProductPage() {
                 className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#7A2533]"
                 disabled={!form.category_ids?.[0]}
               >
-                <option value="">{form.category_ids?.[0] ? "Select subcategory" : "Select a category first"}</option>
+                <option value="">
+                  {form.category_ids?.[0] ? "Select subcategory" : "Select a category first"}
+                </option>
                 {subcategories.map((s: any) => (
-                  <option key={s.id} value={s.id}>{s.name}</option>
+                  <option key={s.id} value={s.id}>
+                    {s.name}
+                  </option>
                 ))}
               </select>
+            </Field>
+            <Field label="Card Label">
+              <input
+                type="text"
+                value={form.card_label || ""}
+                onChange={(e) => handleChange("card_label", e.target.value)}
+                className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#7A2533]"
+                placeholder="e.g. Fine Jewellery · Handcrafted (blank hides it)"
+              />
             </Field>
             <Field label="Short Description">
               <textarea
@@ -264,7 +310,8 @@ function NewProductPage() {
                   value={form.current_price || ""}
                   onChange={(e) => handleChange("current_price", Number(e.target.value))}
                   className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#7A2533]"
-                  required min="0"
+                  required
+                  min="0"
                 />
               </Field>
               <Field label="Original Price (₹)">
@@ -293,10 +340,15 @@ function NewProductPage() {
           </Section>
 
           <Section title="Attributes">
-            <p className="mb-3 text-xs text-gray-400">Add unlimited product attributes. Type a new name to create a new attribute on the fly.</p>
+            <p className="mb-3 text-xs text-gray-400">
+              Add unlimited product attributes. Type a new name to create a new attribute on the
+              fly.
+            </p>
             {productAttrs.map((row, i) => (
               <div key={i} className="mb-2 flex items-center gap-2">
-                <span className="cursor-grab text-gray-300"><GripVertical className="h-4 w-4" /></span>
+                <span className="cursor-grab text-gray-300">
+                  <GripVertical className="h-4 w-4" />
+                </span>
                 {row.name && attrDefs.find((d) => d.id === row.defId) ? (
                   <span className="flex-1 text-sm font-medium text-gray-700">{row.name}</span>
                 ) : (
@@ -323,7 +375,11 @@ function NewProductPage() {
                   placeholder={row.name ? `Enter ${row.name.toLowerCase()}` : "Value"}
                   className="flex-1 rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#7A2533]"
                 />
-                <button type="button" onClick={() => setProductAttrs(productAttrs.filter((_, j) => j !== i))} className="rounded-lg p-2 text-red-400 hover:bg-red-50 hover:text-red-600">
+                <button
+                  type="button"
+                  onClick={() => setProductAttrs(productAttrs.filter((_, j) => j !== i))}
+                  className="rounded-lg p-2 text-red-400 hover:bg-red-50 hover:text-red-600"
+                >
                   <Trash2 className="h-4 w-4" />
                 </button>
               </div>
@@ -336,7 +392,13 @@ function NewProductPage() {
               <Plus className="h-3.5 w-3.5" /> Add Attribute
             </button>
             {attrDefs.length > 0 && (
-              <p className="mt-2 text-xs text-gray-400">Tip: Manage reusable attribute definitions in <Link to="/admin/attributes" className="text-[#7A2533] hover:underline">Attributes</Link>.</p>
+              <p className="mt-2 text-xs text-gray-400">
+                Tip: Manage reusable attribute definitions in{" "}
+                <Link to="/admin/attributes" className="text-[#7A2533] hover:underline">
+                  Attributes
+                </Link>
+                .
+              </p>
             )}
           </Section>
 
@@ -347,7 +409,11 @@ function NewProductPage() {
                 <div className="flex items-start gap-4">
                   {form.main_image_url ? (
                     <div className="relative h-32 w-32 shrink-0 overflow-hidden rounded-xl bg-gray-100">
-                      <img src={form.main_image_url} alt="Main" className="h-full w-full object-cover" />
+                      <img
+                        src={form.main_image_url}
+                        alt="Main"
+                        className="h-full w-full object-cover"
+                      />
                       <button
                         type="button"
                         onClick={() => handleChange("main_image_url", "")}
@@ -366,21 +432,40 @@ function NewProductPage() {
                           <span className="mt-1 text-[10px] text-gray-500">Upload</span>
                         </>
                       )}
-                      <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageUpload}
+                        className="hidden"
+                      />
                     </label>
                   )}
                 </div>
               </div>
 
               <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">Gallery Images</label>
+                <label className="mb-1 block text-sm font-medium text-gray-700">
+                  Gallery Images
+                </label>
                 <div className="flex flex-wrap gap-3">
                   {(form.gallery_images || []).map((url, i) => (
-                    <div key={i} className="relative h-20 w-20 shrink-0 overflow-hidden rounded-lg bg-gray-100">
-                      <img src={url} alt={`Gallery ${i + 1}`} className="h-full w-full object-cover" />
+                    <div
+                      key={i}
+                      className="relative h-20 w-20 shrink-0 overflow-hidden rounded-lg bg-gray-100"
+                    >
+                      <img
+                        src={url}
+                        alt={`Gallery ${i + 1}`}
+                        className="h-full w-full object-cover"
+                      />
                       <button
                         type="button"
-                        onClick={() => handleChange("gallery_images", (form.gallery_images || []).filter((_, j) => j !== i))}
+                        onClick={() =>
+                          handleChange(
+                            "gallery_images",
+                            (form.gallery_images || []).filter((_, j) => j !== i),
+                          )
+                        }
                         className="absolute top-0.5 right-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white"
                       >
                         <X className="h-3 w-3" />
@@ -393,7 +478,13 @@ function NewProductPage() {
                     ) : (
                       <Upload className="h-5 w-5 text-gray-400" />
                     )}
-                    <input type="file" accept="image/*" multiple onChange={handleGalleryUpload} className="hidden" />
+                    <input
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      onChange={handleGalleryUpload}
+                      className="hidden"
+                    />
                   </label>
                 </div>
               </div>
@@ -403,7 +494,11 @@ function NewProductPage() {
 
         <div className="space-y-6">
           <Section title="Status">
-            <PublishControl status={form.status} publish_at={form.publish_at} onChange={handlePublishChange} />
+            <PublishControl
+              status={form.status}
+              publish_at={form.publish_at}
+              onChange={handlePublishChange}
+            />
           </Section>
 
           <Section title="Inventory">
@@ -428,26 +523,34 @@ function NewProductPage() {
           </Section>
 
           <Section title="Flags">
-            {allFlags.filter((f) => f.status === "active").map((flag) => (
-              <label key={flag.id} className="flex items-center gap-3 py-1.5">
-                <input
-                  type="checkbox"
-                  checked={selectedFlagIds.includes(flag.id)}
-                  onChange={(e) => {
-                    if (e.target.checked) setSelectedFlagIds([...selectedFlagIds, flag.id]);
-                    else setSelectedFlagIds(selectedFlagIds.filter((id) => id !== flag.id));
-                  }}
-                  className="rounded border-gray-300"
-                />
-                <span className="text-sm text-gray-700">{flag.name}</span>
-                {flag.badge_label && (
-                  <span className="rounded-full px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider" style={{ backgroundColor: flag.badge_bg_color, color: flag.badge_text_color }}>
-                    {flag.badge_label}
-                  </span>
-                )}
-              </label>
-            ))}
-            <Link to="/admin/product-flags" className="mt-2 inline-flex items-center gap-1 text-xs font-medium text-[#7A2533] hover:text-[#7A2533]">
+            {allFlags
+              .filter((f) => f.status === "active")
+              .map((flag) => (
+                <label key={flag.id} className="flex items-center gap-3 py-1.5">
+                  <input
+                    type="checkbox"
+                    checked={selectedFlagIds.includes(flag.id)}
+                    onChange={(e) => {
+                      if (e.target.checked) setSelectedFlagIds([...selectedFlagIds, flag.id]);
+                      else setSelectedFlagIds(selectedFlagIds.filter((id) => id !== flag.id));
+                    }}
+                    className="rounded border-gray-300"
+                  />
+                  <span className="text-sm text-gray-700">{flag.name}</span>
+                  {flag.badge_label && (
+                    <span
+                      className="rounded-full px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider"
+                      style={{ backgroundColor: flag.badge_bg_color, color: flag.badge_text_color }}
+                    >
+                      {flag.badge_label}
+                    </span>
+                  )}
+                </label>
+              ))}
+            <Link
+              to="/admin/product-flags"
+              className="mt-2 inline-flex items-center gap-1 text-xs font-medium text-[#7A2533] hover:text-[#7A2533]"
+            >
               Manage Flags →
             </Link>
           </Section>
@@ -457,7 +560,15 @@ function NewProductPage() {
               type="text"
               placeholder="Separate tags with commas"
               value={(form.tags || []).join(", ")}
-              onChange={(e) => handleChange("tags", e.target.value.split(",").map((t) => t.trim()).filter(Boolean))}
+              onChange={(e) =>
+                handleChange(
+                  "tags",
+                  e.target.value
+                    .split(",")
+                    .map((t) => t.trim())
+                    .filter(Boolean),
+                )
+              }
               className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#7A2533]"
             />
           </Section>
@@ -531,7 +642,15 @@ function Section({ title, children }: { title: string; children: React.ReactNode
   );
 }
 
-function Field({ label, required, children }: { label: string; required?: boolean; children: React.ReactNode }) {
+function Field({
+  label,
+  required,
+  children,
+}: {
+  label: string;
+  required?: boolean;
+  children: React.ReactNode;
+}) {
   return (
     <div>
       <label className="mb-1 block text-sm font-medium text-gray-700">

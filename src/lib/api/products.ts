@@ -30,6 +30,7 @@ export interface ProductWithImages {
   canonical_url: string | null;
   social_image: string | null;
   image_alt_text: string | null;
+  card_label: string | null;
   subcategory_id: string | null;
   tags: string[];
   published_at: string | null;
@@ -41,14 +42,33 @@ export interface ProductWithImages {
   created_by: string | null;
   updated_by: string | null;
   main_image?: { id: string; url: string; alt_text: string | null; is_main: boolean } | null;
-  images?: { id: string; url: string; alt_text: string | null; is_main: boolean; sort_order: number }[];
+  images?: {
+    id: string;
+    url: string;
+    alt_text: string | null;
+    is_main: boolean;
+    sort_order: number;
+  }[];
   images_360?: { id: string; url: string; frame_order: number }[];
   category_ids?: string[];
   category_name?: string;
   subcategory_name?: string;
   collection_ids?: string[];
-  flags?: { id: string; name: string; slug: string; badge_label: string | null; badge_bg_color: string | null; badge_text_color: string | null }[];
-  specifications?: { id: string; attribute_definition_id: string; name: string; value: string; sort_order: number }[];
+  flags?: {
+    id: string;
+    name: string;
+    slug: string;
+    badge_label: string | null;
+    badge_bg_color: string | null;
+    badge_text_color: string | null;
+  }[];
+  specifications?: {
+    id: string;
+    attribute_definition_id: string;
+    name: string;
+    value: string;
+    sort_order: number;
+  }[];
 }
 
 export interface ProductFilters {
@@ -101,6 +121,7 @@ export interface ProductFormData {
   gallery_images?: string[];
   images_360?: string[];
   publish_at?: string | null;
+  card_label?: string | null;
 }
 
 const productSelect = `
@@ -111,10 +132,14 @@ const productSelect = `
   gross_weight, net_weight, gemstone,
   rating_average, review_count,
   seo_title, seo_description, focus_keyword, canonical_url, social_image, image_alt_text,
-  subcategory_id, tags,
+  card_label, subcategory_id, tags,
   published_at, publish_at, archived_at, archived_by, created_at, updated_at,
   created_by, updated_by
 `;
+
+// Sentinels that always match zero rows (used to short-circuit empty filters
+// without returning every product).
+const ZERO_UUID = "00000000-0000-0000-0000-000000000000";
 
 // A product is publicly visible only when it is active AND its schedule has
 // arrived (publish_at is NULL = no scheduling restriction).
@@ -149,12 +174,16 @@ function mapProduct(row: any): ProductWithImages {
     canonical_url: row.canonical_url ?? null,
     social_image: row.social_image ?? null,
     image_alt_text: row.image_alt_text ?? null,
+    card_label: row.card_label ?? null,
     subcategory_id: row.subcategory_id ?? null,
   };
 }
 
 export const productsApi = {
-  async list(filters: ProductFilters = {}, opts: { publicOnly?: boolean; excludeArchived?: boolean } = {}): Promise<{ data: ProductWithImages[]; count: number }> {
+  async list(
+    filters: ProductFilters = {},
+    opts: { publicOnly?: boolean; excludeArchived?: boolean } = {},
+  ): Promise<{ data: ProductWithImages[]; count: number }> {
     let query = supabase.from("products").select(productSelect, { count: "exact" });
 
     if (opts.publicOnly) {
@@ -185,23 +214,34 @@ export const productsApi = {
     }
 
     if (filters.category) {
-      const { data: cat } = await supabase.from("categories").select("id").eq("slug", filters.category).maybeSingle();
+      const { data: cat } = await supabase
+        .from("categories")
+        .select("id")
+        .eq("slug", filters.category)
+        .maybeSingle();
       if (cat) {
-        const { data: links } = await supabase.from("product_categories").select("product_id").eq("category_id", cat.id);
+        const { data: links } = await supabase
+          .from("product_categories")
+          .select("product_id")
+          .eq("category_id", cat.id);
         const pids = (links || []).map((l: any) => l.product_id);
         if (pids.length > 0) query = query.in("id", pids);
-        else query = query.eq("id", "__none__");
+        else query = query.eq("id", ZERO_UUID);
       } else {
-        query = query.eq("id", "__none__");
+        query = query.eq("id", ZERO_UUID);
       }
     }
 
     if (filters.subcategory) {
-      const { data: subcat } = await supabase.from("subcategories").select("id").eq("slug", filters.subcategory).maybeSingle();
+      const { data: subcat } = await supabase
+        .from("subcategories")
+        .select("id")
+        .eq("slug", filters.subcategory)
+        .maybeSingle();
       if (subcat) {
         query = query.eq("subcategory_id", subcat.id);
       } else {
-        query = query.eq("id", "__none__");
+        query = query.eq("id", ZERO_UUID);
       }
     }
 
@@ -220,25 +260,34 @@ export const productsApi = {
     let products = ((data as any[]) || []).map(mapProduct);
 
     if (products.length > 0) {
-      await Promise.all(products.map(async (p) => {
-        const [imgs, cats] = await Promise.all([
-          supabase.from("product_images").select("*").eq("product_id", p.id).order("sort_order" as any),
-          supabase.from("product_categories").select("category_id").eq("product_id", p.id),
-        ]);
-        if (imgs.error) throw imgs.error;
-        if (cats.error) throw cats.error;
-        const imgData = (imgs.data as any[]) || [];
-        const catData = (cats.data as any[]) || [];
-        p.main_image = imgData.find((i: any) => i.is_main) || imgData[0] || null;
-        p.images = imgData;
-        p.category_ids = catData.map((c: any) => c.category_id);
-      }));
+      await Promise.all(
+        products.map(async (p) => {
+          const [imgs, cats] = await Promise.all([
+            supabase
+              .from("product_images")
+              .select("*")
+              .eq("product_id", p.id)
+              .order("sort_order" as any),
+            supabase.from("product_categories").select("category_id").eq("product_id", p.id),
+          ]);
+          if (imgs.error) throw imgs.error;
+          if (cats.error) throw cats.error;
+          const imgData = (imgs.data as any[]) || [];
+          const catData = (cats.data as any[]) || [];
+          p.main_image = imgData.find((i: any) => i.is_main) || imgData[0] || null;
+          p.images = imgData;
+          p.category_ids = catData.map((c: any) => c.category_id);
+        }),
+      );
 
       const allCatIds = [...new Set(products.flatMap((p) => p.category_ids || []))];
       if (allCatIds.length > 0) {
-        const { data: catData, error: catError } = await supabase.from("categories").select("id, name").in("id", allCatIds);
+        const { data: catData, error: catError } = await supabase
+          .from("categories")
+          .select("id, name")
+          .in("id", allCatIds);
         if (catError) throw catError;
-        const catMap = new Map((catData as any[] || []).map((c: any) => [c.id, c.name]));
+        const catMap = new Map(((catData as any[]) || []).map((c: any) => [c.id, c.name]));
         products.forEach((p) => {
           const cid = p.category_ids?.[0];
           if (cid) p.category_name = catMap.get(cid) || null;
@@ -262,10 +311,15 @@ export const productsApi = {
         p.flags = flagsByProduct.get(p.id) || [];
       });
 
-      const allSubIds = [...new Set(products.map((p) => p.subcategory_id).filter(Boolean))] as string[];
+      const allSubIds = [
+        ...new Set(products.map((p) => p.subcategory_id).filter(Boolean)),
+      ] as string[];
       if (allSubIds.length > 0) {
-        const { data: subData } = await supabase.from("subcategories").select("id, name").in("id", allSubIds);
-        const subMap = new Map((subData as any[] || []).map((s: any) => [s.id, s.name]));
+        const { data: subData } = await supabase
+          .from("subcategories")
+          .select("id, name")
+          .in("id", allSubIds);
+        const subMap = new Map(((subData as any[]) || []).map((s: any) => [s.id, s.name]));
         products.forEach((p) => {
           if (p.subcategory_id) p.subcategory_name = subMap.get(p.subcategory_id) || null;
         });
@@ -280,21 +334,36 @@ export const productsApi = {
   },
 
   async getPublished(filters: Omit<ProductFilters, "status"> = {}): Promise<ProductWithImages[]> {
-    return productsApi.list({ ...filters, status: "active" }, { publicOnly: true }).then((r) => r.data);
+    return productsApi
+      .list({ ...filters, status: "active" }, { publicOnly: true })
+      .then((r) => r.data);
   },
 
-  async getFacets(categorySlug?: string): Promise<{ metals: string[]; minPrice: number; maxPrice: number }> {
-    let query = supabase.from("products").select("material, current_price").eq("status", "active").or(visibilityOrFilter());
+  async getFacets(
+    categorySlug?: string,
+  ): Promise<{ metals: string[]; minPrice: number; maxPrice: number }> {
+    let query = supabase
+      .from("products")
+      .select("material, current_price")
+      .eq("status", "active")
+      .or(visibilityOrFilter());
 
     if (categorySlug) {
-      const { data: cat } = await supabase.from("categories").select("id").eq("slug", categorySlug).maybeSingle();
+      const { data: cat } = await supabase
+        .from("categories")
+        .select("id")
+        .eq("slug", categorySlug)
+        .maybeSingle();
       if (cat) {
-        const { data: links } = await supabase.from("product_categories").select("product_id").eq("category_id", cat.id);
+        const { data: links } = await supabase
+          .from("product_categories")
+          .select("product_id")
+          .eq("category_id", cat.id);
         const pids = (links || []).map((l: any) => l.product_id);
         if (pids.length > 0) query = query.in("id", pids);
-        else query = query.eq("id", "__none__");
+        else query = query.eq("id", ZERO_UUID);
       } else {
-        query = query.eq("id", "__none__");
+        query = query.eq("id", ZERO_UUID);
       }
     }
 
@@ -349,12 +418,24 @@ export const productsApi = {
     if (!product) return null;
 
     const [imagesRes, images360Res, catsRes, collRes, flagsRes, specsRes] = await Promise.all([
-      supabase.from("product_images").select("*").eq("product_id", id).order("sort_order" as any),
-      supabase.from("product_360_images").select("*").eq("product_id", id).order("frame_order" as any),
+      supabase
+        .from("product_images")
+        .select("*")
+        .eq("product_id", id)
+        .order("sort_order" as any),
+      supabase
+        .from("product_360_images")
+        .select("*")
+        .eq("product_id", id)
+        .order("frame_order" as any),
       supabase.from("product_categories").select("category_id").eq("product_id", id),
       supabase.from("product_collections").select("collection_id").eq("product_id", id),
       supabase.from("product_product_flags").select("flag_id").eq("product_id", id),
-      supabase.from("product_attributes").select("*, attribute_definition:attribute_definitions(name)").eq("product_id", id).order("sort_order" as any),
+      supabase
+        .from("product_attributes")
+        .select("*, attribute_definition:attribute_definitions(name)")
+        .eq("product_id", id)
+        .order("sort_order" as any),
     ]);
     if (imagesRes.error) throw imagesRes.error;
     if (images360Res.error) throw images360Res.error;
@@ -367,11 +448,14 @@ export const productsApi = {
     const images360 = (images360Res.data as any[]) || [];
     const categories = (catsRes.data as any[]) || [];
     const collections = (collRes.data as any[]) || [];
-    const flagIds = (flagsRes.data as any[] || []).map((f: any) => f.flag_id);
+    const flagIds = ((flagsRes.data as any[]) || []).map((f: any) => f.flag_id);
 
     let flags: any[] = [];
     if (flagIds.length > 0) {
-      const { data: flagData } = await supabase.from("product_flags").select("id, name, slug, badge_label, badge_bg_color, badge_text_color").in("id", flagIds);
+      const { data: flagData } = await supabase
+        .from("product_flags")
+        .select("id, name, slug, badge_label, badge_bg_color, badge_text_color")
+        .in("id", flagIds);
       flags = (flagData as any[]) || [];
     }
 
@@ -407,21 +491,35 @@ export const productsApi = {
     const raw = data as any;
     const images = (raw.product_images || []) as any[];
     const mapped = mapProduct(raw);
-    const { data: catsData } = await supabase.from("product_categories").select("category_id").eq("product_id", mapped.id);
-    const category_ids = (catsData as any[] || []).map((c: any) => c.category_id);
+    const { data: catsData } = await supabase
+      .from("product_categories")
+      .select("category_id")
+      .eq("product_id", mapped.id);
+    const category_ids = ((catsData as any[]) || []).map((c: any) => c.category_id);
     let category_name = null;
     if (category_ids.length > 0) {
-      const { data: catInfo } = await supabase.from("categories").select("name").eq("id", category_ids[0]).maybeSingle();
+      const { data: catInfo } = await supabase
+        .from("categories")
+        .select("name")
+        .eq("id", category_ids[0])
+        .maybeSingle();
       if (catInfo) category_name = (catInfo as any).name;
     }
     const [flagsRes, specsRes] = await Promise.all([
       supabase.from("product_product_flags").select("flag_id").eq("product_id", mapped.id),
-      supabase.from("product_attributes").select("*, attribute_definition:attribute_definitions(name)").eq("product_id", mapped.id).order("sort_order" as any),
+      supabase
+        .from("product_attributes")
+        .select("*, attribute_definition:attribute_definitions(name)")
+        .eq("product_id", mapped.id)
+        .order("sort_order" as any),
     ]);
-    const flagIds = (flagsRes.data as any[] || []).map((f: any) => f.flag_id);
+    const flagIds = ((flagsRes.data as any[]) || []).map((f: any) => f.flag_id);
     let flags: any[] = [];
     if (flagIds.length > 0) {
-      const { data: flagData } = await supabase.from("product_flags").select("id, name, slug, badge_label, badge_bg_color, badge_text_color").in("id", flagIds);
+      const { data: flagData } = await supabase
+        .from("product_flags")
+        .select("id, name, slug, badge_label, badge_bg_color, badge_text_color")
+        .in("id", flagIds);
       flags = (flagData as any[]) || [];
     }
     const specifications = ((specsRes.data as any[]) || []).map((s: any) => ({
@@ -479,19 +577,27 @@ export const productsApi = {
       canonical_url: data.canonical_url || null,
       social_image: data.social_image || null,
       image_alt_text: data.image_alt_text || null,
+      card_label: data.card_label || null,
       subcategory_id: data.subcategory_id || null,
       tags: data.tags || [],
       publish_at: isScheduled ? publishAt : null,
       published_at: !isScheduled && effectiveStatus === "active" ? now.toISOString() : null,
       archived_at: effectiveStatus === "archived" ? now.toISOString() : null,
-      archived_by: effectiveStatus === "archived" ? adminUser?.id ?? null : null,
+      archived_by: effectiveStatus === "archived" ? (adminUser?.id ?? null) : null,
     };
-    const { data: result, error } = await supabase.from("products").insert(payload).select().single();
+    const { data: result, error } = await supabase
+      .from("products")
+      .insert(payload)
+      .select()
+      .single();
     if (error) throw error;
     const product = mapProduct(result as any);
 
     if (data.category_ids && data.category_ids.length > 0) {
-      const catLinks = data.category_ids.map((cid) => ({ product_id: product.id, category_id: cid }));
+      const catLinks = data.category_ids.map((cid) => ({
+        product_id: product.id,
+        category_id: cid,
+      }));
       const { error: catErr } = await supabase.from("product_categories").insert(catLinks as any);
       if (catErr) throw new Error(`Failed to assign category: ${catErr.message}`);
       product.category_ids = data.category_ids;
@@ -514,8 +620,13 @@ export const productsApi = {
     }
 
     if (data.collection_ids && data.collection_ids.length > 0) {
-      const collLinks = data.collection_ids.map((cid) => ({ product_id: product.id, collection_id: cid }));
-      const { error: collErr } = await supabase.from("product_collections").insert(collLinks as any);
+      const collLinks = data.collection_ids.map((cid) => ({
+        product_id: product.id,
+        collection_id: cid,
+      }));
+      const { error: collErr } = await supabase
+        .from("product_collections")
+        .insert(collLinks as any);
       if (collErr) throw new Error(`Failed to assign collection: ${collErr.message}`);
     }
 
@@ -529,7 +640,11 @@ export const productsApi = {
 
   async update(id: string, data: Partial<ProductFormData>): Promise<ProductWithImages> {
     const now = new Date();
-    const { data: before } = await supabase.from("products").select("status, publish_at, archived_at").eq("id", id).maybeSingle();
+    const { data: before } = await supabase
+      .from("products")
+      .select("status, publish_at, archived_at")
+      .eq("id", id)
+      .maybeSingle();
     const prevStatus = (before as any)?.status;
 
     const payload: any = { ...data, updated_at: now.toISOString() };
@@ -551,8 +666,7 @@ export const productsApi = {
       publishAtRaw === undefined || publishAtRaw === null || String(publishAtRaw).trim() === ""
         ? null
         : String(publishAtRaw).trim();
-    const isScheduled =
-      publishAt !== null && new Date(publishAt).getTime() > now.getTime();
+    const isScheduled = publishAt !== null && new Date(publishAt).getTime() > now.getTime();
 
     // A future schedule is really "active wait until publish_at" so read-time
     // visibility turns it public at the right moment. A past/invalid schedule is
@@ -586,27 +700,44 @@ export const productsApi = {
     if (error) throw error;
 
     if (data.category_ids !== undefined) {
-      const { error: delCatErr } = await supabase.from("product_categories").delete().eq("product_id", id);
+      const { error: delCatErr } = await supabase
+        .from("product_categories")
+        .delete()
+        .eq("product_id", id);
       if (delCatErr) throw new Error(`Failed to update category: ${delCatErr.message}`);
       if (data.category_ids.length > 0) {
         const catLinks = data.category_ids.map((cid) => ({ product_id: id, category_id: cid }));
-        const { error: insCatErr } = await supabase.from("product_categories").insert(catLinks as any);
+        const { error: insCatErr } = await supabase
+          .from("product_categories")
+          .insert(catLinks as any);
         if (insCatErr) throw new Error(`Failed to assign category: ${insCatErr.message}`);
       }
     }
 
     if (data.collection_ids !== undefined) {
-      const { error: delColErr } = await supabase.from("product_collections").delete().eq("product_id", id);
+      const { error: delColErr } = await supabase
+        .from("product_collections")
+        .delete()
+        .eq("product_id", id);
       if (delColErr) throw new Error(`Failed to update collection: ${delColErr.message}`);
       if (data.collection_ids.length > 0) {
-        const collLinks = data.collection_ids.map((cid) => ({ product_id: id, collection_id: cid }));
-        const { error: insColErr } = await supabase.from("product_collections").insert(collLinks as any);
+        const collLinks = data.collection_ids.map((cid) => ({
+          product_id: id,
+          collection_id: cid,
+        }));
+        const { error: insColErr } = await supabase
+          .from("product_collections")
+          .insert(collLinks as any);
         if (insColErr) throw new Error(`Failed to assign collection: ${insColErr.message}`);
       }
     }
 
     if (data.main_image_url) {
-      await supabase.from("product_images").update({ is_main: false } as any).eq("product_id", id).eq("is_main", true);
+      await supabase
+        .from("product_images")
+        .update({ is_main: false } as any)
+        .eq("product_id", id)
+        .eq("is_main", true);
       await productsApi.addImage(id, data.main_image_url, undefined, true);
     }
 
@@ -629,7 +760,11 @@ export const productsApi = {
       payload.status === "active" && isScheduled ? "product_scheduled" : "product_updated",
       id,
       before ? { status: before.status, publish_at: before.publish_at } : undefined,
-      { status: payload.status, publish_at: payload.publish_at, is_archived: payload.status === "archived" },
+      {
+        status: payload.status,
+        publish_at: payload.publish_at,
+        is_archived: payload.status === "archived",
+      },
     );
 
     return productsApi.getWithImages(id) as Promise<ProductWithImages>;
@@ -637,7 +772,11 @@ export const productsApi = {
 
   async updateStatus(id: string, status: string): Promise<void> {
     const now = new Date();
-    const { data: before } = await supabase.from("products").select("status, publish_at, archived_at").eq("id", id).maybeSingle();
+    const { data: before } = await supabase
+      .from("products")
+      .select("status, publish_at, archived_at")
+      .eq("id", id)
+      .maybeSingle();
     const prevStatus = (before as any)?.status;
 
     const payload: any = { status, updated_at: now.toISOString() };
@@ -672,12 +811,14 @@ export const productsApi = {
       }
     }
 
-    const { error } = await supabase
-      .from("products")
-      .update(payload)
-      .eq("id", id);
+    const { error } = await supabase.from("products").update(payload).eq("id", id);
     if (error) throw error;
-    await logAction(action, id, before ? { status: before.status, publish_at: before.publish_at } : undefined, { status, publish_at: payload.publish_at });
+    await logAction(
+      action,
+      id,
+      before ? { status: before.status, publish_at: before.publish_at } : undefined,
+      { status, publish_at: payload.publish_at },
+    );
   },
 
   async bulkUpdateStatus(ids: string[], status: string): Promise<void> {
@@ -716,8 +857,11 @@ export const productsApi = {
   },
 
   async delete(id: string): Promise<void> {
-    const { data: images } = await supabase.from("product_images").select("url").eq("product_id", id);
-    const urls = (images as any[] || []).map((i: any) => i.url);
+    const { data: images } = await supabase
+      .from("product_images")
+      .select("url")
+      .eq("product_id", id);
+    const urls = ((images as any[]) || []).map((i: any) => i.url);
     await supabase.from("product_images").delete().eq("product_id", id);
     await supabase.from("product_categories").delete().eq("product_id", id);
     await supabase.from("product_collections").delete().eq("product_id", id);
@@ -739,7 +883,13 @@ export const productsApi = {
   async addImage(productId: string, url: string, altText?: string, isMain = false): Promise<any> {
     const { data, error } = await supabase
       .from("product_images")
-      .insert({ product_id: productId, url, alt_text: altText || null, is_main: isMain, sort_order: 0 } as any)
+      .insert({
+        product_id: productId,
+        url,
+        alt_text: altText || null,
+        is_main: isMain,
+        sort_order: 0,
+      } as any)
       .select()
       .single();
     if (error) throw error;
@@ -752,8 +902,14 @@ export const productsApi = {
   },
 
   async setMainImage(productId: string, imageId: string): Promise<void> {
-    await supabase.from("product_images").update({ is_main: false } as any).eq("product_id", productId);
-    await supabase.from("product_images").update({ is_main: true } as any).eq("id", imageId);
+    await supabase
+      .from("product_images")
+      .update({ is_main: false } as any)
+      .eq("product_id", productId);
+    await supabase
+      .from("product_images")
+      .update({ is_main: true } as any)
+      .eq("id", imageId);
   },
 
   async search(query: string): Promise<ProductWithImages[]> {
@@ -770,5 +926,4 @@ export const productsApi = {
     if (error) throw error;
     return ((data as any[]) || []).map(mapProduct);
   },
-
 };

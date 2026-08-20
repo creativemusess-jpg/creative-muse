@@ -28,19 +28,17 @@ import { ProductCard } from "@/components/site/ProductCard";
 import { ShoppableReelsSection } from "@/components/site/ShoppableReelsSection";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import type { CarouselApi } from "@/components/ui/carousel";
-import {
-  StoreLocationMap,
-  getDirectionsUrl,
-} from "@/components/site/StoreLocationMap";
+import { StoreLocationMap, getDirectionsUrl } from "@/components/site/StoreLocationMap";
 import { useStore } from "@/lib/store";
 import {
   ProductCarouselSection,
   type AutoScrollSettings,
 } from "@/components/site/ProductCarouselSection";
 import { useCategories, useContentSection } from "@/lib/api/hooks";
-import { heroMediaApi, HERO_DEFAULT_CONTENT } from "@/lib/api/heroMedia";
+import { homepageBannersApi, BANNER_BUTTON_DEFAULT } from "@/lib/api/banners";
+import type { HomepageBanner } from "@/lib/api/banners";
+import Autoplay from "embla-carousel-autoplay";
 import { useInfiniteCarousel } from "@/lib/useInfiniteCarousel";
-import heroRing from "@/assets/hero-ring.jpg";
 import catRings from "@/assets/cat-rings.png";
 import catNecklaces from "@/assets/cat-necklaces.png";
 import catEarrings from "@/assets/cat-earrings.png";
@@ -93,9 +91,6 @@ export const Route = createFileRoute("/")({
           "Discover handcrafted fine jewellery from Vadodara. BIS Hallmarked gold, IGI certified diamonds, bridal collections and everyday luxury.",
       },
     ],
-    links: [
-      { rel: "preload", href: heroRing, as: "image" },
-    ],
   }),
   component: HomePage,
 });
@@ -103,7 +98,7 @@ export const Route = createFileRoute("/")({
 function HomePage() {
   return (
     <>
-      <Hero />
+      <PromoBannerCarousel />
       <TrustBar />
       <ShopByCategory />
       <FeaturedBanner />
@@ -121,63 +116,36 @@ function HomePage() {
 }
 
 /* =========================================================
-   1. HERO
+   1. PROMOTIONAL BANNER CAROUSEL
    ========================================================= */
-const HERO_SLIDES = HERO_DEFAULT_CONTENT.map((d, i) => ({
-  badge: d.badge || "",
-  title: d.title || "",
-  highlight: d.highlight || "",
-  desc: d.description || "",
-  price: d.price || "",
-  bestSellerLabel: d.best_seller_label || "",
-  primaryCtaText: d.primary_cta_text || "",
-  primaryCtaLink: d.primary_cta_link || "",
-  secondaryCtaText: d.secondary_cta_text || "",
-  secondaryCtaLink: d.secondary_cta_link || "",
-  stats: d.stats || [],
-  productId: d.product_id || null,
-  image: i === 0 ? heroRing : prodPolki,
-  imageAlt:
-    i === 0
-      ? "Aarav Solitaire — 18K rose gold diamond ring"
-      : "Polki Choker — Traditional bridal jewellery",
-  mediaType: "image" as const,
-}));
-
-function Hero() {
+function PromoBannerCarousel() {
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
+  const [viewportW, setViewportW] = useState(() =>
+    typeof window !== "undefined" ? window.innerWidth : 1024,
+  );
+  const prefersReducedMotion = useReducedMotion();
 
-  const { data: heroMedia } = useQuery({
-    queryKey: ["hero", "media"],
-    queryFn: () => heroMediaApi.list(true),
+  const { data: banners } = useQuery({
+    queryKey: ["homepage", "banners"],
+    queryFn: () => homepageBannersApi.list("active"),
     staleTime: 5 * 60 * 1000,
     retry: false,
   });
 
-  const slides = useMemo(() => {
-    if (!heroMedia || heroMedia.length === 0) return HERO_SLIDES;
-    return heroMedia.map((m, i) => {
-      const fallback = HERO_SLIDES[i % HERO_SLIDES.length];
-      return {
-        badge: m.badge || fallback.badge,
-        title: m.title || fallback.title,
-        highlight: m.highlight || fallback.highlight,
-        desc: m.description || fallback.desc,
-        image: m.media_url,
-        imageAlt: m.name || fallback.imageAlt,
-        price: m.price || fallback.price,
-        mediaType: m.media_type,
-        bestSellerLabel: m.best_seller_label || fallback.bestSellerLabel,
-        primaryCtaText: m.primary_cta_text || fallback.primaryCtaText,
-        primaryCtaLink: m.primary_cta_link || fallback.primaryCtaLink,
-        secondaryCtaText: m.secondary_cta_text || fallback.secondaryCtaText,
-        secondaryCtaLink: m.secondary_cta_link || fallback.secondaryCtaLink,
-        stats: m.stats && m.stats.length > 0 ? m.stats : fallback.stats,
-        productId: m.product_id,
-      };
-    });
-  }, [heroMedia]);
+  const slides: HomepageBanner[] = banners ?? [];
+
+  useEffect(() => {
+    const onResize = () => setViewportW(window.innerWidth);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+
+  const imageFor = (b: HomepageBanner): string => {
+    if (viewportW < 768) return b.mobile_image || b.desktop_image;
+    if (viewportW < 1024) return b.tablet_image || b.desktop_image;
+    return b.desktop_image;
+  };
 
   const onSelect = useCallback((a: CarouselApi) => {
     setCurrent(a?.selectedScrollSnap() ?? 0);
@@ -192,213 +160,163 @@ function Hero() {
     };
   }, [api, onSelect]);
 
+  if (slides.length === 0) return null;
+
+  const frameClass = () =>
+    `cm-hero-frame relative w-full overflow-hidden rounded-[16px] bg-[#f5efe8] sm:rounded-[20px] lg:rounded-[24px]`;
+
+  const objectPosFor = (b: HomepageBanner): string =>
+    `${b.object_position_x ?? 50}% ${b.object_position_y ?? 50}%`;
+
+  const trackSlides = slides.length === 2 ? [slides[0], slides[1], slides[0]] : slides;
+  const activeIndex = current % slides.length;
+
+  const buttonPosFor = (b: HomepageBanner): { x: number; y: number } => {
+    if (
+      viewportW < 768 &&
+      (b.button_position_mobile_x != null || b.button_position_mobile_y != null)
+    ) {
+      return {
+        x: b.button_position_mobile_x ?? BANNER_BUTTON_DEFAULT.x,
+        y: b.button_position_mobile_y ?? BANNER_BUTTON_DEFAULT.y,
+      };
+    }
+    return {
+      x: b.button_position_x ?? BANNER_BUTTON_DEFAULT.x,
+      y: b.button_position_y ?? BANNER_BUTTON_DEFAULT.y,
+    };
+  };
+
+  const renderSlide = (b: HomepageBanner, idx: number) => {
+    const pos = buttonPosFor(b);
+    const label = b.alt_text || b.name || "Banner";
+    const image = (
+      <img
+        src={imageFor(b)}
+        alt=""
+        width={1920}
+        height={700}
+        fetchPriority={idx === 0 ? "high" : undefined}
+        loading={idx === 0 ? undefined : "lazy"}
+        decoding="async"
+        className="h-full w-full object-cover"
+        style={{ objectPosition: objectPosFor(b) }}
+      />
+    );
+    const cta =
+      b.button_enabled && b.button_text ? (
+        <span
+          className="btn-primary banner-cta cm-hero-cta"
+          style={{
+            left: `${pos.x}%`,
+            top: `${pos.y}%`,
+            transform: "translate(-50%, -50%)",
+            backgroundColor: "#9C544D",
+            color: "#ffffff",
+          }}
+        >
+          {b.button_text}
+        </span>
+      ) : null;
+    const inner = (
+      <>
+        {image}
+        {cta}
+      </>
+    );
+    if (b.button_url) {
+      return b.button_url.startsWith("/") ? (
+        <Link
+          to={b.button_url as any}
+          className="cm-hero-slide-link absolute inset-0"
+          aria-label={label}
+        >
+          {inner}
+        </Link>
+      ) : (
+        <a
+          href={b.button_url}
+          target="_blank"
+          rel="noreferrer"
+          className="cm-hero-slide-link absolute inset-0"
+          aria-label={label}
+        >
+          {inner}
+        </a>
+      );
+    }
+    return <div className="cm-hero-slide-link absolute inset-0">{inner}</div>;
+  };
+
+  if (slides.length === 1) {
+    return (
+      <section className="bg-[#fdf8f3] pt-4 pb-6 sm:pt-6 sm:pb-8">
+        <div className="mx-auto w-full max-w-[1440px] px-2 sm:px-4 lg:px-6">
+          <div className={frameClass()}>{renderSlide(slides[0], 0)}</div>
+        </div>
+      </section>
+    );
+  }
+
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-[#fdf8f3] via-[#f7ede0] to-[#f0dcc8]">
-      <div className="pointer-events-none absolute -top-32 -left-32 h-[480px] w-[480px] rounded-full bg-[#C9A96E]/20 blur-[120px]" />
-      <div className="pointer-events-none absolute -right-40 -bottom-40 h-[520px] w-[520px] rounded-full bg-[#E8B4A0]/25 blur-[140px]" />
-
-      <Carousel setApi={setApi} opts={{ loop: true, align: "start" }} className="relative">
-        <CarouselContent>
-          {slides.map((slide, idx) => (
-            <CarouselItem key={idx}>
-              <div className="relative mx-auto grid max-w-[1280px] items-center gap-6 px-6 pt-8 pb-12 md:pt-10 md:pb-16 lg:grid-cols-[55fr_45fr] lg:gap-8 lg:pt-12 lg:pb-16">
-                <motion.div
-                  initial={{ opacity: 0, y: 24 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.7 }}
-                  className="flex flex-col justify-center"
-                >
-                  <span className="inline-flex w-fit items-center gap-2 rounded-full border border-[#9C544D]/40 bg-white/60 px-4 py-1.5 text-[11px] font-semibold tracking-[0.18em] text-[#9C544D] uppercase backdrop-blur-sm">
-                    <Sparkles className="h-3 w-3" />
-                    {slide.badge}
-                  </span>
-
-                  <h1
-                    className="font-display mt-4 font-bold leading-[1.05] text-[#1a1a2e]"
-                    style={{ fontSize: "clamp(28px, 5vw, 52px)" }}
-                  >
-                    {slide.title}
-                    <br />
-                    <span className="shimmer-text italic" style={{ background: "#9C544D", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>{slide.highlight}</span>
-                  </h1>
-
-                  <p className="mt-4 max-w-lg text-[14px] leading-relaxed text-[#5a4e44] sm:text-[15px]">
-                    {slide.desc}
-                  </p>
-
-                  <div className="mt-5 flex flex-wrap gap-3">
-                    {slide.primaryCtaLink.startsWith("/") ? (
-                      <Link to={slide.primaryCtaLink as any} className="btn-primary" style={{ backgroundColor: "#9C544D", color: "#ffffff" }}>
-                        {slide.primaryCtaText}
-                      </Link>
-                    ) : (
-                      <a
-                        href={slide.primaryCtaLink}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="btn-primary"
-                        style={{ backgroundColor: "#9C544D", color: "#ffffff" }}
-                      >
-                        {slide.primaryCtaText}
-                      </a>
-                    )}
-                    {slide.secondaryCtaLink.startsWith("/") ? (
-                      <Link to={slide.secondaryCtaLink as any} className="btn-secondary" style={{ borderColor: "#9C544D", color: "#9C544D", backgroundColor: "transparent" }}>
-                        {slide.secondaryCtaText}
-                      </Link>
-                    ) : (
-                      <a
-                        href={slide.secondaryCtaLink}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="btn-secondary"
-                        style={{ borderColor: "#9C544D", color: "#9C544D", backgroundColor: "transparent" }}
-                      >
-                        {slide.secondaryCtaText}
-                      </a>
-                    )}
-                  </div>
-
-                  <div className="mt-6 flex flex-wrap items-center gap-x-10 gap-y-4 border-t border-[#7A2533]/20 pt-5">
-                    {slide.stats.map((s) => (
-                      <div key={s.label}>
-                        <p className="font-display text-2xl font-bold text-[#1a1a2e]">{s.number}</p>
-                        <p className="text-[11px] tracking-[0.14em] text-[#5a4e44] uppercase">
-                          {s.label}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                </motion.div>
-
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.8, delay: 0.2 }}
-                  className="relative mx-auto flex w-full max-w-[420px] items-center justify-center"
-                >
-                  {slide.productId ? (
-                    <Link
-                      to="/product/$productId"
-                      params={{ productId: slide.productId }}
-                      className="glass-panel group relative block aspect-square w-full overflow-hidden rounded-[28px] p-4 shadow-[0_24px_64px_rgba(0,0,0,0.12)] transition-shadow hover:shadow-[0_24px_64px_rgba(156,84,77,0.28)] sm:p-5"
-                      aria-label={`View ${slide.bestSellerLabel}`}
-                    >
-                      <div className="animate-cm-float flex h-full w-full items-center justify-center">
-                        {slide.mediaType === "video" ? (
-                          <video
-                            src={slide.image}
-                            aria-label={slide.imageAlt}
-                            muted
-                            autoPlay
-                            loop
-                            playsInline
-                            preload="metadata"
-                            className="h-full w-full rounded-[20px] object-contain drop-shadow-[0_24px_48px_rgba(156,84,77,0.35)]"
-                          />
-                        ) : (
-                          <img
-                            src={slide.image}
-                            alt={slide.imageAlt}
-                            width={1024}
-                            height={1280}
-                            fetchPriority={idx === 0 ? "high" : undefined}
-                            decoding="async"
-                            className="h-full w-full rounded-[20px] object-contain drop-shadow-[0_24px_48px_rgba(156,84,77,0.35)] transition-transform duration-500 group-hover:scale-[1.03]"
-                          />
-                        )}
-                      </div>
-                    </Link>
-                  ) : (
-                    <div className="glass-panel relative aspect-square w-full overflow-hidden rounded-[28px] p-4 shadow-[0_24px_64px_rgba(0,0,0,0.12)] sm:p-5">
-                      <div className="animate-cm-float flex h-full w-full items-center justify-center">
-                        {slide.mediaType === "video" ? (
-                          <video
-                            src={slide.image}
-                            aria-label={slide.imageAlt}
-                            muted
-                            autoPlay
-                            loop
-                            playsInline
-                            preload="metadata"
-                            className="h-full w-full rounded-[20px] object-contain drop-shadow-[0_24px_48px_rgba(156,84,77,0.35)]"
-                          />
-                        ) : (
-                          <img
-                            src={slide.image}
-                            alt={slide.imageAlt}
-                            width={1024}
-                            height={1280}
-                            fetchPriority={idx === 0 ? "high" : undefined}
-                            decoding="async"
-                            className="h-full w-full rounded-[20px] object-contain drop-shadow-[0_24px_48px_rgba(156,84,77,0.35)]"
-                          />
-                        )}
-                      </div>
-                    </div>
-                  )}
-
-                  <motion.div
-                    initial={{ opacity: 0, x: -30 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.6, duration: 0.6 }}
-                    className="absolute top-4 left-2 hidden rounded-[18px] border border-[#9C544D]/30 bg-white/90 p-3 shadow-[0_8px_32px_rgba(156,84,77,0.2)] backdrop-blur-xl md:block"
-                  >
-                    <p className="eyebrow text-[9px] text-[#9C544D]">Best Seller</p>
-                    <p className="font-display mt-1 text-sm font-semibold text-[#1a1a2e]">
-                      {slide.bestSellerLabel}
-                    </p>
-                    <p className="mt-0.5 text-[13px] font-bold text-[#9C544D]">{slide.price}</p>
-                  </motion.div>
-
-                  <motion.div
-                    initial={{ opacity: 0, x: 30 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.8, duration: 0.6 }}
-                    className="absolute right-2 bottom-4 hidden items-center gap-2 rounded-[18px] border border-emerald-200/60 bg-white/90 p-2.5 shadow-[0_8px_32px_rgba(0,0,0,0.1)] backdrop-blur-xl md:flex"
-                  >
-                    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-emerald-100">
-                      <Diamond className="h-4 w-4 text-emerald-700" />
-                    </div>
-                    <div>
-                      <p className="text-[11px] font-semibold text-emerald-800">IGI Certified</p>
-                      <p className="text-[10px] text-[#5a4e44]">Lab-graded diamonds</p>
-                    </div>
-                  </motion.div>
-                </motion.div>
-              </div>
-            </CarouselItem>
-          ))}
-        </CarouselContent>
-
-        <button
-          onClick={() => api?.scrollPrev()}
-          className="absolute left-3 top-1/2 z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 text-[#2a1e14] shadow transition-colors hover:bg-white"
-          aria-label="Previous slide"
+    <section className="bg-[#fdf8f3] pt-4 pb-6 sm:pt-6 sm:pb-8">
+      <div className="mx-auto w-full max-w-[1440px] px-2 sm:px-4 lg:px-6">
+        <Carousel
+          setApi={setApi}
+          opts={{ loop: true, align: "center" }}
+          plugins={
+            prefersReducedMotion
+              ? undefined
+              : [
+                  Autoplay({
+                    delay: 3000,
+                    stopOnInteraction: false,
+                    stopOnMouseEnter: true,
+                  }),
+                ]
+          }
+          className="relative"
         >
-          <ArrowLeft className="h-4 w-4" />
-        </button>
-        <button
-          onClick={() => api?.scrollNext()}
-          className="absolute right-3 top-1/2 z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 text-[#2a1e14] shadow transition-colors hover:bg-white"
-          aria-label="Next slide"
-        >
-          <ArrowRight className="h-4 w-4" />
-        </button>
+          <CarouselContent className="-ml-3 sm:-ml-4 lg:-ml-6">
+            {trackSlides.map((b, idx) => (
+              <CarouselItem
+                key={`${b.id}-${idx}`}
+                className="basis-full pl-3 sm:pl-4 lg:pl-6 lg:basis-[86%]"
+              >
+                <div className={frameClass()}>{renderSlide(b, idx)}</div>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
 
-        <div className="absolute bottom-4 left-1/2 z-10 flex -translate-x-1/2 gap-2">
+          <button
+            onClick={() => api?.scrollPrev()}
+            className="absolute left-2 top-1/2 z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 text-[#2a1e14] shadow transition-colors hover:bg-white sm:left-4"
+            aria-label="Previous banner"
+          >
+            <ArrowLeft className="h-4 w-4" />
+          </button>
+          <button
+            onClick={() => api?.scrollNext()}
+            className="absolute right-2 top-1/2 z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 text-[#2a1e14] shadow transition-colors hover:bg-white sm:right-4"
+            aria-label="Next banner"
+          >
+            <ArrowRight className="h-4 w-4" />
+          </button>
+        </Carousel>
+
+        <div className="mt-4 flex justify-center gap-2 sm:mt-5">
           {slides.map((_, idx) => (
             <button
               key={idx}
               onClick={() => api?.scrollTo(idx)}
               className={`h-2 rounded-full transition-all ${
-                idx === current ? "w-7 bg-[#9C544D]" : "w-2 bg-[#7A2533]/50"
+                idx === activeIndex ? "w-7 bg-[#9C544D]" : "w-2 bg-[#7A2533]/50"
               }`}
-              aria-label={`Go to slide ${idx + 1}`}
+              aria-label={`Go to banner ${idx + 1}`}
             />
           ))}
         </div>
-      </Carousel>
+      </div>
     </section>
   );
 }
@@ -418,14 +336,16 @@ function TrustBar() {
   return (
     <section className="overflow-hidden bg-[#1a1a2e] py-5">
       <div className="mx-auto flex max-w-[1280px] overflow-hidden">
-        <div className={`flex shrink-0 items-center gap-8 whitespace-nowrap px-6 text-[12px] tracking-[0.1em] text-white uppercase ${prefersReducedMotion ? "flex-wrap justify-center gap-x-10 gap-y-3" : "animate-cm-marquee"}`}>
+        <div
+          className={`flex shrink-0 items-center gap-8 whitespace-nowrap px-6 text-[12px] tracking-[0.1em] text-white uppercase ${prefersReducedMotion ? "flex-wrap justify-center gap-x-10 gap-y-3" : "animate-cm-marquee"}`}
+        >
           {Array.from({ length: prefersReducedMotion ? 1 : 3 }).flatMap((_, setIdx) =>
             items.map(([Ic, label], itemIdx) => (
               <div key={`${setIdx}-${itemIdx}`} className="flex shrink-0 items-center gap-2.5">
                 <Ic className="h-4 w-4 text-white" />
                 <span>{label}</span>
               </div>
-            ))
+            )),
           )}
         </div>
       </div>
@@ -536,12 +456,11 @@ function deduplicateCategories(cats: any[]): any[] {
 function ShopByCategory() {
   const { data, isLoading } = useCategories();
   const prefersReducedMotion = useReducedMotion();
-  const {
-    scrollerRef: categoryScrollerRef,
-    scrollByStep,
-  } = useInfiniteCarousel<HTMLDivElement>({ speed: 55 });
+  const { scrollerRef: categoryScrollerRef, scrollByStep } = useInfiniteCarousel<HTMLDivElement>({
+    speed: 55,
+  });
 
-  const dbCategories = useMemo(() => data ? deduplicateCategories(data) : [], [data]);
+  const dbCategories = useMemo(() => (data ? deduplicateCategories(data) : []), [data]);
 
   if (isLoading) return null;
 
@@ -593,10 +512,7 @@ function ShopByCategory() {
   }
 
   return (
-    <section
-      id="shop-by-category"
-      className="scroll-mt-40 bg-[#fdf8f3] py-16 md:py-20"
-    >
+    <section id="shop-by-category" className="scroll-mt-40 bg-[#fdf8f3] py-16 md:py-20">
       <div className="mx-auto max-w-[1280px] px-6">
         <SectionHeading eyebrow="Browse" title="Shop by Category" />
 
@@ -872,7 +788,7 @@ function FeaturedBanner() {
             </div>
           </motion.div>
 
-<div className="relative min-w-0 lg:h-[420px]">
+          <div className="relative min-w-0 lg:h-[420px]">
             <div className="relative z-10 mx-auto w-full max-w-[620px] lg:absolute lg:inset-y-0 lg:right-0 lg:flex lg:max-w-[560px] lg:items-center">
               <HeroVideoCarousel cards={cards} />
             </div>
@@ -901,8 +817,10 @@ function BestSellers() {
         return products.filter((p) => p.flags?.some((f) => f.slug === "trending"));
       default:
         return products
-          .filter(
-            (p) => p.flags?.some((f) => f.slug === "best-seller" || f.slug === "trending" || f.slug === "wedding"),
+          .filter((p) =>
+            p.flags?.some(
+              (f) => f.slug === "best-seller" || f.slug === "trending" || f.slug === "wedding",
+            ),
           )
           .slice(0, 8);
     }

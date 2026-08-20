@@ -164,7 +164,7 @@ function AccountOrderDetailPage() {
             </div>
           </div>
 
-          <div className="grid border-b border-[#ead8b8] text-sm sm:grid-cols-4">
+          <div className="grid min-w-0 border-b border-[#ead8b8] text-sm sm:grid-cols-4">
             {[
               ["Order Number", order.order_number],
               ["Order Date", formatDate(order.created_at)],
@@ -173,13 +173,13 @@ function AccountOrderDetailPage() {
             ].map(([label, value]) => (
               <div
                 key={label}
-                className="border-[#ead8b8] px-2 py-4 sm:border-r sm:last:border-r-0"
+                className="min-w-0 border-[#ead8b8] px-2 py-4 sm:border-r sm:last:border-r-0"
               >
                 <p className="text-[10px] font-semibold uppercase tracking-wider text-[#7a6e64]">
                   {label}
                 </p>
                 <p
-                  className={`mt-1 font-semibold capitalize ${String(value).includes("paid") || String(value).includes("confirmed") ? "text-green-700" : "text-[#1a1a2e]"}`}
+                  className={`mt-1 font-semibold break-words capitalize ${String(value).includes("paid") || String(value).includes("confirmed") ? "text-green-700" : "text-[#1a1a2e]"}`}
                 >
                   {value}
                 </p>
@@ -191,13 +191,13 @@ function AccountOrderDetailPage() {
             <p className="mb-4 text-[11px] font-semibold uppercase tracking-wider text-[#7a6e64]">
               Delivery Progress
             </p>
-            <div className="grid grid-cols-4 gap-2">
+            <div className="grid grid-cols-2 gap-x-3 gap-y-4 sm:grid-cols-4 sm:gap-2">
               {steps.map((step, index) => {
                 const active = index <= activeStep;
                 return (
-                  <div key={step} className="relative text-center">
+                  <div key={step} className="relative flex flex-col items-center justify-center text-center">
                     <div
-                      className={`mx-auto flex h-9 w-9 items-center justify-center rounded-full border ${active ? "border-[#7A2533] bg-[#7A2533] text-white" : "border-[#d9c9ab] bg-white text-[#9a8a74]"}`}
+                      className={`flex h-9 w-9 items-center justify-center rounded-full border ${active ? "border-[#7A2533] bg-[#7A2533] text-white" : "border-[#d9c9ab] bg-white text-[#9a8a74]"}`}
                     >
                       {step === "shipped" ? (
                         <Truck className="h-4 w-4" />
@@ -205,7 +205,9 @@ function AccountOrderDetailPage() {
                         <Package className="h-4 w-4" />
                       )}
                     </div>
-                    <p className="mt-2 text-[11px] font-medium capitalize text-[#5d554d]">{step}</p>
+                    <p className="mt-2 text-[11px] font-medium leading-tight break-words capitalize text-[#5d554d]">
+                      {step}
+                    </p>
                   </div>
                 );
               })}
@@ -219,8 +221,8 @@ function AccountOrderDetailPage() {
               </h2>
               <div className="divide-y divide-[#ead8b8]">
                 {items.map((item) => (
-                  <div key={item.id} className="flex gap-4 p-4">
-                    <div className="h-24 w-24 shrink-0 overflow-hidden rounded-[6px] bg-[#fff7e8]">
+                  <div key={item.id} className="flex flex-wrap gap-3 p-4 sm:flex-nowrap sm:gap-4">
+                    <div className="h-20 w-20 shrink-0 overflow-hidden rounded-[6px] bg-[#fff7e8] sm:h-24 sm:w-24">
                       {item.productImage && (
                         <img
                           src={item.productImage}
@@ -229,14 +231,14 @@ function AccountOrderDetailPage() {
                         />
                       )}
                     </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="font-semibold text-[#1a1a2e]">{item.productName}</p>
-                      <p className="mt-4 text-xs text-[#7a6e64]">Qty: {item.quantity}</p>
+                    <div className="min-w-0 flex-1 basis-[calc(100%-92px)] sm:basis-auto">
+                      <p className="font-semibold break-words text-[#1a1a2e]">{item.productName}</p>
+                      <p className="mt-2 text-xs text-[#7a6e64] sm:mt-4">Qty: {item.quantity}</p>
                       <p className="text-xs text-[#7a6e64]">
                         Unit Price: {formatPrice(item.unitPrice)}
                       </p>
                     </div>
-                    <p className="self-center text-sm font-semibold text-[#1a1a2e]">
+                    <p className="ml-auto text-sm font-semibold text-[#1a1a2e] sm:ml-0 sm:self-center">
                       {formatPrice(item.lineTotal)}
                     </p>
                   </div>

@@ -82,6 +82,14 @@ export function ShoppableReelCard({ reel, product }: ReelWithProduct) {
   return (
     <div ref={cardRef} className="group w-full snap-start shrink-0">
       <div className="relative overflow-hidden rounded-t-[20px] bg-[#f5efe8]">
+        {hasProduct && (
+          <Link
+            to="/product/$productId"
+            params={{ productId: product.slug }}
+            aria-label={`View ${product.name}`}
+            className="absolute inset-0 z-[5] outline-none focus-visible:ring-2 focus-visible:ring-[#C9A96E]"
+          />
+        )}
         {showVideo ? (
           <video
             ref={videoRef}

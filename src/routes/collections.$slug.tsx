@@ -1,11 +1,8 @@
-import { createFileRoute, Link, useParams } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, useParams } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { PageShell } from "@/components/site/PageHeader";
-import { productsApi } from "@/lib/api/products";
 import { categoriesApi } from "@/lib/api/categories";
 import { subcategoriesApi } from "@/lib/api/subcategories";
-import { productFromDb } from "@/lib/products";
-import { ProductCard } from "@/components/site/ProductCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import { CategoryHero } from "@/components/site/CategoryHero";
 
@@ -13,22 +10,15 @@ export const Route = createFileRoute("/collections/$slug")({
   head: ({ params }) => ({
     meta: [{ title: `${params.slug.replace(/-/g, " ")} — Creative Muse` }],
   }),
-  component: CategoryCollectionPage,
+  component: CollectionsSlugLayout,
 });
 
-function CategoryCollectionPage() {
-  const { slug } = useParams({ from: "/collections/$slug" });
+function CollectionsSlugLayout() {
+  const { slug, subslug } = useParams({ strict: false }) as { slug: string; subslug?: string };
 
   const { data: category, isLoading: catLoading } = useQuery({
     queryKey: ["collection", "category", slug],
     queryFn: () => categoriesApi.getBySlug(slug),
-    staleTime: 5 * 60 * 1000,
-  });
-
-  const { data: products = [], isLoading: prodsLoading } = useQuery({
-    queryKey: ["products", "collection", slug],
-    queryFn: () => productsApi.getPublished({ category: slug }).then((r) => r.map(productFromDb)),
-    enabled: !!category,
     staleTime: 5 * 60 * 1000,
   });
 
@@ -39,9 +29,7 @@ function CategoryCollectionPage() {
     staleTime: 5 * 60 * 1000,
   });
 
-  const loading = catLoading || (!!category && prodsLoading);
-
-  if (loading) {
+  if (catLoading) {
     return (
       <PageShell>
         <div className="mx-auto max-w-[1280px] px-6 py-20">
@@ -73,49 +61,71 @@ function CategoryCollectionPage() {
     );
   }
 
+  const activeSub = subcategories.find((s: any) => s.slug === subslug);
+  const heroCategory = activeSub
+    ? {
+        ...category,
+        name: activeSub.name,
+        description: activeSub.description || category.description,
+      }
+    : category;
+
   return (
     <PageShell>
-      <CategoryHero category={category} />
+      <CategoryHero category={heroCategory} />
       <div id="products" className="mx-auto max-w-[1440px] px-4 py-8 lg:px-8">
         <nav className="mb-4 text-xs text-gray-400">
           <Link to="/" className="hover:text-[#7A2533]">
             Home
           </Link>
           <span className="mx-2">/</span>
-          <span className="text-gray-600">{category.name}</span>
+          <Link to={"/collections/$slug"} params={{ slug }} className="hover:text-[#7A2533]">
+            {category.name}
+          </Link>
+          {activeSub && (
+            <>
+              <span className="mx-2">/</span>
+              <span className="text-gray-600">{activeSub.name}</span>
+            </>
+          )}
         </nav>
 
         {subcategories.length > 0 && (
           <div className="mb-8 flex flex-wrap gap-2">
             <Link
-              to={`.`}
-              className="rounded-full bg-[#7A2533] px-4 py-1.5 text-xs font-semibold text-white"
+              to={"/collections/$slug"}
+              params={{ slug }}
+              aria-current={!subslug ? "page" : undefined}
+              className={`rounded-full px-4 py-1.5 text-xs font-semibold ${
+                !subslug
+                  ? "bg-[#7A2533] text-white"
+                  : "border border-gray-200 text-gray-600 hover:border-[#7A2533] hover:text-[#7A2533]"
+              }`}
             >
               All
             </Link>
-            {subcategories.map((sub: any) => (
-              <Link
-                key={sub.id}
-                to={`/collections/${slug}/${sub.slug}`}
-                className="rounded-full border border-gray-200 px-4 py-1.5 text-xs font-semibold text-gray-600 hover:border-[#7A2533] hover:text-[#7A2533]"
-              >
-                {sub.name}
-              </Link>
-            ))}
+            {subcategories.map((sub: any) => {
+              const active = sub.slug === subslug;
+              return (
+                <Link
+                  key={sub.id}
+                  to={"/collections/$slug/$subslug"}
+                  params={{ slug, subslug: sub.slug }}
+                  aria-current={active ? "page" : undefined}
+                  className={`rounded-full px-4 py-1.5 text-xs font-semibold ${
+                    active
+                      ? "bg-[#7A2533] text-white"
+                      : "border border-gray-200 text-gray-600 hover:border-[#7A2533] hover:text-[#7A2533]"
+                  }`}
+                >
+                  {sub.name}
+                </Link>
+              );
+            })}
           </div>
         )}
 
-        {products.length === 0 ? (
-          <div className="py-16 text-center">
-            <p className="text-gray-400">No products found in this collection.</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-2 gap-3 sm:gap-6 md:grid-cols-3 lg:grid-cols-4 items-stretch">
-            {products.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
-        )}
+        <Outlet />
       </div>
     </PageShell>
   );

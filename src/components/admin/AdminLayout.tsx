@@ -35,6 +35,7 @@ import {
   Bell,
   Trash2,
   CheckCheck,
+  Megaphone,
 } from "lucide-react";
 import { GlobalSearch } from "./GlobalSearch";
 
@@ -176,9 +177,9 @@ const navItems: NavItem[] = [
     permission: "homepage",
   },
   {
-    label: "Hero Media",
-    href: "/admin/hero-media",
-    icon: <Layers className="h-4 w-4" />,
+    label: "Homepage Banners",
+    href: "/admin/banners",
+    icon: <Megaphone className="h-4 w-4" />,
     permission: "homepage",
   },
   {
