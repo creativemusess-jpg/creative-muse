@@ -241,7 +241,7 @@ function AdminSettings() {
           <button
             onClick={handleSave}
             disabled={saving}
-            className="flex items-center gap-2 rounded-lg bg-[#1a1a2e] px-4 py-2 text-sm font-semibold text-white hover:bg-[#2d1b4e] disabled:opacity-50"
+            className="flex items-center gap-2 rounded-lg bg-[#1a1a2e] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#2d1b4e] disabled:opacity-50 min-h-[44px]"
           >
             <Save className="h-4 w-4" /> {saving ? "Saving..." : "Save Settings"}
           </button>
@@ -259,7 +259,7 @@ function AdminSettings() {
               <input
                 value={storeName}
                 onChange={(e) => setStoreName(e.target.value)}
-                className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]"
+                className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm outline-none focus:border-[#7A2533] min-h-[44px]"
               />
             </div>
             <div>
@@ -269,7 +269,7 @@ function AdminSettings() {
               <input
                 value={storeEmail}
                 onChange={(e) => setStoreEmail(e.target.value)}
-                className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]"
+                className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm outline-none focus:border-[#7A2533] min-h-[44px]"
               />
             </div>
             <div>
@@ -279,7 +279,7 @@ function AdminSettings() {
               <input
                 value={storePhone}
                 onChange={(e) => setStorePhone(e.target.value)}
-                className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]"
+                className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm outline-none focus:border-[#7A2533] min-h-[44px]"
               />
             </div>
             <div>
@@ -290,7 +290,7 @@ function AdminSettings() {
                 value={storeAddress}
                 onChange={(e) => setStoreAddress(e.target.value)}
                 rows={3}
-                className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]"
+                className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm outline-none focus:border-[#7A2533]"
               />
             </div>
           </div>
@@ -306,7 +306,7 @@ function AdminSettings() {
               <input
                 value={newsletterPopupImage}
                 onChange={(e) => setNewsletterPopupImage(e.target.value)}
-                className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]"
+                className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm outline-none focus:border-[#7A2533] min-h-[44px]"
                 placeholder="https://..."
               />
               <p className="mt-1.5 text-[11px] text-gray-400">
@@ -356,7 +356,7 @@ function AdminSettings() {
                   setPreview(null);
                   setEmailResult(null);
                 }}
-                className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]"
+                className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm outline-none focus:border-[#7A2533] min-h-[44px]"
               >
                 <option value="welcome">Welcome Email</option>
                 <option value="order_confirmation">Order Confirmation</option>
@@ -376,7 +376,7 @@ function AdminSettings() {
                 type="email"
                 value={testRecipient}
                 onChange={(e) => setTestRecipient(e.target.value)}
-                className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]"
+                className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm outline-none focus:border-[#7A2533] min-h-[44px]"
                 placeholder="Loaded from EMAIL_TEST_RECIPIENT"
               />
             </div>
@@ -392,7 +392,7 @@ function AdminSettings() {
                     setSelectedOrderId(e.target.value);
                     setPreview(null);
                   }}
-                  className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]"
+                  className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm outline-none focus:border-[#7A2533] min-h-[44px]"
                 >
                   <option value="">Select an existing order</option>
                   {orders.map((order) => (
@@ -427,7 +427,7 @@ function AdminSettings() {
                     setSelectedCustomerId(e.target.value);
                     setPreview(null);
                   }}
-                  className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]"
+                  className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm outline-none focus:border-[#7A2533] min-h-[44px]"
                 >
                   <option value="">Use labelled sample preview data</option>
                   {customers.map((customer) => (
@@ -450,14 +450,14 @@ function AdminSettings() {
                 <button
                   type="button"
                   onClick={() => setPreviewMode("desktop")}
-                  className={`rounded-lg border px-3 py-2 text-xs font-semibold ${previewMode === "desktop" ? "border-[#7A2533] bg-[#fdf8f3] text-[#1a1a2e]" : "border-gray-200 text-gray-500"}`}
+                  className={`rounded-lg border px-3 py-2.5 text-xs font-semibold min-h-[44px] ${previewMode === "desktop" ? "border-[#7A2533] bg-[#fdf8f3] text-[#1a1a2e]" : "border-gray-200 text-gray-500"}`}
                 >
                   Desktop
                 </button>
                 <button
                   type="button"
                   onClick={() => setPreviewMode("mobile")}
-                  className={`rounded-lg border px-3 py-2 text-xs font-semibold ${previewMode === "mobile" ? "border-[#7A2533] bg-[#fdf8f3] text-[#1a1a2e]" : "border-gray-200 text-gray-500"}`}
+                  className={`rounded-lg border px-3 py-2.5 text-xs font-semibold min-h-[44px] ${previewMode === "mobile" ? "border-[#7A2533] bg-[#fdf8f3] text-[#1a1a2e]" : "border-gray-200 text-gray-500"}`}
                 >
                   Mobile
                 </button>
@@ -469,7 +469,7 @@ function AdminSettings() {
                 type="button"
                 onClick={() => handlePreviewEmail()}
                 disabled={!!emailBusy}
-                className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg border border-[#7A2533] px-4 py-2 text-sm font-semibold text-[#8a681f] hover:bg-[#fdf8f3] disabled:opacity-50"
+                className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg border border-[#7A2533] px-4 py-2.5 text-sm font-semibold text-[#8a681f] hover:bg-[#fdf8f3] disabled:opacity-50 min-h-[44px]"
               >
                 {emailBusy === "preview" ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
@@ -482,7 +482,7 @@ function AdminSettings() {
                 type="button"
                 onClick={() => handleSendTestEmail()}
                 disabled={!!emailBusy}
-                className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg bg-[#1a1a2e] px-4 py-2 text-sm font-semibold text-white hover:bg-[#2d1b4e] disabled:opacity-50"
+                className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg bg-[#1a1a2e] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#2d1b4e] disabled:opacity-50 min-h-[44px]"
               >
                 {emailBusy === "send" ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
@@ -544,7 +544,7 @@ function AdminSettings() {
                   <iframe
                     title="Email preview"
                     srcDoc={preview.html}
-                    className="h-[620px] w-full bg-white"
+                    className="h-[400px] sm:h-[620px] w-full bg-white"
                   />
                 </div>
               ) : (
@@ -562,12 +562,12 @@ function AdminSettings() {
                 <button
                   type="button"
                   onClick={loadEmailTesting}
-                  className="rounded-lg border border-gray-200 px-2 py-1 text-xs font-semibold text-gray-500 hover:bg-gray-50"
+                  className="rounded-lg border border-gray-200 px-2 py-1.5 text-xs font-semibold text-gray-500 hover:bg-gray-50 min-h-[36px]"
                 >
                   Refresh
                 </button>
               </div>
-              <div className="overflow-x-auto">
+              <div className="hidden md:block overflow-x-auto">
                 <table className="w-full text-left text-xs">
                   <thead>
                     <tr className="border-b border-gray-100 bg-gray-50 text-[10px] uppercase tracking-wider text-gray-500">
@@ -649,11 +649,64 @@ function AdminSettings() {
                   </tbody>
                 </table>
               </div>
+              <div className="md:hidden divide-y divide-gray-100">
+                {testHistory.length === 0 ? (
+                  <div className="px-3 py-6 text-center text-gray-400 text-sm">
+                    No test emails yet
+                  </div>
+                ) : (
+                  testHistory.map((row) => (
+                    <div key={row.id} className="p-3 space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="font-medium text-[#1a1a2e] text-sm">
+                          {row.metadata?.template_label || row.test_template || row.notification_type}
+                        </span>
+                        <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase ${row.status === "sent" ? "bg-green-100 text-green-700" : row.status === "failed" ? "bg-red-100 text-red-600" : "bg-amber-100 text-amber-700"}`}>
+                          {row.status}
+                        </span>
+                      </div>
+                      <p className="text-xs text-gray-500 truncate">{row.actual_recipient}</p>
+                      <p className="text-xs text-gray-500">
+                        {row.sent_at ? new Date(row.sent_at).toLocaleString() : "—"}
+                      </p>
+                      <div className="flex gap-1">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            handleSendTestEmail({
+                              template: row.notification_type,
+                              orderId: row.order_id,
+                              customerId: row.customer_id,
+                              recipient: row.actual_recipient,
+                            })
+                          }
+                          className="inline-flex items-center gap-1 rounded border border-gray-200 px-2 py-1.5 text-[10px] font-semibold text-gray-600 hover:bg-gray-50 min-h-[36px]"
+                        >
+                          <RefreshCw className="h-3 w-3" /> Resend
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            handlePreviewEmail({
+                              template: row.notification_type,
+                              orderId: row.order_id,
+                              customerId: row.customer_id,
+                            })
+                          }
+                          className="inline-flex items-center gap-1 rounded border border-gray-200 px-2 py-1.5 text-[10px] font-semibold text-gray-600 hover:bg-gray-50 min-h-[36px]"
+                        >
+                          <Eye className="h-3 w-3" /> Preview
+                        </button>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="rounded-xl border border-gray-200 bg-white p-6">
+        <div className="mt-6 rounded-xl border border-gray-200 bg-white p-6">
           <h3 className="text-lg font-bold text-[#1a1a2e] mb-4">Gift Packaging</h3>
           <div className="space-y-4">
             <div className="flex items-center gap-3">
@@ -662,15 +715,15 @@ function AdminSettings() {
             </div>
             <div>
               <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Name</label>
-              <input value={giftCfg.name} onChange={(e) => setGiftCfg({ ...giftCfg, name: e.target.value })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]" />
+              <input value={giftCfg.name} onChange={(e) => setGiftCfg({ ...giftCfg, name: e.target.value })} className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm outline-none focus:border-[#7A2533] min-h-[44px]" />
             </div>
             <div>
               <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Description</label>
-              <textarea value={giftCfg.description} onChange={(e) => setGiftCfg({ ...giftCfg, description: e.target.value })} rows={2} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]" />
+              <textarea value={giftCfg.description} onChange={(e) => setGiftCfg({ ...giftCfg, description: e.target.value })} rows={2} className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm outline-none focus:border-[#7A2533]" />
             </div>
             <div>
               <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Price (₹)</label>
-              <input type="number" value={giftCfg.price} onChange={(e) => setGiftCfg({ ...giftCfg, price: Number(e.target.value) })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]" />
+              <input type="number" value={giftCfg.price} onChange={(e) => setGiftCfg({ ...giftCfg, price: Number(e.target.value) })} className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm outline-none focus:border-[#7A2533] min-h-[44px]" />
             </div>
             <div className="flex items-center gap-3">
               <input type="checkbox" id="gp-msg" checked={giftCfg.allow_gift_message} onChange={(e) => setGiftCfg({ ...giftCfg, allow_gift_message: e.target.checked })} className="h-4 w-4 rounded border-gray-300 text-[#7A2533] focus:ring-[#7A2533]" />
@@ -679,12 +732,12 @@ function AdminSettings() {
             {giftCfg.allow_gift_message && (
               <div>
                 <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Max Message Length</label>
-                <input type="number" value={giftCfg.max_message_length} onChange={(e) => setGiftCfg({ ...giftCfg, max_message_length: Number(e.target.value) })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]" />
+                <input type="number" value={giftCfg.max_message_length} onChange={(e) => setGiftCfg({ ...giftCfg, max_message_length: Number(e.target.value) })} className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm outline-none focus:border-[#7A2533] min-h-[44px]" />
               </div>
             )}
             <div>
               <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Status</label>
-              <select value={giftCfg.status} onChange={(e) => setGiftCfg({ ...giftCfg, status: e.target.value as "active" | "inactive" })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]">
+              <select value={giftCfg.status} onChange={(e) => setGiftCfg({ ...giftCfg, status: e.target.value as "active" | "inactive" })} className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm outline-none focus:border-[#7A2533] min-h-[44px]">
                 <option value="active">Active</option>
                 <option value="inactive">Inactive</option>
               </select>
@@ -692,7 +745,7 @@ function AdminSettings() {
           </div>
         </div>
 
-        <div className="rounded-xl border border-gray-200 bg-white p-6">
+        <div className="mt-6 rounded-xl border border-gray-200 bg-white p-6">
           <h3 className="text-lg font-bold text-[#1a1a2e] mb-4">Estimated Delivery</h3>
           <div className="space-y-4">
             <div className="flex items-center gap-3">
@@ -701,11 +754,11 @@ function AdminSettings() {
             </div>
             <div>
               <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Min Days</label>
-              <input type="number" value={estCfg.min_days} onChange={(e) => setEstCfg({ ...estCfg, min_days: Number(e.target.value) })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]" />
+              <input type="number" value={estCfg.min_days} onChange={(e) => setEstCfg({ ...estCfg, min_days: Number(e.target.value) })} className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm outline-none focus:border-[#7A2533] min-h-[44px]" />
             </div>
             <div>
               <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Max Days</label>
-              <input type="number" value={estCfg.max_days} onChange={(e) => setEstCfg({ ...estCfg, max_days: Number(e.target.value) })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]" />
+              <input type="number" value={estCfg.max_days} onChange={(e) => setEstCfg({ ...estCfg, max_days: Number(e.target.value) })} className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm outline-none focus:border-[#7A2533] min-h-[44px]" />
             </div>
           </div>
         </div>

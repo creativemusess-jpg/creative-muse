@@ -83,6 +83,63 @@ function AdminProducts() {
 
   const formatPrice = (n: number) => "₹" + n.toLocaleString("en-IN");
 
+  const renderMobileCard = (p: ProductWithImages) => {
+    const imgUrl = p.main_image?.url || p.images?.[0]?.url;
+    return (
+      <div className="flex flex-col gap-3 rounded-lg border border-gray-200 bg-white p-3">
+        <div className="flex gap-3">
+          <div className="h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-gray-100">
+            {imgUrl ? (
+              <img src={imgUrl} alt={p.name} className="h-full w-full object-cover" loading="lazy"
+                onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
+            ) : (
+              <div className="flex h-full w-full items-center justify-center text-gray-400"><ImageOff className="h-4 w-4" /></div>
+            )}
+          </div>
+          <div className="min-w-0 flex-1">
+            <Link to="/admin/products/$id" params={{ id: p.id }} className="font-medium text-[#1a1a2e] hover:text-[#7A2533] line-clamp-1">
+              {p.name}
+            </Link>
+            {(p.flags || []).filter((f) => f.badge_label).map((flag) => (
+              <span key={flag.id} className="ml-1 rounded px-1.5 py-0.5 text-[10px] font-semibold" style={{ backgroundColor: flag.badge_bg_color || "#7A2533", color: flag.badge_text_color || "#ffffff" }}>
+                {flag.badge_label}
+              </span>
+            ))}
+            <div className="mt-1 text-xs text-gray-500">{p.category_name || "—"}</div>
+          </div>
+        </div>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-semibold">{formatPrice(p.current_price)}</span>
+            <span className={p.stock_quantity !== null && p.stock_quantity <= 5 ? "text-xs font-medium text-red-600" : "text-xs text-gray-500"}>
+              Stock: {p.stock_quantity ?? "—"}
+            </span>
+          </div>
+          <StatusBadge status={p.status} />
+        </div>
+        {isScheduled(p) && (
+          <div className="text-[11px] font-medium text-[#7A2533]">
+            Scheduled: {new Date(p.publish_at!).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric", hour: "numeric", minute: "2-digit" })}
+          </div>
+        )}
+        <div className="flex items-center gap-1 border-t border-gray-100 pt-2">
+          <Link to="/product/$productId" params={{ productId: p.slug }} target="_blank"
+            className="flex h-9 min-w-0 flex-1 items-center justify-center gap-1.5 rounded-lg border border-gray-200 text-xs font-medium text-gray-600 hover:bg-gray-50">
+            <Eye className="h-3.5 w-3.5" /> Preview
+          </Link>
+          <Link to="/admin/products/$id" params={{ id: p.id }}
+            className="flex h-9 min-w-0 flex-1 items-center justify-center gap-1.5 rounded-lg border border-gray-200 text-xs font-medium text-gray-600 hover:bg-gray-50">
+            <Edit3 className="h-3.5 w-3.5" /> Edit
+          </Link>
+          <button onClick={() => setRecycleConfirm({ id: p.id, name: p.name })}
+            className="flex h-9 min-w-0 flex-1 items-center justify-center gap-1.5 rounded-lg border border-gray-200 text-xs font-medium text-gray-600 hover:bg-gray-50">
+            <Archive className="h-3.5 w-3.5" /> Archive
+          </button>
+        </div>
+      </div>
+    );
+  };
+
   const columns = [
     {
       key: "name", label: "Product", sortable: true,
@@ -174,7 +231,7 @@ function AdminProducts() {
         description={`${count} products total`}
         actions={
           <button onClick={() => navigate({ to: "/admin/products/new" })}
-            className="flex items-center gap-2 rounded-lg bg-[#1a1a2e] px-4 py-2 text-sm font-semibold text-white hover:bg-[#2d1b4e]">
+            className="flex items-center gap-2 rounded-lg bg-[#1a1a2e] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#2d1b4e] min-h-[44px]">
             <Plus className="h-4 w-4" /> Add Product
           </button>
         }
@@ -198,10 +255,12 @@ function AdminProducts() {
         totalPages={totalPages}
         total={count}
         onPageChange={setPage}
+        mobileCardRender={renderMobileCard}
+        mobileCardGrid="grid-cols-1 sm:grid-cols-2"
         filters={
           <div className="flex gap-2">
             <select value={statusFilter} onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
-              className="rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]">
+              className="rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533] min-h-[40px]">
               <option value="">All Status</option>
               <option value="active">Active</option>
               <option value="draft">Draft</option>
@@ -211,10 +270,10 @@ function AdminProducts() {
         }
         bulkActions={
           <div className="flex gap-2">
-            <button onClick={() => handleBulkStatus("active")} className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium hover:bg-gray-50">
+            <button onClick={() => handleBulkStatus("active")} className="rounded-lg border border-gray-200 px-3 py-2 text-xs font-medium hover:bg-gray-50 min-h-[40px]">
               Publish
             </button>
-            <button onClick={() => handleBulkStatus("archived")} className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium hover:bg-gray-50">
+            <button onClick={() => handleBulkStatus("archived")} className="rounded-lg border border-gray-200 px-3 py-2 text-xs font-medium hover:bg-gray-50 min-h-[40px]">
               Move to Recycle Bin
             </button>
           </div>

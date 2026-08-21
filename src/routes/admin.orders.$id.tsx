@@ -809,52 +809,54 @@ function OrderDetailPage() {
       <div className="mb-4 flex items-center justify-between">
         <Link
           to="/admin/orders"
-          className="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-[#7A2533]"
+          className="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-[#7A2533] min-h-[44px] py-2"
         >
           <ArrowLeft className="h-4 w-4" /> Orders
         </Link>
       </div>
 
       {/* Action Bar */}
-      <div className="mb-6 rounded-xl border border-gray-200 bg-white p-4">
+          <div className="mb-6 rounded-xl border border-gray-200 bg-white p-4">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex flex-wrap items-center gap-3">
-            <h1 className="text-xl font-bold text-[#1a1a2e]">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+            <h1 className="text-lg sm:text-xl font-bold text-[#1a1a2e]">
               {order.order_number || `Order #${id.slice(0, 8)}`}
             </h1>
-            <StatusBadge status={order.order_status || "pending"} size="md" />
-            {order.payment_status && <StatusBadge status={order.payment_status} size="md" />}
-            {isArchived && (
-              <span className="inline-flex items-center gap-1 rounded-full bg-yellow-100 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-yellow-700">
-                <Archive className="h-3 w-3" /> Archived
-              </span>
-            )}
+            <div className="flex flex-wrap items-center gap-1.5">
+              <StatusBadge status={order.order_status || "pending"} size="md" />
+              {order.payment_status && <StatusBadge status={order.payment_status} size="md" />}
+              {isArchived && (
+                <span className="inline-flex items-center gap-1 rounded-full bg-yellow-100 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-yellow-700">
+                  <Archive className="h-3 w-3" /> Archived
+                </span>
+              )}
+            </div>
           </div>
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
             <button
               onClick={() => handlePrint("invoice")}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-50"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 min-h-[40px]"
             >
-              <Printer className="h-3.5 w-3.5" /> Print
+              <Printer className="h-3.5 w-3.5" /> <span className="hidden sm:inline">Print</span>
             </button>
             <button
               onClick={handleDownloadPdf}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-50"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 min-h-[40px]"
             >
               <Download className="h-3.5 w-3.5" /> PDF
             </button>
             <button
               onClick={handleEmailInvoice}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-50"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 min-h-[40px]"
             >
-              <Mail className="h-3.5 w-3.5" /> Email
+              <Mail className="h-3.5 w-3.5" /> <span className="hidden sm:inline">Email</span>
             </button>
             <div className="relative">
               <button
                 onClick={() => setShowNotificationMenu(!showNotificationMenu)}
-                className="inline-flex items-center gap-1.5 rounded-lg border border-[#7A2533] px-3 py-1.5 text-xs font-semibold text-[#8a681f] hover:bg-[#fdf8f3]"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-[#7A2533] px-3 py-2 text-xs font-semibold text-[#8a681f] hover:bg-[#fdf8f3] min-h-[40px]"
               >
-                <Mail className="h-3.5 w-3.5" /> Notifications
+                <Mail className="h-3.5 w-3.5" /> <span className="hidden sm:inline">Notifications</span>
               </button>
               {showNotificationMenu && (
                 <>
@@ -869,7 +871,7 @@ function OrderDetailPage() {
                         onClick={() => !action.disabled && handleSendNotification(action.template)}
                         disabled={action.disabled || !!emailSending}
                         title={action.disabled ? action.reason : undefined}
-                        className={`flex w-full items-center justify-between gap-2 px-4 py-2 text-left text-xs ${action.disabled ? "cursor-not-allowed text-gray-300" : "text-gray-700 hover:bg-gray-50"}`}
+                        className={`flex w-full items-center justify-between gap-2 px-4 py-2.5 text-left text-xs min-h-[44px] ${action.disabled ? "cursor-not-allowed text-gray-300" : "text-gray-700 hover:bg-gray-50"}`}
                       >
                         <span>{action.label}</span>
                         {emailSending === action.template ? (
@@ -881,7 +883,7 @@ function OrderDetailPage() {
                     <button
                       onClick={handleWhatsApp}
                       disabled={!order.customer_phone}
-                      className={`flex w-full items-center gap-2 px-4 py-2 text-xs ${order.customer_phone ? "text-gray-700 hover:bg-gray-50" : "cursor-not-allowed text-gray-300"}`}
+                      className={`flex w-full items-center gap-2 px-4 py-2.5 text-xs min-h-[44px] ${order.customer_phone ? "text-gray-700 hover:bg-gray-50" : "cursor-not-allowed text-gray-300"}`}
                     >
                       <MessageSquare className="h-3.5 w-3.5" /> Send WhatsApp Update
                     </button>
@@ -891,27 +893,27 @@ function OrderDetailPage() {
             </div>
             <button
               onClick={handleWhatsApp}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-50"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 min-h-[40px]"
             >
               <MessageSquare className="h-3.5 w-3.5" /> WhatsApp
             </button>
             <div className="relative">
               <button
                 onClick={() => setShowActionMenu(!showActionMenu)}
-                className="inline-flex items-center gap-1.5 rounded-lg bg-[#1a1a2e] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#2d1b4e]"
+                className="inline-flex items-center gap-1.5 rounded-lg bg-[#1a1a2e] px-3 py-2 text-xs font-semibold text-white hover:bg-[#2d1b4e] min-h-[40px]"
               >
                 <MoreHorizontal className="h-3.5 w-3.5" /> Actions
               </button>
               {showActionMenu && (
                 <>
                   <div className="fixed inset-0 z-40" onClick={() => setShowActionMenu(false)} />
-                  <div className="absolute right-0 top-full z-50 mt-1 w-52 rounded-xl border border-gray-200 bg-white py-1 shadow-lg">
+                  <div className="absolute right-0 top-full z-50 mt-1 w-56 rounded-xl border border-gray-200 bg-white py-1 shadow-lg">
                     <button
                       onClick={() => {
                         handlePrint("label");
                         setShowActionMenu(false);
                       }}
-                      className="flex w-full items-center gap-2 px-4 py-2 text-xs text-gray-700 hover:bg-gray-50"
+                      className="flex w-full items-center gap-2 px-4 py-2.5 text-xs text-gray-700 hover:bg-gray-50 min-h-[44px]"
                     >
                       <Printer className="h-3.5 w-3.5" /> Print Shipping Label
                     </button>
@@ -920,7 +922,7 @@ function OrderDetailPage() {
                         handlePrint("packing");
                         setShowActionMenu(false);
                       }}
-                      className="flex w-full items-center gap-2 px-4 py-2 text-xs text-gray-700 hover:bg-gray-50"
+                      className="flex w-full items-center gap-2 px-4 py-2.5 text-xs text-gray-700 hover:bg-gray-50 min-h-[44px]"
                     >
                       <Printer className="h-3.5 w-3.5" /> Print Packing Slip
                     </button>
@@ -929,7 +931,7 @@ function OrderDetailPage() {
                         handlePrint("label");
                         setShowActionMenu(false);
                       }}
-                      className="flex w-full items-center gap-2 px-4 py-2 text-xs text-gray-700 hover:bg-gray-50"
+                      className="flex w-full items-center gap-2 px-4 py-2.5 text-xs text-gray-700 hover:bg-gray-50 min-h-[44px]"
                     >
                       <Download className="h-3.5 w-3.5" /> Download Shipping Label
                     </button>
@@ -939,7 +941,7 @@ function OrderDetailPage() {
                         openTrackingForm();
                         setShowActionMenu(false);
                       }}
-                      className="flex w-full items-center gap-2 px-4 py-2 text-xs text-gray-700 hover:bg-gray-50"
+                      className="flex w-full items-center gap-2 px-4 py-2.5 text-xs text-gray-700 hover:bg-gray-50 min-h-[44px]"
                     >
                       <Truck className="h-3.5 w-3.5" /> Add Tracking
                     </button>
@@ -948,7 +950,7 @@ function OrderDetailPage() {
                         setShowDuplicateDialog(true);
                         setShowActionMenu(false);
                       }}
-                      className="flex w-full items-center gap-2 px-4 py-2 text-xs text-gray-700 hover:bg-gray-50"
+                      className="flex w-full items-center gap-2 px-4 py-2.5 text-xs text-gray-700 hover:bg-gray-50 min-h-[44px]"
                     >
                       <Copy className="h-3.5 w-3.5" /> Duplicate Order
                     </button>
@@ -958,7 +960,7 @@ function OrderDetailPage() {
                           setShowRefundDialog(true);
                           setShowActionMenu(false);
                         }}
-                        className="flex w-full items-center gap-2 px-4 py-2 text-xs text-gray-700 hover:bg-gray-50"
+                        className="flex w-full items-center gap-2 px-4 py-2.5 text-xs text-gray-700 hover:bg-gray-50 min-h-[44px]"
                       >
                         <RotateCcw className="h-3.5 w-3.5" /> Refund Payment
                       </button>
@@ -969,7 +971,7 @@ function OrderDetailPage() {
                           setShowCancelDialog(true);
                           setShowActionMenu(false);
                         }}
-                        className="flex w-full items-center gap-2 px-4 py-2 text-xs text-red-600 hover:bg-red-50"
+                        className="flex w-full items-center gap-2 px-4 py-2.5 text-xs text-red-600 hover:bg-red-50 min-h-[44px]"
                       >
                         <Ban className="h-3.5 w-3.5" /> Cancel Order
                       </button>
@@ -980,7 +982,7 @@ function OrderDetailPage() {
                         setShowArchiveDialog(true);
                         setShowActionMenu(false);
                       }}
-                      className="flex w-full items-center gap-2 px-4 py-2 text-xs text-gray-700 hover:bg-gray-50"
+                      className="flex w-full items-center gap-2 px-4 py-2.5 text-xs text-gray-700 hover:bg-gray-50 min-h-[44px]"
                     >
                       {isArchived ? (
                         <Undo2 className="h-3.5 w-3.5" />
@@ -1100,94 +1102,78 @@ function OrderDetailPage() {
               </h2>
               <button
                 onClick={fetchData}
-                className="rounded-lg border border-gray-200 px-2 py-1 text-[11px] font-semibold text-gray-500 hover:bg-gray-50"
+                className="rounded-lg border border-gray-200 px-2 py-1.5 text-[11px] font-semibold text-gray-500 hover:bg-gray-50 min-h-[36px]"
               >
                 Refresh
               </button>
             </div>
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs">
-                <thead>
-                  <tr className="border-b border-gray-100 bg-gray-50 text-[10px] uppercase tracking-wider text-gray-500">
-                    <th className="px-4 py-2">Email Type</th>
-                    <th className="px-4 py-2">Status</th>
-                    <th className="px-4 py-2">Recipient</th>
-                    <th className="px-4 py-2">Sent On</th>
-                    <th className="px-4 py-2">Sender</th>
-                    <th className="px-4 py-2">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-100">
-                  {orderNotifications.length === 0 ? (
-                    <tr>
-                      <td colSpan={6} className="px-4 py-6 text-center text-gray-400">
-                        No email notifications logged yet
-                      </td>
-                    </tr>
-                  ) : (
-                    orderNotifications.map((notification) => (
-                      <tr key={notification.id}>
-                        <td className="px-4 py-2 font-medium text-[#1a1a2e]">
+            {orderNotifications.length === 0 ? (
+              <div className="px-5 py-6 text-center text-gray-400 text-sm">
+                No email notifications logged yet
+              </div>
+            ) : (
+              <div className="divide-y divide-gray-100">
+                {orderNotifications.map((notification) => (
+                  <div key={notification.id} className="px-5 py-4 space-y-2">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="min-w-0">
+                        <p className="text-sm font-medium text-[#1a1a2e] truncate">
                           {notification.metadata?.template_label ||
                             notification.notification_type?.replace(/_/g, " ")}
                           {notification.is_test && (
-                            <span className="ml-2 rounded-full bg-amber-100 px-1.5 py-0.5 text-[9px] font-bold uppercase text-amber-700">
+                            <span className="ml-2 inline-block rounded-full bg-amber-100 px-1.5 py-0.5 text-[9px] font-bold uppercase text-amber-700">
                               Test
                             </span>
                           )}
-                        </td>
-                        <td className="px-4 py-2">
+                        </p>
+                        <p className="text-xs text-gray-500 mt-0.5 truncate">
+                          {notification.actual_recipient}
+                        </p>
+                        {notification.is_test && notification.intended_recipient && (
+                          <p className="text-[10px] text-gray-400">
+                            Intended: {notification.intended_recipient}
+                          </p>
+                        )}
+                      </div>
+                      <span
+                        className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase ${notification.status === "sent" ? "bg-green-100 text-green-700" : notification.status === "failed" ? "bg-red-100 text-red-600" : "bg-amber-100 text-amber-700"}`}
+                      >
+                        {notification.status}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between gap-2">
+                      <p className="text-[11px] text-gray-400">
+                        {notification.sent_at
+                          ? new Date(notification.sent_at).toLocaleString()
+                          : "—"}
+                        {notification.source === "system" ? " • System" : " • Admin"}
+                      </p>
+                      <div className="flex items-center gap-1 shrink-0">
+                        <button
+                          onClick={() =>
+                            handleSendNotification(
+                              notification.notification_type as EmailTemplateKey,
+                              notification.id,
+                            )
+                          }
+                          className="rounded border border-gray-200 px-2 py-1 text-[10px] font-semibold text-gray-600 hover:bg-gray-50"
+                        >
+                          {notification.status === "failed" ? "Retry" : "Resend"}
+                        </button>
+                        {notification.error_summary && (
                           <span
-                            className={`rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase ${notification.status === "sent" ? "bg-green-100 text-green-700" : notification.status === "failed" ? "bg-red-100 text-red-600" : "bg-amber-100 text-amber-700"}`}
+                            title={notification.error_summary}
+                            className="rounded border border-red-200 px-2 py-1 text-[10px] font-semibold text-red-600"
                           >
-                            {notification.status}
+                            Error
                           </span>
-                        </td>
-                        <td className="px-4 py-2 text-gray-500">
-                          <div>{notification.actual_recipient}</div>
-                          {notification.is_test && notification.intended_recipient && (
-                            <div className="text-[10px] text-gray-400">
-                              Intended: {notification.intended_recipient}
-                            </div>
-                          )}
-                        </td>
-                        <td className="px-4 py-2 text-gray-500">
-                          {notification.sent_at
-                            ? new Date(notification.sent_at).toLocaleString()
-                            : "—"}
-                        </td>
-                        <td className="px-4 py-2 text-gray-500">
-                          {notification.source === "system" ? "System" : "Admin"}
-                        </td>
-                        <td className="px-4 py-2">
-                          <div className="flex flex-wrap gap-1">
-                            <button
-                              onClick={() =>
-                                handleSendNotification(
-                                  notification.notification_type as EmailTemplateKey,
-                                  notification.id,
-                                )
-                              }
-                              className="rounded border border-gray-200 px-2 py-1 text-[10px] font-semibold text-gray-600 hover:bg-gray-50"
-                            >
-                              {notification.status === "failed" ? "Retry" : "Resend"}
-                            </button>
-                            {notification.error_summary && (
-                              <span
-                                title={notification.error_summary}
-                                className="rounded border border-red-200 px-2 py-1 text-[10px] font-semibold text-red-600"
-                              >
-                                Safe Error
-                              </span>
-                            )}
-                          </div>
-                        </td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Tracking / Fulfillment */}
@@ -1206,7 +1192,7 @@ function OrderDetailPage() {
             </div>
             {showTrackingForm ? (
               <div className="p-5 space-y-3">
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
                     <label className="block text-xs font-semibold text-gray-600 mb-1">
                       Shipment ID
@@ -1334,17 +1320,17 @@ function OrderDetailPage() {
                   />
                   Notify customer with shipped email after saving
                 </label>
-                <div className="flex gap-2 pt-2">
+                <div className="flex flex-col sm:flex-row gap-2 pt-2">
                   <button
                     onClick={handleSaveTracking}
                     disabled={isUpdating}
-                    className="rounded-lg bg-[#1a1a2e] px-4 py-2 text-xs font-semibold text-white hover:bg-[#2d1b4e] disabled:opacity-50"
+                    className="rounded-lg bg-[#1a1a2e] px-4 py-2.5 text-xs font-semibold text-white hover:bg-[#2d1b4e] disabled:opacity-50 min-h-[44px]"
                   >
                     {isUpdating ? "Saving..." : "Save Tracking"}
                   </button>
                   <button
                     onClick={() => setShowTrackingForm(false)}
-                    className="rounded-lg border border-gray-200 px-4 py-2 text-xs font-medium text-gray-600 hover:bg-gray-50"
+                    className="rounded-lg border border-gray-200 px-4 py-2.5 text-xs font-medium text-gray-600 hover:bg-gray-50 min-h-[44px]"
                   >
                     Cancel
                   </button>
@@ -1396,12 +1382,12 @@ function OrderDetailPage() {
                     </span>
                   </div>
                 )}
-                <div className="flex flex-wrap gap-2 pt-2">
+                <div className="flex flex-col sm:flex-row flex-wrap gap-2 pt-2">
                   {!isCancelled && (
                     <>
                       <button
                         onClick={openTrackingForm}
-                        className="inline-flex items-center gap-1 rounded-lg bg-[#1a1a2e] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#2d1b4e]"
+                        className="inline-flex items-center justify-center gap-1 rounded-lg bg-[#1a1a2e] px-4 py-2.5 text-xs font-semibold text-white hover:bg-[#2d1b4e] min-h-[44px]"
                       >
                         <Truck className="h-3.5 w-3.5" />{" "}
                         {order.tracking_id ? "Edit Tracking" : "Add Tracking"}
@@ -1409,7 +1395,7 @@ function OrderDetailPage() {
                       {order.tracking_url && (
                         <button
                           onClick={handleTrackShipment}
-                          className="inline-flex items-center gap-1 rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-50"
+                          className="inline-flex items-center justify-center gap-1 rounded-lg border border-gray-200 px-4 py-2.5 text-xs font-semibold text-gray-700 hover:bg-gray-50 min-h-[44px]"
                         >
                           <ExternalLink className="h-3.5 w-3.5" /> Track Shipment
                         </button>
@@ -1417,7 +1403,7 @@ function OrderDetailPage() {
                       {order.order_status !== "delivered" && order.order_status !== "shipped" && (
                         <button
                           onClick={() => handleStatusUpdate("shipped")}
-                          className="inline-flex items-center gap-1 rounded-lg bg-purple-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-purple-700"
+                          className="inline-flex items-center justify-center gap-1 rounded-lg bg-purple-600 px-4 py-2.5 text-xs font-semibold text-white hover:bg-purple-700 min-h-[44px]"
                         >
                           <Truck className="h-3.5 w-3.5" /> Mark Shipped
                         </button>
@@ -1425,7 +1411,7 @@ function OrderDetailPage() {
                       {order.order_status === "shipped" && (
                         <button
                           onClick={() => handleStatusUpdate("delivered")}
-                          className="inline-flex items-center gap-1 rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-emerald-700"
+                          className="inline-flex items-center justify-center gap-1 rounded-lg bg-emerald-600 px-4 py-2.5 text-xs font-semibold text-white hover:bg-emerald-700 min-h-[44px]"
                         >
                           <Check className="h-3.5 w-3.5" /> Mark Delivered
                         </button>
@@ -1519,14 +1505,14 @@ function OrderDetailPage() {
                   type="text"
                   value={note}
                   onChange={(e) => setNote(e.target.value)}
-                  placeholder="Add an internal note... (saves with your admin email)"
-                  className="flex-1 rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]"
+                  placeholder="Add an internal note..."
+                  className="flex-1 min-w-0 rounded-lg border border-gray-200 px-3 py-2.5 text-sm outline-none focus:border-[#7A2533]"
                   onKeyDown={(e) => e.key === "Enter" && handleAddNote()}
                 />
                 <button
                   onClick={handleAddNote}
                   disabled={isUpdating || !note.trim()}
-                  className="rounded-lg bg-[#1a1a2e] px-3 py-2 text-white hover:bg-[#2d1b4e] disabled:opacity-50"
+                  className="rounded-lg bg-[#1a1a2e] px-3 py-2.5 text-white hover:bg-[#2d1b4e] disabled:opacity-50 min-h-[44px] min-w-[44px] flex items-center justify-center"
                 >
                   {isUpdating ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
@@ -1641,7 +1627,7 @@ function OrderDetailPage() {
                   order.payment_status !== "refunded" && (
                     <button
                       onClick={() => setStatusConfirm({ type: "payment", value: "paid" })}
-                      className="w-full rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-blue-700"
+                      className="w-full rounded-lg bg-blue-600 px-4 py-2.5 text-xs font-semibold text-white hover:bg-blue-700 min-h-[44px]"
                     >
                       Mark Paid
                     </button>
@@ -1649,7 +1635,7 @@ function OrderDetailPage() {
                 {!isCancelled && order.order_status !== "cancelled" && (
                   <button
                     onClick={() => setShowCancelDialog(true)}
-                    className="w-full rounded-lg border border-red-200 px-3 py-1.5 text-xs font-semibold text-red-600 hover:bg-red-50"
+                    className="w-full rounded-lg border border-red-200 px-4 py-2.5 text-xs font-semibold text-red-600 hover:bg-red-50 min-h-[44px]"
                   >
                     Cancel Order
                   </button>

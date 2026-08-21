@@ -33,6 +33,8 @@ interface DataTableProps<T> {
   searchPlaceholder?: string;
   filters?: React.ReactNode;
   bulkActions?: React.ReactNode;
+  mobileCardRender?: (item: T) => React.ReactNode;
+  mobileCardGrid?: string;
 }
 
 export function DataTable<T extends Record<string, any>>({
@@ -40,7 +42,7 @@ export function DataTable<T extends Record<string, any>>({
   emptyDescription, onRetry, selectedItems, onSelectionChange,
   sortField, sortOrder, onSort, page, totalPages, total,
   onPageChange, searchValue, onSearchChange, searchPlaceholder = "Search...",
-  filters, bulkActions,
+  filters, bulkActions, mobileCardRender, mobileCardGrid,
 }: DataTableProps<T>) {
   const allSelected = data.length > 0 && selectedItems?.size === data.length;
   const someSelected = (selectedItems?.size ?? 0) > 0;
@@ -115,7 +117,7 @@ export function DataTable<T extends Record<string, any>>({
                   placeholder={searchPlaceholder}
                   value={searchValue}
                   onChange={(e) => onSearchChange(e.target.value)}
-                  className="w-full rounded-lg border border-gray-200 py-2 pl-10 pr-4 text-sm outline-none focus:border-[#7A2533]"
+                  className="w-full rounded-lg border border-gray-200 py-2.5 pl-10 pr-4 text-sm outline-none focus:border-[#7A2533] min-h-[44px]"
                 />
               </div>
             )}
@@ -139,89 +141,103 @@ export function DataTable<T extends Record<string, any>>({
           {emptyDescription && <p className="mt-1 text-sm text-gray-400">{emptyDescription}</p>}
         </div>
       ) : (
-        <div className="overflow-x-auto rounded-xl border border-gray-200 bg-white">
-          <table className="w-full text-left text-sm">
-            <thead>
-              <tr className="border-b border-gray-100 bg-gray-50">
-                {onSelectionChange && (
-                  <th className="w-10 px-3 py-3">
-                    <input
-                      type="checkbox"
-                      checked={allSelected}
-                      onChange={toggleAll}
-                      className="h-4 w-4 rounded border-gray-300 text-[#7A2533] focus:ring-[#7A2533]"
-                    />
-                  </th>
-                )}
-                {columns.map((col) => (
-                  <th
-                    key={col.key}
-                    className={`px-4 py-3 text-xs font-semibold uppercase tracking-wider text-gray-600 ${col.className || ""} ${col.hideOnMobile ? "hidden md:table-cell" : ""}`}
-                  >
-                    {col.sortable ? (
-                      <button
-                        onClick={() => onSort?.(col.key)}
-                        className="flex items-center gap-1 hover:text-gray-900"
-                      >
-                        {col.label}
-                        <SortIcon field={col.key} />
-                      </button>
-                    ) : (
-                      col.label
-                    )}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100">
+        <div className="rounded-xl border border-gray-200 bg-white">
+          {mobileCardRender && (
+            <div className={`grid gap-3 p-3 sm:p-4 ${mobileCardGrid || "grid-cols-1 sm:grid-cols-2"}`}>
               {data.map((item) => {
                 const id = String(item[keyField]);
                 return (
-                  <tr key={id} className={`hover:bg-gray-50 ${selectedItems?.has(id) ? "bg-amber-50/50" : ""}`}>
-                    {onSelectionChange && (
-                      <td className="px-3 py-3">
-                        <input
-                          type="checkbox"
-                          checked={selectedItems?.has(id) ?? false}
-                          onChange={() => toggleItem(id)}
-                          className="h-4 w-4 rounded border-gray-300 text-[#7A2533] focus:ring-[#7A2533]"
-                        />
-                      </td>
-                    )}
-                    {columns.map((col) => (
-                      <td
-                        key={col.key}
-                        className={`px-4 py-3 ${col.className || ""} ${col.hideOnMobile ? "hidden md:table-cell" : ""}`}
-                      >
-                        {col.render(item)}
-                      </td>
-                    ))}
-                  </tr>
+                  <div key={id}>
+                    {mobileCardRender(item)}
+                  </div>
                 );
               })}
-            </tbody>
-          </table>
+            </div>
+          )}
+          <div className={`${mobileCardRender ? "hidden md:block" : ""} overflow-x-auto`}>
+            <table className="w-full text-left text-sm">
+              <thead>
+                <tr className="border-b border-gray-100 bg-gray-50">
+                  {onSelectionChange && (
+                    <th className="w-10 px-3 py-3">
+                      <input
+                        type="checkbox"
+                        checked={allSelected}
+                        onChange={toggleAll}
+                        className="h-4 w-4 rounded border-gray-300 text-[#7A2533] focus:ring-[#7A2533]"
+                      />
+                    </th>
+                  )}
+                  {columns.map((col) => (
+                    <th
+                      key={col.key}
+                      className={`px-4 py-3 text-xs font-semibold uppercase tracking-wider text-gray-600 ${col.className || ""} ${col.hideOnMobile ? "hidden md:table-cell" : ""}`}
+                    >
+                      {col.sortable ? (
+                        <button
+                          onClick={() => onSort?.(col.key)}
+                          className="flex items-center gap-1 hover:text-gray-900"
+                        >
+                          {col.label}
+                          <SortIcon field={col.key} />
+                        </button>
+                      ) : (
+                        col.label
+                      )}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {data.map((item) => {
+                  const id = String(item[keyField]);
+                  return (
+                    <tr key={id} className={`hover:bg-gray-50 ${selectedItems?.has(id) ? "bg-amber-50/50" : ""}`}>
+                      {onSelectionChange && (
+                        <td className="px-3 py-3">
+                          <input
+                            type="checkbox"
+                            checked={selectedItems?.has(id) ?? false}
+                            onChange={() => toggleItem(id)}
+                            className="h-4 w-4 rounded border-gray-300 text-[#7A2533] focus:ring-[#7A2533]"
+                          />
+                        </td>
+                      )}
+                      {columns.map((col) => (
+                        <td
+                          key={col.key}
+                          className={`px-4 py-3 ${col.className || ""} ${col.hideOnMobile ? "hidden md:table-cell" : ""}`}
+                        >
+                          {col.render(item)}
+                        </td>
+                      ))}
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
 
       {totalPages && totalPages > 1 && (
-        <div className="mt-4 flex items-center justify-between">
+        <div className="mt-4 flex items-center justify-between px-3 sm:px-0">
           <p className="text-xs text-gray-500">{total ?? 0} total</p>
           <div className="flex items-center gap-1">
             <button
               onClick={() => onPageChange?.((page ?? 1) - 1)}
               disabled={!page || page <= 1}
-              className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium disabled:opacity-30"
+              className="rounded-lg border border-gray-200 px-3 py-2 text-xs font-medium disabled:opacity-30 min-h-[40px]"
             >
               Previous
             </button>
-            <span className="px-3 text-xs text-gray-500">
+            <span className="px-2 text-xs text-gray-500">
               {page ?? 1} of {totalPages}
             </span>
             <button
               onClick={() => onPageChange?.((page ?? 1) + 1)}
               disabled={!page || !totalPages || page >= totalPages}
-              className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium disabled:opacity-30"
+              className="rounded-lg border border-gray-200 px-3 py-2 text-xs font-medium disabled:opacity-30 min-h-[40px]"
             >
               Next
             </button>

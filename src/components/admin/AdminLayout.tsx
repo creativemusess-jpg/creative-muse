@@ -659,24 +659,31 @@ export function AdminLoading() {
   );
 }
 
-export function AdminTable({ headers, children }: { headers: string[]; children: ReactNode }) {
+export function AdminTable({ headers, children, mobileCards, mobileCardGrid }: { headers: string[]; children: ReactNode; mobileCards?: ReactNode; mobileCardGrid?: string }) {
   return (
-    <div className="overflow-x-auto rounded-xl border border-gray-200 bg-white">
-      <table className="w-full text-left text-sm">
-        <thead>
-          <tr className="border-b border-gray-100 bg-gray-50">
-            {headers.map((h) => (
-              <th
-                key={h}
-                className="px-4 py-3 font-semibold text-gray-600 text-xs uppercase tracking-wider"
-              >
-                {h}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-gray-100">{children}</tbody>
-      </table>
+    <div className="rounded-xl border border-gray-200 bg-white">
+      {mobileCards && (
+        <div className={`grid gap-3 p-3 sm:p-4 ${mobileCardGrid || "grid-cols-1 sm:grid-cols-2"}`}>
+          {mobileCards}
+        </div>
+      )}
+      <div className={`${mobileCards ? "hidden md:block" : ""} overflow-x-auto`}>
+        <table className="w-full text-left text-sm">
+          <thead>
+            <tr className="border-b border-gray-100 bg-gray-50">
+              {headers.map((h) => (
+                <th
+                  key={h}
+                  className="px-4 py-3 font-semibold text-gray-600 text-xs uppercase tracking-wider"
+                >
+                  {h}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-100">{children}</tbody>
+        </table>
+      </div>
     </div>
   );
 }

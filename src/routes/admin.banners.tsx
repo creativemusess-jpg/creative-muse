@@ -152,7 +152,7 @@ function AdminBanners() {
             <button
               key={tab.key}
               onClick={() => setFilter(tab.key)}
-              className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
+              className={`rounded-md px-3 py-2 text-sm font-medium transition-colors min-h-[40px] ${
                 filter === tab.key
                   ? "bg-white text-[#7A2533] shadow-sm"
                   : "text-gray-500 hover:text-gray-700"
@@ -167,7 +167,7 @@ function AdminBanners() {
             setEditing(null);
             setFormOpen(true);
           }}
-          className="rounded-lg bg-[#7A2533] px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#5F1C27]"
+          className="rounded-lg bg-[#7A2533] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#5F1C27] min-h-[44px]"
         >
           + Add Banner
         </button>
@@ -191,116 +191,199 @@ function AdminBanners() {
         />
       )}
 
-      <div className="overflow-x-auto rounded-xl border border-gray-200 bg-white">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b border-gray-100 bg-gray-50 text-left text-[11px] font-semibold uppercase tracking-wider text-gray-500">
-              <th className="px-4 py-3">Preview</th>
-              <th className="px-4 py-3">Name</th>
-              <th className="px-4 py-3">Order</th>
-              <th className="px-4 py-3">Button</th>
-              <th className="px-4 py-3">Status</th>
-              <th className="px-4 py-3">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {items.length === 0 && !loadError ? (
-              <tr>
-                <td colSpan={6} className="px-4 py-8 text-center text-gray-400">
-                  No banners here yet. Add a banner to publish it to the homepage carousel.
-                </td>
-              </tr>
-            ) : (
-              items.map((b, idx) => (
-                <tr key={b.id} className="border-b border-gray-50 hover:bg-gray-50/50">
-                  <td className="px-4 py-3">
-                    <img
-                      src={b.desktop_image}
-                      alt={b.name}
-                      className="h-14 w-28 rounded-lg object-cover"
-                      loading="lazy"
-                    />
-                  </td>
-                  <td className="max-w-[220px] truncate px-4 py-3 font-medium text-gray-800">
-                    {b.name}
-                  </td>
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-1">
-                      <button
-                        onClick={() => handleMove(idx, -1)}
-                        disabled={idx === 0}
-                        aria-label="Move up"
-                        className="rounded border border-gray-200 px-1.5 py-0.5 text-gray-500 hover:border-[#7A2533] hover:text-[#7A2533] disabled:opacity-30"
-                      >
-                        ↑
-                      </button>
-                      <span className="w-4 text-center text-xs text-gray-600">
-                        {b.display_order}
-                      </span>
-                      <button
-                        onClick={() => handleMove(idx, 1)}
-                        disabled={idx === items.length - 1}
-                        aria-label="Move down"
-                        className="rounded border border-gray-200 px-1.5 py-0.5 text-gray-500 hover:border-[#7A2533] hover:text-[#7A2533] disabled:opacity-30"
-                      >
-                        ↓
-                      </button>
-                    </div>
-                  </td>
-                  <td className="px-4 py-3">
-                    <span
-                      className={`rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase ${
+      <div className="rounded-xl border border-gray-200 bg-white">
+        <div className="grid gap-3 p-3 sm:p-4 md:hidden">
+          {items.length === 0 && !loadError ? (
+            <div className="py-8 text-center text-gray-400 text-sm">
+              No banners here yet. Add a banner to publish it to the homepage carousel.
+            </div>
+          ) : (
+            items.map((b, idx) => (
+              <div key={b.id} className="flex flex-col gap-2 rounded-lg border border-gray-200 bg-white p-3">
+                <div className="flex gap-3">
+                  <img
+                    src={b.desktop_image}
+                    alt={b.name}
+                    className="h-16 w-24 shrink-0 rounded-lg object-cover"
+                    loading="lazy"
+                  />
+                  <div className="min-w-0 flex-1">
+                    <p className="font-medium text-gray-800 truncate">{b.name}</p>
+                    <div className="mt-1 flex items-center gap-2">
+                      <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase ${
                         b.button_enabled
                           ? "bg-emerald-50 text-emerald-700"
                           : "bg-gray-100 text-gray-500"
-                      }`}
-                    >
-                      {b.button_enabled ? `${b.button_text || "Button"} →` : "Off"}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3">
-                    <span
-                      className={`rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase ${
+                      }`}>
+                        {b.button_enabled ? `${b.button_text || "Button"} →` : "Off"}
+                      </span>
+                      <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase ${
                         b.status === "active"
                           ? "border border-[#7A2533]/20 bg-[#fff4f5] text-[#7A2533]"
                           : "bg-gray-100 text-gray-500"
-                      }`}
-                    >
-                      {b.status}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3">
-                    <div className="flex flex-wrap gap-x-3 gap-y-1">
-                      <button
-                        onClick={() => {
-                          setEditing(b);
-                          setFormOpen(true);
-                        }}
-                        className="text-xs text-[#7A2533] hover:underline"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => handleToggleStatus(b)}
-                        className={`text-xs hover:underline ${b.status === "active" ? "text-gray-500" : "text-emerald-600"}`}
-                      >
-                        {b.status === "active" ? "Archive" : "Restore"}
-                      </button>
-                      {b.status === "archived" && (
-                        <button
-                          onClick={() => handleDelete(b)}
-                          className="text-xs text-red-500 hover:underline"
-                        >
-                          Delete
-                        </button>
-                      )}
+                      }`}>
+                        {b.status}
+                      </span>
                     </div>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1">
+                    <button
+                      onClick={() => handleMove(idx, -1)}
+                      disabled={idx === 0}
+                      className="flex h-8 min-w-[36px] items-center justify-center rounded border border-gray-200 text-gray-500 hover:border-[#7A2533] hover:text-[#7A2533] disabled:opacity-30"
+                    >
+                      ↑
+                    </button>
+                    <span className="w-4 text-center text-xs text-gray-600">{b.display_order}</span>
+                    <button
+                      onClick={() => handleMove(idx, 1)}
+                      disabled={idx === items.length - 1}
+                      className="flex h-8 min-w-[36px] items-center justify-center rounded border border-gray-200 text-gray-500 hover:border-[#7A2533] hover:text-[#7A2533] disabled:opacity-30"
+                    >
+                      ↓
+                    </button>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <button
+                      onClick={() => { setEditing(b); setFormOpen(true); }}
+                      className="flex h-9 min-w-[44px] items-center justify-center rounded-lg border border-gray-200 text-xs font-medium text-[#7A2533] hover:bg-gray-50"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleToggleStatus(b)}
+                      className={`flex h-9 min-w-[44px] items-center justify-center rounded-lg border border-gray-200 text-xs font-medium hover:bg-gray-50 ${b.status === "active" ? "text-gray-500" : "text-emerald-600"}`}
+                    >
+                      {b.status === "active" ? "Archive" : "Restore"}
+                    </button>
+                    {b.status === "archived" && (
+                      <button
+                        onClick={() => handleDelete(b)}
+                        className="flex h-9 min-w-[44px] items-center justify-center rounded-lg border border-gray-200 text-xs font-medium text-red-500 hover:bg-red-50"
+                      >
+                        Delete
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+
+        <div className="hidden md:block overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-gray-100 bg-gray-50 text-left text-[11px] font-semibold uppercase tracking-wider text-gray-500">
+                <th className="px-4 py-3">Preview</th>
+                <th className="px-4 py-3">Name</th>
+                <th className="px-4 py-3">Order</th>
+                <th className="px-4 py-3">Button</th>
+                <th className="px-4 py-3">Status</th>
+                <th className="px-4 py-3">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {items.length === 0 && !loadError ? (
+                <tr>
+                  <td colSpan={6} className="px-4 py-8 text-center text-gray-400">
+                    No banners here yet. Add a banner to publish it to the homepage carousel.
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+              ) : (
+                items.map((b, idx) => (
+                  <tr key={b.id} className="border-b border-gray-50 hover:bg-gray-50/50">
+                    <td className="px-4 py-3">
+                      <img
+                        src={b.desktop_image}
+                        alt={b.name}
+                        className="h-14 w-28 rounded-lg object-cover"
+                        loading="lazy"
+                      />
+                    </td>
+                    <td className="max-w-[220px] truncate px-4 py-3 font-medium text-gray-800">
+                      {b.name}
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-1">
+                        <button
+                          onClick={() => handleMove(idx, -1)}
+                          disabled={idx === 0}
+                          aria-label="Move up"
+                          className="rounded border border-gray-200 px-1.5 py-0.5 text-gray-500 hover:border-[#7A2533] hover:text-[#7A2533] disabled:opacity-30"
+                        >
+                          ↑
+                        </button>
+                        <span className="w-4 text-center text-xs text-gray-600">
+                          {b.display_order}
+                        </span>
+                        <button
+                          onClick={() => handleMove(idx, 1)}
+                          disabled={idx === items.length - 1}
+                          aria-label="Move down"
+                          className="rounded border border-gray-200 px-1.5 py-0.5 text-gray-500 hover:border-[#7A2533] hover:text-[#7A2533] disabled:opacity-30"
+                        >
+                          ↓
+                        </button>
+                      </div>
+                    </td>
+                    <td className="px-4 py-3">
+                      <span
+                        className={`rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase ${
+                          b.button_enabled
+                            ? "bg-emerald-50 text-emerald-700"
+                            : "bg-gray-100 text-gray-500"
+                        }`}
+                      >
+                        {b.button_enabled ? `${b.button_text || "Button"} →` : "Off"}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3">
+                      <span
+                        className={`rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase ${
+                          b.status === "active"
+                            ? "border border-[#7A2533]/20 bg-[#fff4f5] text-[#7A2533]"
+                            : "bg-gray-100 text-gray-500"
+                        }`}
+                      >
+                        {b.status}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex flex-wrap gap-x-3 gap-y-1">
+                        <button
+                          onClick={() => {
+                            setEditing(b);
+                            setFormOpen(true);
+                          }}
+                          className="text-xs text-[#7A2533] hover:underline"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => handleToggleStatus(b)}
+                          className={`text-xs hover:underline ${b.status === "active" ? "text-gray-500" : "text-emerald-600"}`}
+                        >
+                          {b.status === "active" ? "Archive" : "Restore"}
+                        </button>
+                        {b.status === "archived" && (
+                          <button
+                            onClick={() => handleDelete(b)}
+                            className="text-xs text-red-500 hover:underline"
+                          >
+                            Delete
+                          </button>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </AdminLayout>
   );
@@ -767,14 +850,14 @@ function BannerForm({
       <div className="mt-5 flex justify-end gap-2">
         <button
           onClick={onCancel}
-          className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50"
+          className="rounded-lg border border-gray-300 px-4 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-50 min-h-[44px]"
         >
           Cancel
         </button>
         <button
           onClick={handleSave}
           disabled={saving}
-          className="flex items-center gap-2 rounded-lg bg-[#7A2533] px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#5F1C27] disabled:opacity-50"
+          className="flex items-center gap-2 rounded-lg bg-[#7A2533] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#5F1C27] disabled:opacity-50 min-h-[44px]"
         >
           {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
           {saving ? "Saving…" : banner ? "Save Changes" : "Add Banner"}
