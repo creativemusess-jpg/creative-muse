@@ -1,19 +1,39 @@
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { X } from "lucide-react";
+import { announcementsApi } from "@/lib/api/announcements";
 
-const MESSAGE =
+const FALLBACK_MESSAGE =
   "✦ Free Shipping on orders above ₹5,000  ·  BIS Hallmarked Gold  ·  IGI Certified Diamonds  ·  30-Day Returns  ·  Book a Private Appointment  ✦";
 
 export function AnnouncementBar() {
   const [open, setOpen] = useState(true);
+
+  const { data: announcements = [] } = useQuery({
+    queryKey: ["announcements", "active"],
+    queryFn: () => announcementsApi.getActive(),
+    staleTime: 60_000,
+    refetchOnWindowFocus: false,
+  });
+
   if (!open) return null;
+
+  const messages = announcements.length > 0
+    ? announcements.map((a) => a.text)
+    : [FALLBACK_MESSAGE];
+
+  const marqueeText = messages.length === 1
+    ? `${messages[0]}  ·  ${messages[0]}  ·  ${messages[0]}  ·  ${messages[0]}`
+    : messages.join("  ·  ");
+
   return (
     <div className="relative h-10 overflow-hidden bg-[#1a1a2e] text-white">
       <div className="flex h-full items-center">
         <div className="flex animate-cm-marquee shrink-0 gap-16 whitespace-nowrap pl-8 text-[11px] tracking-[0.18em] uppercase">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <span key={i} className="shrink-0">{MESSAGE}</span>
-          ))}
+          <span className="shrink-0">{marqueeText}</span>
+          <span className="shrink-0">{marqueeText}</span>
+          <span className="shrink-0">{marqueeText}</span>
+          <span className="shrink-0">{marqueeText}</span>
         </div>
       </div>
       <button

@@ -180,6 +180,12 @@ const navItems: NavItem[] = [
     permission: "homepage",
   },
   {
+    label: "Announcements",
+    href: "/admin/announcements",
+    icon: <Megaphone className="h-4 w-4" />,
+    permission: "*",
+  },
+  {
     label: "Homepage Banners",
     href: "/admin/banners",
     icon: <Megaphone className="h-4 w-4" />,
@@ -503,7 +509,7 @@ function AdminShell({ children }: { children: ReactNode }) {
               {notifOpen && (
                 <>
                   <div className="fixed inset-0 z-40" onClick={() => setNotifOpen(false)} />
-                  <div className="absolute right-0 z-50 mt-2 w-[26rem] max-w-[calc(100vw-2rem)] overflow-hidden rounded-xl border border-gray-200 bg-white shadow-xl">
+                  <div className="absolute right-0 z-50 mt-2 w-[95vw] max-w-[26rem] overflow-hidden rounded-xl border border-gray-200 bg-white shadow-xl">
                     <div className="flex items-center justify-between border-b border-gray-100 px-4 py-3">
                       <div className="flex items-center gap-2">
                         <Bell className="h-4 w-4 text-[#7A2533]" />

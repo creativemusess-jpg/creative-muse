@@ -64,6 +64,7 @@ import { Route as AdminCategoriesRouteImport } from './routes/admin.categories'
 import { Route as AdminBannersRouteImport } from './routes/admin.banners'
 import { Route as AdminAuditLogsRouteImport } from './routes/admin.audit-logs'
 import { Route as AdminAttributesRouteImport } from './routes/admin.attributes'
+import { Route as AdminAnnouncementsRouteImport } from './routes/admin.announcements'
 import { Route as AdminAnalyticsRouteImport } from './routes/admin.analytics'
 import { Route as AccountOrdersRouteImport } from './routes/account.orders'
 import { Route as CollectionsSlugIndexRouteImport } from './routes/collections.$slug.index'
@@ -349,6 +350,11 @@ const AdminAttributesRoute = AdminAttributesRouteImport.update({
   path: '/attributes',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminAnnouncementsRoute = AdminAnnouncementsRouteImport.update({
+  id: '/announcements',
+  path: '/announcements',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminAnalyticsRoute = AdminAnalyticsRouteImport.update({
   id: '/analytics',
   path: '/analytics',
@@ -424,6 +430,7 @@ export interface FileRoutesByFullPath {
   '/wishlist': typeof WishlistRoute
   '/account/orders': typeof AccountOrdersRouteWithChildren
   '/admin/analytics': typeof AdminAnalyticsRoute
+  '/admin/announcements': typeof AdminAnnouncementsRoute
   '/admin/attributes': typeof AdminAttributesRoute
   '/admin/audit-logs': typeof AdminAuditLogsRoute
   '/admin/banners': typeof AdminBannersRoute
@@ -489,6 +496,7 @@ export interface FileRoutesByTo {
   '/wishlist': typeof WishlistRoute
   '/account/orders': typeof AccountOrdersRouteWithChildren
   '/admin/analytics': typeof AdminAnalyticsRoute
+  '/admin/announcements': typeof AdminAnnouncementsRoute
   '/admin/attributes': typeof AdminAttributesRoute
   '/admin/audit-logs': typeof AdminAuditLogsRoute
   '/admin/banners': typeof AdminBannersRoute
@@ -555,6 +563,7 @@ export interface FileRoutesById {
   '/wishlist': typeof WishlistRoute
   '/account/orders': typeof AccountOrdersRouteWithChildren
   '/admin/analytics': typeof AdminAnalyticsRoute
+  '/admin/announcements': typeof AdminAnnouncementsRoute
   '/admin/attributes': typeof AdminAttributesRoute
   '/admin/audit-logs': typeof AdminAuditLogsRoute
   '/admin/banners': typeof AdminBannersRoute
@@ -623,6 +632,7 @@ export interface FileRouteTypes {
     | '/wishlist'
     | '/account/orders'
     | '/admin/analytics'
+    | '/admin/announcements'
     | '/admin/attributes'
     | '/admin/audit-logs'
     | '/admin/banners'
@@ -688,6 +698,7 @@ export interface FileRouteTypes {
     | '/wishlist'
     | '/account/orders'
     | '/admin/analytics'
+    | '/admin/announcements'
     | '/admin/attributes'
     | '/admin/audit-logs'
     | '/admin/banners'
@@ -753,6 +764,7 @@ export interface FileRouteTypes {
     | '/wishlist'
     | '/account/orders'
     | '/admin/analytics'
+    | '/admin/announcements'
     | '/admin/attributes'
     | '/admin/audit-logs'
     | '/admin/banners'
@@ -1212,6 +1224,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAttributesRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/announcements': {
+      id: '/admin/announcements'
+      path: '/announcements'
+      fullPath: '/admin/announcements'
+      preLoaderRoute: typeof AdminAnnouncementsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/analytics': {
       id: '/admin/analytics'
       path: '/analytics'
@@ -1341,6 +1360,7 @@ const AdminProductsRouteWithChildren = AdminProductsRoute._addFileChildren(
 
 interface AdminRouteChildren {
   AdminAnalyticsRoute: typeof AdminAnalyticsRoute
+  AdminAnnouncementsRoute: typeof AdminAnnouncementsRoute
   AdminAttributesRoute: typeof AdminAttributesRoute
   AdminAuditLogsRoute: typeof AdminAuditLogsRoute
   AdminBannersRoute: typeof AdminBannersRoute
@@ -1368,6 +1388,7 @@ interface AdminRouteChildren {
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminAnalyticsRoute: AdminAnalyticsRoute,
+  AdminAnnouncementsRoute: AdminAnnouncementsRoute,
   AdminAttributesRoute: AdminAttributesRoute,
   AdminAuditLogsRoute: AdminAuditLogsRoute,
   AdminBannersRoute: AdminBannersRoute,

@@ -492,7 +492,8 @@ function QuickViewModal() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[90] flex items-center justify-center p-2 sm:p-4"
+          className="fixed inset-0 z-[90] flex items-start justify-center overflow-y-auto p-0 sm:items-center sm:p-4"
+          style={{ paddingTop: "env(safe-area-inset-top)", paddingBottom: "env(safe-area-inset-bottom)" }}
           role="dialog"
           aria-modal="true"
           aria-labelledby="qv-title"
@@ -505,13 +506,14 @@ function QuickViewModal() {
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.96, opacity: 0, y: 16 }}
             transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
-            className="relative grid max-h-[88vh] w-full max-w-5xl grid-cols-1 overflow-y-auto scrollbar-thin rounded-[28px] bg-[#fdf8f3] shadow-[0_24px_64px_rgba(0,0,0,0.3)] md:max-h-none md:h-[90vh] md:grid-cols-2 md:grid-rows-[1fr] md:overflow-hidden"
+            className="relative grid max-h-[100dvh] w-full max-w-5xl grid-cols-1 overflow-y-auto overscroll-contain rounded-[28px] bg-[#fdf8f3] shadow-[0_24px_64px_rgba(0,0,0,0.3)] sm:max-h-[88vh] md:max-h-none md:h-[90vh] md:grid-cols-2 md:grid-rows-[1fr] md:overflow-hidden"
+            style={{ WebkitOverflowScrolling: "touch" }}
           >
             {!zoomActive && (
               <button
                 aria-label="Close"
                 onClick={closeQuickView}
-                className="absolute top-3 right-3 z-30 flex h-9 w-9 items-center justify-center rounded-full border border-[#7A2533] bg-white shadow-md transition-colors hover:bg-white md:top-4 md:right-4 md:h-10 md:w-10"
+                className="absolute top-3 right-3 z-30 flex h-11 w-11 items-center justify-center rounded-full border border-[#7A2533] bg-white shadow-md transition-colors hover:bg-white md:top-4 md:right-4"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -523,7 +525,7 @@ function QuickViewModal() {
             </div>
 
             {/* Right: Scrollable info column */}
-            <div className="scrollbar-thin overflow-y-auto overscroll-contain md:min-w-0">
+            <div className="md:overflow-y-auto md:overscroll-contain md:min-w-0">
               <QuickViewInfo
                 product={product}
                 onAdd={(qty) => {
@@ -567,16 +569,20 @@ function QuickViewMedia({
   const prev = () => setIdx((i) => (i - 1 + gallery.length) % gallery.length);
   const next = () => setIdx((i) => (i + 1) % gallery.length);
 
-  // Touch swipe
-  const touchX = useRef<number | null>(null);
+  // Touch swipe — direction-aware: only capture horizontal swipes
+  const touchStart = useRef<{ x: number; y: number } | null>(null);
   const onTouchStart = (e: React.TouchEvent) => {
-    touchX.current = e.touches[0].clientX;
+    touchStart.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
   };
   const onTouchEnd = (e: React.TouchEvent) => {
-    if (touchX.current == null) return;
-    const dx = e.changedTouches[0].clientX - touchX.current;
-    if (Math.abs(dx) > 40) (dx < 0 ? next : prev)();
-    touchX.current = null;
+    if (touchStart.current == null) return;
+    const dx = e.changedTouches[0].clientX - touchStart.current.x;
+    const dy = e.changedTouches[0].clientY - touchStart.current.y;
+    touchStart.current = null;
+    // Only handle horizontal swipes (dx must exceed dy and threshold)
+    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+      (dx < 0 ? next : prev)();
+    }
   };
 
   // Keyboard navigation
@@ -662,13 +668,16 @@ function QuickViewMedia({
             className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4 md:p-8"
             onClick={() => setZoom(false)}
             onTouchStart={(e) => {
-              touchX.current = e.touches[0].clientX;
+              touchStart.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
             }}
             onTouchEnd={(e) => {
-              if (touchX.current == null) return;
-              const dx = e.changedTouches[0].clientX - touchX.current;
-              if (Math.abs(dx) > 50) (dx < 0 ? next : prev)();
-              touchX.current = null;
+              if (touchStart.current == null) return;
+              const dx = e.changedTouches[0].clientX - touchStart.current.x;
+              const dy = e.changedTouches[0].clientY - touchStart.current.y;
+              touchStart.current = null;
+              if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+                (dx < 0 ? next : prev)();
+              }
             }}
           >
             {/* Close */}
