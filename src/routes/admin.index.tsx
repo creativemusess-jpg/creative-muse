@@ -6,7 +6,7 @@ import { StatusBadge } from "@/components/admin/AdminTable";
 import { requireAdmin } from "@/lib/auth-guard";
 import {
   Package, ShoppingCart, Users, Mail, TrendingUp, DollarSign, Clock,
-  AlertTriangle, ArrowUpRight, Tag, Home,
+  AlertTriangle, ArrowUpRight, Tag, Home, MessageSquare,
 } from "lucide-react";
 
 export const Route = createFileRoute("/admin/")({
@@ -35,10 +35,11 @@ function AdminDashboard() {
     { title: "Orders", value: String(m?.totalOrders ?? 0), subtitle: `${m?.pendingOrders ?? 0} pending`, icon: <ShoppingCart className="h-8 w-8" /> },
     { title: "Customers", value: String(m?.totalCustomers ?? 0), icon: <Users className="h-8 w-8" /> },
     { title: "Newsletter", value: String(m?.subscriberCount ?? 0), subtitle: "subscribers", icon: <Mail className="h-8 w-8" /> },
+    { title: "Enquiries", value: String(m?.totalEnquiries ?? 0), subtitle: `${m?.newEnquiries ?? 0} new · ${m?.inProgressEnquiries ?? 0} in progress`, icon: <MessageSquare className="h-8 w-8" /> },
   ];
 
   const pendingFulfillment = (m?.unfulfilledOrders ?? 0) + (m?.pendingOrders ?? 0);
-  const needsAttention = pendingFulfillment > 0 || (m?.outOfStockProducts ?? 0) > 0;
+  const needsAttention = pendingFulfillment > 0 || (m?.outOfStockProducts ?? 0) > 0 || (m?.newEnquiries ?? 0) > 0;
 
   return (
     <AdminLayout>
@@ -54,6 +55,7 @@ function AdminDashboard() {
                 {m!.pendingOrders > 0 && <span>{m!.pendingOrders} pending orders</span>}
                 {m!.unfulfilledOrders > 0 && <span>{m!.unfulfilledOrders} unfulfilled orders</span>}
                 {(m!.outOfStockProducts ?? 0) > 0 && <span>{m!.outOfStockProducts} out-of-stock products</span>}
+                {(m!.newEnquiries ?? 0) > 0 && <span>{m!.newEnquiries} new enquiries</span>}
               </div>
             </div>
           </div>

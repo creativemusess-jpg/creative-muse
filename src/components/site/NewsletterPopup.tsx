@@ -309,7 +309,7 @@ export function NewsletterPopup() {
                   src={popupImage || FALLBACK_SVG}
                   alt={categoryName ? `${categoryName} jewellery collection` : "Creative Muse luxury jewellery collection"}
                   className={`absolute inset-0 h-full w-full transition-opacity duration-500 ${imageLoading ? "opacity-0" : "opacity-100"}`}
-                  style={{ objectFit: "cover", objectPosition: "center" }}
+                  style={{ objectFit: "contain", objectPosition: "center" }}
                   onLoad={() => setImageLoading(false)}
                   onError={() => {
                     if (popupImage && popupImage !== FALLBACK_SVG) {
@@ -335,7 +335,7 @@ export function NewsletterPopup() {
                   src={popupImage || FALLBACK_SVG}
                   alt={categoryName ? `${categoryName} jewellery collection` : "Creative Muse luxury jewellery collection"}
                   className={`absolute inset-0 h-full w-full transition-opacity duration-500 ${imageLoading ? "opacity-0" : "opacity-100"}`}
-                  style={{ objectFit: imageFailed ? "contain" : "cover", objectPosition: "center" }}
+                  style={{ objectFit: "contain", objectPosition: "center" }}
                   onLoad={() => setImageLoading(false)}
                   onError={() => {
                     if (popupImage && popupImage !== FALLBACK_SVG) {

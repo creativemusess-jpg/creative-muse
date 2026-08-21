@@ -6,6 +6,7 @@ import { clearGuardCache } from "@/lib/auth-guard";
 import { supabase } from "@/lib/supabase";
 import { notificationsApi, type AdminNotification } from "@/lib/api/notifications";
 import { ordersApi } from "@/lib/api/orders";
+import { enquiriesApi } from "@/lib/api/enquiries";
 import {
   LayoutDashboard,
   Package,
@@ -27,7 +28,6 @@ import {
   PackageOpen,
   BarChart3,
   FileText,
-  Image,
   Video,
   Flag,
   ListChecks,
@@ -36,6 +36,8 @@ import {
   Trash2,
   CheckCheck,
   Megaphone,
+  AlertCircle,
+  BookOpen,
 } from "lucide-react";
 import { GlobalSearch } from "./GlobalSearch";
 
@@ -152,11 +154,17 @@ const navItems: NavItem[] = [
     icon: <Home className="h-4 w-4" />,
     permission: "homepage",
   },
-  {
+{
     label: "Enquiries",
     href: "/admin/enquiries",
     icon: <MessageSquare className="h-4 w-4" />,
     permission: "enquiries",
+  },
+  {
+    label: "FAQs",
+    href: "/admin/faqs",
+    icon: <BookOpen className="h-4 w-4" />,
+    permission: "faqs",
   },
   {
     label: "Newsletter",
@@ -164,12 +172,7 @@ const navItems: NavItem[] = [
     icon: <Mail className="h-4 w-4" />,
     permission: "newsletter",
   },
-  {
-    label: "Media",
-    href: "/admin/media",
-    icon: <Image className="h-4 w-4" />,
-    permission: "media",
-  },
+  
   {
     label: "Shoppable Reels",
     href: "/admin/reels",
@@ -248,6 +251,18 @@ function AdminShell({ children }: { children: ReactNode }) {
   });
   const pendingOrdersCount = pendingOrdersQuery.data ?? 0;
 
+  const unreadEnquiriesQuery = useQuery({
+    queryKey: ["admin", "enquiries", "unread-count"],
+    queryFn: async () => {
+      const result = await enquiriesApi.list({ per_page: 1 });
+      return result.data.filter((e) => !e.is_read).length;
+    },
+    refetchInterval: 30_000,
+    refetchOnWindowFocus: true,
+    staleTime: 15_000,
+  });
+  const unreadEnquiriesCount = unreadEnquiriesQuery.data ?? 0;
+
   const handleNotificationClick = async (n: AdminNotification) => {
     setNotifOpen(false);
     if (!n.is_read) {
@@ -260,6 +275,8 @@ function AdminShell({ children }: { children: ReactNode }) {
     }
     if (n.entity_type === "order" && n.entity_id) {
       navigate({ to: "/admin/orders/$id", params: { id: n.entity_id } });
+    } else if (n.entity_type === "enquiry" && n.entity_id) {
+      navigate({ to: "/admin/enquiries" });
     } else {
       navigate({ to: "/admin/notifications" });
     }
@@ -307,6 +324,14 @@ function AdminShell({ children }: { children: ReactNode }) {
         { event: "INSERT", schema: "public", table: "orders" },
         () => queryClient.invalidateQueries({ queryKey: ["admin", "orders", "pending-count"] }),
       )
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "enquiries" },
+        () => {
+          queryClient.invalidateQueries({ queryKey: ["admin", "enquiries", "unread-count"] });
+          queryClient.invalidateQueries({ queryKey: ["admin", "notifications"] });
+        },
+      )
       .subscribe();
     return () => {
       supabase.removeChannel(channel);
@@ -353,6 +378,7 @@ function AdminShell({ children }: { children: ReactNode }) {
   const badgeFor: Record<string, number> = {
     "/admin/orders": pendingOrdersCount,
     "/admin/notifications": unreadCount,
+    "/admin/enquiries": unreadEnquiriesCount,
   };
   const visibleItems = navItems
     .filter((item) => hasAccess(item, session))
@@ -502,7 +528,7 @@ function AdminShell({ children }: { children: ReactNode }) {
                       {notifications.length === 0 ? (
                         <div className="px-4 py-10 text-center">
                           <p className="text-sm font-medium text-gray-500">No notifications yet</p>
-                          <p className="mt-1 text-xs text-gray-400">New orders will appear here.</p>
+                          <p className="mt-1 text-xs text-gray-400">New orders and enquiries will appear here.</p>
                         </div>
                       ) : (
                         notifications.map((n) => (

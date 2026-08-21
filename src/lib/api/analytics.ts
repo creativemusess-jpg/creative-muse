@@ -25,6 +25,10 @@ export interface DashboardMetrics {
   topProducts: { name: string; sales: number; revenue: number }[];
   recentOrders: any[];
   recentCustomers: any[];
+  totalEnquiries: number;
+  newEnquiries: number;
+  inProgressEnquiries: number;
+  resolvedEnquiries: number;
 }
 
 export const analyticsApi = {
@@ -39,6 +43,7 @@ export const analyticsApi = {
       fulfilledRes, deliveredRes, cancelledRes, refundedRes,
       productsRes, activeRes, draftRes, archivedRes, oosRes,
       customersRes, subsRes, topProductsRes, todayRes, weekRes, monthRes,
+      enquiriesTotalRes, enquiriesNewRes, enquiriesInProgressRes, enquiriesResolvedRes,
     ] = await Promise.all([
       supabase.from("orders").select("total_amount").not("order_status", "eq", "cancelled"),
       supabase.from("orders").select("id", { count: "exact", head: true }),
@@ -60,6 +65,10 @@ export const analyticsApi = {
       supabase.from("orders").select("total_amount").gte("created_at", todayStart),
       supabase.from("orders").select("total_amount").gte("created_at", weekStart),
       supabase.from("orders").select("total_amount").gte("created_at", monthStart),
+      supabase.from("enquiries").select("id", { count: "exact", head: true }),
+      supabase.from("enquiries").select("id", { count: "exact", head: true }).eq("status", "new"),
+      supabase.from("enquiries").select("id", { count: "exact", head: true }).eq("status", "in_progress"),
+      supabase.from("enquiries").select("id", { count: "exact", head: true }).eq("status", "resolved"),
     ]);
 
     const totalSales = (salesRes.data ?? []).reduce((sum: number, o: any) => sum + (o.total_amount || 0), 0);
@@ -115,6 +124,10 @@ export const analyticsApi = {
       subscriberCount: subsRes.count ?? 0, averageOrderValue,
       revenueToday, revenueThisWeek, revenueThisMonth,
       topProducts, recentOrders, recentCustomers,
+      totalEnquiries: enquiriesTotalRes.count ?? 0,
+      newEnquiries: enquiriesNewRes.count ?? 0,
+      inProgressEnquiries: enquiriesInProgressRes.count ?? 0,
+      resolvedEnquiries: enquiriesResolvedRes.count ?? 0,
     };
   },
 

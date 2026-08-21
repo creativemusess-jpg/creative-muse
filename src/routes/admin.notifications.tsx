@@ -2,9 +2,10 @@ import { useState, useEffect, useCallback } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { AdminLayout, AdminPageHeader, AdminLoading } from "@/components/admin/AdminLayout";
 import { notificationsApi, type AdminNotification } from "@/lib/api/notifications";
-import { Bell, CheckCheck, ShoppingCart, PackageOpen, X } from "lucide-react";
+import { Bell, CheckCheck, ShoppingCart, PackageOpen, X, MessageSquare } from "lucide-react";
 
 import { requireAdmin } from "@/lib/auth-guard";
+import { supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/admin/notifications")({
   beforeLoad: requireAdmin,
@@ -26,6 +27,8 @@ function typeIcon(type: string) {
   switch (type) {
     case "new_order":
       return <ShoppingCart className="h-4 w-4" />;
+    case "new_enquiry":
+      return <MessageSquare className="h-4 w-4" />;
     default:
       return <Bell className="h-4 w-4" />;
   }
@@ -53,9 +56,45 @@ function NotificationsCenter() {
 
   useEffect(() => { fetchNotifications(); }, [fetchNotifications]);
 
+  // Realtime subscription for new notifications
+  useEffect(() => {
+    const channel = supabase
+      .channel("admin-notifications-realtime")
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "notifications" },
+        (payload) => {
+          const newNotification = payload.new as AdminNotification;
+          setNotifications((prev) => [newNotification, ...prev]);
+        }
+      )
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "notifications" },
+        (payload) => {
+          const updatedNotification = payload.new as AdminNotification;
+          setNotifications((prev) =>
+            prev.map((n) => (n.id === updatedNotification.id ? updatedNotification : n))
+          );
+        }
+      )
+      .on(
+        "postgres_changes",
+        { event: "DELETE", schema: "public", table: "notifications" },
+        (payload) => {
+          setNotifications((prev) => prev.filter((n) => n.id !== payload.old.id));
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [fetchNotifications, setNotifications]);
+
   const unreadCount = notifications.filter((n) => !n.is_read).length;
 
-  const openNotification = async (n: AdminNotification) => {
+const openNotification = async (n: AdminNotification) => {
     if (!n.is_read) {
       try {
         await notificationsApi.markRead(n.id);
@@ -66,6 +105,10 @@ function NotificationsCenter() {
     }
     if (n.entity_type === "order" && n.entity_id) {
       navigate({ to: "/admin/orders/$id", params: { id: n.entity_id } });
+    } else if (n.entity_type === "enquiry" && n.entity_id) {
+      navigate({ to: "/admin/enquiries" });
+    } else {
+      navigate({ to: "/admin/notifications" });
     }
   };
 

@@ -8,6 +8,7 @@ export { ordersApi } from "./orders";
 export { customersApi } from "./customers";
 export { couponsApi } from "./coupons";
 export { newsletterApi } from "./newsletter";
+export { faqsApi, type FAQ } from "./faqs";
 export type {
   ProductWithImages,
   ProductFilters,

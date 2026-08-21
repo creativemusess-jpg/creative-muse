@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { MapPin, Phone, Mail, Send } from "lucide-react";
+import { MapPin, Phone, Mail, Send, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
 import { PageHeader, PageShell } from "@/components/site/PageHeader";
+import { enquiriesApi } from "@/lib/api/enquiries";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -14,7 +15,53 @@ export const Route = createFileRoute("/contact")({
 });
 
 function ContactPage() {
-  const [sent, setSent] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    subject: "",
+    message: "",
+  });
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const validateForm = (): boolean => {
+    const newErrors: Record<string, string> = {};
+    if (!formData.name.trim()) newErrors.name = "Name is required";
+    if (!formData.email.trim()) newErrors.email = "Email is required";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) newErrors.email = "Invalid email format";
+    if (!formData.phone.trim()) newErrors.phone = "Phone is required";
+    else if (!/^[\d\s\-\+\(\)]{10,}$/.test(formData.phone)) newErrors.phone = "Invalid phone number";
+    if (!formData.message.trim()) newErrors.message = "Message is required";
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!validateForm()) return;
+
+    setStatus("submitting");
+    setErrorMessage("");
+
+    try {
+      await enquiriesApi.create({
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        phone: formData.phone.trim(),
+        subject: formData.subject.trim() || undefined,
+        message: formData.message.trim(),
+      });
+      setStatus("success");
+      setFormData({ name: "", email: "", phone: "", subject: "", message: "" });
+    } catch (err) {
+      console.error(err);
+      setStatus("error");
+      setErrorMessage("Something went wrong while submitting your enquiry. Please try again.");
+    }
+  };
+
   return (
     <PageShell>
       <PageHeader eyebrow="Reach Us" title="We'd Love to Hear From You" subtitle="Book an appointment, ask about custom pieces, or simply say hello." />
@@ -33,32 +80,126 @@ function ContactPage() {
           </div>
         </div>
 
-        <form
-          onSubmit={(e) => { e.preventDefault(); setSent(true); }}
-          className="space-y-4 rounded-[28px] bg-white p-7 shadow-[0_8px_32px_rgba(0,0,0,0.06)]"
-        >
+        <form onSubmit={handleSubmit} className="space-y-4 rounded-[28px] bg-white p-7 shadow-[0_8px_32px_rgba(0,0,0,0.06)]">
           <h3 className="font-display text-xl font-semibold text-[#1a1a2e]">Send us a message</h3>
-          <Field label="Name" type="text" />
-          <Field label="Email" type="email" />
-          <Field label="Phone" type="tel" />
+
+          <Field
+            label="Name"
+            type="text"
+            value={formData.name}
+            onChange={(v) => setFormData({ ...formData, name: v })}
+            error={errors.name}
+            disabled={status === "submitting"}
+          />
+          <Field
+            label="Email"
+            type="email"
+            value={formData.email}
+            onChange={(v) => setFormData({ ...formData, email: v })}
+            error={errors.email}
+            disabled={status === "submitting"}
+          />
+          <Field
+            label="Phone"
+            type="tel"
+            value={formData.phone}
+            onChange={(v) => setFormData({ ...formData, phone: v })}
+            error={errors.phone}
+            disabled={status === "submitting"}
+          />
+          <Field
+            label="Subject (optional)"
+            type="text"
+            value={formData.subject}
+            onChange={(v) => setFormData({ ...formData, subject: v })}
+            disabled={status === "submitting"}
+          />
           <div>
             <label className="mb-1.5 block text-xs font-semibold tracking-wider text-[#7a6e64] uppercase">Message</label>
-            <textarea rows={4} className="w-full rounded-[20px] border border-[#e0d8cc] bg-[#fdf8f3] px-4 py-3 text-sm focus:border-[#7A2533] focus:outline-none" />
+            <textarea
+              rows={4}
+              value={formData.message}
+              onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+              className="w-full rounded-[20px] border border-[#e0d8cc] bg-[#fdf8f3] px-4 py-3 text-sm focus:border-[#7A2533] focus:outline-none"
+              disabled={status === "submitting"}
+            />
+            {errors.message && <p className="mt-1 text-xs text-red-500">{errors.message}</p>}
           </div>
-          <button type="submit" className="btn-primary w-full">
-            <Send className="h-4 w-4" /> {sent ? "Sent — we'll reply soon" : "Send Message"}
+
+          {status === "success" && (
+            <div className="flex items-center gap-3 rounded-lg bg-green-50 p-4 text-green-700 animate-fade-in">
+              <CheckCircle className="h-5 w-5 shrink-0" />
+              <div>
+                <p className="font-semibold">Enquiry submitted successfully</p>
+                <p className="text-sm">We will get back to you shortly.</p>
+              </div>
+            </div>
+          )}
+
+          {status === "error" && (
+            <div className="flex items-center gap-3 rounded-lg bg-red-50 p-4 text-red-700 animate-fade-in">
+              <AlertCircle className="h-5 w-5 shrink-0" />
+              <p className="text-sm">{errorMessage}</p>
+            </div>
+          )}
+
+          <button type="submit" className="btn-primary w-full" disabled={status === "submitting" || status === "success"}>
+            {status === "submitting" && <Loader2 className="h-4 w-4 animate-spin" />}
+            {status === "submitting" ? "Submitting..." : status === "success" ? (
+              <>
+                <CheckCircle className="h-4 w-4" /> Sent — we'll reply soon
+              </>
+            ) : (
+              <>
+                <Send className="h-4 w-4" /> Send Message
+              </>
+            )}
           </button>
         </form>
       </section>
+
+      <style jsx>{`
+        .animate-fade-in {
+          animation: fadeIn 0.3s ease-out;
+        }
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(-10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
     </PageShell>
   );
 }
 
-function Field({ label, type }: { label: string; type: string }) {
+function Field({
+  label,
+  type,
+  value,
+  onChange,
+  error,
+  disabled,
+}: {
+  label: string;
+  type: string;
+  value: string;
+  onChange: (v: string) => void;
+  error?: string;
+  disabled?: boolean;
+}) {
   return (
     <div>
       <label className="mb-1.5 block text-xs font-semibold tracking-wider text-[#7a6e64] uppercase">{label}</label>
-      <input type={type} required className="w-full rounded-full border border-[#e0d8cc] bg-[#fdf8f3] px-4 py-3 text-sm focus:border-[#7A2533] focus:outline-none" />
+      <input
+        type={type}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        required={!label.includes("optional")}
+        disabled={disabled}
+        className={`w-full rounded-full border bg-[#fdf8f3] px-4 py-3 text-sm focus:border-[#7A2533] focus:outline-none transition-colors ${
+          error ? "border-red-300" : "border-[#e0d8cc]"
+        } ${disabled ? "opacity-50 cursor-not-allowed" : ""}`}
+      />
+      {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
     </div>
   );
 }

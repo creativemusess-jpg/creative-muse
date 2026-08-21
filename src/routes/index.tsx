@@ -194,12 +194,10 @@ function PromoBannerCarousel() {
       <img
         src={imageFor(b)}
         alt=""
-        width={1920}
-        height={700}
         fetchPriority={idx === 0 ? "high" : undefined}
         loading={idx === 0 ? undefined : "lazy"}
         decoding="async"
-        className="h-full w-full object-cover"
+        className="h-full w-full object-contain"
         style={{ objectPosition: objectPosFor(b) }}
       />
     );
