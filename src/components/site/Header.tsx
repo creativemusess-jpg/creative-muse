@@ -27,37 +27,34 @@ export const Header = memo(function Header() {
   const { cartCount, wishlistCount, openCart, openWishlist } = useStore();
   const { user } = useAuth();
 
-  // Auto-hide: hide while scrolling down, reappear on scroll up / when the
-  // user stops / near the top. Never hides while a menu or the drawer is open.
+  // Auto-hide: hide while scrolling down, reappear on scroll up. Never hides
+  // while a menu or the drawer is open. Stop-scrolling does NOT show the header.
   useEffect(() => {
     if (activeMenuIdx !== null || mobileOpen) {
       setHidden(false);
       return;
     }
-    const HIDE_TOP = 200;
-    const HIDE_DELTA = 6;
-    const STOP_DELAY = 400;
+    const TOP_THRESHOLD = 10;
+    const DIRECTION_THRESHOLD = 8;
     let lastY = window.scrollY;
     let ticking = false;
-    let stopTimer = 0;
     let raf = 0;
     const update = () => {
       raf = 0;
       const y = window.scrollY;
       const delta = y - lastY;
-      if (Math.abs(delta) < 2) {
-        lastY = y;
+      if (Math.abs(delta) < DIRECTION_THRESHOLD) {
         ticking = false;
         return;
       }
-      if (stopTimer) window.clearTimeout(stopTimer);
-      if (y <= HIDE_TOP || delta < 0) {
+      if (y <= TOP_THRESHOLD) {
         setHidden(false);
-      } else if (delta >= HIDE_DELTA) {
+      } else if (delta > 0) {
         setHidden(true);
+      } else {
+        setHidden(false);
       }
       lastY = y;
-      stopTimer = window.setTimeout(() => setHidden(false), STOP_DELAY);
       ticking = false;
     };
     const onScroll = () => {
@@ -69,7 +66,6 @@ export const Header = memo(function Header() {
     return () => {
       window.removeEventListener("scroll", onScroll);
       if (raf) cancelAnimationFrame(raf);
-      if (stopTimer) window.clearTimeout(stopTimer);
     };
   }, [activeMenuIdx, mobileOpen]);
   const { data: categories = [] } = useQuery({
@@ -126,10 +122,10 @@ export const Header = memo(function Header() {
   return (
     <>
       <header
-        className={`sticky top-0 z-50 bg-[#9C544D] transition-transform duration-300 ease-out will-change-transform motion-reduce:transition-none ${
+        className={`sticky top-0 z-50 bg-[#F8F3EC] transition-transform duration-300 ease-out will-change-transform motion-reduce:transition-none ${
           hidden ? "-translate-y-full" : "translate-y-0"
         }`}
-        style={{ backgroundColor: "#9C544D" }}
+        style={{ backgroundColor: "#F8F3EC" }}
       >
         <div className="mx-auto max-w-[1440px] px-4 lg:px-8">
           <div className="grid grid-cols-[1fr_auto_1fr] items-center py-2.5 lg:py-3">
@@ -139,10 +135,10 @@ export const Header = memo(function Header() {
                   setHidden(false);
                   setMobileOpen(true);
                 }}
-                className="flex h-11 w-11 items-center justify-center rounded-full hover:bg-white/15"
+                className="flex h-11 w-11 items-center justify-center rounded-full hover:bg-[#1a1a2e]/10"
                 aria-label="Open menu"
               >
-                <Menu className="h-5 w-5 text-white" />
+                <Menu className="h-5 w-5 text-[#1a1a2e]" />
               </button>
             </div>
             <div className="hidden lg:block" />
@@ -162,34 +158,34 @@ export const Header = memo(function Header() {
             <div className="flex items-center justify-end gap-1 md:gap-2 lg:gap-4">
               <button
                 onClick={openCart}
-                className="relative flex h-11 w-11 items-center justify-center rounded-full hover:bg-white/15"
+                className="relative flex h-11 w-11 items-center justify-center rounded-full hover:bg-[#1a1a2e]/10"
                 aria-label="Cart"
               >
-                <ShoppingBag className="h-[20px] w-[20px] text-white" strokeWidth={1.9} />
+                <ShoppingBag className="h-[20px] w-[20px] text-[#1a1a2e]" strokeWidth={1.9} />
                 {cartCount > 0 && (
-                  <span className="absolute right-1 top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-white px-1 text-[10px] font-semibold text-[#9C544D]">
+                  <span className="absolute right-1 top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#1a1a2e] px-1 text-[10px] font-semibold text-white">
                     {cartCount}
                   </span>
                 )}
               </button>
               <button
                 onClick={openWishlist}
-                className="relative hidden h-11 w-11 items-center justify-center rounded-full hover:bg-white/15 md:flex"
+                className="relative hidden h-11 w-11 items-center justify-center rounded-full hover:bg-[#1a1a2e]/10 md:flex"
                 aria-label="Wishlist"
               >
-                <Heart className="h-[20px] w-[20px] text-white" strokeWidth={1.9} />
+                <Heart className="h-[20px] w-[20px] text-[#1a1a2e]" strokeWidth={1.9} />
                 {wishlistCount > 0 && (
-                  <span className="absolute right-1 top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-white px-1 text-[10px] font-semibold text-[#9C544D]">
+                  <span className="absolute right-1 top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#1a1a2e] px-1 text-[10px] font-semibold text-white">
                     {wishlistCount}
                   </span>
                 )}
               </button>
               <Link
                 to={user ? "/account" : "/login"}
-                className="hidden h-11 w-11 items-center justify-center rounded-full hover:bg-white/15 md:flex"
+                className="hidden h-11 w-11 items-center justify-center rounded-full hover:bg-[#1a1a2e]/10 md:flex"
                 aria-label={user ? "Account" : "Login"}
               >
-                <User className="h-[20px] w-[20px] text-white" strokeWidth={1.9} />
+                <User className="h-[20px] w-[20px] text-[#1a1a2e]" strokeWidth={1.9} />
               </Link>
             </div>
           </div>
