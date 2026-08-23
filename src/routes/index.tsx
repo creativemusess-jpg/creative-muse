@@ -308,7 +308,7 @@ function PromoBannerCarousel() {
               key={idx}
               onClick={() => api?.scrollTo(idx)}
               className={`h-2 rounded-full transition-all ${
-                idx === activeIndex ? "w-7 bg-[#9C544D]" : "w-2 bg-[#7A2533]/50"
+                idx === activeIndex ? "w-7 bg-[#9C544D]" : "w-2 bg-[#9C544D]/50"
               }`}
               aria-label={`Go to banner ${idx + 1}`}
             />
@@ -469,7 +469,7 @@ function ShopByCategory() {
     return (
       <Link
         to={`/category/${cat.slug}`}
-        className="group relative flex h-full flex-col items-center rounded-[24px] border border-transparent bg-white p-3 pb-4 text-center shadow-[0_4px_24px_rgba(0,0,0,0.04)] transition-all duration-500 hover:z-10 hover:-translate-y-2 hover:border-[#7A2533]/50 hover:shadow-[0_20px_60px_rgba(122,37,51,0.22)] active:scale-[0.97] md:p-4 md:pb-5"
+        className="group relative flex h-full flex-col items-center rounded-[24px] border border-transparent bg-white p-3 pb-4 text-center shadow-[0_4px_24px_rgba(0,0,0,0.04)] transition-all duration-500 hover:z-10 hover:-translate-y-2 hover:border-[#9C544D]/50 hover:shadow-[0_20px_60px_rgba(156,84,77,0.22)] active:scale-[0.97] md:p-4 md:pb-5"
       >
         <div className="relative aspect-square w-full rounded-[18px] bg-gradient-to-br from-[#fdf8f3] to-[#f0e4cd]">
           {img ? (
@@ -487,7 +487,7 @@ function ShopByCategory() {
           ) : (
             <div className="flex h-full w-full items-center justify-center bg-[#f5efe8] p-3">
               <svg
-                className="h-8 w-8 text-[#7A2533]/20"
+                className="h-8 w-8 text-[#9C544D]/20"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -517,7 +517,7 @@ function ShopByCategory() {
         <div className="relative mt-10">
           <button
             onClick={() => scrollByStep(-1)}
-            className="absolute left-0 top-1/2 z-10 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-[#d8d0c6] bg-white text-[#1a1a2e] shadow-[0_8px_20px_rgba(0,0,0,0.08)] transition-all hover:border-[#7A2533] hover:text-[#7A2533] md:flex"
+            className="absolute left-0 top-1/2 z-10 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-[#d8d0c6] bg-white text-[#1a1a2e] shadow-[0_8px_20px_rgba(0,0,0,0.08)] transition-all hover:border-[#9C544D] hover:text-[#9C544D] md:flex"
             aria-label="Scroll categories left"
           >
             <ArrowLeft className="h-4 w-4" />
@@ -543,7 +543,7 @@ function ShopByCategory() {
 
           <button
             onClick={() => scrollByStep(1)}
-            className="absolute right-0 top-1/2 z-10 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-[#d8d0c6] bg-white text-[#1a1a2e] shadow-[0_8px_20px_rgba(0,0,0,0.08)] transition-all hover:border-[#7A2533] hover:text-[#7A2533] md:flex"
+            className="absolute right-0 top-1/2 z-10 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-[#d8d0c6] bg-white text-[#1a1a2e] shadow-[0_8px_20px_rgba(0,0,0,0.08)] transition-all hover:border-[#9C544D] hover:text-[#9C544D] md:flex"
             aria-label="Scroll categories right"
           >
             <ArrowRight className="h-4 w-4" />
@@ -559,7 +559,7 @@ function ShopByCategory() {
             </button>
             <button
               onClick={() => scrollByStep(1)}
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-[#7A2533] bg-white text-[#7A2533] shadow-[0_6px_14px_rgba(0,0,0,0.07)] transition-all active:scale-95"
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-[#9C544D] bg-white text-[#9C544D] shadow-[0_6px_14px_rgba(0,0,0,0.07)] transition-all active:scale-95"
               aria-label="Scroll categories right"
             >
               <ArrowRight className="h-4 w-4" />
@@ -837,7 +837,7 @@ function BestSellers() {
                 onClick={() => setActive(t)}
                 className={`flex h-[52px] min-w-[148px] shrink-0 items-center justify-center rounded-[22px] px-4 text-[13px] font-semibold tracking-[0.08em] uppercase transition-all duration-300 md:h-auto md:min-w-0 md:rounded-full md:px-5 md:py-2.5 md:text-[12px] md:tracking-[0.1em] ${
                   active === t
-                    ? "bg-[#7A2533] text-white shadow-[0_6px_16px_rgba(122,37,51,0.35)]"
+                    ? "bg-[#9C544D] text-white shadow-[0_6px_16px_rgba(156,84,77,0.35)]"
                     : "text-[#7a6e64] hover:text-[#1a1a2e]"
                 }`}
               >
@@ -1041,7 +1041,7 @@ function VideoBanner() {
   return (
     <section className="mt-20 px-4 sm:px-6">
       <div className="relative mx-auto max-w-[1320px] overflow-hidden rounded-[40px] bg-gradient-to-br from-[#0d0d1a] via-[#1a1a2e] to-[#3a1a3e] px-8 py-28 text-center shadow-[0_24px_64px_rgba(0,0,0,0.3)] sm:py-36">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_30%_40%,rgba(122,37,51,0.25),transparent_60%)]" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_30%_40%,rgba(156,84,77,0.25),transparent_60%)]" />
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_70%_60%,rgba(232,180,160,0.18),transparent_55%)]" />
 
         <motion.div
@@ -1092,17 +1092,17 @@ function StoreLocation() {
           </h2>
           <div className="mt-6 space-y-4 text-[15px] text-[#3a3028]">
             <div className="flex items-start gap-3">
-              <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-[#7A2533]" />
+              <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-[#9C544D]" />
               <span>GF-3/4, Vidhi Square Complex, BPC Road, Anand Nagar, Vadodara – 390020</span>
             </div>
             <div className="flex items-start gap-3">
-              <Phone className="mt-0.5 h-5 w-5 shrink-0 text-[#7A2533]" />
-              <a href="tel:+919033779867" className="hover:text-[#7A2533]">
+              <Phone className="mt-0.5 h-5 w-5 shrink-0 text-[#9C544D]" />
+              <a href="tel:+919033779867" className="hover:text-[#9C544D]">
                 +91 90337 79867
               </a>
             </div>
             <div className="flex items-start gap-3">
-              <Award className="mt-0.5 h-5 w-5 shrink-0 text-[#7A2533]" />
+              <Award className="mt-0.5 h-5 w-5 shrink-0 text-[#9C544D]" />
               <span>Mon–Sat: 10AM–8PM · Sunday: 11AM–7PM</span>
             </div>
           </div>
@@ -1201,7 +1201,7 @@ function FAQ() {
                 >
                   <span className="font-display text-[15px] font-semibold text-[#1a1a2e]">{q}</span>
                   <span
-                    className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#fdf8f3] text-[#7A2533] transition-transform duration-300 ${
+                    className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#fdf8f3] text-[#9C544D] transition-transform duration-300 ${
                       isOpen ? "rotate-45" : ""
                     }`}
                   >

@@ -82,12 +82,12 @@ export async function generateInvoicePdf({
   const inv = invoiceNumber || order.invoice_number || `CM-INV-${order.order_number || "ORDER"}`;
   const pageWidth = doc.internal.pageSize.getWidth();
   const margin = 14;
-  const brand = "#7A2533";
+  const brand = "#9C544D";
   const ink = "#1a1a2e";
 
   doc.setFillColor(253, 248, 243);
   doc.rect(0, 0, pageWidth, 42, "F");
-  doc.setFillColor(122, 37, 51);
+  doc.setFillColor(156, 84, 77);
   doc.circle(24, 20, 9, "F");
   doc.setTextColor(255, 255, 255);
   doc.setFont("times", "bold");

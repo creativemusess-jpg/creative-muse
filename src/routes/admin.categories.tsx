@@ -206,7 +206,7 @@ function AdminCategories() {
                   setForm((f) => ({ ...f, name: e.target.value }));
                   if (!editing) setForm((f) => ({ ...f, slug: e.target.value.toLowerCase().replace(/\s+/g, "-") }));
                 }}
-                className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-[#7A2533] min-h-[44px]"
+                className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-[#9C544D] min-h-[44px]"
               />
             </div>
             <div>
@@ -215,7 +215,7 @@ function AdminCategories() {
                 type="text"
                 value={form.slug}
                 onChange={(e) => setForm((f) => ({ ...f, slug: e.target.value }))}
-                className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-[#7A2533] min-h-[44px]"
+                className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-[#9C544D] min-h-[44px]"
               />
             </div>
             <div>
@@ -224,7 +224,7 @@ function AdminCategories() {
                 type="number"
                 value={form.sort_order}
                 onChange={(e) => setForm((f) => ({ ...f, sort_order: parseInt(e.target.value) || 0 }))}
-                className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-[#7A2533] min-h-[44px]"
+                className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-[#9C544D] min-h-[44px]"
               />
             </div>
             <div className="sm:col-span-2">
@@ -233,7 +233,7 @@ function AdminCategories() {
                 value={form.description}
                 onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
                 rows={2}
-                className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-[#7A2533]"
+                className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-[#9C544D]"
               />
             </div>
             <div>
@@ -304,7 +304,7 @@ function AdminCategories() {
                 type="text"
                 value={form.banner_heading}
                 onChange={(e) => setForm((f) => ({ ...f, banner_heading: e.target.value }))}
-                className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-[#7A2533] min-h-[44px]"
+                className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-[#9C544D] min-h-[44px]"
               />
             </div>
             <div className="sm:col-span-2">
@@ -313,7 +313,7 @@ function AdminCategories() {
                 value={form.banner_description}
                 onChange={(e) => setForm((f) => ({ ...f, banner_description: e.target.value }))}
                 rows={2}
-                className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-[#7A2533]"
+                className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-[#9C544D]"
               />
             </div>
             <div>
@@ -323,7 +323,7 @@ function AdminCategories() {
                 value={form.cta_button_text}
                 onChange={(e) => setForm((f) => ({ ...f, cta_button_text: e.target.value }))}
                 placeholder="View Collection"
-                className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-[#7A2533] min-h-[44px]"
+                className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-[#9C544D] min-h-[44px]"
               />
             </div>
             <div>
@@ -333,7 +333,7 @@ function AdminCategories() {
                 value={form.cta_link}
                 onChange={(e) => setForm((f) => ({ ...f, cta_link: e.target.value }))}
                 placeholder="#products"
-                className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-[#7A2533] min-h-[44px]"
+                className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-[#9C544D] min-h-[44px]"
               />
             </div>
             <div className="flex items-end gap-6 pb-2">
@@ -362,7 +362,7 @@ function AdminCategories() {
                 type="text"
                 value={form.seo_title}
                 onChange={(e) => setForm((f) => ({ ...f, seo_title: e.target.value }))}
-                className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-[#7A2533] min-h-[44px]"
+                className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-[#9C544D] min-h-[44px]"
               />
             </div>
             <div>
@@ -371,7 +371,7 @@ function AdminCategories() {
                 type="text"
                 value={form.seo_description}
                 onChange={(e) => setForm((f) => ({ ...f, seo_description: e.target.value }))}
-                className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-[#7A2533] min-h-[44px]"
+                className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-[#9C544D] min-h-[44px]"
               />
             </div>
           </div>
@@ -423,7 +423,7 @@ function AdminCategories() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <span className="text-xs text-gray-500">Order: {cat.sort_order}</span>
-                      {cat.featured && <Star className="h-3 w-3 text-[#7A2533]" />}
+                      {cat.featured && <Star className="h-3 w-3 text-[#9C544D]" />}
                     </div>
                     <div className="flex items-center gap-1">
                       <button onClick={() => startEdit(cat)} className="flex h-9 min-w-[44px] items-center justify-center rounded-lg border border-gray-200 text-xs font-medium text-gray-600 hover:bg-gray-50">
@@ -454,7 +454,7 @@ function AdminCategories() {
               <td className="px-4 py-3 text-gray-500">{cat.slug}</td>
               <td className="px-4 py-3 text-gray-500">{cat.sort_order}</td>
               <td className="px-4 py-3">
-                {cat.featured ? <Star className="h-4 w-4 text-[#7A2533]" /> : "—"}
+                {cat.featured ? <Star className="h-4 w-4 text-[#9C544D]" /> : "—"}
               </td>
               <td className="px-4 py-3">
                 <span className={`inline-block rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase ${cat.active ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"}`}>

@@ -169,19 +169,19 @@ const openNotification = async (n: AdminNotification) => {
                   key={n.id}
                   onClick={() => openNotification(n)}
                   className={`flex w-full items-start gap-4 px-5 py-4 text-left transition-colors hover:bg-gray-50 ${
-                    !n.is_read ? "bg-[#7A2533]/5" : ""
+                    !n.is_read ? "bg-[#9C544D]/5" : ""
                   }`}
                 >
                   <span
                     className={`mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${
-                      n.is_read ? "bg-gray-100 text-gray-400" : "bg-[#7A2533]/10 text-[#7A2533]"
+                      n.is_read ? "bg-gray-100 text-gray-400" : "bg-[#9C544D]/10 text-[#9C544D]"
                     }`}
                   >
                     <Icon />
                   </span>
                   <span className="min-w-0 flex-1">
                     <span className="flex items-center gap-2">
-                      {!n.is_read && <span className="h-2 w-2 shrink-0 rounded-full bg-[#7A2533]" />}
+                      {!n.is_read && <span className="h-2 w-2 shrink-0 rounded-full bg-[#9C544D]" />}
                       <span className={`text-sm ${n.is_read ? "font-medium text-gray-600" : "font-semibold text-[#1a1a2e]"}`}>
                         {n.title}
                       </span>
@@ -192,7 +192,7 @@ const openNotification = async (n: AdminNotification) => {
                     </span>
                   </span>
                   {!n.is_read ? (
-                    <span className="shrink-0 rounded-full bg-[#7A2533] px-2 py-0.5 text-[10px] font-bold text-white">
+                    <span className="shrink-0 rounded-full bg-[#9C544D] px-2 py-0.5 text-[10px] font-bold text-white">
                       UNREAD
                     </span>
                   ) : (

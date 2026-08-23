@@ -11,7 +11,7 @@ export const Route = createFileRoute("/blog/$slug")({
     return (
       <PageShell>
         <article className="mx-auto max-w-[760px] px-6 py-20">
-          <Link to="/blog" className="text-[11px] font-semibold tracking-[0.18em] text-[#7A2533] uppercase">
+          <Link to="/blog" className="text-[11px] font-semibold tracking-[0.18em] text-[#9C544D] uppercase">
             ← Back to Journal
           </Link>
           <h1 className="font-display mt-4 text-[40px] leading-tight font-bold text-[#1a1a2e]">

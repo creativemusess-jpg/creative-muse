@@ -29,7 +29,7 @@ function AnalyticsPage() {
     }).catch((e) => { setError(e.message); setLoading(false); });
   }, []);
 
-  if (loading) return <AdminLayout><div className="flex items-center justify-center py-20"><div className="h-8 w-8 animate-spin rounded-full border-4 border-[#7A2533] border-t-transparent" /></div></AdminLayout>;
+  if (loading) return <AdminLayout><div className="flex items-center justify-center py-20"><div className="h-8 w-8 animate-spin rounded-full border-4 border-[#9C544D] border-t-transparent" /></div></AdminLayout>;
   if (error) return <AdminLayout><div className="py-20 text-center text-red-500">{error}</div></AdminLayout>;
 
   const statCards = [

@@ -76,13 +76,13 @@ function TrackPage() {
           className="grid gap-3 rounded-[8px] border border-[#ead8b8] bg-white p-4 shadow-[0_4px_24px_rgba(0,0,0,0.05)] sm:grid-cols-[1fr_1fr_auto]"
         >
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#7A2533]" />
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#9C544D]" />
             <input
               value={orderNumber}
               onChange={(e) => setOrderNumber(e.target.value)}
               placeholder="Order number"
               required
-              className="w-full rounded-[6px] border border-[#e0d8cc] py-3 pl-10 pr-3 text-sm focus:outline-none focus:border-[#7A2533]"
+              className="w-full rounded-[6px] border border-[#e0d8cc] py-3 pl-10 pr-3 text-sm focus:outline-none focus:border-[#9C544D]"
             />
           </div>
           <input
@@ -90,7 +90,7 @@ function TrackPage() {
             onChange={(e) => setIdentity(e.target.value)}
             placeholder="Email or phone"
             required
-            className="w-full rounded-[6px] border border-[#e0d8cc] px-3 py-3 text-sm focus:outline-none focus:border-[#7A2533]"
+            className="w-full rounded-[6px] border border-[#e0d8cc] px-3 py-3 text-sm focus:outline-none focus:border-[#9C544D]"
           />
           <button disabled={loading} className="btn-primary justify-center disabled:opacity-60">
             {loading ? "Checking..." : "Track"}
@@ -107,7 +107,7 @@ function TrackPage() {
           <div className="mt-8 rounded-[8px] border border-[#ead8b8] bg-[#fffdf8] p-5 shadow-[0_10px_30px_rgba(40,24,8,0.06)]">
             <div className="flex flex-col gap-4 border-b border-[#ead8b8] pb-5 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <p className="text-[11px] font-semibold uppercase tracking-wider text-[#7A2533]">
+                <p className="text-[11px] font-semibold uppercase tracking-wider text-[#9C544D]">
                   Order {order.order_number}
                 </p>
                 <h2 className="font-display mt-1 text-2xl font-semibold text-[#1a1a2e]">
@@ -149,7 +149,7 @@ function TrackPage() {
               </div>
 
               <div className="rounded-[8px] border border-[#ead8b8] bg-white p-4 text-sm">
-                <h3 className="mb-3 text-[12px] font-bold uppercase tracking-wider text-[#7A2533]">
+                <h3 className="mb-3 text-[12px] font-bold uppercase tracking-wider text-[#9C544D]">
                   Shipment
                 </h3>
                 <Info label="Courier" value={order.courier_name || order.courier || "Pending"} />
@@ -169,7 +169,7 @@ function TrackPage() {
                     href={order.tracking_url}
                     target="_blank"
                     rel="noreferrer"
-                    className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-[6px] bg-[#7A2533] px-4 py-3 text-sm font-semibold text-white hover:bg-[#5F1C27]"
+                    className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-[6px] bg-[#9C544D] px-4 py-3 text-sm font-semibold text-white hover:bg-[#7A3D3A]"
                   >
                     <ExternalLink className="h-4 w-4" /> Track Shipment
                   </a>
@@ -180,13 +180,13 @@ function TrackPage() {
             <div className="grid gap-3 border-t border-[#ead8b8] pt-5 sm:grid-cols-2">
               <button
                 onClick={() => window.print()}
-                className="inline-flex items-center justify-center gap-2 rounded-[6px] border border-[#7A2533] px-4 py-3 text-sm font-semibold text-[#7A2533]"
+                className="inline-flex items-center justify-center gap-2 rounded-[6px] border border-[#9C544D] px-4 py-3 text-sm font-semibold text-[#9C544D]"
               >
                 <Download className="h-4 w-4" /> Download Invoice
               </button>
               <a
                 href={order.tracking_url || "#"}
-                className="inline-flex items-center justify-center gap-2 rounded-[6px] bg-[#7A2533] px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#5F1C27]"
+                className="inline-flex items-center justify-center gap-2 rounded-[6px] bg-[#9C544D] px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#7A3D3A]"
               >
                 <Truck className="h-4 w-4" /> Shipment Details
               </a>

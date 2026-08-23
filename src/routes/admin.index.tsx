@@ -130,7 +130,7 @@ function AdminDashboard() {
         <div className="rounded-xl border border-gray-200 bg-white">
           <div className="flex items-center justify-between border-b border-gray-100 px-5 py-4">
             <h2 className="text-sm font-bold text-[#1a1a2e]">Recent Orders</h2>
-            <Link to="/admin/orders" className="text-xs font-medium text-[#7A2533] hover:underline">View all</Link>
+            <Link to="/admin/orders" className="text-xs font-medium text-[#9C544D] hover:underline">View all</Link>
           </div>
           <div className="divide-y divide-gray-100">
             {(m?.recentOrders?.length ?? 0) > 0 ? m!.recentOrders.slice(0, 5).map((o: any) => (
@@ -153,7 +153,7 @@ function AdminDashboard() {
         <div className="rounded-xl border border-gray-200 bg-white">
           <div className="flex items-center justify-between border-b border-gray-100 px-5 py-4">
             <h2 className="text-sm font-bold text-[#1a1a2e]">Recent Customers</h2>
-            <Link to="/admin/customers" className="text-xs font-medium text-[#7A2533] hover:underline">View all</Link>
+            <Link to="/admin/customers" className="text-xs font-medium text-[#9C544D] hover:underline">View all</Link>
           </div>
           <div className="divide-y divide-gray-100">
             {(m?.recentCustomers?.length ?? 0) > 0 ? m!.recentCustomers.slice(0, 5).map((c: any) => (
@@ -185,8 +185,8 @@ function AdminDashboard() {
             { icon: <Tag className="h-4 w-4" />, label: "Add Coupon", href: "/admin/coupons", desc: "Create a discount" },
             { icon: <Home className="h-4 w-4" />, label: "Edit Homepage", href: "/admin/homepage", desc: "Update homepage" },
           ].map((a) => (
-            <Link key={a.label} to={a.href as any} className="flex items-center gap-3 rounded-lg border border-gray-200 p-3 transition-colors hover:border-[#7A2533]">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#fdf8f3] text-[#7A2533]">
+            <Link key={a.label} to={a.href as any} className="flex items-center gap-3 rounded-lg border border-gray-200 p-3 transition-colors hover:border-[#9C544D]">
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#fdf8f3] text-[#9C544D]">
                 {a.icon}
               </div>
               <div>

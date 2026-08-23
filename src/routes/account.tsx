@@ -27,24 +27,24 @@ function AccountProfile() {
           <h2 className="font-display text-lg font-semibold text-[#1a1a2e]">Profile</h2>
           <div className="mt-4 space-y-3 text-sm">
             <div className="flex items-center gap-3">
-              <User className="h-4 w-4 text-[#7A2533]" />
+              <User className="h-4 w-4 text-[#9C544D]" />
               <span className="text-[#7a6e64]">Name:</span>
               <span className="font-medium text-[#1a1a2e]">{user.fullName}</span>
             </div>
             <div className="flex items-center gap-3">
-              <Mail className="h-4 w-4 text-[#7A2533]" />
+              <Mail className="h-4 w-4 text-[#9C544D]" />
               <span className="text-[#7a6e64]">Email:</span>
               <span className="font-medium text-[#1a1a2e]">{user.email}</span>
             </div>
             {user.phone && (
               <div className="flex items-center gap-3">
-                <Phone className="h-4 w-4 text-[#7A2533]" />
+                <Phone className="h-4 w-4 text-[#9C544D]" />
                 <span className="text-[#7a6e64]">Phone:</span>
                 <span className="font-medium text-[#1a1a2e]">{user.phone}</span>
               </div>
             )}
             <div className="flex items-center gap-3">
-              <ShieldCheck className="h-4 w-4 text-[#7A2533]" />
+              <ShieldCheck className="h-4 w-4 text-[#9C544D]" />
               <span className="text-[#7a6e64]">Sign-in method:</span>
               <span className="font-medium capitalize text-[#1a1a2e]">{user.provider}</span>
             </div>
@@ -57,7 +57,7 @@ function AccountProfile() {
             className="flex items-center gap-3 rounded-[24px] bg-white p-5 shadow-[0_4px_24px_rgba(0,0,0,0.05)] transition-colors hover:bg-[#f5efe8]"
           >
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#fdf8f3]">
-              <Package className="h-5 w-5 text-[#7A2533]" />
+              <Package className="h-5 w-5 text-[#9C544D]" />
             </div>
             <div>
               <p className="font-display text-sm font-semibold text-[#1a1a2e]">My Orders</p>

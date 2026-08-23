@@ -259,22 +259,22 @@ function AdminCoupons() {
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <div>
               <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Code</label>
-              <input value={form.code} onChange={(e) => setForm({ ...form, code: e.target.value.toUpperCase() })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]" placeholder="SUMMER25" />
+              <input value={form.code} onChange={(e) => setForm({ ...form, code: e.target.value.toUpperCase() })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#9C544D]" placeholder="SUMMER25" />
             </div>
             <div>
               <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Discount Type</label>
-              <select value={form.discount_type} onChange={(e) => setForm({ ...form, discount_type: e.target.value })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]">
+              <select value={form.discount_type} onChange={(e) => setForm({ ...form, discount_type: e.target.value })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#9C544D]">
                 <option value="percentage">Percentage</option>
                 <option value="fixed">Fixed Amount</option>
               </select>
             </div>
             <div>
               <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Value</label>
-              <input type="number" value={form.discount_value} onChange={(e) => setForm({ ...form, discount_value: Number(e.target.value) })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]" />
+              <input type="number" value={form.discount_value} onChange={(e) => setForm({ ...form, discount_value: Number(e.target.value) })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#9C544D]" />
             </div>
             <div>
               <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Coupon Scope</label>
-              <select value={form.coupon_scope} onChange={(e) => setForm({ ...form, coupon_scope: e.target.value })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]">
+              <select value={form.coupon_scope} onChange={(e) => setForm({ ...form, coupon_scope: e.target.value })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#9C544D]">
                 <option value="entire_store">Entire Store</option>
                 <option value="selected_categories">Selected Categories</option>
                 <option value="selected_products">Selected Products</option>
@@ -282,19 +282,19 @@ function AdminCoupons() {
             </div>
             <div>
               <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Min Order Value</label>
-              <input type="number" value={form.min_order_value} onChange={(e) => setForm({ ...form, min_order_value: Number(e.target.value) })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]" />
+              <input type="number" value={form.min_order_value} onChange={(e) => setForm({ ...form, min_order_value: Number(e.target.value) })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#9C544D]" />
             </div>
             <div>
               <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Max Discount</label>
-              <input type="number" value={form.max_discount} onChange={(e) => setForm({ ...form, max_discount: Number(e.target.value) })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]" />
+              <input type="number" value={form.max_discount} onChange={(e) => setForm({ ...form, max_discount: Number(e.target.value) })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#9C544D]" />
             </div>
             <div>
               <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Usage Limit</label>
-              <input type="number" value={form.usage_limit} onChange={(e) => setForm({ ...form, usage_limit: Number(e.target.value) })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]" />
+              <input type="number" value={form.usage_limit} onChange={(e) => setForm({ ...form, usage_limit: Number(e.target.value) })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#9C544D]" />
             </div>
             <div>
               <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Per User Limit</label>
-              <input type="number" value={form.per_user_usage_limit} onChange={(e) => setForm({ ...form, per_user_usage_limit: Number(e.target.value) })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]" />
+              <input type="number" value={form.per_user_usage_limit} onChange={(e) => setForm({ ...form, per_user_usage_limit: Number(e.target.value) })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#9C544D]" />
             </div>
           </div>
 
@@ -320,19 +320,19 @@ function AdminCoupons() {
           <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <div>
               <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Start Date</label>
-              <input type="datetime-local" value={form.start_date} onChange={(e) => setForm({ ...form, start_date: e.target.value })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]" />
+              <input type="datetime-local" value={form.start_date} onChange={(e) => setForm({ ...form, start_date: e.target.value })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#9C544D]" />
             </div>
             <div>
               <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Customer Group</label>
-              <input value={form.customer_group} onChange={(e) => setForm({ ...form, customer_group: e.target.value })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]" placeholder="VIP, Wholesale, etc." />
+              <input value={form.customer_group} onChange={(e) => setForm({ ...form, customer_group: e.target.value })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#9C544D]" placeholder="VIP, Wholesale, etc." />
             </div>
             <div>
               <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Min Items</label>
-              <input type="number" value={form.min_items} onChange={(e) => setForm({ ...form, min_items: Number(e.target.value) })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]" />
+              <input type="number" value={form.min_items} onChange={(e) => setForm({ ...form, min_items: Number(e.target.value) })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#9C544D]" />
             </div>
             <div>
               <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Max Items</label>
-              <input type="number" value={form.max_items} onChange={(e) => setForm({ ...form, max_items: Number(e.target.value) })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]" />
+              <input type="number" value={form.max_items} onChange={(e) => setForm({ ...form, max_items: Number(e.target.value) })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#9C544D]" />
             </div>
           </div>
 
@@ -517,11 +517,11 @@ function SearchableMultiSelect({
                   type="button"
                   onClick={() => toggle(item.id)}
                   className={`flex w-full items-center gap-2 px-3 py-2 text-left text-sm hover:bg-gray-50 ${
-                    selected.has(item.id) ? "bg-[#7A2533]/5 font-medium" : ""
+                    selected.has(item.id) ? "bg-[#9C544D]/5 font-medium" : ""
                   }`}
                 >
                   <div className={`flex h-4 w-4 items-center justify-center rounded border ${
-                    selected.has(item.id) ? "border-[#7A2533] bg-[#7A2533]" : "border-gray-300"
+                    selected.has(item.id) ? "border-[#9C544D] bg-[#9C544D]" : "border-gray-300"
                   }`}>
                     {selected.has(item.id) && <Check className="h-3 w-3 text-white" />}
                   </div>

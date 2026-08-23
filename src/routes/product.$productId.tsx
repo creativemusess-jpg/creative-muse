@@ -136,23 +136,23 @@ function ProductContent({ product }: { product: Product }) {
   return (
     <PageShell>
       {/* Breadcrumbs */}
-      <div className="mx-auto flex max-w-[1180px] items-center gap-1.5 px-5 pt-6 pb-2 text-[11px] font-semibold tracking-[0.1em] text-[#7A2533] uppercase sm:px-6">
-        <Link to="/" className="transition-colors hover:text-[#7A2533]">
+      <div className="mx-auto flex max-w-[1180px] items-center gap-1.5 px-5 pt-6 pb-2 text-[11px] font-semibold tracking-[0.1em] text-[#9C544D] uppercase sm:px-6">
+        <Link to="/" className="transition-colors hover:text-[#9C544D]">
           Home
         </Link>
         <ChevronRight className="h-3 w-3" />
-        <Link to="/shop" className="transition-colors hover:text-[#7A2533]">
+        <Link to="/shop" className="transition-colors hover:text-[#9C544D]">
           Shop
         </Link>
         <ChevronRight className="h-3 w-3" />
-        <span className="text-[#7A2533]">{product.name}</span>
+        <span className="text-[#9C544D]">{product.name}</span>
       </div>
 
       <section className="mx-auto grid max-w-[1180px] gap-8 px-5 py-6 sm:px-6 lg:grid-cols-[minmax(0,1fr)_minmax(360px,0.8fr)] lg:gap-12 lg:py-12">
         {/* Left — Gallery */}
         <div className="min-w-0">
           {/* Main image */}
-          <div className="relative overflow-hidden rounded-[28px] bg-[#fffdf9] border border-[rgba(66,29,34,0.18)] shadow-[0_8px_24px_rgba(66,29,34,0.06)]">
+          <div className="relative overflow-hidden rounded-[28px] bg-[#fffdf9] border border-[rgba(92,61,58,0.18)] shadow-[0_8px_24px_rgba(92,61,58,0.06)]">
             <img
               src={safeSrc(gallery[imgIdx])}
               alt={`${product.name} — view ${imgIdx + 1}`}
@@ -171,7 +171,7 @@ function ProductContent({ product }: { product: Product }) {
               <span
                 key={flag.id}
                 className="absolute left-4 top-4 rounded-full px-2 py-[2px] text-[10px] font-semibold uppercase tracking-[0.14em]"
-                style={{ backgroundColor: flag.badge_bg_color || "#421D22", color: flag.badge_text_color || "#ffffff" }}
+                style={{ backgroundColor: flag.badge_bg_color || "#5C3D3A", color: flag.badge_text_color || "#ffffff" }}
               >
                 {flag.badge_label}
               </span>
@@ -222,7 +222,7 @@ function ProductContent({ product }: { product: Product }) {
                   }}
                   aria-label={`View image ${i + 1}`}
                   className={`flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-[12px] border-2 bg-[#fffdf9] sm:h-16 sm:w-16 ${
-                    i === imgIdx ? "border-[#7A2533]" : "border-[rgba(66,29,34,0.18)]"
+                    i === imgIdx ? "border-[#9C544D]" : "border-[rgba(92,61,58,0.18)]"
                   }`}
                 >
                   <img src={safeSrc(src)} alt="" loading="lazy" decoding="async" className="h-full w-full object-contain p-1.5" />
@@ -256,7 +256,7 @@ function ProductContent({ product }: { product: Product }) {
               </span>
             )}
             {discount > 0 && (
-              <span className="rounded-full bg-[#7A2533] px-3 py-1 text-xs font-semibold text-white">
+              <span className="rounded-full bg-[#9C544D] px-3 py-1 text-xs font-semibold text-white">
                 {discount}% off
               </span>
             )}
@@ -278,8 +278,8 @@ function ProductContent({ product }: { product: Product }) {
             <button
               type="button"
               onClick={() => toggleWishlist(product.id)}
-              className={`btn-secondary flex items-center justify-center gap-2 text-[#7A2533] ${
-                wishlisted ? "bg-[#7A2533] text-white border-[#7A2533]" : ""
+              className={`btn-secondary flex items-center justify-center gap-2 text-[#9C544D] ${
+                wishlisted ? "bg-[#9C544D] text-white border-[#9C544D]" : ""
               }`}
             >
               <Heart className={`h-4 w-4 ${wishlisted ? "fill-white" : ""}`} />
@@ -298,10 +298,10 @@ function ProductContent({ product }: { product: Product }) {
                 {details.map(([k, v]) =>
                   v ? (
                     <div key={k} className="flex flex-col gap-0.5">
-                      <dt className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#7A2533]">
+                      <dt className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#9C544D]">
                         {k}
                       </dt>
-                      <dd className="text-[#7A2533]">{v}</dd>
+                      <dd className="text-[#9C544D]">{v}</dd>
                     </div>
                   ) : null,
                 )}
@@ -341,7 +341,7 @@ function ProductContent({ product }: { product: Product }) {
       {/* Recommended Products */}
       {recommended.length > 0 && (
         <section className="mx-auto max-w-[1180px] px-5 pb-16 sm:px-6">
-          <h2 className="font-display text-center text-2xl font-semibold text-[#7A2533] sm:text-3xl">
+          <h2 className="font-display text-center text-2xl font-semibold text-[#9C544D] sm:text-3xl">
             Recommended For You
           </h2>
           <div className="mt-8">
@@ -451,11 +451,11 @@ function InfoAccordion({
         className="flex w-full items-center justify-between px-4 py-3.5 text-left"
         aria-expanded={open}
       >
-        <span className="text-[12px] font-semibold tracking-[0.14em] text-[#7A2533] uppercase">
+        <span className="text-[12px] font-semibold tracking-[0.14em] text-[#9C544D] uppercase">
           {title}
         </span>
         <Plus
-          className={`h-3.5 w-3.5 text-[#7A2533] transition-transform duration-300 ${
+          className={`h-3.5 w-3.5 text-[#9C544D] transition-transform duration-300 ${
             open ? "rotate-45" : ""
           }`}
         />

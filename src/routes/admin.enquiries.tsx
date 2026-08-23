@@ -180,7 +180,7 @@ function AdminEnquiries() {
           placeholder="Search enquiries..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full rounded-lg border border-gray-200 py-2 pl-10 pr-4 text-sm outline-none focus:border-[#7A2533]"
+          className="w-full rounded-lg border border-gray-200 py-2 pl-10 pr-4 text-sm outline-none focus:border-[#9C544D]"
         />
       </div>
       {loading ? (
@@ -210,7 +210,7 @@ function AdminEnquiries() {
                   return (
                     <tr
                       key={e.id}
-                      className={`hover:bg-gray-50 cursor-pointer transition-colors ${isUnread ? "font-semibold bg-amber-50/50" : ""} ${selected?.id === e.id ? "bg-[#7A2533]/5" : ""}`}
+                      className={`hover:bg-gray-50 cursor-pointer transition-colors ${isUnread ? "font-semibold bg-amber-50/50" : ""} ${selected?.id === e.id ? "bg-[#9C544D]/5" : ""}`}
                       onClick={() => handleSelect(e)}
                     >
                       <td className="px-4 py-3 text-[#1a1a2e]">{e.name}</td>
@@ -257,11 +257,11 @@ function AdminEnquiries() {
                   <dt className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Name</dt>
                   <dd className="text-[#1a1a2e]">{selected.name}</dd>
                   <dt className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Email</dt>
-                  <dd className="text-[#1a1a2e]"><a href={`mailto:${selected.email}`} className="text-[#7A2533] hover:underline">{selected.email}</a></dd>
+                  <dd className="text-[#1a1a2e]"><a href={`mailto:${selected.email}`} className="text-[#9C544D] hover:underline">{selected.email}</a></dd>
                   {selected.phone && (
                     <>
                       <dt className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Phone</dt>
-                      <dd className="flex items-center gap-2 text-[#1a1a2e]"><Phone className="h-3.5 w-3.5 text-gray-400" /> <a href={`tel:${selected.phone}`} className="text-[#7A2533] hover:underline">{selected.phone}</a></dd>
+                      <dd className="flex items-center gap-2 text-[#1a1a2e]"><Phone className="h-3.5 w-3.5 text-gray-400" /> <a href={`tel:${selected.phone}`} className="text-[#9C544D] hover:underline">{selected.phone}</a></dd>
                     </>
                   )}
                   {selected.subject && (
@@ -286,7 +286,7 @@ function AdminEnquiries() {
                     <select
                       value={selected.status}
                       onChange={(ev) => handleStatusChange(selected.id, ev.target.value as EnquiryStatus)}
-                      className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-[#7A2533] focus:outline-none"
+                      className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-[#9C544D] focus:outline-none"
                     >
                       {statusOptions.map((s) => (
                         <option key={s.value} value={s.value}>{s.label}</option>
@@ -298,7 +298,7 @@ function AdminEnquiries() {
                     <select
                       value={selected.priority}
                       onChange={(ev) => handlePriorityChange(selected.id, ev.target.value as EnquiryPriority)}
-                      className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-[#7A2533] focus:outline-none"
+                      className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-[#9C544D] focus:outline-none"
                     >
                       {priorityOptions.map((p) => (
                         <option key={p.value} value={p.value}>{p.label}</option>
@@ -314,7 +314,7 @@ function AdminEnquiries() {
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
                   rows={3}
-                  className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-[#7A2533] focus:outline-none"
+                  className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-[#9C544D] focus:outline-none"
                 />
                 <div className="mt-2 flex items-center gap-3">
                   <button onClick={handleSaveNotes} disabled={savingNotes} className="flex items-center gap-1.5 rounded-lg bg-[#1a1a2e] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#1a1a2e]/90 disabled:opacity-50">

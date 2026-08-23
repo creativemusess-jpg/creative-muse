@@ -154,7 +154,7 @@ function AdminBanners() {
               onClick={() => setFilter(tab.key)}
               className={`rounded-md px-3 py-2 text-sm font-medium transition-colors min-h-[40px] ${
                 filter === tab.key
-                  ? "bg-white text-[#7A2533] shadow-sm"
+                  ? "bg-white text-[#9C544D] shadow-sm"
                   : "text-gray-500 hover:text-gray-700"
               }`}
             >
@@ -167,7 +167,7 @@ function AdminBanners() {
             setEditing(null);
             setFormOpen(true);
           }}
-          className="rounded-lg bg-[#7A2533] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#5F1C27] min-h-[44px]"
+          className="rounded-lg bg-[#9C544D] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#7A3D3A] min-h-[44px]"
         >
           + Add Banner
         </button>
@@ -219,7 +219,7 @@ function AdminBanners() {
                       </span>
                       <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase ${
                         b.status === "active"
-                          ? "border border-[#7A2533]/20 bg-[#fff4f5] text-[#7A2533]"
+                          ? "border border-[#9C544D]/20 bg-[#fff4f5] text-[#9C544D]"
                           : "bg-gray-100 text-gray-500"
                       }`}>
                         {b.status}
@@ -232,7 +232,7 @@ function AdminBanners() {
                     <button
                       onClick={() => handleMove(idx, -1)}
                       disabled={idx === 0}
-                      className="flex h-8 min-w-[36px] items-center justify-center rounded border border-gray-200 text-gray-500 hover:border-[#7A2533] hover:text-[#7A2533] disabled:opacity-30"
+                      className="flex h-8 min-w-[36px] items-center justify-center rounded border border-gray-200 text-gray-500 hover:border-[#9C544D] hover:text-[#9C544D] disabled:opacity-30"
                     >
                       ↑
                     </button>
@@ -240,7 +240,7 @@ function AdminBanners() {
                     <button
                       onClick={() => handleMove(idx, 1)}
                       disabled={idx === items.length - 1}
-                      className="flex h-8 min-w-[36px] items-center justify-center rounded border border-gray-200 text-gray-500 hover:border-[#7A2533] hover:text-[#7A2533] disabled:opacity-30"
+                      className="flex h-8 min-w-[36px] items-center justify-center rounded border border-gray-200 text-gray-500 hover:border-[#9C544D] hover:text-[#9C544D] disabled:opacity-30"
                     >
                       ↓
                     </button>
@@ -248,7 +248,7 @@ function AdminBanners() {
                   <div className="flex items-center gap-1">
                     <button
                       onClick={() => { setEditing(b); setFormOpen(true); }}
-                      className="flex h-9 min-w-[44px] items-center justify-center rounded-lg border border-gray-200 text-xs font-medium text-[#7A2533] hover:bg-gray-50"
+                      className="flex h-9 min-w-[44px] items-center justify-center rounded-lg border border-gray-200 text-xs font-medium text-[#9C544D] hover:bg-gray-50"
                     >
                       Edit
                     </button>
@@ -312,7 +312,7 @@ function AdminBanners() {
                           onClick={() => handleMove(idx, -1)}
                           disabled={idx === 0}
                           aria-label="Move up"
-                          className="rounded border border-gray-200 px-1.5 py-0.5 text-gray-500 hover:border-[#7A2533] hover:text-[#7A2533] disabled:opacity-30"
+                          className="rounded border border-gray-200 px-1.5 py-0.5 text-gray-500 hover:border-[#9C544D] hover:text-[#9C544D] disabled:opacity-30"
                         >
                           ↑
                         </button>
@@ -323,7 +323,7 @@ function AdminBanners() {
                           onClick={() => handleMove(idx, 1)}
                           disabled={idx === items.length - 1}
                           aria-label="Move down"
-                          className="rounded border border-gray-200 px-1.5 py-0.5 text-gray-500 hover:border-[#7A2533] hover:text-[#7A2533] disabled:opacity-30"
+                          className="rounded border border-gray-200 px-1.5 py-0.5 text-gray-500 hover:border-[#9C544D] hover:text-[#9C544D] disabled:opacity-30"
                         >
                           ↓
                         </button>
@@ -344,7 +344,7 @@ function AdminBanners() {
                       <span
                         className={`rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase ${
                           b.status === "active"
-                            ? "border border-[#7A2533]/20 bg-[#fff4f5] text-[#7A2533]"
+                            ? "border border-[#9C544D]/20 bg-[#fff4f5] text-[#9C544D]"
                             : "bg-gray-100 text-gray-500"
                         }`}
                       >
@@ -358,7 +358,7 @@ function AdminBanners() {
                             setEditing(b);
                             setFormOpen(true);
                           }}
-                          className="text-xs text-[#7A2533] hover:underline"
+                          className="text-xs text-[#9C544D] hover:underline"
                         >
                           Edit
                         </button>
@@ -415,7 +415,7 @@ function BannerSizeGuide() {
       <div className="grid gap-2 text-amber-900 sm:grid-cols-3">
         {rows.map((r) => (
           <div key={r.label} className="rounded-lg bg-white/70 p-3">
-            <p className="font-semibold text-[#7A2533]">{r.label}</p>
+            <p className="font-semibold text-[#9C544D]">{r.label}</p>
             <p className="mt-0.5 text-xs font-medium">{r.dims}</p>
             <p className="mt-1 text-xs text-amber-800/80">{r.note}</p>
           </div>
@@ -584,7 +584,7 @@ function BannerForm({
   };
 
   const inputClass =
-    "w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#7A2533]";
+    "w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#9C544D]";
 
   return (
     <div className="mb-6 rounded-xl border border-gray-200 bg-white p-5">
@@ -645,7 +645,7 @@ function BannerForm({
             <button
               type="button"
               onClick={() => setButtonEnabled((v) => !v)}
-              className={`flex h-6 w-11 items-center rounded-full p-0.5 transition-colors ${buttonEnabled ? "bg-[#7A2533]" : "bg-gray-300"}`}
+              className={`flex h-6 w-11 items-center rounded-full p-0.5 transition-colors ${buttonEnabled ? "bg-[#9C544D]" : "bg-gray-300"}`}
               aria-label="Toggle button"
             >
               <span
@@ -765,7 +765,7 @@ function BannerForm({
                   onClick={() => setPositionDevice(d)}
                   className={`rounded-md px-2.5 py-1 text-[11px] font-semibold capitalize transition-colors ${
                     positionDevice === d
-                      ? "bg-white text-[#7A2533] shadow-sm"
+                      ? "bg-white text-[#9C544D] shadow-sm"
                       : "text-gray-500 hover:text-gray-700"
                   }`}
                 >
@@ -857,7 +857,7 @@ function BannerForm({
         <button
           onClick={handleSave}
           disabled={saving}
-          className="flex items-center gap-2 rounded-lg bg-[#7A2533] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#5F1C27] disabled:opacity-50 min-h-[44px]"
+          className="flex items-center gap-2 rounded-lg bg-[#9C544D] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#7A3D3A] disabled:opacity-50 min-h-[44px]"
         >
           {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
           {saving ? "Saving…" : banner ? "Save Changes" : "Add Banner"}
@@ -902,7 +902,7 @@ function ImageSlot({
         type="file"
         accept="image/jpeg,image/png,image/webp"
         onChange={(e) => onFile(e.target.files?.[0] || null)}
-        className="mt-2 w-full text-xs text-gray-600 file:mr-2 file:rounded-lg file:border-0 file:bg-[#7A2533] file:px-3 file:py-1 file:text-xs file:font-semibold file:text-white file:hover:bg-[#5F1C27]"
+        className="mt-2 w-full text-xs text-gray-600 file:mr-2 file:rounded-lg file:border-0 file:bg-[#9C544D] file:px-3 file:py-1 file:text-xs file:font-semibold file:text-white file:hover:bg-[#7A3D3A]"
       />
       <p className="mt-1 text-[11px] text-gray-400">{dims} · JPG / PNG / WebP</p>
     </div>
@@ -1055,7 +1055,7 @@ function CropPositionEditor({
             step={1}
             value={slider("x")}
             onChange={(e) => onPosChange({ x: Number(e.target.value), y: pos.y })}
-            className="w-full accent-[#7A2533]"
+            className="w-full accent-[#9C544D]"
             aria-label="Horizontal image position"
           />
         </div>
@@ -1070,7 +1070,7 @@ function CropPositionEditor({
             step={1}
             value={slider("y")}
             onChange={(e) => onPosChange({ x: pos.x, y: Number(e.target.value) })}
-            className="w-full accent-[#7A2533]"
+            className="w-full accent-[#9C544D]"
             aria-label="Vertical image position"
           />
         </div>

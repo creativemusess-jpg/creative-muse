@@ -108,7 +108,7 @@ export function HeaderSearch() {
         }}
       >
         <Search
-          className="absolute left-5 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-[#7A2533]"
+          className="absolute left-5 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-[#9C544D]"
           strokeWidth={1.8}
         />
         <input
@@ -121,7 +121,7 @@ export function HeaderSearch() {
           aria-autocomplete="list"
           aria-expanded={open}
           aria-controls="header-search-results"
-          className="h-10 w-full rounded-full border-[1.5px] border-transparent bg-[#f5efe8] pl-13 pr-12 text-[14px] text-[#2a1e14] placeholder:text-[#6b5d52] transition-all duration-200 focus:border-[#7A2533] focus:outline-none focus:[box-shadow:0_0_0_4px_rgba(122,37,51,0.12)]"
+          className="h-10 w-full rounded-full border-[1.5px] border-transparent bg-[#f5efe8] pl-13 pr-12 text-[14px] text-[#2a1e14] placeholder:text-[#6b5d52] transition-all duration-200 focus:border-[#9C544D] focus:outline-none focus:[box-shadow:0_0_0_4px_rgba(156,84,77,0.12)]"
           style={{ paddingLeft: 48 }}
         />
         {query && (
@@ -186,7 +186,7 @@ export function HeaderSearch() {
                     </span>
                   </span>
                   {product.badge && (
-                    <span className="hidden shrink-0 rounded-full bg-[#7A2533] px-2 py-[2px] text-[9px] font-semibold uppercase tracking-[0.1em] text-white sm:inline-flex">
+                    <span className="hidden shrink-0 rounded-full bg-[#9C544D] px-2 py-[2px] text-[9px] font-semibold uppercase tracking-[0.1em] text-white sm:inline-flex">
                       {product.badge}
                     </span>
                   )}
@@ -199,8 +199,8 @@ export function HeaderSearch() {
                 onClick={() => goToSearch()}
                 className={`mt-1 flex w-full items-center justify-center rounded-full px-4 py-3 text-[12px] font-semibold uppercase tracking-[0.14em] transition-colors ${
                   activeIndex === matches.length
-                    ? "bg-[#7A2533] text-white"
-                    : "bg-[#f5efe8] text-[#1a1a2e] hover:bg-[#7A2533] hover:text-white"
+                    ? "bg-[#9C544D] text-white"
+                    : "bg-[#f5efe8] text-[#1a1a2e] hover:bg-[#9C544D] hover:text-white"
                 }`}
               >
                 View all results for "{trimmedQuery}"
@@ -219,7 +219,7 @@ export function HeaderSearch() {
                 <Link
                   to="/shop"
                   onClick={() => setOpen(false)}
-                  className="rounded-full border border-[#e0d8cc] px-3 py-2 text-[12px] font-semibold text-[#3a3028] hover:border-[#7A2533] hover:text-[#7A2533]"
+                  className="rounded-full border border-[#e0d8cc] px-3 py-2 text-[12px] font-semibold text-[#3a3028] hover:border-[#9C544D] hover:text-[#9C544D]"
                 >
                   View All Jewellery
                 </Link>
@@ -237,7 +237,7 @@ function SuggestionLink({ label, q }: { label: string; q: string }) {
     <Link
       to="/search"
       search={{ q }}
-      className="rounded-full border border-[#e0d8cc] px-3 py-2 text-[12px] font-semibold text-[#3a3028] hover:border-[#7A2533] hover:text-[#7A2533]"
+      className="rounded-full border border-[#e0d8cc] px-3 py-2 text-[12px] font-semibold text-[#3a3028] hover:border-[#9C544D] hover:text-[#9C544D]"
     >
       {label}
     </Link>

@@ -104,13 +104,13 @@ export function PriceRangeSlider({ min, max, valueMin, valueMax, onChange, step 
           setDragging(val < mid ? "min" : "max");
         }}
       >
-        <div className="absolute top-1/2 h-1 w-full -translate-y-1/2 rounded-full bg-[rgba(66,29,34,0.12)]" />
+        <div className="absolute top-1/2 h-1 w-full -translate-y-1/2 rounded-full bg-[rgba(92,61,58,0.12)]" />
         <div
-          className="absolute top-1/2 h-1 -translate-y-1/2 rounded-full bg-[#7A2533]"
+          className="absolute top-1/2 h-1 -translate-y-1/2 rounded-full bg-[#9C544D]"
           style={{ left: `${pctMin}%`, width: `${pctMax - pctMin}%` }}
         />
         <div
-          className="absolute top-1/2 z-10 flex h-6 w-6 -translate-x-1/2 -translate-y-1/2 cursor-grab active:cursor-grabbing items-center justify-center rounded-full bg-white border-2 border-[#7A2533] shadow-[0_2px_8px_rgba(122,37,51,0.2)]"
+          className="absolute top-1/2 z-10 flex h-6 w-6 -translate-x-1/2 -translate-y-1/2 cursor-grab active:cursor-grabbing items-center justify-center rounded-full bg-white border-2 border-[#9C544D] shadow-[0_2px_8px_rgba(156,84,77,0.2)]"
           style={{ left: `${pctMin}%` }}
           onPointerDown={onPointerDown("min")}
           tabIndex={0}
@@ -122,10 +122,10 @@ export function PriceRangeSlider({ min, max, valueMin, valueMax, onChange, step 
           aria-valuetext={fmt(localMin)}
           onKeyDown={onKeyDown("min")}
         >
-          <div className="h-2 w-2 rounded-full bg-[#7A2533]" />
+          <div className="h-2 w-2 rounded-full bg-[#9C544D]" />
         </div>
         <div
-          className="absolute top-1/2 z-10 flex h-6 w-6 -translate-x-1/2 -translate-y-1/2 cursor-grab active:cursor-grabbing items-center justify-center rounded-full bg-white border-2 border-[#7A2533] shadow-[0_2px_8px_rgba(122,37,51,0.2)]"
+          className="absolute top-1/2 z-10 flex h-6 w-6 -translate-x-1/2 -translate-y-1/2 cursor-grab active:cursor-grabbing items-center justify-center rounded-full bg-white border-2 border-[#9C544D] shadow-[0_2px_8px_rgba(156,84,77,0.2)]"
           style={{ left: `${pctMax}%` }}
           onPointerDown={onPointerDown("max")}
           tabIndex={0}
@@ -137,13 +137,13 @@ export function PriceRangeSlider({ min, max, valueMin, valueMax, onChange, step 
           aria-valuetext={fmt(localMax)}
           onKeyDown={onKeyDown("max")}
         >
-          <div className="h-2 w-2 rounded-full bg-[#7A2533]" />
+          <div className="h-2 w-2 rounded-full bg-[#9C544D]" />
         </div>
       </div>
 
       <div className="flex items-center justify-between gap-3">
-        <div className="flex flex-1 items-center rounded-[10px] border border-[rgba(66,29,34,0.18)] bg-[#fffdf9] px-2.5 py-1.5">
-          <span className="text-[11px] font-semibold text-[#7A2533]">₹</span>
+        <div className="flex flex-1 items-center rounded-[10px] border border-[rgba(92,61,58,0.18)] bg-[#fffdf9] px-2.5 py-1.5">
+          <span className="text-[11px] font-semibold text-[#9C544D]">₹</span>
           <input
             type="text"
             inputMode="numeric"
@@ -154,13 +154,13 @@ export function PriceRangeSlider({ min, max, valueMin, valueMax, onChange, step 
               setLocalMin(next);
               onChange(next, localMax);
             }}
-            className="w-full bg-transparent px-1 text-[12px] font-medium text-[#7A2533] outline-none"
+            className="w-full bg-transparent px-1 text-[12px] font-medium text-[#9C544D] outline-none"
             aria-label="Minimum price"
           />
         </div>
-        <span className="text-[11px] text-[rgba(66,29,34,0.4)]">—</span>
-        <div className="flex flex-1 items-center rounded-[10px] border border-[rgba(66,29,34,0.18)] bg-[#fffdf9] px-2.5 py-1.5">
-          <span className="text-[11px] font-semibold text-[#7A2533]">₹</span>
+        <span className="text-[11px] text-[rgba(92,61,58,0.4)]">—</span>
+        <div className="flex flex-1 items-center rounded-[10px] border border-[rgba(92,61,58,0.18)] bg-[#fffdf9] px-2.5 py-1.5">
+          <span className="text-[11px] font-semibold text-[#9C544D]">₹</span>
           <input
             type="text"
             inputMode="numeric"
@@ -171,7 +171,7 @@ export function PriceRangeSlider({ min, max, valueMin, valueMax, onChange, step 
               setLocalMax(next);
               onChange(localMin, next);
             }}
-            className="w-full bg-transparent px-1 text-[12px] font-medium text-[#7A2533] outline-none"
+            className="w-full bg-transparent px-1 text-[12px] font-medium text-[#9C544D] outline-none"
             aria-label="Maximum price"
           />
         </div>

@@ -186,7 +186,7 @@ function PaymentPage() {
       <PageShell>
         <div className="flex min-h-[60vh] items-center justify-center px-4">
           <div className="text-center">
-            <Loader2 className="mx-auto h-12 w-12 animate-spin text-[#7A2533]" />
+            <Loader2 className="mx-auto h-12 w-12 animate-spin text-[#9C544D]" />
             <p className="mt-4 text-lg font-medium text-[#1a1a2e]">Processing your order…</p>
           </div>
         </div>
@@ -199,7 +199,7 @@ function PaymentPage() {
       <div className="mx-auto max-w-[1200px] px-6 py-16">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-[11px] font-semibold tracking-[0.24em] text-[#7A2533] uppercase">Payment</p>
+            <p className="text-[11px] font-semibold tracking-[0.24em] text-[#9C544D] uppercase">Payment</p>
             <h1 className="font-display mt-2 text-[32px] font-semibold text-[#1a1a2e]">Complete Your Order</h1>
           </div>
           <div className="hidden items-center gap-2 rounded-full border border-amber-200 bg-amber-50 px-4 py-2 text-xs font-medium text-amber-700 sm:flex">
@@ -226,7 +226,7 @@ function PaymentPage() {
                   const disabled = m.id === "cod" && !codEnabled;
                   return (
                     <button key={m.id} onClick={() => { if (!disabled) { setMethod(m.id); setError(""); } }} disabled={disabled}
-                      className={`flex items-center gap-2 rounded-xl border px-4 py-3 text-sm font-medium transition-colors ${method === m.id ? "border-[#7A2533] bg-[#7A2533] text-white shadow-[0_6px_16px_rgba(122,37,51,0.18)]" : disabled ? "border-gray-100 text-gray-300 cursor-not-allowed" : "border-[#e0d8cc] text-[#7a6e64] hover:border-[#7A2533]/50"}`}>
+                      className={`flex items-center gap-2 rounded-xl border px-4 py-3 text-sm font-medium transition-colors ${method === m.id ? "border-[#9C544D] bg-[#9C544D] text-white shadow-[0_6px_16px_rgba(156,84,77,0.18)]" : disabled ? "border-gray-100 text-gray-300 cursor-not-allowed" : "border-[#e0d8cc] text-[#7a6e64] hover:border-[#9C544D]/50"}`}>
                       <m.icon className="h-4 w-4" /> {m.label}
                     </button>
                   );
@@ -238,7 +238,7 @@ function PaymentPage() {
                   <div className="space-y-4">
                     <div>
                       <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">UPI ID</label>
-                      <input value={upiId} onChange={(e) => setUpiId(e.target.value)} placeholder="name@bank" className="w-full rounded-xl border border-[#e0d8cc] px-4 py-3 text-sm outline-none focus:border-[#7A2533]" />
+                      <input value={upiId} onChange={(e) => setUpiId(e.target.value)} placeholder="name@bank" className="w-full rounded-xl border border-[#e0d8cc] px-4 py-3 text-sm outline-none focus:border-[#9C544D]" />
                     </div>
                     <p className="text-xs text-[#7a6e64]">Demo: Enter any valid UPI ID format (e.g., name@upi)</p>
                   </div>
@@ -247,28 +247,28 @@ function PaymentPage() {
                   <div className="space-y-4">
                     <div>
                       <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Card Number</label>
-                      <input value={cardNumber} onChange={(e) => setCardNumber(e.target.value.replace(/\D/g, "").replace(/(\d{4})/g, "$1 ").trim().slice(0, 19))} placeholder="4111 1111 1111 1111" className="w-full rounded-xl border border-[#e0d8cc] px-4 py-3 text-sm outline-none focus:border-[#7A2533]" autoComplete="off" />
+                      <input value={cardNumber} onChange={(e) => setCardNumber(e.target.value.replace(/\D/g, "").replace(/(\d{4})/g, "$1 ").trim().slice(0, 19))} placeholder="4111 1111 1111 1111" className="w-full rounded-xl border border-[#e0d8cc] px-4 py-3 text-sm outline-none focus:border-[#9C544D]" autoComplete="off" />
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Cardholder Name</label>
-                        <input value={cardName} onChange={(e) => setCardName(e.target.value)} className="w-full rounded-xl border border-[#e0d8cc] px-4 py-3 text-sm outline-none focus:border-[#7A2533]" />
+                        <input value={cardName} onChange={(e) => setCardName(e.target.value)} className="w-full rounded-xl border border-[#e0d8cc] px-4 py-3 text-sm outline-none focus:border-[#9C544D]" />
                       </div>
                       <div>
                         <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Expiry</label>
-                        <input value={cardExpiry} onChange={(e) => setCardExpiry(e.target.value.replace(/\D/g, "").replace(/^(\d{2})/, "$1/").slice(0, 5))} placeholder="MM/YY" className="w-full rounded-xl border border-[#e0d8cc] px-4 py-3 text-sm outline-none focus:border-[#7A2533]" />
+                        <input value={cardExpiry} onChange={(e) => setCardExpiry(e.target.value.replace(/\D/g, "").replace(/^(\d{2})/, "$1/").slice(0, 5))} placeholder="MM/YY" className="w-full rounded-xl border border-[#e0d8cc] px-4 py-3 text-sm outline-none focus:border-[#9C544D]" />
                       </div>
                     </div>
                     <div className="w-1/3">
                       <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">CVV</label>
-                      <input type="password" value={cardCvv} onChange={(e) => setCardCvv(e.target.value.replace(/\D/g, "").slice(0, 4))} placeholder="***" className="w-full rounded-xl border border-[#e0d8cc] px-4 py-3 text-sm outline-none focus:border-[#7A2533]" maxLength={4} autoComplete="off" />
+                      <input type="password" value={cardCvv} onChange={(e) => setCardCvv(e.target.value.replace(/\D/g, "").slice(0, 4))} placeholder="***" className="w-full rounded-xl border border-[#e0d8cc] px-4 py-3 text-sm outline-none focus:border-[#9C544D]" maxLength={4} autoComplete="off" />
                     </div>
                     <p className="text-xs text-[#7a6e64]">Demo: Use 4111 1111 1111 1111 for testing.</p>
                   </div>
                 )}
                 {method === "netbanking" && (
                   <div className="space-y-4">
-                    <select value={selectedBank} onChange={(e) => setSelectedBank(e.target.value)} className="w-full rounded-xl border border-[#e0d8cc] px-4 py-3 text-sm outline-none focus:border-[#7A2533]">
+                    <select value={selectedBank} onChange={(e) => setSelectedBank(e.target.value)} className="w-full rounded-xl border border-[#e0d8cc] px-4 py-3 text-sm outline-none focus:border-[#9C544D]">
                       <option value="">Select your bank</option>
                       <option value="sbi">State Bank of India</option>
                       <option value="hdfc">HDFC Bank</option>
@@ -285,7 +285,7 @@ function PaymentPage() {
                   <div className="space-y-4">
                     <div className="flex flex-wrap gap-3">
                       {["Paytm", "Amazon Pay", "Mobikwik", "Freecharge"].map((w) => (
-                        <button key={w} onClick={() => setSelectedWallet(w)} className={`rounded-xl border px-5 py-3 text-sm font-medium transition-colors ${selectedWallet === w ? "border-[#7A2533] bg-[#7A2533] text-white shadow-[0_6px_16px_rgba(122,37,51,0.18)]" : "border-[#e0d8cc] text-[#7a6e64] hover:border-[#7A2533]/50"}`}>{w}</button>
+                        <button key={w} onClick={() => setSelectedWallet(w)} className={`rounded-xl border px-5 py-3 text-sm font-medium transition-colors ${selectedWallet === w ? "border-[#9C544D] bg-[#9C544D] text-white shadow-[0_6px_16px_rgba(156,84,77,0.18)]" : "border-[#e0d8cc] text-[#7a6e64] hover:border-[#9C544D]/50"}`}>{w}</button>
                       ))}
                     </div>
                     <p className="text-xs text-[#7a6e64]">Demo: No real wallet authentication is performed.</p>

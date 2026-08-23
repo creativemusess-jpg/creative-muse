@@ -62,7 +62,7 @@ export function PolicyPage({
       {showTop && (
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          className="fixed bottom-6 right-6 z-50 flex h-11 w-11 items-center justify-center rounded-full bg-[#7A2533] text-white shadow-lg transition-colors hover:bg-[#5F1C27]"
+          className="fixed bottom-6 right-6 z-50 flex h-11 w-11 items-center justify-center rounded-full bg-[#9C544D] text-white shadow-lg transition-colors hover:bg-[#7A3D3A]"
           aria-label="Back to top"
         >
           <ChevronUp className="h-5 w-5" />
@@ -92,7 +92,7 @@ export function PolicySubsection({ id, title, children }: { id: string; title: s
 
 export function PolicyList({ items }: { items: string[] }) {
   return (
-    <ul className="ml-5 list-disc space-y-1.5 text-[15px] leading-[1.8] text-[#3a3028] marker:text-[#7A2533]">
+    <ul className="ml-5 list-disc space-y-1.5 text-[15px] leading-[1.8] text-[#3a3028] marker:text-[#9C544D]">
       {items.map((item, i) => (
         <li key={i}>{item}</li>
       ))}
@@ -124,12 +124,12 @@ export function PolicyContact() {
       <strong>Phone:</strong> +91 90337 79867
       <br />
       <strong>Email:</strong>{" "}
-      <a href="mailto:support@creativemusee.com" className="text-[#8B1A1A] hover:underline">
+      <a href="mailto:support@creativemusee.com" className="text-[#8C4340] hover:underline">
         support@creativemusee.com
       </a>
       <br />
       <strong>Website:</strong>{" "}
-      <a href="https://creativemusee.com" target="_blank" rel="noopener noreferrer" className="text-[#8B1A1A] hover:underline">
+      <a href="https://creativemusee.com" target="_blank" rel="noopener noreferrer" className="text-[#8C4340] hover:underline">
         https://creativemusee.com
       </a>
     </address>

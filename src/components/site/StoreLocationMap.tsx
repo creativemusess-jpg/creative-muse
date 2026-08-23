@@ -21,7 +21,7 @@ const MARKER_HTML = `
   <div class="cm-map-marker">
     <span class="cm-map-marker-pulse"></span>
     <svg viewBox="0 0 34 44" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <path d="M17 1.2C8.9 1.2 2.2 7.7 2.2 15.4 2.2 24.6 17 42.8 17 42.8s14.8-18.2 14.8-27.4C31.8 7.7 25.1 1.2 17 1.2z" fill="#7A2533" stroke="#C9A96E" stroke-width="1.5"/>
+      <path d="M17 1.2C8.9 1.2 2.2 7.7 2.2 15.4 2.2 24.6 17 42.8 17 42.8s14.8-18.2 14.8-27.4C31.8 7.7 25.1 1.2 17 1.2z" fill="#9C544D" stroke="#C9A96E" stroke-width="1.5"/>
       <circle cx="17" cy="15.3" r="5.3" stroke="#C9A96E" stroke-width="2" fill="none"/>
       <circle cx="17" cy="15.3" r="2.1" fill="#E8C98A"/>
     </svg>

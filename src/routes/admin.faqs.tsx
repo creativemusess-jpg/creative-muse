@@ -136,7 +136,7 @@ function AdminFAQs() {
                 type="text"
                 value={form.question}
                 onChange={(e) => setForm((f) => ({ ...f, question: e.target.value }))}
-                className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-[#7A2533] min-h-[44px]"
+                className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-[#9C544D] min-h-[44px]"
                 placeholder="e.g., Is Creative Muse jewellery waterproof?"
               />
             </div>
@@ -146,7 +146,7 @@ function AdminFAQs() {
                 value={form.answer}
                 onChange={(e) => setForm((f) => ({ ...f, answer: e.target.value }))}
                 rows={5}
-                className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-[#7A2533]"
+                className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-[#9C544D]"
                 placeholder="Answer text..."
               />
             </div>
@@ -156,7 +156,7 @@ function AdminFAQs() {
                 type="number"
                 value={form.sort_order}
                 onChange={(e) => setForm((f) => ({ ...f, sort_order: parseInt(e.target.value) || 0 }))}
-                className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-[#7A2533] min-h-[44px]"
+                className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-[#9C544D] min-h-[44px]"
               />
             </div>
             <div className="flex items-end gap-6 pb-2">

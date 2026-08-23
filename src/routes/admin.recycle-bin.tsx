@@ -94,7 +94,7 @@ function RecycleBinPage() {
           </div>
           <p className="mt-4 text-lg font-semibold text-gray-600">Recycle bin is empty</p>
           <p className="mt-1 text-sm text-gray-400">
-            Products moved to the recycle bin from <Link to="/admin/products" className="text-[#7A2533] hover:underline">Products</Link> will appear here.
+            Products moved to the recycle bin from <Link to="/admin/products" className="text-[#9C544D] hover:underline">Products</Link> will appear here.
           </p>
         </div>
       ) : (

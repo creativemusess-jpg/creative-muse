@@ -88,7 +88,7 @@ function SearchPage() {
         <div className="grid gap-8 lg:grid-cols-[260px_1fr]">
           <aside className="h-fit rounded-[24px] border border-[#e0d8cc] bg-white p-5 shadow-[0_4px_16px_rgba(0,0,0,0.04)] sm:p-6">
             <div className="mb-5 flex items-center gap-2">
-              <SlidersHorizontal className="h-4 w-4 text-[#7A2533]" />
+              <SlidersHorizontal className="h-4 w-4 text-[#9C544D]" />
               <h3 className="font-display text-base font-semibold text-[#1a1a2e]">Filters</h3>
             </div>
 
@@ -134,7 +134,7 @@ function SearchPage() {
               <select
                 value={sort}
                 onChange={(event) => setSort(event.target.value)}
-                className="w-full appearance-none rounded-full border border-[rgba(66,29,34,0.24)] bg-[#fffdf9] bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%228%22%20viewBox%3D%220%200%2012%208%22%3E%3Cpath%20d%3D%22M1%201.5l5%205%205-5%22%20stroke%3D%22%23421D22%22%20stroke-width%3D%221.5%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3C%2Fsvg%3E')] bg-[length:12px_8px] bg-[right_16px_center] bg-no-repeat px-5 py-2.5 pr-12 text-sm text-[#7A2533] focus:outline-none focus:ring-2 focus:ring-[#7A2533]/30 sm:w-auto"
+                className="w-full appearance-none rounded-full border border-[rgba(92,61,58,0.24)] bg-[#fffdf9] bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%228%22%20viewBox%3D%220%200%2012%208%22%3E%3Cpath%20d%3D%22M1%201.5l5%205%205-5%22%20stroke%3D%22%235C3D3A%22%20stroke-width%3D%221.5%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3C%2Fsvg%3E')] bg-[length:12px_8px] bg-[right_16px_center] bg-no-repeat px-5 py-2.5 pr-12 text-sm text-[#9C544D] focus:outline-none focus:ring-2 focus:ring-[#9C544D]/30 sm:w-auto"
               >
                 <option>Relevance</option>
                 <option>Price: Low to High</option>
@@ -197,8 +197,8 @@ function FilterPill({
       onClick={onClick}
       className={`rounded-full border px-3 py-1.5 text-[12px] font-medium transition-all ${
         active
-          ? "border-[#7A2533] bg-[#7A2533] text-white"
-          : "border-[#e0d8cc] bg-white text-[#3a3028] hover:border-[#8B1A1A] hover:text-[#8B1A1A]"
+          ? "border-[#9C544D] bg-[#9C544D] text-white"
+          : "border-[#e0d8cc] bg-white text-[#3a3028] hover:border-[#8C4340] hover:text-[#8C4340]"
       }`}
     >
       {children}

@@ -104,11 +104,11 @@ export function PublishControl({
               onClick={() => emit(opt.id)}
               className={`flex items-start gap-2 rounded-lg border px-3 py-2 text-left transition-colors ${
                 isSel
-                  ? "border-[#7A2533] bg-[#7A2533]/5 text-[#1a1a2e]"
+                  ? "border-[#9C544D] bg-[#9C544D]/5 text-[#1a1a2e]"
                   : "border-gray-200 bg-white text-gray-600 hover:border-gray-300"
               }`}
             >
-              <Icon className={`h-4 w-4 shrink-0 ${isSel ? "text-[#7A2533]" : "text-gray-400"}`} />
+              <Icon className={`h-4 w-4 shrink-0 ${isSel ? "text-[#9C544D]" : "text-gray-400"}`} />
               <span className="min-w-0">
                 <span className={`block text-sm font-medium ${isSel ? "text-[#1a1a2e]" : ""}`}>{opt.label}</span>
                 <span className="block text-[11px] text-gray-400">{opt.hint}</span>
@@ -128,7 +128,7 @@ export function PublishControl({
               setScheduleValue(e.target.value);
               emit("schedule", e.target.value);
             }}
-            className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#7A2533]"
+            className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#9C544D]"
           />
           <p className="mt-1 text-[11px] text-gray-400">
             {scheduleValue

@@ -110,7 +110,7 @@ function AccountOrderDetailPage() {
       <PageShell>
         <section className="mx-auto max-w-[900px] px-6 py-16">
           <div className="rounded-[18px] bg-white p-10 text-center shadow-[0_4px_24px_rgba(0,0,0,0.05)]">
-            <Package className="mx-auto h-10 w-10 text-[#7A2533]" />
+            <Package className="mx-auto h-10 w-10 text-[#9C544D]" />
             <h2 className="font-display mt-4 text-xl font-semibold text-[#1a1a2e]">
               Order not found
             </h2>
@@ -134,7 +134,7 @@ function AccountOrderDetailPage() {
       <section className="mx-auto max-w-[1120px] px-4 py-8 sm:px-6 sm:py-14">
         <Link
           to="/account/orders"
-          className="mb-5 inline-flex items-center gap-1 text-sm font-medium text-[#7a6e64] hover:text-[#8B1A1A]"
+          className="mb-5 inline-flex items-center gap-1 text-sm font-medium text-[#7a6e64] hover:text-[#8C4340]"
         >
           <ChevronLeft className="h-4 w-4" /> All Orders
         </Link>
@@ -142,7 +142,7 @@ function AccountOrderDetailPage() {
         <div className="rounded-[8px] border border-[#ead8b8] bg-[#fffdf8] p-5 shadow-[0_10px_30px_rgba(40,24,8,0.06)] sm:p-7">
           <div className="flex flex-col gap-4 border-b border-[#ead8b8] pb-5 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-4">
-              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-[#7A2533] text-[#7A2533]">
+              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-[#9C544D] text-[#9C544D]">
                 <Check className="h-7 w-7" />
               </div>
               <div>
@@ -197,7 +197,7 @@ function AccountOrderDetailPage() {
                 return (
                   <div key={step} className="relative flex flex-col items-center justify-center text-center">
                     <div
-                      className={`flex h-9 w-9 items-center justify-center rounded-full border ${active ? "border-[#7A2533] bg-[#7A2533] text-white" : "border-[#d9c9ab] bg-white text-[#9a8a74]"}`}
+                      className={`flex h-9 w-9 items-center justify-center rounded-full border ${active ? "border-[#9C544D] bg-[#9C544D] text-white" : "border-[#d9c9ab] bg-white text-[#9a8a74]"}`}
                     >
                       {step === "shipped" ? (
                         <Truck className="h-4 w-4" />
@@ -216,7 +216,7 @@ function AccountOrderDetailPage() {
 
           <div className="grid gap-5 py-5 lg:grid-cols-[1fr_320px]">
             <div className="rounded-[8px] border border-[#ead8b8] bg-white">
-              <h2 className="border-b border-[#ead8b8] px-4 py-3 text-[12px] font-bold uppercase tracking-wider text-[#7A2533]">
+              <h2 className="border-b border-[#ead8b8] px-4 py-3 text-[12px] font-bold uppercase tracking-wider text-[#9C544D]">
                 Order Items
               </h2>
               <div className="divide-y divide-[#ead8b8]">
@@ -247,7 +247,7 @@ function AccountOrderDetailPage() {
             </div>
 
             <div className="rounded-[8px] border border-[#ead8b8] bg-white p-4">
-              <h2 className="mb-3 text-[12px] font-bold uppercase tracking-wider text-[#7A2533]">
+              <h2 className="mb-3 text-[12px] font-bold uppercase tracking-wider text-[#9C544D]">
                 Price Summary
               </h2>
               <SummaryRow label="Subtotal" value={formatPrice(order.subtotal)} />
@@ -291,19 +291,19 @@ function AccountOrderDetailPage() {
           <div className="mt-5 grid gap-3 sm:grid-cols-3">
             <Link
               to="/track-order"
-              className="inline-flex items-center justify-center gap-2 rounded-[6px] bg-[#7A2533] px-4 py-3 text-sm font-semibold text-white hover:bg-[#5F1C27]"
+              className="inline-flex items-center justify-center gap-2 rounded-[6px] bg-[#9C544D] px-4 py-3 text-sm font-semibold text-white hover:bg-[#7A3D3A]"
             >
               <Truck className="h-4 w-4" /> Track Order
             </Link>
             <button
               onClick={handleDownloadInvoice}
-              className="inline-flex items-center justify-center gap-2 rounded-[6px] border border-[#7A2533] px-4 py-3 text-sm font-semibold text-[#7A2533]"
+              className="inline-flex items-center justify-center gap-2 rounded-[6px] border border-[#9C544D] px-4 py-3 text-sm font-semibold text-[#9C544D]"
             >
               <Download className="h-4 w-4" /> Download Invoice
             </button>
             <a
               href="mailto:hello@creativemuse.in"
-              className="inline-flex items-center justify-center gap-2 rounded-[6px] border border-[#7A2533] px-4 py-3 text-sm font-semibold text-[#7A2533]"
+              className="inline-flex items-center justify-center gap-2 rounded-[6px] border border-[#9C544D] px-4 py-3 text-sm font-semibold text-[#9C544D]"
             >
               <Headphones className="h-4 w-4" /> Contact Support
             </a>
@@ -328,7 +328,7 @@ function SummaryRow({ label, value, strong }: { label: string; value: string; st
 function InfoCard({ title, text }: { title: string; text: string }) {
   return (
     <div className="rounded-[8px] border border-[#ead8b8] bg-white p-4">
-      <p className="text-[11px] font-bold uppercase tracking-wider text-[#7A2533]">{title}</p>
+      <p className="text-[11px] font-bold uppercase tracking-wider text-[#9C544D]">{title}</p>
       <p className="mt-2 whitespace-pre-line text-sm leading-6 text-[#5d554d]">{text || "-"}</p>
     </div>
   );

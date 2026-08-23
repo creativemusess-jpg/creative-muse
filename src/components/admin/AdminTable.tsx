@@ -117,7 +117,7 @@ export function DataTable<T extends Record<string, any>>({
                   placeholder={searchPlaceholder}
                   value={searchValue}
                   onChange={(e) => onSearchChange(e.target.value)}
-                  className="w-full rounded-lg border border-gray-200 py-2.5 pl-10 pr-4 text-sm outline-none focus:border-[#7A2533] min-h-[44px]"
+                  className="w-full rounded-lg border border-gray-200 py-2.5 pl-10 pr-4 text-sm outline-none focus:border-[#9C544D] min-h-[44px]"
                 />
               </div>
             )}
@@ -164,7 +164,7 @@ export function DataTable<T extends Record<string, any>>({
                         type="checkbox"
                         checked={allSelected}
                         onChange={toggleAll}
-                        className="h-4 w-4 rounded border-gray-300 text-[#7A2533] focus:ring-[#7A2533]"
+                        className="h-4 w-4 rounded border-gray-300 text-[#9C544D] focus:ring-[#9C544D]"
                       />
                     </th>
                   )}
@@ -199,7 +199,7 @@ export function DataTable<T extends Record<string, any>>({
                             type="checkbox"
                             checked={selectedItems?.has(id) ?? false}
                             onChange={() => toggleItem(id)}
-                            className="h-4 w-4 rounded border-gray-300 text-[#7A2533] focus:ring-[#7A2533]"
+                            className="h-4 w-4 rounded border-gray-300 text-[#9C544D] focus:ring-[#9C544D]"
                           />
                         </td>
                       )}

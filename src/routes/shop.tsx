@@ -227,12 +227,12 @@ function ShopPage() {
           <div className="flex items-center justify-between lg:hidden">
             <button
               onClick={() => setMobileOpen((o) => !o)}
-              className="flex items-center gap-2 rounded-full border border-[rgba(66,29,34,0.24)] bg-[#fffdf9] px-4 py-2 text-sm font-semibold text-[#7A2533]"
+              className="flex items-center gap-2 rounded-full border border-[rgba(92,61,58,0.24)] bg-[#fffdf9] px-4 py-2 text-sm font-semibold text-[#9C544D]"
             >
               <SlidersHorizontal className="h-4 w-4" />
               Filters
               {hasActiveFilters && (
-                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#7A2533] text-[10px] text-white">
+                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#9C544D] text-[10px] text-white">
                   {selectedMetals.length + (urlMin || urlMax ? 1 : 0)}
                 </span>
               )}
@@ -240,7 +240,7 @@ function ShopPage() {
             {hasActiveFilters && (
               <button
                 onClick={clearFilters}
-                className="text-[11px] font-semibold text-[#7A2533] uppercase"
+                className="text-[11px] font-semibold text-[#9C544D] uppercase"
               >
                 Clear All
               </button>
@@ -255,13 +255,13 @@ function ShopPage() {
           >
             <div className="mb-5 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <SlidersHorizontal className="h-4 w-4 text-[#7A2533]" />
+                <SlidersHorizontal className="h-4 w-4 text-[#9C544D]" />
                 <h3 className="font-display text-base font-semibold text-[#1a1a2e]">Filters</h3>
               </div>
               {hasActiveFilters && (
                 <button
                   onClick={clearFilters}
-                  className="flex items-center gap-1 text-[11px] font-semibold tracking-wide text-[#7A2533] uppercase hover:text-[#7A2533]"
+                  className="flex items-center gap-1 text-[11px] font-semibold tracking-wide text-[#9C544D] uppercase hover:text-[#9C544D]"
                 >
                   <X className="h-3 w-3" />
                   Clear
@@ -302,7 +302,7 @@ function ShopPage() {
               {selectedMetals.length > 0 && (
                 <button
                   onClick={() => pushFilters({ metal: "" })}
-                  className="text-[9px] font-semibold text-[#7a6e64] hover:text-[#7A2533]"
+                  className="text-[9px] font-semibold text-[#7a6e64] hover:text-[#9C544D]"
                 >
                   Clear
                 </button>
@@ -318,8 +318,8 @@ function ShopPage() {
                     onClick={() => toggleMetal(m)}
                     className={`rounded-full border px-3 py-1.5 text-[12px] font-medium transition-all ${
                       active
-                        ? "border-[#7A2533] bg-[#7A2533] text-white"
-                        : "border-[#e0d8cc] bg-white text-[#3a3028] hover:border-[#7A2533] hover:text-[#7A2533]"
+                        ? "border-[#9C544D] bg-[#9C544D] text-white"
+                        : "border-[#e0d8cc] bg-white text-[#3a3028] hover:border-[#9C544D] hover:text-[#9C544D]"
                     }`}
                   >
                     {m}
@@ -339,7 +339,7 @@ function ShopPage() {
                 {(urlMin || urlMax) && (
                   <button
                     onClick={() => pushFilters({ minPrice: "", maxPrice: "" })}
-                    className="text-[9px] font-semibold text-[#7a6e64] hover:text-[#7A2533]"
+                    className="text-[9px] font-semibold text-[#7a6e64] hover:text-[#9C544D]"
                   >
                     Reset
                   </button>
@@ -374,7 +374,7 @@ function ShopPage() {
                 <select
                   value={sort}
                   onChange={(e) => pushFilters({ sort: e.target.value })}
-                  className="w-full appearance-none rounded-full border border-[rgba(66,29,34,0.24)] bg-[#fffdf9] bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%228%22%20viewBox%3D%220%200%2012%208%22%3E%3Cpath%20d%3D%22M1%201.5l5%205%205-5%22%20stroke%3D%22%23421D22%22%20stroke-width%3D%221.5%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3C%2Fsvg%3E')] bg-[length:12px_8px] bg-[right_16px_center] bg-no-repeat px-5 py-2.5 pr-12 text-sm text-[#7A2533] focus:outline-none focus:ring-2 focus:ring-[#7A2533]/30 sm:w-auto"
+                  className="w-full appearance-none rounded-full border border-[rgba(92,61,58,0.24)] bg-[#fffdf9] bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%228%22%20viewBox%3D%220%200%2012%208%22%3E%3Cpath%20d%3D%22M1%201.5l5%205%205-5%22%20stroke%3D%22%235C3D3A%22%20stroke-width%3D%221.5%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3C%2Fsvg%3E')] bg-[length:12px_8px] bg-[right_16px_center] bg-no-repeat px-5 py-2.5 pr-12 text-sm text-[#9C544D] focus:outline-none focus:ring-2 focus:ring-[#9C544D]/30 sm:w-auto"
                 >
                   {SORT_OPTIONS.map((o) => (
                     <option key={o}>{o}</option>
@@ -452,8 +452,8 @@ function FilterPill({
       onClick={onClick}
       className={`rounded-full border px-3 py-1.5 text-[12px] font-medium transition-all ${
         active
-          ? "border-[#7A2533] bg-[#7A2533] text-white"
-          : "border-[#e0d8cc] bg-white text-[#3a3028] hover:border-[#7A2533] hover:text-[#7A2533]"
+          ? "border-[#9C544D] bg-[#9C544D] text-white"
+          : "border-[#e0d8cc] bg-white text-[#3a3028] hover:border-[#9C544D] hover:text-[#9C544D]"
       }`}
     >
       {children}

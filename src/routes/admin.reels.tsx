@@ -106,7 +106,7 @@ function AdminReels() {
             setEditing(null);
             setShowForm(true);
           }}
-          className="rounded-lg bg-[#7A2533] px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#5F1C27]"
+          className="rounded-lg bg-[#9C544D] px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#7A3D3A]"
         >
           + Add Reel
         </button>
@@ -167,7 +167,7 @@ function AdminReels() {
                   <td className="px-4 py-3 font-mono text-xs text-gray-600">{r.product_id}</td>
                   <td className="px-4 py-3">
                     <span
-                      className={`rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase ${r.is_active ? "border border-[#7A2533]/20 bg-[#fff4f5] text-[#7A2533]" : "bg-gray-100 text-gray-500"}`}
+                      className={`rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase ${r.is_active ? "border border-[#9C544D]/20 bg-[#fff4f5] text-[#9C544D]" : "bg-gray-100 text-gray-500"}`}
                     >
                       {r.is_active ? "Active" : "Inactive"}
                     </span>
@@ -179,7 +179,7 @@ function AdminReels() {
                           setEditing(r);
                           setShowForm(true);
                         }}
-                        className="text-xs text-[#7A2533] hover:underline"
+                        className="text-xs text-[#9C544D] hover:underline"
                       >
                         Edit
                       </button>
@@ -433,7 +433,7 @@ function ReelForm({
               className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
             />
             {uploading && (
-              <p className="mt-1 flex items-center gap-1.5 text-xs text-[#7A2533]">
+              <p className="mt-1 flex items-center gap-1.5 text-xs text-[#9C544D]">
                 <Loader2 className="h-3 w-3 animate-spin" />
                 Uploading video…
               </p>
@@ -477,7 +477,7 @@ function ReelForm({
                 setProduct(null);
                 setProductQuery("");
               }}
-              className="text-xs font-medium text-[#7A2533] hover:underline"
+              className="text-xs font-medium text-[#9C544D] hover:underline"
             >
               Change
             </button>
@@ -489,7 +489,7 @@ function ReelForm({
               onClick={() => setDropdownOpen((v) => !v)}
               aria-haspopup="listbox"
               aria-expanded={dropdownOpen}
-              className="flex w-full items-center justify-between gap-2 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm outline-none focus:border-[#7A2533]"
+              className="flex w-full items-center justify-between gap-2 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm outline-none focus:border-[#9C544D]"
             >
               <span className={productsLoading ? "text-gray-400" : "text-gray-600"}>
                 {productsLoading ? "Loading products…" : "Select a product"}
@@ -578,7 +578,7 @@ function ReelForm({
           role="switch"
           aria-checked={publishImmediately}
           onClick={() => setPublishImmediately((v) => !v)}
-          className={`flex h-6 w-11 items-center rounded-full transition-colors ${publishImmediately ? "bg-[#7A2533]" : "bg-gray-300"}`}
+          className={`flex h-6 w-11 items-center rounded-full transition-colors ${publishImmediately ? "bg-[#9C544D]" : "bg-gray-300"}`}
         >
           <span
             className={`block h-4 w-4 transform rounded-full bg-white shadow transition-transform ${publishImmediately ? "translate-x-6" : "translate-x-1"}`}
@@ -595,7 +595,7 @@ function ReelForm({
         <button
           type="submit"
           disabled={saving || uploading || !video || !product}
-          className="inline-flex items-center gap-2 rounded-lg bg-[#7A2533] px-6 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#5F1C27] disabled:opacity-50"
+          className="inline-flex items-center gap-2 rounded-lg bg-[#9C544D] px-6 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#7A3D3A] disabled:opacity-50"
         >
           <UploadCloud className="h-4 w-4" />
           {saving ? "Saving…" : "Upload Reel"}

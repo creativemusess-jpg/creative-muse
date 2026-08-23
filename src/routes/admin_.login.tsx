@@ -62,7 +62,7 @@ function AdminLoginPage() {
       <div className="w-full max-w-md">
         <div className="mb-8 text-center">
           <h1 className="font-display text-3xl font-bold text-white">Creative Muse</h1>
-          <p className="mt-2 text-sm text-[#7A2533]">Admin Panel</p>
+          <p className="mt-2 text-sm text-[#9C544D]">Admin Panel</p>
         </div>
 
         <form
@@ -86,7 +86,7 @@ function AdminLoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="creativemusess@gmail.com"
-                className="mt-1 block w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#7A2533] focus:ring-1 focus:ring-[#7A2533]"
+                className="mt-1 block w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#9C544D] focus:ring-1 focus:ring-[#9C544D]"
                 autoComplete="email"
               />
             </div>
@@ -99,7 +99,7 @@ function AdminLoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="block w-full rounded-lg border border-gray-300 px-4 py-2.5 pr-10 text-sm outline-none focus:border-[#7A2533] focus:ring-1 focus:ring-[#7A2533]"
+                  className="block w-full rounded-lg border border-gray-300 px-4 py-2.5 pr-10 text-sm outline-none focus:border-[#9C544D] focus:ring-1 focus:ring-[#9C544D]"
                   autoComplete="current-password"
                 />
                 <button
@@ -118,11 +118,11 @@ function AdminLoginPage() {
                   type="checkbox"
                   checked={rememberMe}
                   onChange={(e) => setRememberMe(e.target.checked)}
-                  className="rounded border-gray-300 accent-[#7A2533]"
+                  className="rounded border-gray-300 accent-[#9C544D]"
                 />
                 <span className="text-sm text-gray-600">Remember me</span>
               </label>
-              <Link to="/forgot-password" search={{ mode: "admin" }} className="text-sm text-[#7A2533] hover:underline">
+              <Link to="/forgot-password" search={{ mode: "admin" }} className="text-sm text-[#9C544D] hover:underline">
                 Forgot password?
               </Link>
             </div>

@@ -7,6 +7,7 @@ const BUCKETS = {
   categoryVideos: "category-videos",
   heroMedia: "hero-media",
   homepageBanners: "homepage-banners",
+  newsletter: "newsletter-images",
 } as const;
 
 export async function uploadImage(

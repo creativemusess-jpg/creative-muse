@@ -53,7 +53,7 @@ function SubcategoryCollectionPage() {
     return (
       <div className="mx-auto max-w-[1280px] px-6 py-20 text-center">
         <h1 className="text-2xl font-bold text-gray-800">Collection not found</h1>
-        <Link to="/shop" className="mt-4 inline-block text-[#7A2533] hover:underline">
+        <Link to="/shop" className="mt-4 inline-block text-[#9C544D] hover:underline">
           Browse all products
         </Link>
       </div>

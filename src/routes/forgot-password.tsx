@@ -43,7 +43,7 @@ function ForgotPasswordPage() {
       <div className="w-full rounded-[28px] bg-white p-8 shadow-[0_4px_24px_rgba(0,0,0,0.05)] sm:p-10">
           {sent ? (
             <div className="text-center">
-              <CheckCircle className="mx-auto h-12 w-12 text-[#7A2533]" />
+              <CheckCircle className="mx-auto h-12 w-12 text-[#9C544D]" />
               <h1 className="font-display mt-4 text-xl font-semibold text-[#1a1a2e]">Check Your Email</h1>
               <p className="mt-2 text-sm text-[#7a6e64]">We've sent a password reset link to <strong>{email}</strong></p>
               {mode === "admin" ? (
@@ -59,7 +59,7 @@ function ForgotPasswordPage() {
               <form onSubmit={handleSubmit} className="mt-8 space-y-4">
                 <div>
                   <label htmlFor="fp-email" className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Email</label>
-                  <input id="fp-email" type="email" value={email} onChange={(e) => { setEmail(e.target.value); setError(""); }} className="w-full rounded-xl border border-[#e0d8cc] px-4 py-3 text-sm outline-none focus:border-[#7A2533]" />
+                  <input id="fp-email" type="email" value={email} onChange={(e) => { setEmail(e.target.value); setError(""); }} className="w-full rounded-xl border border-[#e0d8cc] px-4 py-3 text-sm outline-none focus:border-[#9C544D]" />
                 </div>
                 {error && <p className="text-sm text-red-500">{error}</p>}
                 <button type="submit" disabled={loading} className="btn-primary w-full justify-center disabled:opacity-60">
@@ -70,9 +70,9 @@ function ForgotPasswordPage() {
               <p className="mt-6 text-center text-sm text-[#7a6e64]">
                 Remember your password?{" "}
                 {mode === "admin" ? (
-                  <Link to="/admin/login" className="font-semibold text-[#7A2533] underline underline-offset-2">Sign In</Link>
+                  <Link to="/admin/login" className="font-semibold text-[#9C544D] underline underline-offset-2">Sign In</Link>
                 ) : (
-                  <Link to="/login" className="font-semibold text-[#7A2533] underline underline-offset-2">Sign In</Link>
+                  <Link to="/login" className="font-semibold text-[#9C544D] underline underline-offset-2">Sign In</Link>
                 )}
               </p>
             </>

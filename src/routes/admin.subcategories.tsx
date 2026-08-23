@@ -108,7 +108,7 @@ function AdminSubcategories() {
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <div>
               <label className="mb-1 block text-xs font-medium text-gray-600">Parent Category *</label>
-              <select value={form.category_id} onChange={(e) => setForm((f) => ({ ...f, category_id: e.target.value }))} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#7A2533]">
+              <select value={form.category_id} onChange={(e) => setForm((f) => ({ ...f, category_id: e.target.value }))} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#9C544D]">
                 <option value="">Select category</option>
                 {categories.filter((c: any) => c.active).map((c: any) => (
                   <option key={c.id} value={c.id}>{c.name}</option>
@@ -117,15 +117,15 @@ function AdminSubcategories() {
             </div>
             <div>
               <label className="mb-1 block text-xs font-medium text-gray-600">Name *</label>
-              <input type="text" value={form.name} onChange={(e) => { setForm((f) => ({ ...f, name: e.target.value })); if (!editing) setForm((f) => ({ ...f, slug: e.target.value.toLowerCase().replace(/\s+/g, "-") })); }} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#7A2533]" />
+              <input type="text" value={form.name} onChange={(e) => { setForm((f) => ({ ...f, name: e.target.value })); if (!editing) setForm((f) => ({ ...f, slug: e.target.value.toLowerCase().replace(/\s+/g, "-") })); }} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#9C544D]" />
             </div>
             <div>
               <label className="mb-1 block text-xs font-medium text-gray-600">Slug *</label>
-              <input type="text" value={form.slug} onChange={(e) => setForm((f) => ({ ...f, slug: e.target.value }))} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#7A2533]" />
+              <input type="text" value={form.slug} onChange={(e) => setForm((f) => ({ ...f, slug: e.target.value }))} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#9C544D]" />
             </div>
             <div>
               <label className="mb-1 block text-xs font-medium text-gray-600">Sort Order</label>
-              <input type="number" value={form.sort_order} onChange={(e) => setForm((f) => ({ ...f, sort_order: parseInt(e.target.value) || 0 }))} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#7A2533]" />
+              <input type="number" value={form.sort_order} onChange={(e) => setForm((f) => ({ ...f, sort_order: parseInt(e.target.value) || 0 }))} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#9C544D]" />
             </div>
             <div className="flex items-end pb-2">
               <label className="flex items-center gap-2 cursor-pointer">

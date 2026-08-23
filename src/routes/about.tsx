@@ -34,7 +34,7 @@ export const Route = createFileRoute("/about")({
           ].map(([Ic, label]) => (
             <div key={label as string} className="rounded-[24px] border border-[#e0d8cc] bg-white p-6 text-center">
               <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-[#fdf8f3] to-[#f0e4cd]">
-                <Ic className="h-5 w-5 text-[#7A2533]" />
+                <Ic className="h-5 w-5 text-[#9C544D]" />
               </div>
               <p className="font-display mt-3 text-sm font-semibold text-[#1a1a2e]">{label as string}</p>
             </div>

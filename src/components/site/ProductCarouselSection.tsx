@@ -260,7 +260,7 @@ export function ProductCarouselSection({
                 api?.scrollPrev();
               }}
               disabled={!api?.canScrollPrev()}
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-[#d8d0c6] bg-[#fdf8f3] text-[#1a1a2e] shadow-[0_6px_14px_rgba(0,0,0,0.07)] transition-all hover:border-[#7A2533] hover:text-[#7A2533] disabled:opacity-40 sm:h-12 sm:w-12"
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-[#d8d0c6] bg-[#fdf8f3] text-[#1a1a2e] shadow-[0_6px_14px_rgba(0,0,0,0.07)] transition-all hover:border-[#9C544D] hover:text-[#9C544D] disabled:opacity-40 sm:h-12 sm:w-12"
               aria-label="Previous products"
             >
               <ArrowLeft className="h-4 w-4 sm:h-5 sm:w-5" />
@@ -275,9 +275,9 @@ export function ProductCarouselSection({
                       pauseAutoScroll();
                       api?.scrollTo(i);
                     }}
-                    className={`h-2 rounded-full border border-[#7A2533] transition-all duration-300 sm:h-2.5 ${
+                    className={`h-2 rounded-full border border-[#9C544D] transition-all duration-300 sm:h-2.5 ${
                       i === selectedIndex
-                        ? "w-7 bg-[#7A2533] sm:w-9"
+                        ? "w-7 bg-[#9C544D] sm:w-9"
                         : "w-2 bg-transparent sm:w-2.5"
                     }`}
                     aria-label={`Go to product ${i + 1} of ${scrollSnaps.length}`}
@@ -292,7 +292,7 @@ export function ProductCarouselSection({
                 api?.scrollNext();
               }}
               disabled={!api?.canScrollNext()}
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-[#d8d0c6] bg-[#fdf8f3] text-[#1a1a2e] shadow-[0_6px_14px_rgba(0,0,0,0.07)] transition-all hover:border-[#7A2533] hover:text-[#7A2533] disabled:opacity-40 sm:h-12 sm:w-12"
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-[#d8d0c6] bg-[#fdf8f3] text-[#1a1a2e] shadow-[0_6px_14px_rgba(0,0,0,0.07)] transition-all hover:border-[#9C544D] hover:text-[#9C544D] disabled:opacity-40 sm:h-12 sm:w-12"
               aria-label="Next products"
             >
               <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5" />

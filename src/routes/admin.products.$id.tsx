@@ -283,7 +283,7 @@ function EditProductPage() {
                   type="text"
                   value={form.name}
                   onChange={(e) => handleChange("name", e.target.value)}
-                  className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#7A2533]"
+                  className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#9C544D]"
                   required
                 />
               </Field>
@@ -293,7 +293,7 @@ function EditProductPage() {
                 type="text"
                 value={form.slug}
                 onChange={(e) => handleChange("slug", e.target.value)}
-                className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#7A2533]"
+                className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#9C544D]"
                 required
               />
             </Field>
@@ -304,7 +304,7 @@ function EditProductPage() {
                   handleChange("category_ids", e.target.value ? [e.target.value] : []);
                   handleChange("subcategory_id", null);
                 }}
-                className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#7A2533]"
+                className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#9C544D]"
               >
                 <option value="">Select category</option>
                 {categories.map((c: any) => (
@@ -318,7 +318,7 @@ function EditProductPage() {
               <select
                 value={form.subcategory_id || ""}
                 onChange={(e) => handleChange("subcategory_id", e.target.value || null)}
-                className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#7A2533]"
+                className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#9C544D]"
                 disabled={!form.category_ids?.[0]}
               >
                 <option value="">
@@ -336,7 +336,7 @@ function EditProductPage() {
                 type="text"
                 value={form.card_label || ""}
                 onChange={(e) => handleChange("card_label", e.target.value)}
-                className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#7A2533]"
+                className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#9C544D]"
                 placeholder="e.g. Fine Jewellery · Handcrafted (blank hides it)"
               />
             </Field>
@@ -345,7 +345,7 @@ function EditProductPage() {
                 value={form.short_description || ""}
                 onChange={(e) => handleChange("short_description", e.target.value)}
                 rows={3}
-                className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#7A2533]"
+                className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#9C544D]"
               />
             </Field>
             <Field label="Full Description">
@@ -353,7 +353,7 @@ function EditProductPage() {
                 value={form.full_description || ""}
                 onChange={(e) => handleChange("full_description", e.target.value)}
                 rows={6}
-                className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#7A2533]"
+                className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#9C544D]"
               />
             </Field>
           </Section>
@@ -365,7 +365,7 @@ function EditProductPage() {
                   type="number"
                   value={form.current_price || ""}
                   onChange={(e) => handleChange("current_price", Number(e.target.value))}
-                  className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#7A2533]"
+                  className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#9C544D]"
                   required
                   min="0"
                 />
@@ -375,7 +375,7 @@ function EditProductPage() {
                   type="number"
                   value={form.original_price || ""}
                   onChange={(e) => handleChange("original_price", Number(e.target.value))}
-                  className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#7A2533]"
+                  className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#9C544D]"
                   min="0"
                 />
               </Field>
@@ -383,7 +383,7 @@ function EditProductPage() {
                 <select
                   value={form.badge || ""}
                   onChange={(e) => handleChange("badge", e.target.value || null)}
-                  className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#7A2533]"
+                  className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#9C544D]"
                 >
                   <option value="">None</option>
                   <option value="New">New</option>
@@ -417,7 +417,7 @@ function EditProductPage() {
                       setProductAttrs(next);
                     }}
                     placeholder="Attribute name"
-                    className="flex-1 rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#7A2533]"
+                    className="flex-1 rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#9C544D]"
                   />
                 )}
                 <input
@@ -429,7 +429,7 @@ function EditProductPage() {
                     setProductAttrs(next);
                   }}
                   placeholder={row.name ? `Enter ${row.name.toLowerCase()}` : "Value"}
-                  className="flex-1 rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#7A2533]"
+                  className="flex-1 rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#9C544D]"
                 />
                 <button
                   type="button"
@@ -443,14 +443,14 @@ function EditProductPage() {
             <button
               type="button"
               onClick={() => setProductAttrs([...productAttrs, { defId: "", value: "", name: "" }])}
-              className="mt-3 flex items-center gap-1 text-sm font-medium text-[#7A2533] hover:text-[#7A2533]"
+              className="mt-3 flex items-center gap-1 text-sm font-medium text-[#9C544D] hover:text-[#9C544D]"
             >
               <Plus className="h-3.5 w-3.5" /> Add Attribute
             </button>
             {attrDefs.length > 0 && (
               <p className="mt-2 text-xs text-gray-400">
                 Tip: Manage reusable attribute definitions in{" "}
-                <Link to="/admin/attributes" className="text-[#7A2533] hover:underline">
+                <Link to="/admin/attributes" className="text-[#9C544D] hover:underline">
                   Attributes
                 </Link>
                 .
@@ -563,7 +563,7 @@ function EditProductPage() {
                 type="number"
                 value={form.stock_quantity ?? ""}
                 onChange={(e) => handleChange("stock_quantity", parseInt(e.target.value) || 0)}
-                className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#7A2533]"
+                className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#9C544D]"
                 min="0"
               />
             </Field>
@@ -572,7 +572,7 @@ function EditProductPage() {
                 type="number"
                 value={form.low_stock_threshold ?? 5}
                 onChange={(e) => handleChange("low_stock_threshold", parseInt(e.target.value) || 5)}
-                className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#7A2533]"
+                className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#9C544D]"
                 min="0"
               />
             </Field>
@@ -605,7 +605,7 @@ function EditProductPage() {
               ))}
             <Link
               to="/admin/product-flags"
-              className="mt-2 inline-flex items-center gap-1 text-xs font-medium text-[#7A2533] hover:text-[#7A2533]"
+              className="mt-2 inline-flex items-center gap-1 text-xs font-medium text-[#9C544D] hover:text-[#9C544D]"
             >
               Manage Flags →
             </Link>
@@ -625,7 +625,7 @@ function EditProductPage() {
                     .filter(Boolean),
                 )
               }
-              className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#7A2533]"
+              className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#9C544D]"
             />
           </Section>
 
@@ -635,7 +635,7 @@ function EditProductPage() {
                 type="text"
                 value={form.seo_title || ""}
                 onChange={(e) => handleChange("seo_title", e.target.value)}
-                className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#7A2533]"
+                className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#9C544D]"
               />
             </Field>
             <Field label="SEO Description">
@@ -643,7 +643,7 @@ function EditProductPage() {
                 value={form.seo_description || ""}
                 onChange={(e) => handleChange("seo_description", e.target.value)}
                 rows={2}
-                className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#7A2533]"
+                className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#9C544D]"
               />
             </Field>
             <Field label="Focus Keyword">
@@ -651,7 +651,7 @@ function EditProductPage() {
                 type="text"
                 value={form.focus_keyword || ""}
                 onChange={(e) => handleChange("focus_keyword", e.target.value)}
-                className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#7A2533]"
+                className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#9C544D]"
                 placeholder="e.g. gold necklace"
               />
             </Field>
@@ -660,7 +660,7 @@ function EditProductPage() {
                 type="text"
                 value={form.canonical_url || ""}
                 onChange={(e) => handleChange("canonical_url", e.target.value)}
-                className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#7A2533]"
+                className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#9C544D]"
                 placeholder="https://example.com/product/slug"
               />
             </Field>
@@ -669,7 +669,7 @@ function EditProductPage() {
                 type="text"
                 value={form.social_image || ""}
                 onChange={(e) => handleChange("social_image", e.target.value)}
-                className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#7A2533]"
+                className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#9C544D]"
                 placeholder="Open Graph image URL"
               />
             </Field>
@@ -678,7 +678,7 @@ function EditProductPage() {
                 type="text"
                 value={form.image_alt_text || ""}
                 onChange={(e) => handleChange("image_alt_text", e.target.value)}
-                className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#7A2533]"
+                className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#9C544D]"
                 placeholder="Descriptive alt text for main image"
               />
             </Field>

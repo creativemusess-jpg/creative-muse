@@ -55,7 +55,7 @@ function OrderList() {
   if (orders.length === 0) {
     return (
       <div className="rounded-[24px] bg-white p-10 text-center shadow-[0_4px_24px_rgba(0,0,0,0.05)]">
-        <Package className="mx-auto h-10 w-10 text-[#7A2533]" />
+        <Package className="mx-auto h-10 w-10 text-[#9C544D]" />
         <h2 className="font-display mt-4 text-xl font-semibold text-[#1a1a2e]">No orders yet</h2>
         <p className="mt-2 text-sm text-[#7a6e64]">Place your first order and it will appear here.</p>
         <Link to="/shop" className="btn-primary mt-6 inline-flex">
@@ -75,7 +75,7 @@ function OrderList() {
           className="flex items-center gap-4 rounded-[24px] bg-white p-5 shadow-[0_4px_24px_rgba(0,0,0,0.05)] transition-colors hover:bg-[#f5efe8]"
         >
           <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#fdf8f3]">
-            <Package className="h-6 w-6 text-[#7A2533]" />
+            <Package className="h-6 w-6 text-[#9C544D]" />
           </div>
           <div className="min-w-0 flex-1">
             <p className="font-display font-semibold text-[#1a1a2e]">#{order.order_number}</p>
@@ -110,7 +110,7 @@ function AccountOrdersPage() {
     return (
       <PageShell>
         <div className="flex min-h-[50vh] items-center justify-center">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#7A2533] border-t-transparent" />
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#9C544D] border-t-transparent" />
         </div>
       </PageShell>
     );
@@ -124,7 +124,7 @@ function AccountOrdersPage() {
             <p className="eyebrow text-[10px]">Orders</p>
             <h1 className="font-display text-3xl font-semibold text-[#1a1a2e]">My Orders</h1>
             <p className="mt-1 text-sm text-[#7a6e64]">
-              <Link to="/account" className="text-[#7A2533] hover:underline">← Back to Account</Link>
+              <Link to="/account" className="text-[#9C544D] hover:underline">← Back to Account</Link>
             </p>
           </div>
         )}

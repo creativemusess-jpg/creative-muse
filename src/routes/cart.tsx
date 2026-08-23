@@ -81,7 +81,7 @@ function CartPage() {
               key={it.id}
               className="flex gap-3 rounded-[22px] bg-white p-3 shadow-[0_4px_24px_rgba(0,0,0,0.05)] sm:gap-4 sm:rounded-[28px] sm:p-5"
             >
-              <div className="flex aspect-square w-[108px] shrink-0 items-center justify-center overflow-hidden rounded-[18px] border border-[rgba(66,29,34,0.18)] bg-white shadow-[0_8px_24px_rgba(66,29,34,0.06)] sm:w-28 sm:rounded-[20px]">
+              <div className="flex aspect-square w-[108px] shrink-0 items-center justify-center overflow-hidden rounded-[18px] border border-[rgba(92,61,58,0.18)] bg-white shadow-[0_8px_24px_rgba(92,61,58,0.06)] sm:w-28 sm:rounded-[20px]">
                 <img
                   src={it.image}
                   alt={it.name}
@@ -178,11 +178,11 @@ function CartPage() {
               <div className="mt-4 rounded-[20px] border border-[#e0d8cc] bg-white p-4">
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-start gap-3">
-                    <Package className="mt-0.5 h-5 w-5 shrink-0 text-[#7A2533]" />
+                    <Package className="mt-0.5 h-5 w-5 shrink-0 text-[#9C544D]" />
                     <div>
                       <p className="text-[13px] font-semibold text-[#1a1a2e]">{giftCfg.name}</p>
                       <p className="mt-0.5 text-[11px] text-[#7a6e64]">{giftCfg.description}</p>
-                      <p className="mt-1 text-[13px] font-bold text-[#7A2533]">{formatPrice(giftCfg.price)}</p>
+                      <p className="mt-1 text-[13px] font-bold text-[#9C544D]">{formatPrice(giftCfg.price)}</p>
                     </div>
                   </div>
                   <button
@@ -190,7 +190,7 @@ function CartPage() {
                     role="switch"
                     aria-checked={giftPackagingEnabled}
                     onClick={() => setGiftPackagingEnabled(!giftPackagingEnabled)}
-                    className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors ${giftPackagingEnabled ? "bg-[#7A2533]" : "bg-gray-200"}`}
+                    className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors ${giftPackagingEnabled ? "bg-[#9C544D]" : "bg-gray-200"}`}
                   >
                     <span className={`pointer-events-none inline-block h-4 w-4 translate-y-0 rounded-full bg-white shadow transition-transform ${giftPackagingEnabled ? "translate-x-4" : "translate-x-0"}`} />
                   </button>
@@ -204,7 +204,7 @@ function CartPage() {
                       placeholder="Happy Birthday!"
                       rows={2}
                       maxLength={giftCfg.max_message_length}
-                      className="mt-1.5 w-full rounded-[10px] border border-[#e0d8cc] bg-[#fdf8f3] px-3 py-2 text-[12px] outline-none focus:border-[#7A2533] resize-none"
+                      className="mt-1.5 w-full rounded-[10px] border border-[#e0d8cc] bg-[#fdf8f3] px-3 py-2 text-[12px] outline-none focus:border-[#9C544D] resize-none"
                     />
                     <p className="mt-1 text-right text-[9px] text-[#7a6e64]">{giftMessage.length}/{giftCfg.max_message_length}</p>
                   </div>
@@ -214,25 +214,25 @@ function CartPage() {
 
             <div className={`mt-5 rounded-[20px] border border-dashed p-3 ${
               discountAmount > 0 && couponCode
-                ? "border-[#7A2533]/30 bg-[#fff4f5] shadow-[0_8px_24px_rgba(122,37,51,0.06)]"
-                : "border-[#7A2533]/40 bg-[#fdf8f3]"
+                ? "border-[#9C544D]/30 bg-[#fff4f5] shadow-[0_8px_24px_rgba(156,84,77,0.06)]"
+                : "border-[#9C544D]/40 bg-[#fdf8f3]"
             }`}>
               {discountAmount > 0 && couponCode ? (
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <Tag className="h-4 w-4 text-[#7A2533]" />
-                    <span className="text-sm font-medium text-[#7A2533]">{couponCode}</span>
+                    <Tag className="h-4 w-4 text-[#9C544D]" />
+                    <span className="text-sm font-medium text-[#9C544D]">{couponCode}</span>
                   </div>
                   <button
                     onClick={() => { clearCoupon(); setCouponStatus("idle"); setCouponMsg(""); setCouponInput(""); }}
-                    className="text-[11px] font-semibold text-[#7A2533] hover:text-[#5F1C27] hover:underline"
+                    className="text-[11px] font-semibold text-[#9C544D] hover:text-[#7A3D3A] hover:underline"
                   >
                     Remove
                   </button>
                 </div>
               ) : (
                 <div className="flex items-center gap-2">
-                  <Tag className="h-4 w-4 text-[#7A2533]" />
+                  <Tag className="h-4 w-4 text-[#9C544D]" />
                   <input
                     value={couponInput}
                     onChange={(e) => { setCouponInput(e.target.value); if (couponStatus !== "idle") { setCouponStatus("idle"); setCouponMsg(""); } }}
@@ -242,14 +242,14 @@ function CartPage() {
                   <button
                     onClick={applyCoupon}
                     disabled={couponStatus === "loading"}
-                    className="rounded-full bg-[#7A2533] px-3 py-1.5 text-[11px] font-semibold tracking-wider text-white uppercase transition-colors hover:bg-[#5F1C27] disabled:opacity-50"
+                    className="rounded-full bg-[#9C544D] px-3 py-1.5 text-[11px] font-semibold tracking-wider text-white uppercase transition-colors hover:bg-[#7A3D3A] disabled:opacity-50"
                   >
                     {couponStatus === "loading" ? <Loader2 className="h-3 w-3 animate-spin" /> : "Apply"}
                   </button>
                 </div>
               )}
               {couponMsg && (
-                <p className={`mt-2 text-[11px] font-medium ${couponStatus === "valid" ? "text-[#7A2533]" : "text-red-600"}`}>
+                <p className={`mt-2 text-[11px] font-medium ${couponStatus === "valid" ? "text-[#9C544D]" : "text-red-600"}`}>
                   {couponMsg}
                 </p>
               )}
@@ -265,7 +265,7 @@ function CartPage() {
             </Link>
             <Link
               to="/shop"
-              className="mt-3 block text-center text-[12px] font-semibold tracking-[0.14em] text-[#7a6e64] uppercase hover:text-[#8B1A1A]"
+              className="mt-3 block text-center text-[12px] font-semibold tracking-[0.14em] text-[#7a6e64] uppercase hover:text-[#8C4340]"
             >
               ← Continue Shopping
             </Link>

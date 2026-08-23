@@ -162,7 +162,7 @@ function AdminAnnouncements() {
                 type="text"
                 value={formText}
                 onChange={(e) => setFormText(e.target.value)}
-                className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-[#7A2533] min-h-[44px]"
+                className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-[#9C544D] min-h-[44px]"
                 placeholder="e.g., FREE SHIPPING ON ORDERS ABOVE ₹5,000"
               />
             </div>
@@ -185,7 +185,7 @@ function AdminAnnouncements() {
                 type="number"
                 value={formOrder}
                 onChange={(e) => setFormOrder(parseInt(e.target.value) || 0)}
-                className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-[#7A2533] min-h-[44px]"
+                className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-[#9C544D] min-h-[44px]"
               />
             </div>
           </div>
@@ -228,7 +228,7 @@ function AdminAnnouncements() {
                     <button
                       onClick={() => handleMove(idx, -1)}
                       disabled={idx === 0}
-                      className="flex h-8 min-w-[36px] items-center justify-center rounded border border-gray-200 text-gray-500 hover:border-[#7A2533] hover:text-[#7A2533] disabled:opacity-30"
+                      className="flex h-8 min-w-[36px] items-center justify-center rounded border border-gray-200 text-gray-500 hover:border-[#9C544D] hover:text-[#9C544D] disabled:opacity-30"
                     >
                       ↑
                     </button>
@@ -236,7 +236,7 @@ function AdminAnnouncements() {
                     <button
                       onClick={() => handleMove(idx, 1)}
                       disabled={idx === announcements.length - 1}
-                      className="flex h-8 min-w-[36px] items-center justify-center rounded border border-gray-200 text-gray-500 hover:border-[#7A2533] hover:text-[#7A2533] disabled:opacity-30"
+                      className="flex h-8 min-w-[36px] items-center justify-center rounded border border-gray-200 text-gray-500 hover:border-[#9C544D] hover:text-[#9C544D] disabled:opacity-30"
                     >
                       ↓
                     </button>
@@ -250,7 +250,7 @@ function AdminAnnouncements() {
                     </button>
                     <button
                       onClick={() => startEdit(a)}
-                      className="flex h-9 min-w-[44px] items-center justify-center rounded-lg border border-gray-200 text-xs font-medium text-[#7A2533] hover:bg-gray-50"
+                      className="flex h-9 min-w-[44px] items-center justify-center rounded-lg border border-gray-200 text-xs font-medium text-[#9C544D] hover:bg-gray-50"
                     >
                       <Edit3 className="h-3.5 w-3.5" />
                     </button>
@@ -286,7 +286,7 @@ function AdminAnnouncements() {
                           onClick={() => handleMove(idx, -1)}
                           disabled={idx === 0}
                           aria-label="Move up"
-                          className="rounded border border-gray-200 px-1.5 py-0.5 text-gray-500 hover:border-[#7A2533] hover:text-[#7A2533] disabled:opacity-30"
+                          className="rounded border border-gray-200 px-1.5 py-0.5 text-gray-500 hover:border-[#9C544D] hover:text-[#9C544D] disabled:opacity-30"
                         >
                           ↑
                         </button>
@@ -294,7 +294,7 @@ function AdminAnnouncements() {
                           onClick={() => handleMove(idx, 1)}
                           disabled={idx === announcements.length - 1}
                           aria-label="Move down"
-                          className="rounded border border-gray-200 px-1.5 py-0.5 text-gray-500 hover:border-[#7A2533] hover:text-[#7A2533] disabled:opacity-30"
+                          className="rounded border border-gray-200 px-1.5 py-0.5 text-gray-500 hover:border-[#9C544D] hover:text-[#9C544D] disabled:opacity-30"
                         >
                           ↓
                         </button>

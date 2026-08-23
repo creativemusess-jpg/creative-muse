@@ -120,7 +120,7 @@ function ContactPage() {
               rows={4}
               value={formData.message}
               onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-              className="w-full rounded-[20px] border border-[#e0d8cc] bg-[#fdf8f3] px-4 py-3 text-sm focus:border-[#7A2533] focus:outline-none"
+              className="w-full rounded-[20px] border border-[#e0d8cc] bg-[#fdf8f3] px-4 py-3 text-sm focus:border-[#9C544D] focus:outline-none"
               disabled={status === "submitting"}
             />
             {errors.message && <p className="mt-1 text-xs text-red-500">{errors.message}</p>}
@@ -195,7 +195,7 @@ function Field({
         onChange={(e) => onChange(e.target.value)}
         required={!label.includes("optional")}
         disabled={disabled}
-        className={`w-full rounded-full border bg-[#fdf8f3] px-4 py-3 text-sm focus:border-[#7A2533] focus:outline-none transition-colors ${
+        className={`w-full rounded-full border bg-[#fdf8f3] px-4 py-3 text-sm focus:border-[#9C544D] focus:outline-none transition-colors ${
           error ? "border-red-300" : "border-[#e0d8cc]"
         } ${disabled ? "opacity-50 cursor-not-allowed" : ""}`}
       />
@@ -208,7 +208,7 @@ function Info({ icon: Ic, title, text }: { icon: typeof MapPin; title: string; t
   return (
     <div className="flex items-start gap-4 rounded-[24px] bg-white p-6 shadow-[0_4px_16px_rgba(0,0,0,0.04)]">
       <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#fdf8f3] to-[#f0e4cd]">
-        <Ic className="h-5 w-5 text-[#7A2533]" />
+        <Ic className="h-5 w-5 text-[#9C544D]" />
       </div>
       <div>
         <p className="font-display text-base font-semibold text-[#1a1a2e]">{title}</p>

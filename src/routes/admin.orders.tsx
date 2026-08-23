@@ -78,13 +78,13 @@ function AdminOrders() {
             placeholder="Search orders..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full rounded-lg border border-gray-200 py-2 pl-10 pr-4 text-sm outline-none focus:border-[#7A2533]"
+            className="w-full rounded-lg border border-gray-200 py-2 pl-10 pr-4 text-sm outline-none focus:border-[#9C544D]"
           />
         </div>
         <select
           value={statusFilter}
           onChange={(e) => { setStatusFilter(e.target.value); setSearch(""); }}
-          className="mt-2 rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]"
+          className="mt-2 rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#9C544D]"
         >
           <option value="">All Status</option>
           {Object.keys(statusColors).map((s) => (
@@ -165,7 +165,7 @@ function AdminOrders() {
                 <div className="mt-3 flex items-center gap-2">
                   <Link
                     to={`/admin/orders/$${order.id}`}
-                    className="flex-1 rounded-lg p-2.5 text-sm font-medium text-[#7A2533] hover:bg-[#fdf8f3] transition-colors"
+                    className="flex-1 rounded-lg p-2.5 text-sm font-medium text-[#9C544D] hover:bg-[#fdf8f3] transition-colors"
                     aria-label="View order details"
                   >
                     View Order

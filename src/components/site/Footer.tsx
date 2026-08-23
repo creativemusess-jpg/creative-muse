@@ -17,15 +17,15 @@ export function Footer() {
           </p>
           <ul className="mt-6 space-y-2.5 text-[13px] text-white/80">
             <li className="flex items-start gap-2.5">
-              <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#7A2533]" />
+              <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#9C544D]" />
               <span>GF-3/4, Vidhi Square, BPC Road, Vadodara 390020</span>
             </li>
             <li className="flex items-center gap-2.5">
-              <Phone className="h-4 w-4 text-[#7A2533]" />
+              <Phone className="h-4 w-4 text-[#9C544D]" />
               <a href="tel:+919033779867">+91 90337 79867</a>
             </li>
             <li className="flex items-center gap-2.5">
-              <Mail className="h-4 w-4 text-[#7A2533]" />
+              <Mail className="h-4 w-4 text-[#9C544D]" />
               <a href="mailto:hello@creativemuse.in">hello@creativemuse.in</a>
             </li>
           </ul>
@@ -33,7 +33,7 @@ export function Footer() {
             <a
               href="#"
               aria-label="Instagram"
-              className="flex h-10 w-10 items-center justify-center rounded-full bg-white/5 text-[#cfc6b6] transition-colors hover:bg-[#7A2533]/20 hover:text-[#7A2533]"
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-white/5 text-[#cfc6b6] transition-colors hover:bg-[#9C544D]/20 hover:text-[#9C544D]"
             >
               <Instagram className="h-4 w-4" />
             </a>
@@ -121,7 +121,7 @@ function FooterCol({ title, links }: { title: string; links: [string, string][] 
       <ul className="mt-5 space-y-2.5 text-[13px] text-white/80">
         {links.map(([label, to]) => (
           <li key={label}>
-            <Link to={to} className="transition-colors hover:text-[#7A2533]">
+            <Link to={to} className="transition-colors hover:text-[#9C544D]">
               {label}
             </Link>
           </li>

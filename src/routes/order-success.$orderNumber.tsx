@@ -85,10 +85,10 @@ function OrderSuccessPage() {
     <PageShell>
       <div className="mx-auto flex min-h-[70vh] max-w-[600px] items-center justify-center px-4 py-20">
         {loading ? (
-          <Loader2 className="h-10 w-10 animate-spin text-[#7A2533]" />
+          <Loader2 className="h-10 w-10 animate-spin text-[#9C544D]" />
         ) : order ? (
           <div className="w-full text-center">
-            <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-[#7A2533]">
+            <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-[#9C544D]">
               <CheckCircle className="h-10 w-10 text-white" />
             </div>
             <h1 className="font-display mt-6 text-3xl font-semibold text-[#1a1a2e]">Thank You for Your Order</h1>

@@ -36,7 +36,7 @@ function AuthCallbackPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#fdf8f3]">
       <div className="text-center">
-        <div className="mx-auto h-10 w-10 animate-spin rounded-full border-[3px] border-[#7A2533] border-t-transparent" />
+        <div className="mx-auto h-10 w-10 animate-spin rounded-full border-[3px] border-[#9C544D] border-t-transparent" />
         <p className="mt-4 font-display text-lg font-semibold text-[#1a1a2e]">Completing sign in…</p>
         <p className="mt-1 text-sm text-[#7a6e64]">You'll be redirected shortly.</p>
       </div>

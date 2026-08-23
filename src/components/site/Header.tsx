@@ -291,7 +291,7 @@ function MobileDrawer({ items, onClose }: { items: NavItem[]; onClose: () => voi
                   <>
                     <button
                       onClick={() => setExpandedIdx(isExpanded ? null : idx)}
-                      className="flex min-h-[48px] w-full items-center justify-between rounded-[16px] px-5 py-3 text-sm font-medium text-[#7A2533] transition-colors hover:bg-[#f5efe8] hover:text-[#7A2533]"
+                      className="flex min-h-[48px] w-full items-center justify-between rounded-[16px] px-5 py-3 text-sm font-medium text-[#9C544D] transition-colors hover:bg-[#f5efe8] hover:text-[#9C544D]"
                     >
                       {item.label}
                       {isExpanded ? (
@@ -306,11 +306,11 @@ function MobileDrawer({ items, onClose }: { items: NavItem[]; onClose: () => voi
                         style={{ animation: "cmAccordionIn 200ms ease-out" }}
                       >
                         <style>{`@keyframes cmAccordionIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}`}</style>
-                        <div className="ml-3 border-l-2 border-[#8B1A1A]/30 pl-3">
+                        <div className="ml-3 border-l-2 border-[#8C4340]/30 pl-3">
                           <Link
                             to={item.to}
                             onClick={onClose}
-                            className="flex min-h-[40px] items-center rounded-[12px] px-4 py-2 text-sm font-semibold text-[#7A2533] transition-colors hover:bg-[#f5efe8] hover:text-[#7A2533]"
+                            className="flex min-h-[40px] items-center rounded-[12px] px-4 py-2 text-sm font-semibold text-[#9C544D] transition-colors hover:bg-[#f5efe8] hover:text-[#9C544D]"
                           >
                             View All {item.label}
                           </Link>
@@ -319,7 +319,7 @@ function MobileDrawer({ items, onClose }: { items: NavItem[]; onClose: () => voi
                               key={link.label}
                               to={link.to}
                               onClick={onClose}
-                              className="flex min-h-[40px] items-center rounded-[12px] px-4 py-2 text-sm text-[#7A2533] transition-colors hover:bg-[#f5efe8] hover:text-[#7A2533]"
+                              className="flex min-h-[40px] items-center rounded-[12px] px-4 py-2 text-sm text-[#9C544D] transition-colors hover:bg-[#f5efe8] hover:text-[#9C544D]"
                             >
                               {link.label}
                             </Link>
@@ -332,7 +332,7 @@ function MobileDrawer({ items, onClose }: { items: NavItem[]; onClose: () => voi
                   <Link
                     to={item.to}
                     onClick={onClose}
-                    className="flex min-h-[48px] w-full items-center rounded-[16px] px-5 py-3 text-sm font-medium text-[#7A2533] transition-colors hover:bg-[#f5efe8] hover:text-[#7A2533]"
+                    className="flex min-h-[48px] w-full items-center rounded-[16px] px-5 py-3 text-sm font-medium text-[#9C544D] transition-colors hover:bg-[#f5efe8] hover:text-[#9C544D]"
                   >
                     {item.label}
                   </Link>
@@ -357,7 +357,7 @@ function MobileDrawer({ items, onClose }: { items: NavItem[]; onClose: () => voi
               key={label}
               to={to}
               onClick={onClose}
-              className="flex min-h-[48px] w-full items-center rounded-[16px] px-5 py-3 text-sm text-[#7A2533] transition-colors hover:bg-[#f5efe8] hover:text-[#7A2533]"
+              className="flex min-h-[48px] w-full items-center rounded-[16px] px-5 py-3 text-sm text-[#9C544D] transition-colors hover:bg-[#f5efe8] hover:text-[#9C544D]"
             >
               {label}
             </Link>
@@ -369,14 +369,14 @@ function MobileDrawer({ items, onClose }: { items: NavItem[]; onClose: () => voi
             href="tel:+919033779867"
             className="flex min-h-[48px] items-center gap-3 rounded-[16px] px-5 py-3 text-sm text-[#3a3028]"
           >
-            <Phone className="h-5 w-5 text-[#8B1A1A]" strokeWidth={1.6} />
+            <Phone className="h-5 w-5 text-[#8C4340]" strokeWidth={1.6} />
             +91 90337 79867
           </a>
           <a
             href="https://wa.me/919033779867"
             target="_blank"
             rel="noreferrer"
-            className="mt-3 flex items-center justify-center gap-2 rounded-full bg-[#7A2533] px-5 py-3 text-sm font-semibold text-white hover:bg-[#5F1C27]"
+            className="mt-3 flex items-center justify-center gap-2 rounded-full bg-[#9C544D] px-5 py-3 text-sm font-semibold text-white hover:bg-[#7A3D3A]"
           >
             <MessageCircle className="h-4 w-4" />
             Chat on WhatsApp

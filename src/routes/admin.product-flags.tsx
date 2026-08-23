@@ -120,52 +120,52 @@ function AdminProductFlags() {
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <div>
               <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-gray-600">Name</label>
-              <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value, slug: editing ? form.slug : e.target.value.toLowerCase().replace(/\s+/g, "-") })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]" />
+              <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value, slug: editing ? form.slug : e.target.value.toLowerCase().replace(/\s+/g, "-") })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#9C544D]" />
             </div>
             <div>
               <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-gray-600">Slug</label>
-              <input value={form.slug} onChange={(e) => setForm({ ...form, slug: e.target.value })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]" />
+              <input value={form.slug} onChange={(e) => setForm({ ...form, slug: e.target.value })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#9C544D]" />
             </div>
             <div>
               <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-gray-600">Badge Label</label>
-              <input value={form.badge_label} onChange={(e) => setForm({ ...form, badge_label: e.target.value })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]" placeholder="NEW" />
+              <input value={form.badge_label} onChange={(e) => setForm({ ...form, badge_label: e.target.value })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#9C544D]" placeholder="NEW" />
             </div>
             <div>
               <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-gray-600">Badge BG Color</label>
               <div className="flex items-center gap-2">
                 <input type="color" value={form.badge_bg_color} onChange={(e) => setForm({ ...form, badge_bg_color: e.target.value })} className="h-9 w-9 cursor-pointer rounded border" />
-                <input value={form.badge_bg_color} onChange={(e) => setForm({ ...form, badge_bg_color: e.target.value })} className="flex-1 rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]" />
+                <input value={form.badge_bg_color} onChange={(e) => setForm({ ...form, badge_bg_color: e.target.value })} className="flex-1 rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#9C544D]" />
               </div>
             </div>
             <div>
               <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-gray-600">Badge Text Color</label>
               <div className="flex items-center gap-2">
                 <input type="color" value={form.badge_text_color} onChange={(e) => setForm({ ...form, badge_text_color: e.target.value })} className="h-9 w-9 cursor-pointer rounded border" />
-                <input value={form.badge_text_color} onChange={(e) => setForm({ ...form, badge_text_color: e.target.value })} className="flex-1 rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]" />
+                <input value={form.badge_text_color} onChange={(e) => setForm({ ...form, badge_text_color: e.target.value })} className="flex-1 rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#9C544D]" />
               </div>
             </div>
             <div>
               <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-gray-600">Border Color</label>
               <div className="flex items-center gap-2">
                 <input type="color" value={form.badge_border_color} onChange={(e) => setForm({ ...form, badge_border_color: e.target.value })} className="h-9 w-9 cursor-pointer rounded border" />
-                <input value={form.badge_border_color} onChange={(e) => setForm({ ...form, badge_border_color: e.target.value })} className="flex-1 rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]" />
+                <input value={form.badge_border_color} onChange={(e) => setForm({ ...form, badge_border_color: e.target.value })} className="flex-1 rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#9C544D]" />
               </div>
             </div>
             <div>
               <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-gray-600">Icon (optional)</label>
-              <input value={form.icon} onChange={(e) => setForm({ ...form, icon: e.target.value })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]" placeholder="lucide-icon-name" />
+              <input value={form.icon} onChange={(e) => setForm({ ...form, icon: e.target.value })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#9C544D]" placeholder="lucide-icon-name" />
             </div>
             <div>
               <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-gray-600">Priority</label>
-              <input type="number" value={form.priority} onChange={(e) => setForm({ ...form, priority: Number(e.target.value) })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]" />
+              <input type="number" value={form.priority} onChange={(e) => setForm({ ...form, priority: Number(e.target.value) })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#9C544D]" />
             </div>
             <div>
               <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-gray-600">Display Order</label>
-              <input type="number" value={form.display_order} onChange={(e) => setForm({ ...form, display_order: Number(e.target.value) })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]" />
+              <input type="number" value={form.display_order} onChange={(e) => setForm({ ...form, display_order: Number(e.target.value) })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#9C544D]" />
             </div>
             <div>
               <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-gray-600">Status</label>
-              <select value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]">
+              <select value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#9C544D]">
                 <option value="active">Active</option>
                 <option value="inactive">Inactive</option>
               </select>

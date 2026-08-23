@@ -340,7 +340,7 @@ function AdminHomepage() {
                     {(section.section_key === "hero" || isCarousel || section.section_key === "featured_banner") && (
                       <button
                         onClick={() => toggleEdit(section.section_key)}
-                        className="text-xs text-[#7A2533] hover:underline"
+                        className="text-xs text-[#9C544D] hover:underline"
                       >
                         {editingSection === section.section_key ? "Close" : "Edit"}
                       </button>
@@ -367,14 +367,14 @@ function AdminHomepage() {
                         value={formState.hero[field] || ""}
                         onChange={(e) => handleHeroFieldChange(field, e.target.value)}
                         rows={3}
-                        className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#7A2533]"
+                        className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#9C544D]"
                       />
                     ) : (
                       <input
                         type="text"
                         value={formState.hero[field] || ""}
                         onChange={(e) => handleHeroFieldChange(field, e.target.value)}
-                        className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#7A2533]"
+                        className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#9C544D]"
                       />
                     )}
                   </div>
@@ -403,7 +403,7 @@ function AdminHomepage() {
                   onChange={(e) =>
                     handleCarouselFieldChange(editingSection, "autoScrollEnabled", e.target.checked)
                   }
-                  className="h-4 w-4 rounded border-gray-300 text-[#7A2533] focus:ring-[#7A2533]"
+                  className="h-4 w-4 rounded border-gray-300 text-[#9C544D] focus:ring-[#9C544D]"
                 />
                 <span className="text-sm font-medium text-gray-700">Enable Auto-Scroll</span>
               </label>
@@ -415,7 +415,7 @@ function AdminHomepage() {
                   onChange={(e) =>
                     handleCarouselFieldChange(editingSection, "scrollDirection", e.target.value)
                   }
-                  className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#7A2533]"
+                  className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#9C544D]"
                 >
                   <option value="left">Left → Right</option>
                   <option value="right">Right → Left</option>
@@ -438,7 +438,7 @@ function AdminHomepage() {
                       Math.max(3, Number(e.target.value)),
                     )
                   }
-                  className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#7A2533]"
+                  className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#9C544D]"
                 />
                 <p className="mt-0.5 text-[11px] text-gray-400">
                   Lower = faster. Recommended: 20–40 seconds.
@@ -452,7 +452,7 @@ function AdminHomepage() {
                   onChange={(e) =>
                     handleCarouselFieldChange(editingSection, "pauseOnHover", e.target.checked)
                   }
-                  className="h-4 w-4 rounded border-gray-300 text-[#7A2533] focus:ring-[#7A2533]"
+                  className="h-4 w-4 rounded border-gray-300 text-[#9C544D] focus:ring-[#9C544D]"
                 />
                 <span className="text-sm font-medium text-gray-700">Pause on Hover</span>
               </label>
@@ -464,7 +464,7 @@ function AdminHomepage() {
                   onChange={(e) =>
                     handleCarouselFieldChange(editingSection, "autoResumeEnabled", e.target.checked)
                   }
-                  className="h-4 w-4 rounded border-gray-300 text-[#7A2533] focus:ring-[#7A2533]"
+                  className="h-4 w-4 rounded border-gray-300 text-[#9C544D] focus:ring-[#9C544D]"
                 />
                 <span className="text-sm font-medium text-gray-700">Auto-Resume after Interaction</span>
               </label>
@@ -486,7 +486,7 @@ function AdminHomepage() {
                         Math.max(1, Number(e.target.value)),
                       )
                     }
-                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#7A2533]"
+                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#9C544D]"
                   />
                 </div>
               )}
@@ -539,7 +539,7 @@ function AdminHomepage() {
                       value={img.alt}
                       onChange={(e) => setCtaImages((prev) => prev.map((x, j) => j === i ? { ...x, alt: e.target.value } : x))}
                       placeholder="Alt text for image"
-                      className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#7A2533]"
+                      className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#9C544D]"
                     />
                   </div>
                 </div>
@@ -568,7 +568,7 @@ function AdminHomepage() {
                   setEditingCardIdx(null);
                   setCardFormOpen(true);
                 }}
-                className="rounded-lg bg-[#7A2533] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#5F1C27]"
+                className="rounded-lg bg-[#9C544D] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#7A3D3A]"
               >
                 + Add Card
               </button>
@@ -654,7 +654,7 @@ function AdminHomepage() {
                                 onClick={() => handleCardMove(idx, -1)}
                                 disabled={idx === 0}
                                 aria-label="Move up"
-                                className="rounded border border-gray-200 px-1.5 py-0.5 text-gray-500 hover:border-[#7A2533] hover:text-[#7A2533] disabled:opacity-30"
+                                className="rounded border border-gray-200 px-1.5 py-0.5 text-gray-500 hover:border-[#9C544D] hover:text-[#9C544D] disabled:opacity-30"
                               >
                                 ↑
                               </button>
@@ -665,7 +665,7 @@ function AdminHomepage() {
                                 onClick={() => handleCardMove(idx, 1)}
                                 disabled={idx === cards.length - 1}
                                 aria-label="Move down"
-                                className="rounded border border-gray-200 px-1.5 py-0.5 text-gray-500 hover:border-[#7A2533] hover:text-[#7A2533] disabled:opacity-30"
+                                className="rounded border border-gray-200 px-1.5 py-0.5 text-gray-500 hover:border-[#9C544D] hover:text-[#9C544D] disabled:opacity-30"
                               >
                                 ↓
                               </button>
@@ -673,7 +673,7 @@ function AdminHomepage() {
                           </td>
                           <td className="px-4 py-3">
                             <span
-                              className={`rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase ${card.active ? "border border-[#7A2533]/20 bg-[#fff4f5] text-[#7A2533]" : "bg-gray-100 text-gray-500"}`}
+                              className={`rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase ${card.active ? "border border-[#9C544D]/20 bg-[#fff4f5] text-[#9C544D]" : "bg-gray-100 text-gray-500"}`}
                             >
                               {card.active ? "Active" : "Inactive"}
                             </span>
@@ -685,7 +685,7 @@ function AdminHomepage() {
                                   setEditingCardIdx(idx);
                                   setCardFormOpen(true);
                                 }}
-                                className="text-xs text-[#7A2533] hover:underline"
+                                className="text-xs text-[#9C544D] hover:underline"
                               >
                                 Edit
                               </button>
@@ -863,7 +863,7 @@ function BridalCardForm({
   };
 
   const inputClass =
-    "w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#7A2533]";
+    "w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#9C544D]";
 
   return (
     <div className="mt-4 rounded-xl border border-gray-200 bg-white p-5">
@@ -893,7 +893,7 @@ function BridalCardForm({
                 onClick={() => switchType(t)}
                 className={`flex-1 rounded-lg border px-3 py-2 text-sm font-medium capitalize transition-colors ${
                   mediaType === t
-                    ? "border-[#7A2533] bg-[#7A2533]/5 text-[#7A2533]"
+                    ? "border-[#9C544D] bg-[#9C544D]/5 text-[#9C544D]"
                     : "border-gray-300 text-gray-500 hover:border-gray-400"
                 }`}
               >
@@ -954,7 +954,7 @@ function BridalCardForm({
               <button
                 type="button"
                 onClick={() => setActive((v) => !v)}
-                className={`flex h-6 w-11 items-center rounded-full p-0.5 transition-colors ${active ? "bg-[#7A2533]" : "bg-gray-300"}`}
+                className={`flex h-6 w-11 items-center rounded-full p-0.5 transition-colors ${active ? "bg-[#9C544D]" : "bg-gray-300"}`}
                 aria-label="Toggle active"
               >
                 <span
@@ -1003,7 +1003,7 @@ function BridalCardForm({
                   : "video/mp4,video/webm"
               }
               onChange={(e) => handleFile(e.target.files?.[0] || null)}
-              className="text-sm text-gray-600 file:mr-3 file:rounded-lg file:border-0 file:bg-[#7A2533] file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-white file:hover:bg-[#5F1C27]"
+              className="text-sm text-gray-600 file:mr-3 file:rounded-lg file:border-0 file:bg-[#9C544D] file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-white file:hover:bg-[#7A3D3A]"
             />
             <p className="text-xs text-gray-400">
               {mediaType === "image"
@@ -1046,7 +1046,7 @@ function BridalCardForm({
         <button
           onClick={handleSave}
           disabled={saving}
-          className="flex items-center gap-2 rounded-lg bg-[#7A2533] px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#5F1C27] disabled:opacity-50"
+          className="flex items-center gap-2 rounded-lg bg-[#9C544D] px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#7A3D3A] disabled:opacity-50"
         >
           {saving && <Loader2 className="h-4 w-4 animate-spin" />}
           {saving ? "Saving…" : "Save Card"}

@@ -53,7 +53,7 @@ function CollectionsSlugLayout() {
       <PageShell>
         <div className="mx-auto max-w-[1280px] px-6 py-20 text-center">
           <h1 className="text-2xl font-bold text-gray-800">Category not found</h1>
-          <Link to="/shop" className="mt-4 inline-block text-[#7A2533] hover:underline">
+          <Link to="/shop" className="mt-4 inline-block text-[#9C544D] hover:underline">
             Browse all products
           </Link>
         </div>
@@ -75,11 +75,11 @@ function CollectionsSlugLayout() {
       <CategoryHero category={heroCategory} />
       <div id="products" className="mx-auto max-w-[1440px] px-4 py-8 lg:px-8">
         <nav className="mb-4 text-xs text-gray-400">
-          <Link to="/" className="hover:text-[#7A2533]">
+          <Link to="/" className="hover:text-[#9C544D]">
             Home
           </Link>
           <span className="mx-2">/</span>
-          <Link to={"/collections/$slug"} params={{ slug }} className="hover:text-[#7A2533]">
+          <Link to={"/collections/$slug"} params={{ slug }} className="hover:text-[#9C544D]">
             {category.name}
           </Link>
           {activeSub && (
@@ -98,8 +98,8 @@ function CollectionsSlugLayout() {
               aria-current={!subslug ? "page" : undefined}
               className={`rounded-full px-4 py-1.5 text-xs font-semibold ${
                 !subslug
-                  ? "bg-[#7A2533] text-white"
-                  : "border border-gray-200 text-gray-600 hover:border-[#7A2533] hover:text-[#7A2533]"
+                  ? "bg-[#9C544D] text-white"
+                  : "border border-gray-200 text-gray-600 hover:border-[#9C544D] hover:text-[#9C544D]"
               }`}
             >
               All
@@ -114,8 +114,8 @@ function CollectionsSlugLayout() {
                   aria-current={active ? "page" : undefined}
                   className={`rounded-full px-4 py-1.5 text-xs font-semibold ${
                     active
-                      ? "bg-[#7A2533] text-white"
-                      : "border border-gray-200 text-gray-600 hover:border-[#7A2533] hover:text-[#7A2533]"
+                      ? "bg-[#9C544D] text-white"
+                      : "border border-gray-200 text-gray-600 hover:border-[#9C544D] hover:text-[#9C544D]"
                   }`}
                 >
                   {sub.name}

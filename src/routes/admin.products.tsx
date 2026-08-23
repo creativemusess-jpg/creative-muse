@@ -97,11 +97,11 @@ function AdminProducts() {
             )}
           </div>
           <div className="min-w-0 flex-1">
-            <Link to="/admin/products/$id" params={{ id: p.id }} className="font-medium text-[#1a1a2e] hover:text-[#7A2533] line-clamp-1">
+            <Link to="/admin/products/$id" params={{ id: p.id }} className="font-medium text-[#1a1a2e] hover:text-[#9C544D] line-clamp-1">
               {p.name}
             </Link>
             {(p.flags || []).filter((f) => f.badge_label).map((flag) => (
-              <span key={flag.id} className="ml-1 rounded px-1.5 py-0.5 text-[10px] font-semibold" style={{ backgroundColor: flag.badge_bg_color || "#7A2533", color: flag.badge_text_color || "#ffffff" }}>
+              <span key={flag.id} className="ml-1 rounded px-1.5 py-0.5 text-[10px] font-semibold" style={{ backgroundColor: flag.badge_bg_color || "#9C544D", color: flag.badge_text_color || "#ffffff" }}>
                 {flag.badge_label}
               </span>
             ))}
@@ -118,7 +118,7 @@ function AdminProducts() {
           <StatusBadge status={p.status} />
         </div>
         {isScheduled(p) && (
-          <div className="text-[11px] font-medium text-[#7A2533]">
+          <div className="text-[11px] font-medium text-[#9C544D]">
             Scheduled: {new Date(p.publish_at!).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric", hour: "numeric", minute: "2-digit" })}
           </div>
         )}
@@ -156,11 +156,11 @@ function AdminProducts() {
               )}
             </div>
             <div className="min-w-0">
-              <Link to="/admin/products/$id" params={{ id: p.id }} className="font-medium text-[#1a1a2e] hover:text-[#7A2533]">
+              <Link to="/admin/products/$id" params={{ id: p.id }} className="font-medium text-[#1a1a2e] hover:text-[#9C544D]">
                 {p.name}
               </Link>
               {(p.flags || []).filter((f) => f.badge_label).map((flag) => (
-                <span key={flag.id} className="ml-1 rounded px-1.5 py-0.5 text-[10px] font-semibold" style={{ backgroundColor: flag.badge_bg_color || "#7A2533", color: flag.badge_text_color || "#ffffff" }}>
+                <span key={flag.id} className="ml-1 rounded px-1.5 py-0.5 text-[10px] font-semibold" style={{ backgroundColor: flag.badge_bg_color || "#9C544D", color: flag.badge_text_color || "#ffffff" }}>
                   {flag.badge_label}
                 </span>
               ))}
@@ -179,7 +179,7 @@ function AdminProducts() {
       <div className="space-y-1">
         <StatusBadge status={p.status} />
         {isScheduled(p) && (
-          <div className="text-[11px] font-medium text-[#7A2533]">
+          <div className="text-[11px] font-medium text-[#9C544D]">
             Scheduled —{" "}
             {new Date(p.publish_at!).toLocaleString("en-IN", {
               day: "numeric",
@@ -260,7 +260,7 @@ function AdminProducts() {
         filters={
           <div className="flex gap-2">
             <select value={statusFilter} onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
-              className="rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533] min-h-[40px]">
+              className="rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#9C544D] min-h-[40px]">
               <option value="">All Status</option>
               <option value="active">Active</option>
               <option value="draft">Draft</option>

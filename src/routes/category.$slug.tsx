@@ -88,20 +88,20 @@ function CategoryPage() {
     <div className="min-h-screen bg-[#fdf8f3] pt-24 pb-20">
       <div className="mx-auto max-w-[1280px] px-6">
         <nav className="flex items-center gap-2 py-4 text-xs text-gray-400">
-          <Link to="/" className="hover:text-[#7A2533]">
+          <Link to="/" className="hover:text-[#9C544D]">
             <Home className="h-3.5 w-3.5" />
           </Link>
           <ChevronRight className="h-3 w-3" />
-          <Link to="/shop" className="hover:text-[#7A2533]">
+          <Link to="/shop" className="hover:text-[#9C544D]">
             Shop
           </Link>
           <ChevronRight className="h-3 w-3" />
-          <span className="text-[#7A2533]">{category.name}</span>
+          <span className="text-[#9C544D]">{category.name}</span>
         </nav>
 
         <CategoryHero category={{ ...category, image: category.image || catImage }} />
         <div id="products" className="mb-10 flex flex-col items-center text-center">
-          <p className="mt-2 text-xs tracking-wider text-[#7A2533] uppercase">
+          <p className="mt-2 text-xs tracking-wider text-[#9C544D] uppercase">
             {products.length} {products.length === 1 ? "product" : "products"}
           </p>
         </div>
@@ -132,7 +132,7 @@ function CategoryPage() {
             </p>
             <Link
               to="/shop"
-              className="mt-6 rounded-lg bg-[#7A2533] px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#5F1C27]"
+              className="mt-6 rounded-lg bg-[#9C544D] px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#7A3D3A]"
             >
               Browse All Products
             </Link>

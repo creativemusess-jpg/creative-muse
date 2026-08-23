@@ -332,7 +332,7 @@ function AdminCategoryHero() {
         <button
           type="button"
           onClick={() => setDropdownOpen((v) => !v)}
-          className="flex w-full items-center justify-between rounded-lg border border-gray-300 bg-white px-3 py-2 text-left text-sm outline-none focus:border-[#7A2533]"
+          className="flex w-full items-center justify-between rounded-lg border border-gray-300 bg-white px-3 py-2 text-left text-sm outline-none focus:border-[#9C544D]"
         >
           {selected ? (
             <span className="truncate">
@@ -373,7 +373,7 @@ function AdminCategoryHero() {
                       <span className="font-medium text-[#1a1a2e]">{cat.name}</span>
                       <span className="ml-2 text-xs text-gray-400">{cat.slug}</span>
                     </span>
-                    {cat.id === selectedId && <Check className="h-4 w-4 text-[#7A2533]" />}
+                    {cat.id === selectedId && <Check className="h-4 w-4 text-[#9C544D]" />}
                   </button>
                 ))
               )}
@@ -425,7 +425,7 @@ function AdminCategoryHero() {
                     onClick={() => switchType("image")}
                     className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
                       mediaType === "image"
-                        ? "bg-[#7A2533] text-white"
+                        ? "bg-[#9C544D] text-white"
                         : "border border-gray-300 text-gray-600 hover:bg-gray-50"
                     }`}
                   >
@@ -436,7 +436,7 @@ function AdminCategoryHero() {
                     onClick={() => switchType("video")}
                     className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
                       mediaType === "video"
-                        ? "bg-[#7A2533] text-white"
+                        ? "bg-[#9C544D] text-white"
                         : "border border-gray-300 text-gray-600 hover:bg-gray-50"
                     }`}
                   >
@@ -458,7 +458,7 @@ function AdminCategoryHero() {
                         {slot} media
                       </p>
                       <p className="mt-0.5 text-xs text-gray-400">{SLOT_HINTS[slot]}</p>
-                      <label className="mt-4 flex cursor-pointer items-center justify-center gap-2 rounded-lg border border-dashed border-gray-300 bg-gray-50 px-4 py-6 text-sm text-gray-500 transition-colors hover:border-[#7A2533] hover:text-[#7A2533]">
+                      <label className="mt-4 flex cursor-pointer items-center justify-center gap-2 rounded-lg border border-dashed border-gray-300 bg-gray-50 px-4 py-6 text-sm text-gray-500 transition-colors hover:border-[#9C544D] hover:text-[#9C544D]">
                         {uploading ? (
                           <Loader2 className="h-4 w-4 animate-spin" />
                         ) : (
@@ -615,7 +615,7 @@ function AdminCategoryHero() {
               disabled={
                 saving || (!files.desktop && !files.mobile && !removed.desktop && !removed.mobile)
               }
-              className="rounded-lg bg-[#7A2533] px-6 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#5F1C27] disabled:opacity-60"
+              className="rounded-lg bg-[#9C544D] px-6 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#7A3D3A] disabled:opacity-60"
             >
               {saving ? "Saving…" : "Save Changes"}
             </button>

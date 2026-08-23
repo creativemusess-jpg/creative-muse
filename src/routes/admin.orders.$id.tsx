@@ -732,7 +732,7 @@ function OrderDetailPage() {
             <select
               value={cancelReason}
               onChange={(e) => setCancelReason(e.target.value)}
-              className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]"
+              className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#9C544D]"
             >
               <option value="">Select a reason...</option>
               <option value="Customer requested cancellation">
@@ -768,7 +768,7 @@ function OrderDetailPage() {
                 value={refundAmount}
                 onChange={(e) => setRefundAmount(Number(e.target.value))}
                 max={totalPaid}
-                className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]"
+                className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#9C544D]"
               />
             </div>
             <div>
@@ -778,7 +778,7 @@ function OrderDetailPage() {
                 value={refundReason}
                 onChange={(e) => setRefundReason(e.target.value)}
                 placeholder="Reason for refund..."
-                className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]"
+                className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#9C544D]"
               />
             </div>
           </div>
@@ -809,7 +809,7 @@ function OrderDetailPage() {
       <div className="mb-4 flex items-center justify-between">
         <Link
           to="/admin/orders"
-          className="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-[#7A2533] min-h-[44px] py-2"
+          className="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-[#9C544D] min-h-[44px] py-2"
         >
           <ArrowLeft className="h-4 w-4" /> Orders
         </Link>
@@ -854,7 +854,7 @@ function OrderDetailPage() {
             <div className="relative">
               <button
                 onClick={() => setShowNotificationMenu(!showNotificationMenu)}
-                className="inline-flex items-center gap-1.5 rounded-lg border border-[#7A2533] px-3 py-2 text-xs font-semibold text-[#8a681f] hover:bg-[#fdf8f3] min-h-[40px]"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-[#9C544D] px-3 py-2 text-xs font-semibold text-[#8a681f] hover:bg-[#fdf8f3] min-h-[40px]"
               >
                 <Mail className="h-3.5 w-3.5" /> <span className="hidden sm:inline">Notifications</span>
               </button>
@@ -1204,7 +1204,7 @@ function OrderDetailPage() {
                         setTrackingForm((f) => ({ ...f, shipment_id: e.target.value }))
                       }
                       placeholder={`SHP-${order.order_number}`}
-                      className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]"
+                      className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#9C544D]"
                     />
                   </div>
                   <div>
@@ -1216,7 +1216,7 @@ function OrderDetailPage() {
                       onChange={(e) =>
                         setTrackingForm((f) => ({ ...f, courier_name: e.target.value }))
                       }
-                      className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]"
+                      className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#9C544D]"
                     >
                       <option value="">Select courier</option>
                       {COURIER_OPTIONS.map((c) => (
@@ -1237,7 +1237,7 @@ function OrderDetailPage() {
                         setTrackingForm((f) => ({ ...f, shipping_service: e.target.value }))
                       }
                       placeholder="Standard / Express"
-                      className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]"
+                      className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#9C544D]"
                     />
                   </div>
                   <div>
@@ -1250,7 +1250,7 @@ function OrderDetailPage() {
                       onChange={(e) =>
                         setTrackingForm((f) => ({ ...f, tracking_id: e.target.value }))
                       }
-                      className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]"
+                      className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#9C544D]"
                     />
                   </div>
                   <div>
@@ -1264,7 +1264,7 @@ function OrderDetailPage() {
                         setTrackingForm((f) => ({ ...f, tracking_url: e.target.value }))
                       }
                       placeholder="https://..."
-                      className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]"
+                      className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#9C544D]"
                     />
                   </div>
                   <div>
@@ -1277,7 +1277,7 @@ function OrderDetailPage() {
                       onChange={(e) =>
                         setTrackingForm((f) => ({ ...f, estimated_delivery_at: e.target.value }))
                       }
-                      className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]"
+                      className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#9C544D]"
                     />
                   </div>
                   <div>
@@ -1291,7 +1291,7 @@ function OrderDetailPage() {
                       onChange={(e) =>
                         setTrackingForm((f) => ({ ...f, package_weight: Number(e.target.value) }))
                       }
-                      className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]"
+                      className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#9C544D]"
                     />
                   </div>
                   <div>
@@ -1305,7 +1305,7 @@ function OrderDetailPage() {
                       onChange={(e) =>
                         setTrackingForm((f) => ({ ...f, package_count: Number(e.target.value) }))
                       }
-                      className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#7A2533]"
+                      className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#9C544D]"
                     />
                   </div>
                 </div>
@@ -1316,7 +1316,7 @@ function OrderDetailPage() {
                     onChange={(e) =>
                       setTrackingForm((f) => ({ ...f, notify_customer: e.target.checked }))
                     }
-                    className="accent-[#7A2533]"
+                    className="accent-[#9C544D]"
                   />
                   Notify customer with shipped email after saving
                 </label>
@@ -1506,7 +1506,7 @@ function OrderDetailPage() {
                   value={note}
                   onChange={(e) => setNote(e.target.value)}
                   placeholder="Add an internal note..."
-                  className="flex-1 min-w-0 rounded-lg border border-gray-200 px-3 py-2.5 text-sm outline-none focus:border-[#7A2533]"
+                  className="flex-1 min-w-0 rounded-lg border border-gray-200 px-3 py-2.5 text-sm outline-none focus:border-[#9C544D]"
                   onKeyDown={(e) => e.key === "Enter" && handleAddNote()}
                 />
                 <button
@@ -1529,7 +1529,7 @@ function OrderDetailPage() {
             <div className="border-b border-gray-100 px-5 py-4">
               <button
                 onClick={() => setShowAuditLog(!showAuditLog)}
-                className="flex items-center gap-2 text-sm font-bold text-[#1a1a2e] hover:text-[#7A2533]"
+                className="flex items-center gap-2 text-sm font-bold text-[#1a1a2e] hover:text-[#9C544D]"
               >
                 <FileText className="h-4 w-4" /> Audit Log ({auditLogs.length})
                 <ChevronDown

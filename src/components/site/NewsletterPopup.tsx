@@ -3,8 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "@tanstack/react-router";
 import { X, Check, Copy } from "lucide-react";
 import { newsletterApi } from "@/lib/api/newsletter";
-import { categoriesApi } from "@/lib/api/categories";
-import { settingsApi } from "@/lib/api/settings";
+import { newsletterSettingsApi, type NewsletterSettings, type NewsletterImage } from "@/lib/api/newsletter-settings";
 import { useStore } from "@/lib/store";
 
 const LS_SEEN = "creative_muse_newsletter_popup_seen";
@@ -15,8 +14,6 @@ const DEFAULT_DISCOUNT_CODE = "WELCOME10";
 
 const FALLBACK_SVG =
   "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='600' viewBox='0 0 400 600'%3E%3Crect width='400' height='600' fill='%23f5efe8'/%3E%3C/svg%3E";
-
-const PREFERRED_CATEGORY_SLUGS = ["wedding-sets", "necklaces", "earrings"];
 
 function isPopupBlocked(): boolean {
   if (typeof window === "undefined") return true;
@@ -56,15 +53,11 @@ function markDismissed() {
 export function NewsletterPopup() {
   const [open, setOpen] = useState(false);
   const [email, setEmail] = useState("");
-  const [state, setState] = useState<
-    "idle" | "loading" | "success" | "error"
-  >("idle");
+  const [state, setState] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [msg, setMsg] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
-  const [popupImage, setPopupImage] = useState<string | null>(null);
-  const [imageLoading, setImageLoading] = useState(true);
-  const [imageFailed, setImageFailed] = useState(false);
-  const [categoryName, setCategoryName] = useState("");
+  const [settings, setSettings] = useState<NewsletterSettings | null>(null);
+  const [configLoaded, setConfigLoaded] = useState(false);
   const triggerRef = useRef<HTMLElement | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const subscribedRef = useRef(false);
@@ -76,30 +69,17 @@ export function NewsletterPopup() {
     if (fetchAttempted.current) return;
     fetchAttempted.current = true;
     let cancelled = false;
-    async function loadPopupImage() {
-      try {
-        const setting = await settingsApi.get("newsletter_popup_image");
-        if (!cancelled && setting?.setting_value?.url) {
-          setPopupImage(setting.setting_value.url);
-          return;
-        }
-        const cats = await categoriesApi.list(true);
-        let found: any = null;
-        for (const slug of PREFERRED_CATEGORY_SLUGS) {
-          found = cats.find((c: any) => c.slug === slug && c.imageUrl);
-          if (found) break;
-        }
-        if (!found) found = cats.find((c: any) => c.imageUrl);
+    newsletterSettingsApi
+      .get()
+      .then((s) => {
         if (!cancelled) {
-          setPopupImage(found?.imageUrl || null);
-          setCategoryName(found?.name || "");
-          setImageLoading(!found?.imageUrl);
+          setSettings(s);
+          setConfigLoaded(true);
         }
-      } catch {
-        if (!cancelled) setImageLoading(false);
-      }
-    }
-    loadPopupImage();
+      })
+      .catch(() => {
+        if (!cancelled) setConfigLoaded(true);
+      });
     return () => { cancelled = true; };
   }, []);
 
@@ -109,10 +89,11 @@ export function NewsletterPopup() {
     if (subscribedRef.current) return;
     if (anyModalOpen) return;
     if (isPopupBlocked()) return;
+    if (settings && !settings.enabled) return;
     setOpen(true);
     triggerRef.current = document.activeElement as HTMLElement;
     markSeen();
-  }, [anyModalOpen]);
+  }, [anyModalOpen, settings]);
 
   useEffect(() => {
     if (anyModalOpen && open) {
@@ -123,9 +104,7 @@ export function NewsletterPopup() {
   useEffect(() => {
     if (open) {
       document.body.style.overflow = "hidden";
-      return () => {
-        document.body.style.overflow = "";
-      };
+      return () => { document.body.style.overflow = ""; };
     }
   }, [open]);
 
@@ -150,10 +129,9 @@ export function NewsletterPopup() {
         return;
       }
       if (e.key === "Tab" && containerRef.current) {
-        const focusable =
-          containerRef.current.querySelectorAll<HTMLElement>(
-            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
-          );
+        const focusable = containerRef.current.querySelectorAll<HTMLElement>(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+        );
         if (focusable.length === 0) return;
         const first = focusable[0];
         const last = focusable[focusable.length - 1];
@@ -174,6 +152,7 @@ export function NewsletterPopup() {
     if (open) return;
     if (subscribedRef.current) return;
     if (isPopupBlocked()) return;
+    if (settings && !settings.enabled) return;
 
     const delay = setTimeout(() => {
       if (!anyModalOpen) openPopup();
@@ -202,7 +181,7 @@ export function NewsletterPopup() {
       window.removeEventListener("scroll", handleScroll);
       document.removeEventListener("mouseleave", handleMouseLeave);
     };
-  }, [open, anyModalOpen, openPopup]);
+  }, [open, anyModalOpen, openPopup, settings]);
 
   const handleClose = useCallback(() => {
     setOpen(false);
@@ -266,6 +245,19 @@ export function NewsletterPopup() {
     } catch {}
   };
 
+  if (!configLoaded) return null;
+
+  const s = settings;
+  const images = s?.images?.length ? s.images : [];
+  const heading = s?.heading || "Get 10% Off\nYour First Order";
+  const label = s?.label || "CREATIVE MUSE";
+  const description = s?.description || "Join the Creative Muse Circle and receive early access to new collections, private offers and jewellery styling inspiration.";
+  const emailPlaceholder = s?.emailPlaceholder || "Enter your email address";
+  const buttonText = s?.buttonText || "Claim My Offer";
+  const secondaryText = s?.secondaryText || "No thanks";
+  const privacyText = s?.privacyText || "By subscribing, you agree to receive Creative Muse updates and offers. You can unsubscribe at any time.";
+  const privacyPolicyUrl = s?.privacyPolicyUrl || "/privacy-policy";
+
   return (
     <AnimatePresence>
       {open && (
@@ -300,56 +292,14 @@ export function NewsletterPopup() {
               <X className="h-4 w-4 text-[#1a1a2e]" />
             </button>
 
+            {/* Mobile image area */}
             <div className="relative h-[200px] w-full shrink-0 overflow-hidden sm:hidden">
-              {imageLoading && (
-                <div className="absolute inset-0 animate-pulse bg-gradient-to-r from-[#f0e4cd] via-[#f5efe8] to-[#f0e4cd] bg-[length:200%_100%]" />
-              )}
-              {(popupImage || !imageLoading) && (
-                <img
-                  src={popupImage || FALLBACK_SVG}
-                  alt={categoryName ? `${categoryName} jewellery collection` : "Creative Muse luxury jewellery collection"}
-                  className={`absolute inset-0 h-full w-full transition-opacity duration-500 ${imageLoading ? "opacity-0" : "opacity-100"}`}
-                  style={{ objectFit: "contain", objectPosition: "center" }}
-                  onLoad={() => setImageLoading(false)}
-                  onError={() => {
-                    if (popupImage && popupImage !== FALLBACK_SVG) {
-                      setPopupImage(FALLBACK_SVG);
-                    }
-                    setImageFailed(true);
-                    setImageLoading(false);
-                  }}
-                />
-              )}
-              {!popupImage && !imageLoading && (
-                <div className="absolute inset-0 bg-gradient-to-br from-[#fdf8f3] to-[#f0e4cd]" />
-              )}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/15 to-transparent pointer-events-none" />
+              <NewsletterImageArea images={images} settings={s} />
             </div>
 
+            {/* Desktop image area */}
             <div className="relative hidden h-[320px] w-full shrink-0 overflow-hidden sm:block sm:h-auto sm:w-[45%] sm:min-h-[500px]">
-              {imageLoading && (
-                <div className="absolute inset-0 animate-pulse bg-gradient-to-r from-[#f0e4cd] via-[#f5efe8] to-[#f0e4cd] bg-[length:200%_100%]" />
-              )}
-              {(popupImage || !imageLoading) && (
-                <img
-                  src={popupImage || FALLBACK_SVG}
-                  alt={categoryName ? `${categoryName} jewellery collection` : "Creative Muse luxury jewellery collection"}
-                  className={`absolute inset-0 h-full w-full transition-opacity duration-500 ${imageLoading ? "opacity-0" : "opacity-100"}`}
-                  style={{ objectFit: "contain", objectPosition: "center" }}
-                  onLoad={() => setImageLoading(false)}
-                  onError={() => {
-                    if (popupImage && popupImage !== FALLBACK_SVG) {
-                      setPopupImage(FALLBACK_SVG);
-                    }
-                    setImageFailed(true);
-                    setImageLoading(false);
-                  }}
-                />
-              )}
-              {!popupImage && !imageLoading && (
-                <div className="absolute inset-0 bg-gradient-to-br from-[#fdf8f3] to-[#f0e4cd]" />
-              )}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/15 to-transparent pointer-events-none" />
+              <NewsletterImageArea images={images} settings={s} />
             </div>
 
             <div className="flex w-full flex-col justify-center px-6 py-10 sm:w-[55%] sm:px-10 sm:py-12">
@@ -376,7 +326,7 @@ export function NewsletterPopup() {
                     <button
                       onClick={handleCopy}
                       aria-label={copied ? "Copied" : "Copy discount code"}
-                      className="flex h-11 w-11 items-center justify-center rounded-lg border border-[#e0d8cc] bg-white text-[#7a6e64] transition-colors hover:border-[#7A2533] hover:text-[#7A2533]"
+                      className="flex h-11 w-11 items-center justify-center rounded-lg border border-[#e0d8cc] bg-white text-[#7a6e64] transition-colors hover:border-[#9C544D] hover:text-[#9C544D]"
                     >
                       {copied ? (
                         <Check className="h-5 w-5 text-green-600" />
@@ -408,23 +358,24 @@ export function NewsletterPopup() {
                 </div>
               ) : (
                 <>
-                  <p className="text-[10px] font-semibold tracking-[0.24em] text-[#7A2533] uppercase">
-                    Creative Muse
+                  <p className="text-[10px] font-semibold tracking-[0.24em] text-[#9C544D] uppercase">
+                    {label}
                   </p>
 
                   <h2
                     id="newsletter-popup-title"
                     className="font-display mt-3 text-[28px] leading-tight font-semibold text-[#1a1a2e] sm:text-[32px]"
                   >
-                    Get 10% Off
-                    <br />
-                    Your First Order
+                    {heading.split("\n").map((line, i) => (
+                      <span key={i}>
+                        {line}
+                        {i < heading.split("\n").length - 1 && <br />}
+                      </span>
+                    ))}
                   </h2>
 
                   <p className="mt-3 text-[14px] leading-relaxed text-[#7a6e64]">
-                    Join the Creative Muse Circle and receive early access to
-                    new collections, private offers and jewellery styling
-                    inspiration.
+                    {description}
                   </p>
 
                   <form onSubmit={handleSubmit} className="mt-6 space-y-3">
@@ -443,10 +394,10 @@ export function NewsletterPopup() {
                             setMsg(null);
                           }
                         }}
-                        placeholder="Enter your email address"
+                        placeholder={emailPlaceholder}
                         aria-label="Email address"
                         autoComplete="email"
-                        className="w-full rounded-xl border border-[#e0d8cc] bg-white px-4 py-3 text-sm text-[#1a1a2e] outline-none transition-colors focus:border-[#7A2533] focus:ring-1 focus:ring-[#7A2533]/30 placeholder:text-[#a09890]"
+                        className="w-full rounded-xl border border-[#e0d8cc] bg-white px-4 py-3 text-sm text-[#1a1a2e] outline-none transition-colors focus:border-[#9C544D] focus:ring-1 focus:ring-[#9C544D]/30 placeholder:text-[#a09890]"
                       />
                     </div>
 
@@ -476,10 +427,10 @@ export function NewsletterPopup() {
                               d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
                             />
                           </svg>
-                          Submitting…
+                          Submitting...
                         </span>
                       ) : (
-                        "Claim My Offer"
+                        buttonText
                       )}
                     </button>
                   </form>
@@ -500,16 +451,15 @@ export function NewsletterPopup() {
                     onClick={handleNoThanks}
                     className="mt-4 text-center text-[12px] font-medium text-[#a09890] underline underline-offset-2 transition-colors hover:text-[#7a6e64]"
                   >
-                    No thanks
+                    {secondaryText}
                   </button>
 
                   <p className="mt-6 text-[10px] leading-relaxed text-[#a09890]">
-                    By subscribing, you agree to receive Creative Muse updates
-                    and offers. You can unsubscribe at any time.{" "}
+                    {privacyText}{" "}
                     <Link
-                      to="/privacy-policy"
+                      to={privacyPolicyUrl as any}
                       onClick={handleClose}
-                      className="text-[#7A2533] underline underline-offset-2 hover:text-[#7A2533]"
+                      className="text-[#9C544D] underline underline-offset-2 hover:text-[#9C544D]"
                     >
                       Privacy Policy
                     </Link>
@@ -521,5 +471,67 @@ export function NewsletterPopup() {
         </motion.div>
       )}
     </AnimatePresence>
+  );
+}
+
+/* ===================== IMAGE AREA WITH CAROUSEL ===================== */
+
+function NewsletterImageArea({
+  images,
+  settings,
+}: {
+  images: NewsletterImage[];
+  settings: NewsletterSettings | null;
+}) {
+  const [current, setCurrent] = useState(0);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const sorted = [...images].sort((a, b) => a.sortOrder - b.sortOrder);
+  const hasCarousel = sorted.length > 1 && settings?.autoplay;
+
+  useEffect(() => {
+    if (!hasCarousel) return;
+    timerRef.current = setInterval(() => {
+      setCurrent((prev) => (prev + 1) % sorted.length);
+    }, (settings?.slideDuration || 5) * 1000);
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, [hasCarousel, sorted.length, settings?.slideDuration]);
+
+  if (sorted.length === 0) {
+    return (
+      <div className="absolute inset-0 bg-gradient-to-br from-[#fdf8f3] to-[#f0e4cd]" />
+    );
+  }
+
+  return (
+    <>
+      {sorted.map((img, idx) => (
+        <img
+          key={img.id}
+          src={img.url}
+          alt={img.altText || "Creative Muse jewellery"}
+          className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${
+            idx === current ? "opacity-100" : "opacity-0"
+          }`}
+          loading={idx === 0 ? "eager" : "lazy"}
+        />
+      ))}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/15 to-transparent pointer-events-none" />
+      {hasCarousel && (
+        <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-1.5">
+          {sorted.map((_, idx) => (
+            <button
+              key={idx}
+              onClick={() => setCurrent(idx)}
+              className={`h-1.5 rounded-full transition-all ${
+                idx === current ? "w-4 bg-white" : "w-1.5 bg-white/50"
+              }`}
+            />
+          ))}
+        </div>
+      )}
+    </>
   );
 }
