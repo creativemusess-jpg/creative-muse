@@ -1,0 +1,259 @@
+- generic [active] [ref=e1]:
+  - link "Skip to content" [ref=e2] [cursor=pointer]:
+    - /url: "#MainContent"
+  - banner [ref=e5]:
+    - navigation [ref=e6]:
+      - list [ref=e7]:
+        - listitem [ref=e8]:
+          - link "Categories" [ref=e9] [cursor=pointer]:
+            - /url: "#"
+          - generic:
+            - generic:
+              - generic:
+                - list:
+                  - listitem:
+                    - link "Necklaces":
+                      - /url: /collections/necklaces
+                    - list:
+                      - listitem:
+                        - link "Beaded Necklaces":
+                          - /url: /collections/beaded-necklaces
+                      - listitem:
+                        - link "Gold-Plated Necklaces":
+                          - /url: /collections/gold-chain-necklaces
+                      - listitem:
+                        - link "Statement Necklaces":
+                          - /url: /collections/statement-necklaces
+                      - listitem:
+                        - link "View All":
+                          - /url: /collections/necklaces
+                  - listitem:
+                    - link "Earrings":
+                      - /url: /collections/earrings
+                    - list:
+                      - listitem:
+                        - link "Hoops":
+                          - /url: /collections/hoops
+                      - listitem:
+                        - link "Studs":
+                          - /url: /collections/studs
+                      - listitem:
+                        - link "Charm Earrings":
+                          - /url: /collections/charm-earrings
+                      - listitem:
+                        - link "Statement Earrings":
+                          - /url: /collections/statement-earrings
+                      - listitem:
+                        - link "View All":
+                          - /url: /collections/earrings
+                  - listitem:
+                    - link "Rings":
+                      - /url: /collections/rings-1
+                    - list:
+                      - listitem:
+                        - link "Interlinked Ring Stacks":
+                          - /url: /collections/ring-stacks
+                      - listitem:
+                        - link "Statement Rings":
+                          - /url: /collections/statement-rings
+                      - listitem:
+                        - link "Adjustable Rings":
+                          - /url: /collections/adjustable-rings
+                      - listitem:
+                        - link "Sterling Silver Rings":
+                          - /url: /collections/the-archive-sterling-silver-staples-copy
+                      - listitem:
+                        - link "View All":
+                          - /url: /collections/rings-1
+                  - listitem:
+                    - link "Bracelets":
+                      - /url: /collections/bracelets
+                    - list:
+                      - listitem:
+                        - link "Daily Bangles":
+                          - /url: /collections/bangles
+                      - listitem:
+                        - link "Cuffs":
+                          - /url: /collections/cosmic-darlings
+                      - listitem:
+                        - link "Beaded Bracelets":
+                          - /url: /collections/beaded-bracelets
+                      - listitem:
+                        - link "View All":
+                          - /url: /collections/bracelets
+                  - listitem:
+                    - link "Others":
+                      - /url: "#"
+                    - list:
+                      - listitem:
+                        - link "Charms":
+                          - /url: /collections/charm
+        - listitem [ref=e11]:
+          - link "New Arrivals" [ref=e12] [cursor=pointer]:
+            - /url: /collections/new-arrivals
+        - listitem [ref=e14]:
+          - link "Bestsellers" [ref=e15] [cursor=pointer]:
+            - /url: /collections/bestsellers
+    - link [ref=e17] [cursor=pointer]:
+      - /url: /
+      - img "Nostoi" [ref=e18]
+    - generic [ref=e19]:
+      - list [ref=e20]:
+        - listitem [ref=e21]:
+          - link "About Us" [ref=e22] [cursor=pointer]:
+            - /url: /pages/about-us
+        - listitem [ref=e24]:
+          - link "FAQ's" [ref=e25] [cursor=pointer]:
+            - /url: /pages/faqs
+        - listitem [ref=e27]:
+          - link "Contact" [ref=e28] [cursor=pointer]:
+            - /url: /pages/contact
+      - generic [ref=e30]:
+        - group [ref=e32]:
+          - button [ref=e33] [cursor=pointer]
+        - group [ref=e38]:
+          - button [ref=e39] [cursor=pointer]
+        - button "Cart 0 items" [ref=e44] [cursor=pointer]:
+          - generic [ref=e48]: Cart
+          - generic [ref=e49]:
+            - generic [ref=e50]: "0"
+            - generic [ref=e51]: 0 items
+  - generic [ref=e53]:
+    - generic [ref=e54]:
+      - link "Free Shipping On all Prepaid Orders" [ref=e56] [cursor=pointer]:
+        - /url: /collections/all
+      - generic [ref=e57]: Hassle-free 3-day exchange
+    - generic [ref=e58]:
+      - link [ref=e60] [cursor=pointer]:
+        - /url: /collections/all
+        - text: Free Shipping On all Prepaid Orders
+      - generic [ref=e61]: Hassle-free 3-day exchange
+    - generic [ref=e62]:
+      - link [ref=e64] [cursor=pointer]:
+        - /url: /collections/all
+        - text: Free Shipping On all Prepaid Orders
+      - generic [ref=e65]: Hassle-free 3-day exchange
+    - generic [ref=e66]:
+      - link [ref=e68] [cursor=pointer]:
+        - /url: /collections/all
+        - text: Free Shipping On all Prepaid Orders
+      - generic [ref=e69]: Hassle-free 3-day exchange
+    - generic [ref=e70]:
+      - link [ref=e72] [cursor=pointer]:
+        - /url: /collections/all
+        - text: Free Shipping On all Prepaid Orders
+      - generic [ref=e73]: Hassle-free 3-day exchange
+    - generic [ref=e74]:
+      - link [ref=e76] [cursor=pointer]:
+        - /url: /collections/all
+        - text: Free Shipping On all Prepaid Orders
+      - generic [ref=e77]: Hassle-free 3-day exchange
+    - generic [ref=e78]:
+      - link [ref=e80] [cursor=pointer]:
+        - /url: /collections/all
+        - text: Free Shipping On all Prepaid Orders
+      - generic [ref=e81]: Hassle-free 3-day exchange
+    - generic [ref=e82]:
+      - link [ref=e84] [cursor=pointer]:
+        - /url: /collections/all
+        - text: Free Shipping On all Prepaid Orders
+      - generic [ref=e85]: Hassle-free 3-day exchange
+    - generic [ref=e86]:
+      - link [ref=e88] [cursor=pointer]:
+        - /url: /collections/all
+        - text: Free Shipping On all Prepaid Orders
+      - generic [ref=e89]: Hassle-free 3-day exchange
+    - generic [ref=e90]:
+      - link [ref=e92] [cursor=pointer]:
+        - /url: /collections/all
+        - text: Free Shipping On all Prepaid Orders
+      - generic [ref=e93]: Hassle-free 3-day exchange
+    - generic [ref=e94]:
+      - link [ref=e96] [cursor=pointer]:
+        - /url: /collections/all
+        - text: Free Shipping On all Prepaid Orders
+      - generic [ref=e97]: Hassle-free 3-day exchange
+  - main [ref=e98]:
+    - generic [ref=e101]:
+      - heading "FAQ's" [level=2] [ref=e103]
+      - generic [ref=e105]:
+        - group "1 / 4" [ref=e106] [cursor=pointer]: Care Instructions
+        - group "2 / 4" [ref=e107] [cursor=pointer]: Shipping & Delivery
+        - group "3 / 4" [ref=e108] [cursor=pointer]: Refunds
+        - group "4 / 4" [ref=e109] [cursor=pointer]: Returns & Exchanges
+      - generic [ref=e112]:
+        - paragraph [ref=e113]: • Store your jewels in a cool, dry place, preferably in the packaging provided. • Avoid direct exposure to water, perfumes, prolonged exposure to harsh sun and harsh chemicals to prevent the jewels from oxidising. We deeply encourage to store all your Nostoi pieces in the boxes and microfibre pouches that come with all our orders to ensure their utmost longevity. • Regular cleaning and maintenance of the jewels to maintain the shine. Nostoi would not be responsible for any damage that comes with regular use or irregular care.
+        - paragraph [ref=e114]:
+          - strong [ref=e115]: "For Nostoi Silver:"
+        - paragraph [ref=e116]: Nostoi Sterling Silver jewels are carefully crafted with high-quality Silver (Silver 925), making them durable and comfortable for everyday wear.
+        - paragraph [ref=e117]: For maintenance and care we recommend keeping them dry and away from humidity to extend their shine and longevity.Your jewels are designed to stay with you for a long time - how you care for them is entirely up to you!
+    - generic [ref=e123]:
+      - heading "Reach Out To Us" [level=2] [ref=e124]
+      - generic [ref=e125]:
+        - paragraph [ref=e127]: Need assistance or have questions? We're just a message away!
+        - link "Contact Us" [ref=e128] [cursor=pointer]:
+          - /url: /pages/contact
+  - contentinfo [ref=e130]:
+    - generic [ref=e133]:
+      - generic [ref=e134]:
+        - link [ref=e135] [cursor=pointer]:
+          - /url: /
+          - img "Nostoi" [ref=e136]
+        - generic [ref=e137]: As an accessory and lifestyle brand, we design pieces that go beyond jewellery—they’re little portals to nostalgia, self-expression, and beauty in the everyday. Whether you wear them or keep them close, our creations are meant to transport you, turning routine moments into something more meaningful.
+      - generic [ref=e138]:
+        - heading "Quick links" [level=2] [ref=e139]
+        - list [ref=e140]:
+          - listitem [ref=e141]:
+            - link "Search" [ref=e142] [cursor=pointer]:
+              - /url: /search
+          - listitem [ref=e143]:
+            - link "About Us" [ref=e144] [cursor=pointer]:
+              - /url: /pages/about-us
+          - listitem [ref=e145]:
+            - link "Contact" [ref=e146] [cursor=pointer]:
+              - /url: /pages/contact
+          - listitem [ref=e147]:
+            - link "Privacy Policy" [ref=e148] [cursor=pointer]:
+              - /url: /pages/privacy-policy
+          - listitem [ref=e149]:
+            - link "Return & Exchange" [ref=e150] [cursor=pointer]:
+              - /url: /pages/return-exchange
+          - listitem [ref=e151]:
+            - link "Terms & Conditions" [ref=e152] [cursor=pointer]:
+              - /url: /pages/terms-conditions
+      - generic [ref=e153]:
+        - heading "Explore" [level=2] [ref=e154]
+        - list [ref=e155]:
+          - listitem [ref=e156]:
+            - link "About Us" [ref=e157] [cursor=pointer]:
+              - /url: /pages/about-us
+          - listitem [ref=e158]:
+            - link "FAQ's" [ref=e159] [cursor=pointer]:
+              - /url: /pages/faqs
+          - listitem [ref=e160]:
+            - link "Contact" [ref=e161] [cursor=pointer]:
+              - /url: /pages/contact
+      - generic [ref=e162]:
+        - heading "Social" [level=2] [ref=e163]
+        - list [ref=e164]:
+          - listitem [ref=e165]:
+            - link "Instagram" [ref=e166] [cursor=pointer]:
+              - /url: https://www.instagram.com/nostoi_/
+          - listitem [ref=e167]:
+            - link "Facebook" [ref=e168] [cursor=pointer]:
+              - /url: https://www.instagram.com/nostoi_/
+          - listitem [ref=e169]:
+            - link "Pinterest" [ref=e170] [cursor=pointer]:
+              - /url: https://www.instagram.com/nostoi_/
+    - generic [ref=e173]:
+      - generic [ref=e174]: © 2026 Chinoiserie Decor Private Limited
+      - list [ref=e175]:
+        - listitem [ref=e176]:
+          - link "Privacy policy" [ref=e178] [cursor=pointer]:
+            - /url: /policies/privacy-policy
+        - listitem [ref=e179]:
+          - link "Refund policy" [ref=e181] [cursor=pointer]:
+            - /url: /policies/refund-policy
+        - listitem [ref=e182]:
+          - link "Terms of service" [ref=e184] [cursor=pointer]:
+            - /url: /policies/terms-of-service

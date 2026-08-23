@@ -263,12 +263,13 @@ ON CONFLICT DO NOTHING;
 
 -- Seed FAQs
 INSERT INTO faqs (question, answer, sort_order, is_published) VALUES
-  ('What is the purity of your gold jewellery?', 'All our gold jewellery is BIS Hallmarked. We offer 22K (916) and 18K (750) gold. Our platinum pieces are PGI certified 950 platinum. Every piece comes with a certificate of authenticity.', 1, true),
-  ('Do you provide diamond certification?', 'Yes, all diamond jewellery comes with an IGI or GIA diamond certificate that details the 4Cs — cut, colour, clarity and carat weight of your diamond.', 2, true),
-  ('What is your return and exchange policy?', 'We offer a 15-day easy return policy on unworn pieces in their original packaging. Custom and engraved pieces are not eligible for returns. Please visit our Refund Policy page for complete details.', 3, true),
-  ('How should I care for my jewellery?', 'Store each piece separately in the pouch provided. Avoid contact with perfumes, chlorine and abrasives. Wipe gently with a soft cloth after each wear. We recommend an annual professional cleaning.', 4, true),
-  ('Do you offer jewellery repair and resizing?', 'Yes, we provide complimentary resizing within 30 days of purchase. Paid repair and resizing services are available for all pieces, regardless of where they were purchased.', 5, true),
-  ('Can I book a private appointment?', 'Absolutely. We offer private appointments at our Vadodara atelier where you can view our collections in a relaxed setting with personalised attention from our design consultants.', 6, true)
+  ('Is Creative Muse jewellery waterproof & anti-tarnish?', 'Yes! Our jewellery is designed to be waterproof and anti-tarnish, making it perfect for everyday wear. With proper care, it will maintain its shine for longer.', 1, true),
+  ('What material is Creative Muse jewellery made from?', 'Our jewellery is primarily made from premium stainless steel with PVD plating. Material details are mentioned on the respective product page.', 2, true),
+  ('Can I wear the jewellery every day?', 'Absolutely! Our pieces are designed for everyday wear. We recommend avoiding prolonged exposure to perfumes, harsh chemicals and chlorine.', 3, true),
+  ('How long does delivery take?', 'Orders are processed and dispatched within the timeline mentioned on our website. Delivery time depends on your location and courier service.', 4, true),
+  ('Do you offer returns or exchanges?', 'Yes, eligible products can be returned or exchanged as per our Returns & Exchange Policy.', 5, true),
+  ('Do you offer Cash on Delivery?', 'Currently, we offer prepaid orders only. Cash on Delivery (COD) is not available.', 6, true),
+  ('How do I take care of my jewellery?', 'Store your jewellery in a dry place and avoid direct contact with perfumes, lotions, harsh chemicals and chlorine. After wearing, gently wipe it with a soft, dry cloth to keep it looking its best.', 7, true)
 ON CONFLICT DO NOTHING;
 
 -- Seed site settings

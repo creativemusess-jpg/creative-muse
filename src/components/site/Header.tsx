@@ -344,6 +344,7 @@ function MobileDrawer({ items, onClose }: { items: NavItem[]; onClose: () => voi
           <div className="my-4 border-t border-[#e0d8cc]/60" />
 
           {[
+            { label: "FAQs", to: "/faq" as const },
             { label: "Wishlist", to: "/wishlist" as const },
             { label: "Shop All", to: "/shop" as const },
             { label: "Collections", to: "/collections" as const },

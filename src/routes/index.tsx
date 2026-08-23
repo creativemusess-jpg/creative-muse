@@ -1147,28 +1147,32 @@ function StoreLocation() {
    ========================================================= */
 const FAQS = [
   [
-    "What certifications do your diamonds carry?",
-    "All Creative Muse diamonds are IGI or GIA certified, with a unique grading report detailing the 4Cs. Certificates are included with every purchase.",
+    "Is Creative Muse jewellery waterproof & anti-tarnish?",
+    "Yes! Our jewellery is designed to be waterproof and anti-tarnish, making it perfect for everyday wear. With proper care, it will maintain its shine for longer.",
   ],
   [
-    "Do you offer hallmarked gold jewellery?",
-    "Yes — every gold piece is BIS hallmarked. The hallmark, purity stamp and HUID number are visible on each item.",
+    "What material is Creative Muse jewellery made from?",
+    "Our jewellery is primarily made from premium stainless steel with PVD plating. Material details are mentioned on the respective product page.",
   ],
   [
-    "What is your return and exchange policy?",
-    "We offer 30-day returns on unworn pieces in original packaging. Custom and engraved orders are non-returnable but exchangeable for store credit.",
+    "Can I wear the jewellery every day?",
+    "Absolutely! Our pieces are designed for everyday wear. We recommend avoiding prolonged exposure to perfumes, harsh chemicals and chlorine.",
   ],
   [
-    "Can I customise a piece for my wedding?",
-    "Absolutely. Book a private appointment at our Vadodara atelier or via video call — our designers will work with you from sketch to delivery.",
+    "How long does delivery take?",
+    "Orders are processed and dispatched within the timeline mentioned on our website. Delivery time depends on your location and courier service.",
   ],
   [
-    "Do you offer EMI options?",
-    "Yes — no-cost EMI is available across major credit cards and via Razorpay. Choose your tenure at checkout.",
+    "Do you offer returns or exchanges?",
+    "Yes, eligible products can be returned or exchanged as per our Returns & Exchange Policy.",
   ],
   [
-    "How long does shipping take across India?",
-    "2–5 business days, fully insured and tracked. Free shipping on orders above ₹5,000.",
+    "Do you offer Cash on Delivery?",
+    "Currently, we offer prepaid orders only. Cash on Delivery (COD) is not available.",
+  ],
+  [
+    "How do I take care of my jewellery?",
+    "Store your jewellery in a dry place and avoid direct contact with perfumes, lotions, harsh chemicals and chlorine. After wearing, gently wipe it with a soft, dry cloth to keep it looking its best.",
   ],
 ];
 
