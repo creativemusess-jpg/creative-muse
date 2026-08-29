@@ -1,6 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createServerFn } from "@tanstack/react-start";
 import { createClient } from "@supabase/supabase-js";
+
+if (typeof globalThis.WebSocket === "undefined" && typeof window === "undefined") {
+  const { default: Ws } = await import("ws");
+  (globalThis as any).WebSocket = Ws;
+}
 import { normalizeOrderItems } from "@/lib/api/order-items";
 import {
   normalizeStoreSettings,
@@ -57,8 +62,12 @@ function getSupabase(accessToken?: string) {
 
 function getServiceSupabase() {
   const url = env("VITE_SUPABASE_URL");
-  const key = env("SUPABASE_SERVICE_ROLE_KEY") || env("VITE_SUPABASE_ANON_KEY");
-  if (!url || !key) throw new Error("Server Supabase environment variables are not configured.");
+  const key = env("SUPABASE_SERVICE_ROLE_KEY");
+  if (!url || !key) {
+    throw new Error(
+      "SUPABASE_SERVICE_ROLE_KEY is not configured. Add it to your .env (server-only, never prefix with VITE_) and to Vercel → Settings → Environment Variables. Get it from Supabase Dashboard → Project Settings → API → service_role key. This is required for transactional email logging (order_notifications) which bypasses RLS via service role.",
+    );
+  }
   return createClient(url, key, {
     auth: { persistSession: false, autoRefreshToken: false },
   }) as any;

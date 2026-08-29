@@ -45,7 +45,11 @@ function AdminOrders() {
 
   const fetchOrders = async () => {
     try {
-      const result = await ordersApi.list({ search: search || undefined, status: statusFilter || undefined });
+      const result = await ordersApi.list({
+        search: search || undefined,
+        status: statusFilter || undefined,
+        per_page: 100,
+      });
       setOrders(result.data);
       setCount(result.count);
     } catch (err) {
@@ -164,7 +168,7 @@ function AdminOrders() {
 
                 <div className="mt-3 flex items-center gap-2">
                   <Link
-                    to={`/admin/orders/$${order.id}`}
+                    to={`/admin/orders/${order.id}`}
                     className="flex-1 rounded-lg p-2.5 text-sm font-medium text-[#9C544D] hover:bg-[#fdf8f3] transition-colors"
                     aria-label="View order details"
                   >

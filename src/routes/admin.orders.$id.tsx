@@ -439,11 +439,6 @@ function OrderDetailPage() {
       await fetchData();
       setStatusConfirm(null);
       showToast(`Order status updated to ${newStatus}`, "success");
-      if (newStatus === "shipped") {
-        handleSendNotification("shipped");
-      } else if (newStatus === "delivered") {
-        handleSendNotification("delivered");
-      }
     } catch (err: any) {
       showToast(err.message || "Failed to update status", "error");
     } finally {
@@ -458,11 +453,6 @@ function OrderDetailPage() {
       await fetchData();
       setStatusConfirm(null);
       showToast(`Payment status updated to ${newStatus}`, "success");
-      if (newStatus === "paid") {
-        handleSendNotification("payment_confirmation");
-      } else if (newStatus === "failed") {
-        handleSendNotification("payment_failed");
-      }
     } catch (err: any) {
       showToast(err.message || "Failed to update payment", "error");
     } finally {
@@ -529,7 +519,6 @@ function OrderDetailPage() {
       setShowCancelDialog(false);
       setCancelReason("");
       showToast("Order cancelled", "success");
-      handleSendNotification("cancellation");
     } catch (err: any) {
       showToast(err.message || "Failed to cancel order", "error");
     } finally {
@@ -547,7 +536,6 @@ function OrderDetailPage() {
       setRefundAmount(0);
       setRefundReason("");
       showToast("Refund processed", "success");
-      handleSendNotification("refund");
     } catch (err: any) {
       showToast(err.message || "Failed to process refund", "error");
     } finally {

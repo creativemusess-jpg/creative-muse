@@ -2,6 +2,18 @@
 import { supabase } from "../supabase";
 import { normalizeOrderItems, type NormalizedOrderItem } from "./order-items";
 import { adminApi } from "./admin";
+import { sendTransactionalEmail } from "../email/server";
+import type { EmailTemplateKey } from "../email/types";
+
+async function triggerAutoEmail(template: EmailTemplateKey, orderId: string) {
+  try {
+    const { data } = await supabase.auth.getSession();
+    const accessToken = data.session?.access_token;
+    await sendTransactionalEmail({ data: { template, orderId, source: "system", accessToken } } as any);
+  } catch (e) {
+    console.warn(`Auto email ${template} failed for ${orderId}:`, e);
+  }
+}
 
 const db = () => supabase as any;
 
@@ -232,6 +244,12 @@ export const ordersApi = {
     const { error } = await db().from("orders").update(updatePayload).eq("id", id);
     if (error) throw error;
     await logAction(`order_status_${status}`, id, oldValues(oldOrder), updatePayload);
+    const oldStatus = oldOrder?.order_status;
+    if (oldStatus !== status) {
+      if (status === "shipped") triggerAutoEmail("shipped", id);
+      else if (status === "delivered") triggerAutoEmail("delivered", id);
+      else if (status === "cancelled") triggerAutoEmail("cancellation", id);
+    }
   },
 
   async updatePaymentStatus(id: string, status: string): Promise<void> {
@@ -251,6 +269,11 @@ export const ordersApi = {
     await logAction(`payment_status_${status}`, id, oldValues(oldOrder), {
       payment_status: status,
     });
+    const oldPay = oldOrder?.payment_status;
+    if (oldPay !== status) {
+      if (status === "paid") triggerAutoEmail("payment_confirmation", id);
+      else if (status === "failed") triggerAutoEmail("payment_failed", id);
+    }
   },
 
   async addNote(id: string, note: string): Promise<void> {
@@ -324,6 +347,7 @@ export const ordersApi = {
       .eq("id", id);
     if (error) throw error;
     await logAction("order_cancelled", id, null, { cancellation_reason: reason });
+    triggerAutoEmail("cancellation", id);
   },
 
   async duplicateOrder(id: string): Promise<string | null> {
@@ -511,6 +535,7 @@ export const ordersApi = {
       reason,
       payment_status: newPaymentStatus,
     });
+    triggerAutoEmail("refund", orderId);
   },
 
   async ensureInvoiceNumber(id: string): Promise<string> {
