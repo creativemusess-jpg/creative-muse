@@ -15,6 +15,21 @@ const DEFAULT_DISCOUNT_CODE = "WELCOME10";
 const FALLBACK_SVG =
   "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='600' viewBox='0 0 400 600'%3E%3Crect width='400' height='600' fill='%23f5efe8'/%3E%3C/svg%3E";
 
+function toOptimizedUrl(url: string, width: number) {
+  if (!url || url.startsWith("data:")) return url;
+  try {
+    const u = new URL(url);
+    if (u.pathname.includes("/storage/v1/object/public/")) {
+      const base = url.replace("/storage/v1/object/public/", "/storage/v1/render/image/public/");
+      const sep = base.includes("?") ? "&" : "?";
+      return `${base}${sep}width=${width}&quality=80&resize=contain`;
+    }
+    return url;
+  } catch {
+    return url;
+  }
+}
+
 function isPopupBlocked(): boolean {
   if (typeof window === "undefined") return true;
   try {
@@ -75,6 +90,30 @@ export function NewsletterPopup() {
         if (!cancelled) {
           setSettings(s);
           setConfigLoaded(true);
+          if (s?.images?.length) {
+            const first = [...s.images].sort((a, b) => a.sortOrder - b.sortOrder)[0]?.url;
+            if (first) {
+              const optFirst = toOptimizedUrl(first, 800);
+              const link = document.createElement("link");
+              link.rel = "preload";
+              link.as = "image";
+              link.href = optFirst;
+              (link as any).fetchPriority = "high";
+              document.head.appendChild(link);
+              const img = new Image();
+              (img as any).fetchPriority = "high";
+              img.decoding = "async" as any;
+              img.src = optFirst;
+              if (s.images.length > 1) {
+                const second = [...s.images].sort((a, b) => a.sortOrder - b.sortOrder)[1]?.url;
+                if (second) {
+                  const optSecond = toOptimizedUrl(second, 800);
+                  const pre2 = new Image();
+                  pre2.src = optSecond;
+                }
+              }
+            }
+          }
         }
       })
       .catch(() => {
@@ -484,7 +523,9 @@ function NewsletterImageArea({
   settings: NewsletterSettings | null;
 }) {
   const [current, setCurrent] = useState(0);
+  const [loaded, setLoaded] = useState<Record<string, boolean>>({});
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const touchStart = useRef<number | null>(null);
 
   const sorted = [...images].sort((a, b) => a.sortOrder - b.sortOrder);
   const hasCarousel = sorted.length > 1 && settings?.autoplay;
@@ -499,39 +540,83 @@ function NewsletterImageArea({
     };
   }, [hasCarousel, sorted.length, settings?.slideDuration]);
 
+  useEffect(() => {
+    if (!hasCarousel) return;
+    const next = (current + 1) % sorted.length;
+    const url = sorted[next]?.url;
+    if (url) {
+      const im = new Image();
+      im.src = toOptimizedUrl(url, 800);
+    }
+  }, [current, hasCarousel, sorted]);
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    touchStart.current = e.touches[0].clientX;
+    if (timerRef.current) clearInterval(timerRef.current);
+  };
+  const onTouchEnd = (e: React.TouchEvent) => {
+    if (touchStart.current == null) return;
+    const diff = e.changedTouches[0].clientX - touchStart.current;
+    if (Math.abs(diff) > 40) {
+      if (diff < 0) setCurrent((p) => (p + 1) % sorted.length);
+      else setCurrent((p) => (p - 1 + sorted.length) % sorted.length);
+    }
+    touchStart.current = null;
+    if (hasCarousel) {
+      timerRef.current = setInterval(() => setCurrent((p) => (p + 1) % sorted.length), (settings?.slideDuration || 5) * 1000);
+    }
+  };
+
   if (sorted.length === 0) {
-    return (
-      <div className="absolute inset-0 bg-gradient-to-br from-[#fdf8f3] to-[#f0e4cd]" />
-    );
+    return <div className="absolute inset-0 bg-gradient-to-br from-[#fdf8f3] to-[#f0e4cd]" />;
   }
 
   return (
-    <>
-      {sorted.map((img, idx) => (
-        <img
-          key={img.id}
-          src={img.url}
-          alt={img.altText || "Creative Muse jewellery"}
-          className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${
-            idx === current ? "opacity-100" : "opacity-0"
-          }`}
-          loading={idx === 0 ? "eager" : "lazy"}
-        />
-      ))}
+    <div className="absolute inset-0" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
+      <div className="absolute inset-0 bg-[#f0e4cd] animate-pulse" style={{ display: loaded[sorted[current]?.id] ? "none" : "block" }} />
+      {sorted.map((img, idx) => {
+        const optimized = toOptimizedUrl(img.url, 800);
+        const isActive = idx === current;
+        return (
+          <img
+            key={img.id}
+            src={optimized}
+            alt={img.altText || "Creative Muse jewellery"}
+            width={800}
+            height={800}
+            decoding="async"
+            fetchPriority={idx === 0 ? "high" : idx === 1 ? "high" : "low"}
+            loading={idx === 0 ? "eager" : "lazy"}
+            onLoad={() => setLoaded((m) => ({ ...m, [img.id]: true }))}
+            onError={(e) => {
+              const target = e.currentTarget as HTMLImageElement;
+              if (target.src !== img.url) target.src = img.url;
+            }}
+            className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${isActive ? "opacity-100" : "opacity-0"} ${loaded[img.id] ? "" : "opacity-0"}`}
+            sizes="(max-width: 640px) 100vw, 400px"
+            draggable={false}
+          />
+        );
+      })}
       <div className="absolute inset-0 bg-gradient-to-t from-black/15 to-transparent pointer-events-none" />
       {hasCarousel && (
         <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-1.5">
           {sorted.map((_, idx) => (
             <button
               key={idx}
-              onClick={() => setCurrent(idx)}
-              className={`h-1.5 rounded-full transition-all ${
-                idx === current ? "w-4 bg-white" : "w-1.5 bg-white/50"
-              }`}
+              onClick={() => {
+                setCurrent(idx);
+                if (timerRef.current) {
+                  clearInterval(timerRef.current);
+                  timerRef.current = setInterval(() => setCurrent((p) => (p + 1) % sorted.length), (settings?.slideDuration || 5) * 1000);
+                }
+              }}
+              aria-label={`Go to slide ${idx + 1}`}
+              className={`h-1.5 rounded-full transition-all ${idx === current ? "w-4 bg-white" : "w-1.5 bg-white/50 hover:bg-white/80"}`}
             />
           ))}
         </div>
       )}
-    </>
+    </div>
   );
 }
