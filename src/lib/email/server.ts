@@ -77,6 +77,15 @@ function isValidEmail(value?: string | null) {
   return !!value && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
 }
 
+function domainOf(email?: string | null) {
+  if (!email || !email.includes("@")) return "—";
+  return email.split("@")[1]?.toLowerCase() || "—";
+}
+
+function safeLog(event: string, data: Record<string, any>) {
+  console.info(`[EMAIL DEBUG] ${event}`, data);
+}
+
 function safeError(error: unknown) {
   const message = error instanceof Error ? error.message : String(error || "Unknown error");
   return message.replace(/key\s*[:=]\s*[\w.-]+/gi, "key=[redacted]").slice(0, 500);
@@ -265,6 +274,7 @@ async function sendProviderEmail(payload: {
 }) {
   const provider =
     env("TRANSACTIONAL_EMAIL_PROVIDER") || (env("RESEND_API_KEY") ? "resend" : "development_log");
+  safeLog("sendProviderEmail:provider", { provider, sender: env("EMAIL_FROM") ? normalizeEmailFrom(env("EMAIL_FROM")) : "fallback", toDomain: domainOf(payload.to) });
   if (provider === "resend") {
     const key = env("RESEND_API_KEY");
     if (!key) throw new Error("RESEND_API_KEY is not configured.");
@@ -400,6 +410,19 @@ export const sendTransactionalEmail = createServerFn({ method: "POST" })
     const testMode = env("EMAIL_TEST_MODE") === "true" || data.isTest === true;
     const testRecipient = data.recipient || env("EMAIL_TEST_RECIPIENT");
     const actualRecipient = testMode ? testRecipient : intendedRecipient;
+    safeLog("sendTransactionalEmail:resolve", {
+      template: data.template,
+      provider: env("TRANSACTIONAL_EMAIL_PROVIDER") || (env("RESEND_API_KEY") ? "resend" : "development_log"),
+      testMode,
+      envTestMode: env("EMAIL_TEST_MODE"),
+      isTestFlag: data.isTest,
+      source: data.source,
+      intendedDomain: domainOf(intendedRecipient),
+      actualDomain: domainOf(actualRecipient),
+      orderId: orderData?.order.id || null,
+      customerId: customerData?.customer?.id || data.customerId || null,
+      idempotency: testMode || data.resendNotificationId ? "none(test)" : idempotencyFor(data.template, orderData, data.customerId),
+    });
     if (!isValidEmail(actualRecipient)) throw new Error("A valid recipient email is required.");
 
     const rendered = renderTemplate(
