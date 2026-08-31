@@ -33,16 +33,31 @@ function AuthCallbackPage() {
 
     let timeout: ReturnType<typeof setTimeout>;
 
-    const tryGetSession = async () => {
+    const exchangeAndNavigate = async () => {
       if (handled.current) return;
+
+      const url = new URL(window.location.href);
+      const code = url.searchParams.get("code");
+
+      if (code) {
+        const { error } = await storefrontSupabase.auth.exchangeCodeForSession(code);
+        if (!error) {
+          window.history.replaceState({}, "", url.pathname);
+          if (timeout) clearTimeout(timeout);
+          goToDestination();
+          return;
+        }
+      }
+
       const { data: { session } } = await storefrontSupabase.auth.getSession();
       if (session?.user && !handled.current) {
+        if (timeout) clearTimeout(timeout);
         goToDestination();
       }
     };
 
     const { data: { subscription } } = storefrontSupabase.auth.onAuthStateChange(
-      async (event, session) => {
+      async (_event, session) => {
         if (session?.user && !handled.current) {
           if (timeout) clearTimeout(timeout);
           goToDestination();
@@ -50,7 +65,7 @@ function AuthCallbackPage() {
       },
     );
 
-    tryGetSession();
+    exchangeAndNavigate();
 
     timeout = setTimeout(() => {
       if (!handled.current) {

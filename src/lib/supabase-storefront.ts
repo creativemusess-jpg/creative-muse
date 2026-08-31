@@ -15,6 +15,7 @@ if (!supabaseUrl || !supabaseAnonKey) {
 
 export const storefrontSupabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
+    flowType: "pkce" as const,
     persistSession: !isServer,
     autoRefreshToken: !isServer,
     detectSessionInUrl: true,

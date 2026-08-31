@@ -32,6 +32,15 @@ type AuthCtx = {
 
 const Ctx = createContext<AuthCtx | null>(null);
 
+function canonicalOrigin(): string {
+  if (typeof window === "undefined") return "https://www.creativemusee.com";
+  const host = window.location.hostname;
+  if (host === "creativemusee.com" || host === "www.creativemusee.com") {
+    return "https://www.creativemusee.com";
+  }
+  return window.location.origin;
+}
+
 async function ensureCustomer(authUser: any): Promise<{ customer: CustomerInfo | null; error: string | null }> {
   if (!authUser) return { customer: null, error: null };
 
@@ -175,10 +184,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (redirectTo) {
       try { sessionStorage.setItem("cm_oauth_redirect", redirectTo); } catch {}
     }
+    const origin = canonicalOrigin();
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
+        redirectTo: `${origin}/auth/callback`,
       },
     });
     if (error) return { error: error.message };
@@ -186,8 +196,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const resetPassword = useCallback(async (email: string, mode: "customer" | "admin" = "customer") => {
+    const origin = canonicalOrigin();
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/reset-password?mode=${mode}`,
+      redirectTo: `${origin}/reset-password?mode=${mode}`,
     });
     if (error) return { error: error.message };
     return { error: null };
