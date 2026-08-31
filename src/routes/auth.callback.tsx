@@ -33,20 +33,24 @@ function AuthCallbackPage() {
 
     let timeout: ReturnType<typeof setTimeout>;
 
+    const tryGetSession = async () => {
+      if (handled.current) return;
+      const { data: { session } } = await storefrontSupabase.auth.getSession();
+      if (session?.user && !handled.current) {
+        goToDestination();
+      }
+    };
+
     const { data: { subscription } } = storefrontSupabase.auth.onAuthStateChange(
       async (event, session) => {
-        if (event === "SIGNED_IN" && session) {
+        if (session?.user && !handled.current) {
           if (timeout) clearTimeout(timeout);
           goToDestination();
         }
       },
     );
 
-    storefrontSupabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user && !handled.current) {
-        goToDestination();
-      }
-    });
+    tryGetSession();
 
     timeout = setTimeout(() => {
       if (!handled.current) {

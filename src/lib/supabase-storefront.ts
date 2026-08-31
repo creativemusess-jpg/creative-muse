@@ -17,7 +17,7 @@ export const storefrontSupabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
     persistSession: !isServer,
     autoRefreshToken: !isServer,
-    detectSessionInUrl: !isServer,
+    detectSessionInUrl: true,
     storageKey: "cm_storefront_auth",
   },
 });
