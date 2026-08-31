@@ -5,10 +5,11 @@ import {
   createRootRouteWithContext,
   useRouter,
   useLocation,
+  useNavigate,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
-import { lazy, Suspense, useEffect, type ReactNode } from "react";
+import { lazy, Suspense, useEffect, useState, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
@@ -130,6 +131,27 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const location = useLocation();
+  const navigate = useNavigate();
+  const [authError, setAuthError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const errorCode = params.get("error_code");
+    const errorDescription = params.get("error_description");
+    if (errorCode) {
+      const message = errorDescription || "Authentication failed. Please try again.";
+      setAuthError(message);
+      params.delete("error");
+      params.delete("error_code");
+      params.delete("error_description");
+      const clean = params.toString()
+        ? `${window.location.pathname}?${params.toString()}`
+        : window.location.pathname;
+      window.history.replaceState({}, "", clean);
+      const timer = setTimeout(() => setAuthError(null), 8000);
+      return () => clearTimeout(timer);
+    }
+  }, [location.search]);
 
   const isAdminRoute = location.pathname.startsWith("/admin");
   const isStandaloneAuthRoute =
@@ -137,6 +159,11 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      {authError && !isAdminRoute && (
+        <div className="fixed top-4 left-1/2 z-[9999] max-w-md -translate-x-1/2 rounded-xl border border-red-200 bg-white px-5 py-3 shadow-lg">
+          <p className="text-sm text-red-600">{authError}</p>
+        </div>
+      )}
       {isAdminRoute ? (
         <Outlet />
       ) : isStandaloneAuthRoute ? (

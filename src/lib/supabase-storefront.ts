@@ -7,6 +7,7 @@ if (typeof globalThis.WebSocket === "undefined" && typeof window === "undefined"
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const isServer = typeof window === "undefined";
 
 if (!supabaseUrl || !supabaseAnonKey) {
   throw new Error("Missing VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY");
@@ -14,9 +15,9 @@ if (!supabaseUrl || !supabaseAnonKey) {
 
 export const storefrontSupabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
-    persistSession: true,
-    autoRefreshToken: true,
-    detectSessionInUrl: true,
+    persistSession: !isServer,
+    autoRefreshToken: !isServer,
+    detectSessionInUrl: !isServer,
     storageKey: "cm_storefront_auth",
   },
 });

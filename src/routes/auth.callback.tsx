@@ -1,6 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useRef } from "react";
-import { useAuth } from "@/lib/auth";
+import { useEffect, useRef, useCallback } from "react";
 import { storefrontSupabase } from "@/lib/supabase-storefront";
 
 export const Route = createFileRoute("/auth/callback")({
@@ -8,30 +7,65 @@ export const Route = createFileRoute("/auth/callback")({
   component: AuthCallbackPage,
 });
 
+function getStoredRedirect(): string | null {
+  try {
+    const v = sessionStorage.getItem("cm_oauth_redirect");
+    sessionStorage.removeItem("cm_oauth_redirect");
+    return v && v.startsWith("/") && !v.startsWith("//") ? v : null;
+  } catch {
+    return null;
+  }
+}
+
 function AuthCallbackPage() {
-  const { user, loading } = useAuth();
   const navigate = useNavigate();
   const handled = useRef(false);
+
+  const goToDestination = useCallback(() => {
+    if (handled.current) return;
+    handled.current = true;
+    const redirect = getStoredRedirect();
+    navigate({ to: redirect || "/account" });
+  }, [navigate]);
 
   useEffect(() => {
     if (handled.current) return;
 
-    const finish = async () => {
-      const { data: { session } } = await (storefrontSupabase as any).auth.getSession();
-      if (session?.user) {
-        handled.current = true;
-        const redirect = (() => {
-          try { return sessionStorage.getItem("cm_oauth_redirect"); } catch { return null; }
-        })();
-        try { sessionStorage.removeItem("cm_oauth_redirect"); } catch {}
-        navigate({ to: (redirect && redirect.startsWith("/")) ? redirect : "/account" });
-      } else if (!loading) {
-        handled.current = true;
-        navigate({ to: "/login" });
+    let timeout: ReturnType<typeof setTimeout>;
+
+    const { data: { subscription } } = storefrontSupabase.auth.onAuthStateChange(
+      async (event, session) => {
+        if (event === "SIGNED_IN" && session) {
+          if (timeout) clearTimeout(timeout);
+          goToDestination();
+        }
+      },
+    );
+
+    storefrontSupabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user && !handled.current) {
+        goToDestination();
       }
+    });
+
+    timeout = setTimeout(() => {
+      if (!handled.current) {
+        storefrontSupabase.auth.getSession().then(({ data: { session } }) => {
+          if (session?.user) {
+            goToDestination();
+          } else {
+            handled.current = true;
+            navigate({ to: "/login" });
+          }
+        });
+      }
+    }, 10000);
+
+    return () => {
+      if (timeout) clearTimeout(timeout);
+      subscription.unsubscribe();
     };
-    finish();
-  }, [user, loading, navigate]);
+  }, [goToDestination, navigate]);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#fdf8f3]">
