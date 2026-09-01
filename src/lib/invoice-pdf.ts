@@ -1,6 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
 
 type PdfItem = {
   productName: string;
@@ -69,6 +67,10 @@ export async function generateInvoicePdf({
   items: any[];
   invoiceNumber?: string;
 }) {
+  const [{ default: jsPDF }, { default: autoTable }] = await Promise.all([
+    import("jspdf"),
+    import("jspdf-autotable"),
+  ]);
   const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
   const lines = items.map(normalizeItem);
   const imageMap = new Map<number, string>();

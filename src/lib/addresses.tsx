@@ -40,9 +40,14 @@ export function AddressProvider({ children }: { children: ReactNode }) {
   const refreshAddresses = useCallback(async () => {
     if (!customerId) return;
     setLoading(true);
-    const data = await getCustomerAddresses(customerId);
-    setAddresses(data);
-    setLoading(false);
+    try {
+      const data = await getCustomerAddresses(customerId);
+      setAddresses(data);
+    } catch (e) {
+      console.error("[Addresses] load failed", e);
+    } finally {
+      setLoading(false);
+    }
   }, [customerId]);
 
   useEffect(() => {

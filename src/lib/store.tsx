@@ -81,7 +81,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const [giftPackagingEnabled, setGiftPackagingEnabled] = useState(false);
   const [giftMessage, setGiftMessage] = useState("");
   const { products, isLoading: productsLoading } = useStorefrontProducts();
-  const cartReady = hydrated && !productsLoading;
+  const cartReady = hydrated;
 
   useEffect(() => {
     setCart(readJSON<CartLine[]>(CART_KEY, []));

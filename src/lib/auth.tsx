@@ -41,14 +41,26 @@ function canonicalOrigin(): string {
   return window.location.origin;
 }
 
+async function withTimeout<T>(p: Promise<T>, ms: number, label: string): Promise<T> {
+  let t: ReturnType<typeof setTimeout>;
+  const timeout = new Promise<never>((_, reject) => {
+    t = setTimeout(() => reject(new Error(`${label} timed out`)), ms);
+  });
+  try {
+    return await Promise.race([p, timeout]);
+  } finally {
+    clearTimeout(t!);
+  }
+}
+
 async function ensureCustomer(authUser: any): Promise<{ customer: CustomerInfo | null; error: string | null }> {
   if (!authUser) return { customer: null, error: null };
 
-  const { data: existing } = await (supabase as any)
-    .from("customers")
-    .select("*")
-    .eq("auth_user_id", authUser.id)
-    .maybeSingle();
+  const { data: existing } = await withTimeout(
+    (supabase as any).from("customers").select("*").eq("auth_user_id", authUser.id).maybeSingle() as Promise<any>,
+    7000,
+    "customer lookup"
+  ).catch(() => ({ data: null } as any));
 
   if (existing) {
     const { error: updErr } = await (supabase as any)
@@ -80,11 +92,11 @@ async function ensureCustomer(authUser: any): Promise<{ customer: CustomerInfo |
     last_login_at: new Date().toISOString(),
   };
 
-  const { data: inserted, error } = await (supabase as any)
-    .from("customers")
-    .insert(newCustomer)
-    .select()
-    .single();
+  const { data: inserted, error } = await withTimeout(
+    (supabase as any).from("customers").insert(newCustomer).select().single() as Promise<any>,
+    7000,
+    "customer create"
+  ).catch((e: any) => ({ data: null, error: e } as any));
 
   if (error) {
     console.error("Failed to create customer profile:", error.message, error);

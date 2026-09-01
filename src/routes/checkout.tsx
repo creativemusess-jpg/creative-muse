@@ -79,7 +79,14 @@ function CheckoutPage() {
   const [stateConflict, setStateConflict] = useState<{ conflict: boolean; message?: string }>({ conflict: false });
 
   const [giftCfg, setGiftCfg] = useState<GiftPackagingConfig | null>(null);
-  useEffect(() => { giftPackagingApi.getConfig().then(setGiftCfg); }, []);
+  useEffect(() => { giftPackagingApi.getConfig().then(setGiftCfg).catch(()=>{}); }, []);
+  const [authStuck, setAuthStuck] = useState(false);
+  const [checkoutError, setCheckoutError] = useState<string | null>(null);
+  useEffect(() => {
+    if (!authLoading) { setAuthStuck(false); return; }
+    const t = setTimeout(()=> setAuthStuck(true), 6000);
+    return ()=> clearTimeout(t);
+  }, [authLoading]);
 
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
   const [editingAddressId, setEditingAddressId] = useState<string | null>(null);
@@ -326,6 +333,31 @@ function CheckoutPage() {
     navigate({ to: "/payment" });
   };
 
+  if (checkoutError) {
+    return (
+      <PageShell>
+        <CheckoutNotice
+          icon={<AlertCircle className="h-10 w-10 text-[#9C544D]" />}
+          title="Unable to load checkout."
+          message="Please refresh the page and try again."
+        />
+      </PageShell>
+    );
+  }
+  if (authStuck) {
+    return (
+      <PageShell>
+        <div className="mx-auto max-w-[1200px] px-6 py-16">
+          <div className="flex min-h-[40vh] flex-col items-center justify-center gap-4 text-center">
+            <AlertCircle className="h-10 w-10 text-[#9C544D]" />
+            <h2 className="font-display text-xl font-semibold text-[#1a1a2e]">Unable to load checkout.</h2>
+            <p className="text-sm text-[#7a6e64]">Please refresh the page and try again.</p>
+            <button onClick={()=> window.location.reload()} className="btn-primary mt-2">Retry</button>
+          </div>
+        </div>
+      </PageShell>
+    );
+  }
   if (authLoading || !user) {
     return (
       <PageShell>

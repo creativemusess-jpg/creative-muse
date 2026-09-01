@@ -169,13 +169,18 @@ async function ensureInvoiceNumber(db: any, order: any): Promise<string> {
 }
 
 async function loadOrderEmailData(orderId: string, accessToken?: string): Promise<OrderEmailData> {
-  const readableDb = accessToken ? getSupabase(accessToken) : getServiceSupabase();
   const serviceDb = getServiceSupabase();
-  const { data: order, error: orderError } = await readableDb
-    .from("orders")
-    .select("*")
-    .eq("id", orderId)
-    .maybeSingle();
+  const readableDb = accessToken ? getSupabase(accessToken) : serviceDb;
+  let order: any = null;
+  let orderError: any = null;
+  const serviceResult = await serviceDb.from("orders").select("*").eq("id", orderId).maybeSingle();
+  if (serviceResult.data) {
+    order = serviceResult.data;
+  } else {
+    const readableResult = await readableDb.from("orders").select("*").eq("id", orderId).maybeSingle();
+    order = readableResult.data;
+    orderError = readableResult.error || serviceResult.error;
+  }
   if (orderError || !order) throw new Error("Order not found or not accessible.");
 
   const [{ data: itemRows }, { data: payments }, store] = await Promise.all([
@@ -207,15 +212,18 @@ async function loadOrderEmailData(orderId: string, accessToken?: string): Promis
 }
 
 async function loadCustomerEmailData(customerId: string | undefined, accessToken?: string) {
-  const db = accessToken ? getSupabase(accessToken) : getServiceSupabase();
   const serviceDb = getServiceSupabase();
   const store = await loadStoreSettings(serviceDb);
   if (!customerId) return { customer: null, store };
-  const { data: customer } = await db
-    .from("customers")
-    .select("*")
-    .eq("id", customerId)
-    .maybeSingle();
+  let customer: any = null;
+  const serviceResult = await serviceDb.from("customers").select("*").eq("id", customerId).maybeSingle();
+  if (serviceResult.data) {
+    customer = serviceResult.data;
+  } else if (accessToken) {
+    const db = getSupabase(accessToken);
+    const r = await db.from("customers").select("*").eq("id", customerId).maybeSingle();
+    customer = r.data || null;
+  }
   return { customer, store };
 }
 

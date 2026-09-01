@@ -535,7 +535,14 @@ export async function createOrder(
             source: "system",
             accessToken,
           },
-        }).catch((err) => console.error("Welcome email failed:", err));
+        }).catch((err) =>
+          console.error("[Transactional Email]", {
+            event: "welcome",
+            customerId: params.customerId,
+            orderId: order.id,
+            error: err instanceof Error ? err.message : String(err),
+          }),
+        );
       }
 
       sendTransactionalEmail({
@@ -545,9 +552,37 @@ export async function createOrder(
           source: "system",
           accessToken,
         },
-      }).catch((err) => console.error("Order confirmation email failed:", err));
+      }).catch((err) =>
+        console.error("[Transactional Email]", {
+          event: "order_confirmation",
+          orderId: order.id,
+          error: err instanceof Error ? err.message : String(err),
+        }),
+      );
+
+      const isPaidOrder = (order as any).payment_status === "paid" || params.paymentMethod !== "cod";
+      if (isPaidOrder) {
+        sendTransactionalEmail({
+          data: {
+            template: "payment_confirmation",
+            orderId: order.id,
+            source: "system",
+            accessToken,
+          },
+        }).catch((err) =>
+          console.error("[Transactional Email]", {
+            event: "payment_confirmation",
+            orderId: order.id,
+            error: err instanceof Error ? err.message : String(err),
+          }),
+        );
+      }
     } catch (notificationErr) {
-      console.error("Transactional notification scheduling failed:", notificationErr);
+      console.error("[Transactional Email]", {
+        event: "checkout_notification_scheduling",
+        orderId: order.id,
+        error: notificationErr instanceof Error ? notificationErr.message : String(notificationErr),
+      });
     }
 
     if (params.couponId && params.couponCode) {

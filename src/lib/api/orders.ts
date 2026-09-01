@@ -11,7 +11,11 @@ async function triggerAutoEmail(template: EmailTemplateKey, orderId: string) {
     const accessToken = data.session?.access_token;
     await sendTransactionalEmail({ data: { template, orderId, source: "system", accessToken } } as any);
   } catch (e) {
-    console.warn(`Auto email ${template} failed for ${orderId}:`, e);
+    console.error("[Transactional Email]", {
+      event: template,
+      orderId,
+      error: e instanceof Error ? e.message : String(e),
+    });
   }
 }
 
@@ -508,9 +512,14 @@ export const ordersApi = {
       (s: number, p: any) => s + (p.status === "paid" ? Number(p.amount) : 0),
       0,
     );
+    const totalRefunded = ((payments as any[]) || []).reduce(
+      (s: number, p: any) => s + (p.status === "refunded" ? Math.abs(Number(p.amount)) : 0),
+      0,
+    );
+    if (amount + totalRefunded > totalPaid) throw new Error("Refund amount exceeds amount paid");
     if (amount > totalPaid) throw new Error("Refund amount exceeds amount paid");
     const user = await getAdminUser();
-    const { error } = await db()
+    const { data: refundPayment, error } = await db()
       .from("payments")
       .insert({
         order_id: orderId,
@@ -518,22 +527,27 @@ export const ordersApi = {
         status: "refunded",
         payment_method: "manual_refund",
         is_demo: true,
-        transaction_reference: `REF-${Date.now()}`,
+        transaction_reference: `REF-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).slice(2, 6).toUpperCase()}`,
         safe_metadata: { refund_reason: reason, processed_by: user?.id },
-      });
+      })
+      .select("id")
+      .single();
     if (error) throw error;
-    const newPaymentStatus = amount >= totalPaid ? "refunded" : "partially_refunded";
-    await db()
+    const newTotalRefunded = totalRefunded + amount;
+    const newPaymentStatus: string = newTotalRefunded >= totalPaid ? "refunded" : "paid";
+    const { error: orderUpdateError } = await db()
       .from("orders")
       .update({
         payment_status: newPaymentStatus,
         updated_at: new Date().toISOString(),
       })
       .eq("id", orderId);
+    if (orderUpdateError) throw orderUpdateError;
     await logAction("refund_created", orderId, null, {
       amount,
       reason,
       payment_status: newPaymentStatus,
+      refund_payment_id: (refundPayment as any)?.id || null,
     });
     triggerAutoEmail("refund", orderId);
   },
