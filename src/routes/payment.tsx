@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, type ReactNode } from "react";
 import { CreditCard, Building2, Wallet, Truck, Loader2, ShieldCheck, AlertCircle, RefreshCw } from "lucide-react";
 import { PageShell } from "@/components/site/PageHeader";
 import { useAuth } from "@/lib/auth";
@@ -30,7 +30,7 @@ export const Route = createFileRoute("/payment")({
 function PaymentPage() {
   const { user, loading: authLoading } = useAuth();
   const lines = useCartLines();
-  const { cartSubtotal, clearCart, clearCoupon, cart } = useStore();
+  const { cartReady, clearCart, clearCoupon } = useStore();
   const navigate = useNavigate();
 
   const checkoutAttemptRef = useRef<string>(crypto.randomUUID());
@@ -60,10 +60,43 @@ function PaymentPage() {
   }, [authLoading, user, navigate]);
 
   useEffect(() => {
-    if (!authLoading && !checkoutData && lines.length === 0) { navigate({ to: "/cart" }); }
-  }, [checkoutData, lines, authLoading, navigate]);
+    if (!authLoading && cartReady && !checkoutData && lines.length === 0) { navigate({ to: "/cart" }); }
+  }, [checkoutData, lines, authLoading, cartReady, navigate]);
 
-  if (authLoading || !user || !checkoutData) return null;
+  if (authLoading || !user) {
+    return (
+      <PageShell>
+        <PaymentNotice
+          icon={<Loader2 className="h-8 w-8 animate-spin text-[#9C544D]" />}
+          title="Loading your account..."
+          message="Your payment page will appear shortly."
+        />
+      </PageShell>
+    );
+  }
+  if (!cartReady) {
+    return (
+      <PageShell>
+        <PaymentNotice
+          icon={<Loader2 className="h-8 w-8 animate-spin text-[#9C544D]" />}
+          title="Loading your cart..."
+          message="Preparing payment..."
+        />
+      </PageShell>
+    );
+  }
+  if (!checkoutData) {
+    return (
+      <PageShell>
+        <PaymentNotice
+          icon={<AlertCircle className="h-10 w-10 text-[#9C544D]" />}
+          title="Checkout details are missing."
+          message="Please return to checkout and try again."
+          action={<Link to="/checkout" className="btn-primary mt-2 inline-flex">Back to Checkout</Link>}
+        />
+      </PageShell>
+    );
+  }
 
   const totals = checkoutData.totals;
   const giftPackPrice = checkoutData.giftPackagingEnabled && giftCfg?.enabled ? (giftCfg?.price || 0) : 0;
@@ -344,6 +377,19 @@ function PaymentPage() {
         </div>
       </div>
     </PageShell>
+  );
+}
+
+function PaymentNotice({ icon, title, message, action }: { icon: ReactNode; title: string; message: string; action?: ReactNode }) {
+  return (
+    <div className="mx-auto max-w-[1200px] px-6 py-16">
+      <div className="flex min-h-[40vh] flex-col items-center justify-center gap-4 text-center">
+        {icon}
+        <h2 className="font-display text-xl font-semibold text-[#1a1a2e]">{title}</h2>
+        <p className="text-sm text-[#7a6e64]">{message}</p>
+        {action}
+      </div>
+    </div>
   );
 }
 

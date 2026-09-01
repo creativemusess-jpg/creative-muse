@@ -107,26 +107,38 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   const refreshCustomer = useCallback(async () => {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (session?.user) {
-      const { customer } = await ensureCustomer(session.user);
-      setUser(customer);
-    } else {
-      setUser(null);
-    }
-    setLoading(false);
-  }, []);
-
-  useEffect(() => {
-    refreshCustomer();
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
       if (session?.user) {
         const { customer } = await ensureCustomer(session.user);
         setUser(customer);
       } else {
         setUser(null);
       }
+    } catch (err) {
+      console.error("[AUTH] refreshCustomer failed:", err);
+      setUser(null);
+    } finally {
       setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    refreshCustomer();
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      try {
+        if (session?.user) {
+          const { customer } = await ensureCustomer(session.user);
+          setUser(customer);
+        } else {
+          setUser(null);
+        }
+      } catch (err) {
+        console.error("[AUTH] onAuthStateChange error:", err);
+        setUser(null);
+      } finally {
+        setLoading(false);
+      }
     });
     return () => subscription.unsubscribe();
   }, [refreshCustomer]);

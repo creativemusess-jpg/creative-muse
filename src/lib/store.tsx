@@ -16,6 +16,7 @@ type CartLine = { id: string; qty: number };
 
 type StoreCtx = {
   cart: CartLine[];
+  cartReady: boolean;
   cartCount: number;
   cartSubtotal: number;
   addToCart: (id: string, qty?: number) => void;
@@ -79,7 +80,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const [appliedCouponId, setAppliedCouponId] = useState<string | null>(null);
   const [giftPackagingEnabled, setGiftPackagingEnabled] = useState(false);
   const [giftMessage, setGiftMessage] = useState("");
-  const { products } = useStorefrontProducts();
+  const { products, isLoading: productsLoading } = useStorefrontProducts();
+  const cartReady = hydrated && !productsLoading;
 
   useEffect(() => {
     setCart(readJSON<CartLine[]>(CART_KEY, []));
@@ -186,6 +188,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const value = useMemo<StoreCtx>(
     () => ({
       cart,
+      cartReady,
       cartCount,
       cartSubtotal,
       addToCart,
@@ -222,7 +225,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       setGiftMessage,
     }),
     [
-      cart, cartCount, cartSubtotal, addToCart, removeFromCart, setQty, clearCart, cartOpen,
+      cart, cartReady, cartCount, cartSubtotal, addToCart, removeFromCart, setQty, clearCart, cartOpen,
       openCart, closeCart,
       wishlist, wishlistCount, toggleWishlist, isWishlisted, wishlistOpen,
       openWishlist, closeWishlist,

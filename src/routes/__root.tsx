@@ -135,6 +135,18 @@ function RootComponent() {
   const [authError, setAuthError] = useState<string | null>(null);
 
   useEffect(() => {
+    const host = window.location.hostname;
+    if (
+      host === "creativemusee.com" &&
+      window.location.protocol === "https:"
+    ) {
+      const url = new URL(window.location.href);
+      url.hostname = "www.creativemusee.com";
+      window.location.replace(url.toString());
+    }
+  }, []);
+
+  useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const errorCode = params.get("error_code");
     const errorDescription = params.get("error_description");

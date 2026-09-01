@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState, useEffect, useCallback, useRef, useMemo } from "react";
+import { Component, useState, useEffect, useCallback, useRef, useMemo, type ReactNode } from "react";
 import { ChevronRight, Loader2, MapPin, Truck, Check, AlertCircle, Pencil, Trash2, Star, Plus, Briefcase } from "lucide-react";
 import { PageShell } from "@/components/site/PageHeader";
 import { useAuth } from "@/lib/auth";
@@ -13,15 +13,50 @@ import { giftPackagingApi, type GiftPackagingConfig } from "@/lib/api/gift-packa
 import { lookupPincode, validateIndianPincode, detectStateConflict } from "@/lib/checkout/pincode";
 
 export const Route = createFileRoute("/checkout")({
-  component: CheckoutPage,
+  component: CheckoutRoute,
 });
 
 const STEPS = ["Cart", "Delivery", "Payment", "Confirmation"];
 
+function CheckoutRoute() {
+  return (
+    <CheckoutErrorBoundary>
+      <CheckoutPage />
+    </CheckoutErrorBoundary>
+  );
+}
+
+class CheckoutErrorBoundary extends Component<{ children: ReactNode }, { error: boolean }> {
+  state = { error: false };
+
+  static getDerivedStateFromError() {
+    return { error: true };
+  }
+
+  componentDidCatch(error: Error) {
+    console.error("[CHECKOUT ERROR]", error);
+  }
+
+  render() {
+    if (this.state.error) {
+      return (
+        <PageShell>
+          <CheckoutNotice
+            icon={<AlertCircle className="h-10 w-10 text-[#9C544D]" />}
+            title="Something went wrong while loading checkout."
+            message="Please refresh and try again."
+          />
+        </PageShell>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 function CheckoutPage() {
   const { user, loading: authLoading } = useAuth();
   const lines = useCartLines();
-  const { cartSubtotal, discountAmount, couponCode, appliedCouponId, giftPackagingEnabled, giftMessage } = useStore();
+  const { cartReady, cartSubtotal, discountAmount, couponCode, appliedCouponId, giftPackagingEnabled, giftMessage } = useStore();
   const { addresses, defaultAddress, loading: addressesLoading, addAddress, editAddress, removeAddress, markDefault, refreshAddresses } = useAddresses();
   const navigate = useNavigate();
 
@@ -65,12 +100,6 @@ function CheckoutPage() {
       navigate({ to: "/login", search: { redirect: "/checkout" } });
     }
   }, [authLoading, user, navigate]);
-
-  useEffect(() => {
-    if (lines.length === 0 && !authLoading) {
-      navigate({ to: "/cart" });
-    }
-  }, [lines, authLoading, navigate]);
 
   const deliveryStateCode = selectedStateCode || address.stateCode || getStateCodeByName(address.state) || "";
 
@@ -297,8 +326,43 @@ function CheckoutPage() {
     navigate({ to: "/payment" });
   };
 
-  if (authLoading || !user) return null;
-  if (lines.length === 0) return null;
+  if (authLoading || !user) {
+    return (
+      <PageShell>
+        <div className="mx-auto max-w-[1200px] px-6 py-16">
+          <div className="flex min-h-[40vh] flex-col items-center justify-center gap-4">
+            <Loader2 className="h-8 w-8 animate-spin text-[#9C544D]" />
+            <p className="text-sm text-[#7a6e64]">Loading checkout…</p>
+          </div>
+        </div>
+      </PageShell>
+    );
+  }
+  if (!cartReady) {
+    return (
+      <PageShell>
+        <CheckoutNotice
+          icon={<Loader2 className="h-8 w-8 animate-spin text-[#9C544D]" />}
+          title="Loading your cart..."
+          message="Preparing your checkout..."
+        />
+      </PageShell>
+    );
+  }
+  if (lines.length === 0) {
+    return (
+      <PageShell>
+        <div className="mx-auto max-w-[1200px] px-6 py-16">
+          <div className="flex min-h-[40vh] flex-col items-center justify-center gap-4 text-center">
+            <AlertCircle className="h-10 w-10 text-[#9C544D]" />
+            <h2 className="font-display text-xl font-semibold text-[#1a1a2e]">Your cart is empty</h2>
+            <p className="text-sm text-[#7a6e64]">Add some items before proceeding to checkout.</p>
+            <Link to="/shop" className="btn-primary mt-2 inline-flex">Continue Shopping</Link>
+          </div>
+        </div>
+      </PageShell>
+    );
+  }
 
   const addressTypeIcon = (type: string) => {
     switch ((type || "Home").toLowerCase()) {
@@ -554,6 +618,18 @@ function CheckoutPage() {
         </form>
       </div>
     </PageShell>
+  );
+}
+
+function CheckoutNotice({ icon, title, message }: { icon: ReactNode; title: string; message: string }) {
+  return (
+    <div className="mx-auto max-w-[1200px] px-6 py-16">
+      <div className="flex min-h-[40vh] flex-col items-center justify-center gap-4 text-center">
+        {icon}
+        <h2 className="font-display text-xl font-semibold text-[#1a1a2e]">{title}</h2>
+        <p className="text-sm text-[#7a6e64]">{message}</p>
+      </div>
+    </div>
   );
 }
 
