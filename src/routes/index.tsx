@@ -826,19 +826,17 @@ function BestSellers() {
   })();
 
   return (
-    <section className="bg-[#f5efe8] py-12 sm:py-20">
-      <div className="mx-auto max-w-[1280px] px-4 sm:px-6">
-        <div className="mb-6 sm:mb-8">
-          <SectionHeading eyebrow="Our Jewellery" title="Handpicked Best Sellers" />
-        </div>
+    <section className="bg-[#f5efe8] py-20">
+      <div className="mx-auto max-w-[1280px] px-6">
+        <SectionHeading eyebrow="Our Jewellery" title="Handpicked Best Sellers" />
 
-        <div className="mb-6 flex justify-center sm:mb-8 md:mb-10">
-          <div className="scrollbar-hide flex w-full max-w-full gap-1 overflow-x-auto whitespace-nowrap rounded-full bg-white p-1 shadow-[0_4px_16px_rgba(0,0,0,0.06)] snap-x snap-mandatory sm:inline-flex sm:w-auto sm:max-w-none sm:flex-wrap sm:justify-center sm:gap-1 sm:overflow-visible sm:snap-none sm:p-1.5">
+        <div className="mb-8 flex justify-center md:mb-10">
+          <div className="scrollbar-hide inline-flex max-w-full gap-1.5 overflow-x-auto whitespace-nowrap rounded-full bg-white p-1.5 shadow-[0_4px_16px_rgba(0,0,0,0.06)] snap-x snap-mandatory md:gap-1 md:overflow-visible md:snap-none">
             {tabs.map((t) => (
               <button
                 key={t}
                 onClick={() => setActive(t)}
-                className={`flex h-9 shrink-0 snap-start items-center justify-center rounded-full px-4 text-[10px] font-semibold tracking-[0.08em] uppercase transition-all duration-300 sm:h-auto sm:py-2.5 sm:px-5 sm:text-[12px] sm:tracking-[0.1em] ${
+                className={`flex h-[42px] shrink-0 snap-start items-center justify-center rounded-full px-5 text-[11px] font-semibold tracking-[0.08em] uppercase transition-all duration-300 sm:px-5 sm:text-[12px] sm:tracking-[0.1em] md:h-auto md:py-2.5 ${
                   active === t
                     ? "bg-[#9C544D] text-white shadow-[0_6px_16px_rgba(156,84,77,0.35)]"
                     : "text-[#7a6e64] hover:text-[#1a1a2e]"
