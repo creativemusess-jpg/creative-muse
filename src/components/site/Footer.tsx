@@ -35,8 +35,8 @@ export function Footer() {
   };
 
   return (
-    <footer className="bg-[#0F0E0D] text-[#E8DDD3]">
-      <div className="mx-auto max-w-[1280px] px-6 sm:px-8 lg:px-10">
+    <footer className="relative w-full max-w-full overflow-hidden bg-[#0F0E0D] text-[#E8DDD3]">
+      <div className="mx-auto box-border w-full max-w-[1280px] px-4 sm:px-8 lg:px-10">
         <div className="grid gap-10 py-14 lg:grid-cols-12 lg:gap-8 lg:py-16">
           <div className="lg:col-span-4">
             <Link to="/" className="inline-block">
@@ -65,21 +65,21 @@ export function Footer() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 lg:col-span-5 lg:grid-cols-3 lg:gap-6">
+          <div className="grid w-full max-w-full grid-cols-2 gap-6 sm:grid-cols-3 sm:gap-8 lg:col-span-5 lg:grid-cols-3 lg:gap-6">
             <FooterCol title="Shop" links={[["Rings","/shop"],["Necklaces","/shop"],["Earrings","/shop"],["Bracelets","/shop"],["Bangles","/shop"],["Wedding Sets","/shop"]]} />
             <FooterCol title="Company" links={[["About","/about"],["Blog","/blog"],["Collections","/collections"]]} />
             <FooterCol title="Support" links={[["FAQs","/faq"],["Track Order","/track-order"],["Returns","/refund-policy"],["Shipping","/shipping-policy"],["Privacy","/privacy-policy"],["Contact","/contact"]]} />
           </div>
 
-          <div className="lg:col-span-3">
-            <div className="rounded-[20px] border border-white/[0.06] bg-white/[0.03] p-6 backdrop-blur-sm lg:p-7">
+          <div className="min-w-0 lg:col-span-3">
+            <div className="box-border w-full max-w-full rounded-[20px] border border-white/[0.06] bg-white/[0.03] p-5 sm:p-6 backdrop-blur-sm lg:p-7">
               <h4 className="font-display text-[15px] font-medium tracking-[0.04em] text-white">Stay in the know.</h4>
               <p className="mt-2 text-[13px] leading-relaxed text-white/55">Be the first to discover new collections, private offers and jewellery inspiration.</p>
-              <form onSubmit={handleSubscribe} className="mt-5">
-                <div className="flex items-center gap-1.5 rounded-full border border-white/10 bg-white p-1.5 shadow-[0_8px_24px_rgba(0,0,0,0.2)] focus-within:border-[#9C544D]/40">
-                  <input value={email} onChange={(e)=>{ setEmail(e.target.value); if(status!=="idle") setStatus("idle"); }} placeholder="Enter your email address" type="email" className="min-w-0 flex-1 bg-transparent px-4 py-2 text-[13px] text-[#1a1a2e] placeholder:text-[#9a8e85] focus:outline-none" />
-                  <button type="submit" disabled={status==="loading"} className="inline-flex h-9 shrink-0 items-center justify-center gap-1.5 rounded-full bg-[#9C544D] px-5 text-[12px] font-semibold tracking-wide text-white transition-colors hover:bg-[#8a4b45] disabled:opacity-60">
-                    {status==="loading" ? "..." : "Subscribe"} <ArrowRight className="h-3.5 w-3.5 opacity-80" />
+              <form onSubmit={handleSubscribe} className="mt-5 w-full max-w-full">
+                <div className="flex w-full max-w-full flex-col gap-2 rounded-[20px] border border-white/10 bg-white p-1.5 shadow-[0_8px_24px_rgba(0,0,0,0.2)] focus-within:border-[#9C544D]/40 sm:flex-row sm:items-center sm:gap-1.5 sm:rounded-full">
+                  <input value={email} onChange={(e)=>{ setEmail(e.target.value); if(status!=="idle") setStatus("idle"); }} placeholder="Enter your email address" type="email" className="min-w-0 w-full flex-1 bg-transparent px-4 py-2.5 text-[13px] text-[#1a1a2e] placeholder:text-[#9a8e85] focus:outline-none sm:py-2" />
+                  <button type="submit" disabled={status==="loading"} className="inline-flex h-10 w-full shrink-0 items-center justify-center gap-1.5 rounded-full bg-[#9C544D] px-5 text-[12px] font-semibold tracking-wide text-white transition-colors hover:bg-[#8a4b45] disabled:opacity-60 sm:h-9 sm:w-auto">
+                    {status==="loading" ? "..." : "Subscribe"} <ArrowRight className="h-3.5 w-3.5 shrink-0 opacity-80" />
                   </button>
                 </div>
                 {message && <p className={`mt-3 text-xs ${status==="success" ? "text-emerald-300/90" : "text-red-300/90"}`}>{message}</p>}
@@ -89,16 +89,16 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="flex flex-col gap-6 border-t border-white/[0.07] py-7 lg:flex-row lg:items-center lg:justify-between">
-          <div className="text-center text-xs leading-relaxed text-white/45 lg:text-left">
-            <p>© 2026 All Rights Reserved By Creative Muse</p>
-            <p className="mt-1">Designed &amp; Developed By <a href="https://apfpuniversal.com" target="_blank" rel="noopener noreferrer" className="text-white/70 underline decoration-white/20 underline-offset-4 transition-colors hover:text-white hover:decoration-white/40">APFP UNIVERSAL</a></p>
+        <div className="flex w-full max-w-full flex-col gap-6 border-t border-white/[0.07] py-7 lg:flex-row lg:items-center lg:justify-between">
+          <div className="w-full max-w-full px-2 text-center text-xs leading-relaxed text-white/45 sm:px-0 lg:w-auto lg:text-left">
+            <p className="break-words">© 2026 All Rights Reserved By Creative Muse</p>
+            <p className="mt-1 break-words">Designed &amp; Developed By <a href="https://apfpuniversal.com" target="_blank" rel="noopener noreferrer" className="whitespace-nowrap text-white/70 underline decoration-white/20 underline-offset-4 transition-colors hover:text-white hover:decoration-white/40">APFP UNIVERSAL</a></p>
           </div>
-          <div className="flex flex-wrap items-center justify-center gap-5 opacity-90 lg:justify-end">
-            <img src="/payment-methods/razorpay.png" alt="Razorpay" className="h-[22px] w-auto max-w-[7rem] object-contain brightness-0 invert opacity-80" />
-            <img src="/payment-methods/upi.svg" alt="UPI" className="h-5 w-auto object-contain opacity-80" />
-            <img src="/payment-methods/visa.svg" alt="Visa" className="h-5 w-auto object-contain opacity-80" />
-            <img src="/payment-methods/Mastercard-logo.svg" alt="Mastercard" className="h-5 w-auto object-contain opacity-80" />
+          <div className="flex w-full max-w-full flex-wrap items-center justify-center gap-4 sm:gap-5 opacity-90 lg:w-auto lg:justify-end">
+            <img src="/payment-methods/razorpay.png" alt="Razorpay" className="h-[20px] w-auto max-w-[6.5rem] shrink-0 object-contain brightness-0 invert opacity-80 sm:h-[22px] sm:max-w-[7rem]" />
+            <img src="/payment-methods/upi.svg" alt="UPI" className="h-4 w-auto shrink-0 object-contain opacity-80 sm:h-5" />
+            <img src="/payment-methods/visa.svg" alt="Visa" className="h-4 w-auto shrink-0 object-contain opacity-80 sm:h-5" />
+            <img src="/payment-methods/Mastercard-logo.svg" alt="Mastercard" className="h-4 w-auto shrink-0 object-contain opacity-80 sm:h-5" />
           </div>
         </div>
       </div>
@@ -108,14 +108,14 @@ export function Footer() {
 
 function FooterCol({ title, links }: { title: string; links: [string, string][] }) {
   return (
-    <div>
+    <div className="min-w-0">
       <h4 className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/90">{title}</h4>
       <div className="mt-4 h-px w-7 bg-[#9C544D]/60" />
       <ul className="mt-5 space-y-3 text-[13px]">
         {links.map(([label, to]) => (
-          <li key={label}>
-            <Link to={to} className="group inline-flex items-center gap-1.5 text-white/60 transition-colors hover:text-white">
-              <span className="h-px w-0 bg-white/60 transition-all duration-300 group-hover:w-3" />
+          <li key={label} className="min-w-0">
+            <Link to={to} className="group inline-flex min-w-0 items-center gap-1.5 break-words text-white/60 transition-colors hover:text-white">
+              <span className="h-px w-0 shrink-0 bg-white/60 transition-all duration-300 group-hover:w-3" />
               {label}
             </Link>
           </li>

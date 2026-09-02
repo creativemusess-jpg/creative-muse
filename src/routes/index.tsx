@@ -826,17 +826,19 @@ function BestSellers() {
   })();
 
   return (
-    <section className="bg-[#f5efe8] py-20">
-      <div className="mx-auto max-w-[1280px] px-6">
-        <SectionHeading eyebrow="Our Jewellery" title="Handpicked Best Sellers" />
+    <section className="bg-[#f5efe8] py-12 sm:py-20">
+      <div className="mx-auto max-w-[1280px] px-4 sm:px-6">
+        <div className="mb-6 sm:mb-8">
+          <SectionHeading eyebrow="Our Jewellery" title="Handpicked Best Sellers" />
+        </div>
 
-        <div className="mb-8 flex justify-center md:mb-10">
-          <div className="scrollbar-hide flex w-full max-w-[calc(100vw-48px)] gap-1.5 overflow-x-auto rounded-[28px] bg-white p-2 shadow-[0_4px_16px_rgba(0,0,0,0.06)] md:inline-flex md:w-auto md:max-w-none md:flex-wrap md:justify-center md:gap-1 md:overflow-visible md:rounded-full md:p-1.5">
+        <div className="mb-6 flex justify-center sm:mb-8 md:mb-10">
+          <div className="scrollbar-hide flex w-full max-w-full gap-1 overflow-x-auto whitespace-nowrap rounded-full bg-white p-1 shadow-[0_4px_16px_rgba(0,0,0,0.06)] snap-x snap-mandatory sm:inline-flex sm:w-auto sm:max-w-none sm:flex-wrap sm:justify-center sm:gap-1 sm:overflow-visible sm:snap-none sm:p-1.5">
             {tabs.map((t) => (
               <button
                 key={t}
                 onClick={() => setActive(t)}
-                className={`flex h-[52px] min-w-[148px] shrink-0 items-center justify-center rounded-[22px] px-4 text-[13px] font-semibold tracking-[0.08em] uppercase transition-all duration-300 md:h-auto md:min-w-0 md:rounded-full md:px-5 md:py-2.5 md:text-[12px] md:tracking-[0.1em] ${
+                className={`flex h-9 shrink-0 snap-start items-center justify-center rounded-full px-4 text-[10px] font-semibold tracking-[0.08em] uppercase transition-all duration-300 sm:h-auto sm:py-2.5 sm:px-5 sm:text-[12px] sm:tracking-[0.1em] ${
                   active === t
                     ? "bg-[#9C544D] text-white shadow-[0_6px_16px_rgba(156,84,77,0.35)]"
                     : "text-[#7a6e64] hover:text-[#1a1a2e]"
