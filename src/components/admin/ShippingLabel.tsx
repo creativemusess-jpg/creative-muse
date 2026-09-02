@@ -31,7 +31,7 @@ const ShippingLabel = forwardRef<HTMLDivElement, ShippingLabelProps>(
     const barcodeBars = () => {
       const seed = trackingValue || order.order_number || "CREATIVE-MUSE";
       const bars: Array<{ width: number; gap: number }> = [];
-      seed.split("").forEach((char, index) => {
+      seed.split("").forEach((char: string, index: number) => {
         const code = char.charCodeAt(0) + index;
         bars.push({
           width: code % 3 === 0 ? 3 : code % 2 === 0 ? 2 : 1,

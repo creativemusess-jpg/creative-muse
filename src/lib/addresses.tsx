@@ -14,8 +14,13 @@ type AddressCtx = {
   loading: boolean;
   defaultAddress: CustomerAddress | null;
   refreshAddresses: () => Promise<void>;
-  addAddress: (params: Parameters<typeof saveCustomerAddress>[0]) => Promise<CustomerAddress | null>;
-  editAddress: (id: string, params: Parameters<typeof updateCustomerAddress>[1]) => Promise<CustomerAddress | null>;
+  addAddress: (
+    params: Parameters<typeof saveCustomerAddress>[0],
+  ) => Promise<CustomerAddress | null>;
+  editAddress: (
+    id: string,
+    params: Parameters<typeof updateCustomerAddress>[1],
+  ) => Promise<CustomerAddress | null>;
   removeAddress: (id: string) => Promise<boolean>;
   markDefault: (id: string) => Promise<boolean>;
 };
@@ -24,18 +29,9 @@ const Ctx = createContext<AddressCtx | null>(null);
 
 export function AddressProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
-  const [customerId, setCustomerId] = useState<string | null>(null);
   const [addresses, setAddresses] = useState<CustomerAddress[]>([]);
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    if (user) {
-      setCustomerId(user.id);
-    } else {
-      setCustomerId(null);
-      setAddresses([]);
-    }
-  }, [user]);
+  const customerId = user?.id || null;
 
   const refreshAddresses = useCallback(async () => {
     if (!customerId) return;
@@ -51,7 +47,12 @@ export function AddressProvider({ children }: { children: ReactNode }) {
   }, [customerId]);
 
   useEffect(() => {
-    if (customerId) refreshAddresses();
+    if (customerId) {
+      refreshAddresses();
+    } else {
+      setAddresses([]);
+      setLoading(false);
+    }
   }, [customerId, refreshAddresses]);
 
   const defaultAddress = addresses.find((a) => a.isDefault) || addresses[0] || null;
@@ -94,7 +95,18 @@ export function AddressProvider({ children }: { children: ReactNode }) {
   );
 
   return (
-    <Ctx.Provider value={{ addresses, loading, defaultAddress, refreshAddresses, addAddress, editAddress, removeAddress, markDefault }}>
+    <Ctx.Provider
+      value={{
+        addresses,
+        loading,
+        defaultAddress,
+        refreshAddresses,
+        addAddress,
+        editAddress,
+        removeAddress,
+        markDefault,
+      }}
+    >
       {children}
     </Ctx.Provider>
   );

@@ -1,5 +1,13 @@
 import { useState, useCallback } from "react";
-import { ChevronDown, ChevronUp, ChevronsUpDown, Search, Check, X, ArrowUpDown } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronUp,
+  ChevronsUpDown,
+  Search,
+  Check,
+  X,
+  ArrowUpDown,
+} from "lucide-react";
 
 export interface Column<T> {
   key: string;
@@ -37,12 +45,31 @@ interface DataTableProps<T> {
   mobileCardGrid?: string;
 }
 
-export function DataTable<T extends Record<string, any>>({
-  columns, data, keyField, loading, error, emptyTitle = "No items found",
-  emptyDescription, onRetry, selectedItems, onSelectionChange,
-  sortField, sortOrder, onSort, page, totalPages, total,
-  onPageChange, searchValue, onSearchChange, searchPlaceholder = "Search...",
-  filters, bulkActions, mobileCardRender, mobileCardGrid,
+export function DataTable<T extends Record<string, unknown>>({
+  columns,
+  data,
+  keyField,
+  loading,
+  error,
+  emptyTitle = "No items found",
+  emptyDescription,
+  onRetry,
+  selectedItems,
+  onSelectionChange,
+  sortField,
+  sortOrder,
+  onSort,
+  page,
+  totalPages,
+  total,
+  onPageChange,
+  searchValue,
+  onSearchChange,
+  searchPlaceholder = "Search...",
+  filters,
+  bulkActions,
+  mobileCardRender,
+  mobileCardGrid,
 }: DataTableProps<T>) {
   const allSelected = data.length > 0 && selectedItems?.size === data.length;
   const someSelected = (selectedItems?.size ?? 0) > 0;
@@ -66,7 +93,11 @@ export function DataTable<T extends Record<string, any>>({
 
   const SortIcon = ({ field }: { field: string }) => {
     if (sortField !== field) return <ChevronsUpDown className="h-3 w-3 text-gray-300" />;
-    return sortOrder === "asc" ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />;
+    return sortOrder === "asc" ? (
+      <ChevronUp className="h-3 w-3" />
+    ) : (
+      <ChevronDown className="h-3 w-3" />
+    );
   };
 
   if (loading) {
@@ -94,7 +125,10 @@ export function DataTable<T extends Record<string, any>>({
             <p className="font-semibold">Could not load data</p>
             <p className="mt-1 text-sm">{error}</p>
             {onRetry && (
-              <button onClick={onRetry} className="mt-3 rounded-lg bg-red-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-red-700">
+              <button
+                onClick={onRetry}
+                className="mt-3 rounded-lg bg-red-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-red-700"
+              >
                 Retry
               </button>
             )}
@@ -143,14 +177,12 @@ export function DataTable<T extends Record<string, any>>({
       ) : (
         <div className="rounded-xl border border-gray-200 bg-white">
           {mobileCardRender && (
-            <div className={`grid gap-3 p-3 sm:p-4 ${mobileCardGrid || "grid-cols-1 sm:grid-cols-2"}`}>
+            <div
+              className={`grid gap-3 p-3 sm:p-4 ${mobileCardGrid || "grid-cols-1 sm:grid-cols-2"}`}
+            >
               {data.map((item) => {
                 const id = String(item[keyField]);
-                return (
-                  <div key={id}>
-                    {mobileCardRender(item)}
-                  </div>
-                );
+                return <div key={id}>{mobileCardRender(item)}</div>;
               })}
             </div>
           )}
@@ -192,7 +224,10 @@ export function DataTable<T extends Record<string, any>>({
                 {data.map((item) => {
                   const id = String(item[keyField]);
                   return (
-                    <tr key={id} className={`hover:bg-gray-50 ${selectedItems?.has(id) ? "bg-amber-50/50" : ""}`}>
+                    <tr
+                      key={id}
+                      className={`hover:bg-gray-50 ${selectedItems?.has(id) ? "bg-amber-50/50" : ""}`}
+                    >
                       {onSelectionChange && (
                         <td className="px-3 py-3">
                           <input
@@ -272,28 +307,55 @@ export function StatusBadge({ status, size = "sm" }: { status: string; size?: "s
   };
   const sizeClass = size === "md" ? "px-2.5 py-1 text-xs" : "px-2 py-0.5 text-[10px]";
   return (
-    <span className={`inline-block rounded-full font-semibold uppercase tracking-wider ${sizeClass} ${colors[status] || "bg-gray-100 text-gray-600"}`}>
+    <span
+      className={`inline-block rounded-full font-semibold uppercase tracking-wider ${sizeClass} ${colors[status] || "bg-gray-100 text-gray-600"}`}
+    >
       {status.replace(/_/g, " ")}
     </span>
   );
 }
 
-export function ConfirmDialog({ open, onClose, onConfirm, title, message, confirmLabel = "Confirm", variant = "danger" }: {
-  open: boolean; onClose: () => void; onConfirm: () => void;
-  title: string; message: string; confirmLabel?: string; variant?: "danger" | "primary";
+export function ConfirmDialog({
+  open,
+  onClose,
+  onConfirm,
+  title,
+  message,
+  confirmLabel = "Confirm",
+  variant = "danger",
+}: {
+  open: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+  title: string;
+  message: React.ReactNode;
+  confirmLabel?: string;
+  variant?: "danger" | "primary";
 }) {
   if (!open) return null;
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40" onClick={onClose}>
-      <div className="mx-4 w-full max-w-sm rounded-xl bg-white p-6 shadow-xl" onClick={(e) => e.stopPropagation()}>
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
+      onClick={onClose}
+    >
+      <div
+        className="mx-4 w-full max-w-sm rounded-xl bg-white p-6 shadow-xl"
+        onClick={(e) => e.stopPropagation()}
+      >
         <h3 className="text-lg font-bold text-[#1a1a2e]">{title}</h3>
         <p className="mt-2 text-sm text-gray-600">{message}</p>
         <div className="mt-6 flex justify-end gap-3">
-          <button onClick={onClose} className="rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50">
+          <button
+            onClick={onClose}
+            className="rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50"
+          >
             Cancel
           </button>
           <button
-            onClick={() => { onConfirm(); onClose(); }}
+            onClick={() => {
+              onConfirm();
+              onClose();
+            }}
             className={`rounded-lg px-4 py-2 text-sm font-semibold text-white ${variant === "danger" ? "bg-red-600 hover:bg-red-700" : "bg-[#1a1a2e] hover:bg-[#2d1b4e]"}`}
           >
             {confirmLabel}
@@ -304,15 +366,29 @@ export function ConfirmDialog({ open, onClose, onConfirm, title, message, confir
   );
 }
 
-export function Toast({ message, type = "success", visible, onClose }: {
-  message: string; type?: "success" | "error" | "info"; visible: boolean; onClose: () => void;
+export function Toast({
+  message,
+  type = "success",
+  visible,
+  onClose,
+}: {
+  message: string;
+  type?: "success" | "error" | "info";
+  visible: boolean;
+  onClose: () => void;
 }) {
   if (!visible) return null;
   const bg = type === "success" ? "bg-green-600" : type === "error" ? "bg-red-600" : "bg-blue-600";
   return (
     <div className="fixed bottom-6 right-6 z-50 animate-in slide-in-from-right-2">
-      <div className={`flex items-center gap-3 rounded-xl px-5 py-3 text-sm font-medium text-white shadow-lg ${bg}`}>
-        {type === "success" ? <Check className="h-4 w-4" /> : type === "error" ? <X className="h-4 w-4" /> : null}
+      <div
+        className={`flex items-center gap-3 rounded-xl px-5 py-3 text-sm font-medium text-white shadow-lg ${bg}`}
+      >
+        {type === "success" ? (
+          <Check className="h-4 w-4" />
+        ) : type === "error" ? (
+          <X className="h-4 w-4" />
+        ) : null}
         {message}
         <button onClick={onClose} className="ml-2 opacity-70 hover:opacity-100">
           <X className="h-3.5 w-3.5" />

@@ -12,15 +12,24 @@ import { useCategories } from "@/lib/api/hooks";
 
 const SORT_OPTIONS = ["Featured", "Price: Low to High", "Price: High to Low"] as const;
 type SortOption = (typeof SORT_OPTIONS)[number];
+type ShopSearch = {
+  category?: string;
+  metal?: string;
+  minPrice?: string;
+  maxPrice?: string;
+  sort?: SortOption;
+};
 
-const sortFromUrl = (s: unknown): string =>
+const sortFromUrl = (s: unknown): SortOption =>
   SORT_OPTIONS.includes(s as SortOption) ? (s as SortOption) : "Featured";
 
-function stripEmpty(params: Record<string, string>): Record<string, string> {
-  const out: Record<string, string> = {};
-  for (const [k, v] of Object.entries(params)) {
-    if (v !== "" && v !== undefined && v !== null) out[k] = v;
-  }
+function stripEmpty(params: ShopSearch): ShopSearch {
+  const out: ShopSearch = {};
+  if (params.category) out.category = params.category;
+  if (params.metal) out.metal = params.metal;
+  if (params.minPrice) out.minPrice = params.minPrice;
+  if (params.maxPrice) out.maxPrice = params.maxPrice;
+  if (params.sort && params.sort !== "Featured") out.sort = params.sort;
   return out;
 }
 
@@ -31,11 +40,11 @@ function safeNum(v: unknown): number | undefined {
 }
 
 export const Route = createFileRoute("/shop")({
-  validateSearch: (search: Record<string, unknown>) => ({
-    category: typeof search.category === "string" ? search.category : "",
-    metal: typeof search.metal === "string" ? search.metal : "",
-    minPrice: typeof search.minPrice === "string" ? search.minPrice : "",
-    maxPrice: typeof search.maxPrice === "string" ? search.maxPrice : "",
+  validateSearch: (search: Record<string, unknown>): ShopSearch => ({
+    category: typeof search.category === "string" ? search.category : undefined,
+    metal: typeof search.metal === "string" ? search.metal : undefined,
+    minPrice: typeof search.minPrice === "string" ? search.minPrice : undefined,
+    maxPrice: typeof search.maxPrice === "string" ? search.maxPrice : undefined,
     sort: sortFromUrl(search.sort),
   }),
   head: () => ({
@@ -74,12 +83,12 @@ function ShopPage() {
 
   const pushFilters = useCallback(
     (overrides: Partial<Record<string, string>>) => {
-      const next: Record<string, string> = {
+      const next: ShopSearch = {
         category: overrides.category ?? urlCat,
         metal: overrides.metal ?? urlMetal,
         minPrice: overrides.minPrice ?? urlMin,
         maxPrice: overrides.maxPrice ?? urlMax,
-        sort: overrides.sort ?? urlSort,
+        sort: sortFromUrl(overrides.sort ?? urlSort),
       };
       navigate({ to: "/shop", search: stripEmpty(next), replace: true });
     },
@@ -108,10 +117,10 @@ function ShopPage() {
         const prods = await productsApi.getPublished({ category: catSlug, per_page: 100 });
         if (abort.signal.aborted) return;
         setAllProducts(prods.map(productFromDb));
-      } catch (err: any) {
+      } catch (err: unknown) {
         if (abort.signal.aborted) return;
         console.error("Shop product fetch error:", err);
-        setError(err?.message || "Failed to load products");
+        setError(err instanceof Error ? err.message : "Failed to load products");
       } finally {
         if (!abort.signal.aborted) setLoading(false);
       }

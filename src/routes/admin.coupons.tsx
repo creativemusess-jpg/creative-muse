@@ -1,6 +1,11 @@
 import { useState, useEffect, useMemo, useRef } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { AdminLayout, AdminPageHeader, AdminLoading, AdminEmpty } from "@/components/admin/AdminLayout";
+import {
+  AdminLayout,
+  AdminPageHeader,
+  AdminLoading,
+  AdminEmpty,
+} from "@/components/admin/AdminLayout";
 import { couponsApi } from "@/lib/api/coupons";
 import { categoriesApi } from "@/lib/api/categories";
 import { productsApi } from "@/lib/api/products";
@@ -56,13 +61,15 @@ function AdminCoupons() {
     }
   };
 
-  useEffect(() => { fetch(); }, []);
+  useEffect(() => {
+    fetch();
+  }, []);
 
   const loadProducts = async () => {
     if (allProducts.length > 0) return;
     setProductsLoading(true);
     try {
-      const { data } = await productsApi.list({}, 1, 1000);
+      const { data } = await productsApi.list({ per_page: 1000 });
       setAllProducts(data || []);
     } catch (err) {
       console.error(err);
@@ -146,7 +153,9 @@ function AdminCoupons() {
       setSelectedCategoryIds(categoryIds);
       if (productIds.size > 0) loadProducts();
       if (categoryIds.size > 0) loadCategories();
-    } catch { /* ignore */ }
+    } catch {
+      /* ignore */
+    }
   };
 
   const handleSave = async () => {
@@ -192,12 +201,22 @@ function AdminCoupons() {
       if (form.coupon_scope === "selected_products") {
         for (const pid of selectedProductIds) {
           const p = allProducts.find((x) => x.id === pid);
-          scopes.push({ scope_type: "product", scope_id: pid, scope_label: p?.name || pid, rule_type: "include" });
+          scopes.push({
+            scope_type: "product",
+            scope_id: pid,
+            scope_label: p?.name || pid,
+            rule_type: "include",
+          });
         }
       } else if (form.coupon_scope === "selected_categories") {
         for (const cid of selectedCategoryIds) {
           const c = allCategories.find((x) => x.id === cid);
-          scopes.push({ scope_type: "category", scope_id: cid, scope_label: c?.name || cid, rule_type: "include" });
+          scopes.push({
+            scope_type: "category",
+            scope_id: cid,
+            scope_label: c?.name || cid,
+            rule_type: "include",
+          });
         }
       }
       await couponsApi.setScopes(couponId, scopes);
@@ -232,11 +251,19 @@ function AdminCoupons() {
     }
     if (c.coupon_scope === "selected_products") {
       const count = c.scope_count ?? 0;
-      return <span className="text-xs font-medium text-gray-600">{count} Product{count !== 1 ? "s" : ""}</span>;
+      return (
+        <span className="text-xs font-medium text-gray-600">
+          {count} Product{count !== 1 ? "s" : ""}
+        </span>
+      );
     }
     if (c.coupon_scope === "selected_categories") {
       const count = c.scope_count ?? 0;
-      return <span className="text-xs font-medium text-gray-600">{count} Categor{count !== 1 ? "ies" : "y"}</span>;
+      return (
+        <span className="text-xs font-medium text-gray-600">
+          {count} Categor{count !== 1 ? "ies" : "y"}
+        </span>
+      );
     }
     return <span className="text-xs text-gray-400">—</span>;
   };
@@ -247,7 +274,13 @@ function AdminCoupons() {
         title="Coupons"
         description={`${coupons.length} coupons`}
         actions={
-          <button onClick={() => { resetForm(); setShowForm(true); }} className="flex items-center gap-2 rounded-lg bg-[#1a1a2e] px-4 py-2 text-sm font-semibold text-white hover:bg-[#2d1b4e]">
+          <button
+            onClick={() => {
+              resetForm();
+              setShowForm(true);
+            }}
+            className="flex items-center gap-2 rounded-lg bg-[#1a1a2e] px-4 py-2 text-sm font-semibold text-white hover:bg-[#2d1b4e]"
+          >
             <Plus className="h-4 w-4" /> Add Coupon
           </button>
         }
@@ -255,84 +288,188 @@ function AdminCoupons() {
 
       {showForm && (
         <div className="mb-6 rounded-xl border border-gray-200 bg-white p-6">
-          <h3 className="text-lg font-bold text-[#1a1a2e] mb-4">{editing ? "Edit Coupon" : "New Coupon"}</h3>
+          <h3 className="text-lg font-bold text-[#1a1a2e] mb-4">
+            {editing ? "Edit Coupon" : "New Coupon"}
+          </h3>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <div>
-              <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Code</label>
-              <input value={form.code} onChange={(e) => setForm({ ...form, code: e.target.value.toUpperCase() })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#9C544D]" placeholder="SUMMER25" />
+              <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">
+                Code
+              </label>
+              <input
+                value={form.code}
+                onChange={(e) => setForm({ ...form, code: e.target.value.toUpperCase() })}
+                className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#9C544D]"
+                placeholder="SUMMER25"
+              />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Discount Type</label>
-              <select value={form.discount_type} onChange={(e) => setForm({ ...form, discount_type: e.target.value })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#9C544D]">
+              <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">
+                Discount Type
+              </label>
+              <select
+                value={form.discount_type}
+                onChange={(e) => setForm({ ...form, discount_type: e.target.value })}
+                className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#9C544D]"
+              >
                 <option value="percentage">Percentage</option>
                 <option value="fixed">Fixed Amount</option>
               </select>
             </div>
             <div>
-              <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Value</label>
-              <input type="number" value={form.discount_value} onChange={(e) => setForm({ ...form, discount_value: Number(e.target.value) })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#9C544D]" />
+              <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">
+                Value
+              </label>
+              <input
+                type="number"
+                value={form.discount_value}
+                onChange={(e) => setForm({ ...form, discount_value: Number(e.target.value) })}
+                className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#9C544D]"
+              />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Coupon Scope</label>
-              <select value={form.coupon_scope} onChange={(e) => setForm({ ...form, coupon_scope: e.target.value })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#9C544D]">
+              <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">
+                Coupon Scope
+              </label>
+              <select
+                value={form.coupon_scope}
+                onChange={(e) => setForm({ ...form, coupon_scope: e.target.value })}
+                className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#9C544D]"
+              >
                 <option value="entire_store">Entire Store</option>
                 <option value="selected_categories">Selected Categories</option>
                 <option value="selected_products">Selected Products</option>
               </select>
             </div>
             <div>
-              <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Min Order Value</label>
-              <input type="number" value={form.min_order_value} onChange={(e) => setForm({ ...form, min_order_value: Number(e.target.value) })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#9C544D]" />
+              <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">
+                Min Order Value
+              </label>
+              <input
+                type="number"
+                value={form.min_order_value}
+                onChange={(e) => setForm({ ...form, min_order_value: Number(e.target.value) })}
+                className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#9C544D]"
+              />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Max Discount</label>
-              <input type="number" value={form.max_discount} onChange={(e) => setForm({ ...form, max_discount: Number(e.target.value) })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#9C544D]" />
+              <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">
+                Max Discount
+              </label>
+              <input
+                type="number"
+                value={form.max_discount}
+                onChange={(e) => setForm({ ...form, max_discount: Number(e.target.value) })}
+                className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#9C544D]"
+              />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Usage Limit</label>
-              <input type="number" value={form.usage_limit} onChange={(e) => setForm({ ...form, usage_limit: Number(e.target.value) })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#9C544D]" />
+              <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">
+                Usage Limit
+              </label>
+              <input
+                type="number"
+                value={form.usage_limit}
+                onChange={(e) => setForm({ ...form, usage_limit: Number(e.target.value) })}
+                className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#9C544D]"
+              />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Per User Limit</label>
-              <input type="number" value={form.per_user_usage_limit} onChange={(e) => setForm({ ...form, per_user_usage_limit: Number(e.target.value) })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#9C544D]" />
+              <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">
+                Per User Limit
+              </label>
+              <input
+                type="number"
+                value={form.per_user_usage_limit}
+                onChange={(e) => setForm({ ...form, per_user_usage_limit: Number(e.target.value) })}
+                className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#9C544D]"
+              />
             </div>
           </div>
 
           <div className="mt-4 flex items-center gap-4 flex-wrap">
             <label className="flex items-center gap-2 text-sm">
-              <input type="checkbox" checked={form.is_active} onChange={(e) => setForm({ ...form, is_active: e.target.checked })} className="rounded" />
+              <input
+                type="checkbox"
+                checked={form.is_active}
+                onChange={(e) => setForm({ ...form, is_active: e.target.checked })}
+                className="rounded"
+              />
               Active
             </label>
             <label className="flex items-center gap-2 text-sm">
-              <input type="checkbox" checked={form.first_order_only} onChange={(e) => setForm({ ...form, first_order_only: e.target.checked })} className="rounded" />
+              <input
+                type="checkbox"
+                checked={form.first_order_only}
+                onChange={(e) => setForm({ ...form, first_order_only: e.target.checked })}
+                className="rounded"
+              />
               First Order Only
             </label>
             <label className="flex items-center gap-2 text-sm">
-              <input type="checkbox" checked={form.logged_in_only} onChange={(e) => setForm({ ...form, logged_in_only: e.target.checked })} className="rounded" />
+              <input
+                type="checkbox"
+                checked={form.logged_in_only}
+                onChange={(e) => setForm({ ...form, logged_in_only: e.target.checked })}
+                className="rounded"
+              />
               Logged In Only
             </label>
             <label className="flex items-center gap-2 text-sm">
-              <input type="checkbox" checked={!form.guest_allowed} onChange={(e) => setForm({ ...form, guest_allowed: !e.target.checked })} className="rounded" />
+              <input
+                type="checkbox"
+                checked={!form.guest_allowed}
+                onChange={(e) => setForm({ ...form, guest_allowed: !e.target.checked })}
+                className="rounded"
+              />
               Block Guests
             </label>
           </div>
 
           <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <div>
-              <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Start Date</label>
-              <input type="datetime-local" value={form.start_date} onChange={(e) => setForm({ ...form, start_date: e.target.value })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#9C544D]" />
+              <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">
+                Start Date
+              </label>
+              <input
+                type="datetime-local"
+                value={form.start_date}
+                onChange={(e) => setForm({ ...form, start_date: e.target.value })}
+                className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#9C544D]"
+              />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Customer Group</label>
-              <input value={form.customer_group} onChange={(e) => setForm({ ...form, customer_group: e.target.value })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#9C544D]" placeholder="VIP, Wholesale, etc." />
+              <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">
+                Customer Group
+              </label>
+              <input
+                value={form.customer_group}
+                onChange={(e) => setForm({ ...form, customer_group: e.target.value })}
+                className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#9C544D]"
+                placeholder="VIP, Wholesale, etc."
+              />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Min Items</label>
-              <input type="number" value={form.min_items} onChange={(e) => setForm({ ...form, min_items: Number(e.target.value) })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#9C544D]" />
+              <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">
+                Min Items
+              </label>
+              <input
+                type="number"
+                value={form.min_items}
+                onChange={(e) => setForm({ ...form, min_items: Number(e.target.value) })}
+                className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#9C544D]"
+              />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Max Items</label>
-              <input type="number" value={form.max_items} onChange={(e) => setForm({ ...form, max_items: Number(e.target.value) })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#9C544D]" />
+              <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">
+                Max Items
+              </label>
+              <input
+                type="number"
+                value={form.max_items}
+                onChange={(e) => setForm({ ...form, max_items: Number(e.target.value) })}
+                className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#9C544D]"
+              />
             </div>
           </div>
 
@@ -367,10 +504,20 @@ function AdminCoupons() {
           )}
 
           <div className="mt-4 flex items-center gap-3">
-            <button onClick={handleSave} disabled={saving} className="rounded-lg bg-[#1a1a2e] px-4 py-2 text-sm font-semibold text-white hover:bg-[#2d1b4e] disabled:opacity-50">
+            <button
+              onClick={handleSave}
+              disabled={saving}
+              className="rounded-lg bg-[#1a1a2e] px-4 py-2 text-sm font-semibold text-white hover:bg-[#2d1b4e] disabled:opacity-50"
+            >
               {saving ? "Saving..." : editing ? "Update" : "Create"}
             </button>
-            <button onClick={() => { setShowForm(false); resetForm(); }} className="rounded-lg border border-gray-200 px-4 py-2 text-sm font-semibold text-gray-600 hover:bg-gray-50">
+            <button
+              onClick={() => {
+                setShowForm(false);
+                resetForm();
+              }}
+              className="rounded-lg border border-gray-200 px-4 py-2 text-sm font-semibold text-gray-600 hover:bg-gray-50"
+            >
               Cancel
             </button>
           </div>
@@ -380,38 +527,76 @@ function AdminCoupons() {
       {loading ? (
         <AdminLoading />
       ) : coupons.length === 0 ? (
-        <AdminEmpty title="No coupons yet" description="Create discount coupons to promote your products." />
+        <AdminEmpty
+          title="No coupons yet"
+          description="Create discount coupons to promote your products."
+        />
       ) : (
         <div className="overflow-x-auto rounded-xl border border-gray-200 bg-white">
           <table className="w-full text-left text-sm">
             <thead>
               <tr className="border-b border-gray-100 bg-gray-50">
-                <th className="px-4 py-3 font-semibold text-gray-600 text-xs uppercase tracking-wider">Code</th>
-                <th className="px-4 py-3 font-semibold text-gray-600 text-xs uppercase tracking-wider">Value</th>
-                <th className="px-4 py-3 font-semibold text-gray-600 text-xs uppercase tracking-wider">Scope</th>
-                <th className="px-4 py-3 font-semibold text-gray-600 text-xs uppercase tracking-wider">Min Order</th>
-                <th className="px-4 py-3 font-semibold text-gray-600 text-xs uppercase tracking-wider">Usage</th>
-                <th className="px-4 py-3 font-semibold text-gray-600 text-xs uppercase tracking-wider">Status</th>
-                <th className="px-4 py-3 font-semibold text-gray-600 text-xs uppercase tracking-wider">Actions</th>
+                <th className="px-4 py-3 font-semibold text-gray-600 text-xs uppercase tracking-wider">
+                  Code
+                </th>
+                <th className="px-4 py-3 font-semibold text-gray-600 text-xs uppercase tracking-wider">
+                  Value
+                </th>
+                <th className="px-4 py-3 font-semibold text-gray-600 text-xs uppercase tracking-wider">
+                  Scope
+                </th>
+                <th className="px-4 py-3 font-semibold text-gray-600 text-xs uppercase tracking-wider">
+                  Min Order
+                </th>
+                <th className="px-4 py-3 font-semibold text-gray-600 text-xs uppercase tracking-wider">
+                  Usage
+                </th>
+                <th className="px-4 py-3 font-semibold text-gray-600 text-xs uppercase tracking-wider">
+                  Status
+                </th>
+                <th className="px-4 py-3 font-semibold text-gray-600 text-xs uppercase tracking-wider">
+                  Actions
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
               {coupons.map((c) => (
                 <tr key={c.id} className="hover:bg-gray-50">
-                  <td className="px-4 py-3"><span className="font-mono font-bold text-[#1a1a2e]">{c.code}</span></td>
+                  <td className="px-4 py-3">
+                    <span className="font-mono font-bold text-[#1a1a2e]">{c.code}</span>
+                  </td>
                   <td className="px-4 py-3 font-medium">{formatValue(c)}</td>
                   <td className="px-4 py-3">{formatScope(c)}</td>
-                  <td className="px-4 py-3 text-gray-500">{c.min_cart_value ? "₹" + Number(c.min_cart_value).toLocaleString("en-IN") : "—"}</td>
-                  <td className="px-4 py-3 text-gray-500">{c.usage_count ?? 0}{c.total_usage_limit ? ` / ${c.total_usage_limit}` : ""}</td>
+                  <td className="px-4 py-3 text-gray-500">
+                    {c.min_cart_value
+                      ? "₹" + Number(c.min_cart_value).toLocaleString("en-IN")
+                      : "—"}
+                  </td>
+                  <td className="px-4 py-3 text-gray-500">
+                    {c.usage_count ?? 0}
+                    {c.total_usage_limit ? ` / ${c.total_usage_limit}` : ""}
+                  </td>
                   <td className="px-4 py-3">
-                    <span className={`inline-block rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${c.is_active ? "bg-green-100 text-green-700" : "bg-red-100 text-red-600"}`}>
+                    <span
+                      className={`inline-block rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${c.is_active ? "bg-green-100 text-green-700" : "bg-red-100 text-red-600"}`}
+                    >
                       {c.is_active ? "Active" : "Inactive"}
                     </span>
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-1">
-                      <button onClick={() => openEdit(c)} className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600"><Edit3 className="h-4 w-4" /></button>
-                      <button onClick={() => handleDelete(c.id, c.code)} className="rounded-lg p-1.5 text-red-300 hover:bg-red-50 hover:text-red-500"><Trash2 className="h-4 w-4" /></button>
+                      <button
+                        onClick={() => openEdit(c)}
+                        className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+                      >
+                        <Edit3 className="h-4 w-4" />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(c.id, c.code)}
+                        className="rounded-lg p-1.5 text-red-300 hover:bg-red-50 hover:text-red-500"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
                     </div>
                   </td>
                 </tr>
@@ -474,7 +659,10 @@ function SearchableMultiSelect({
           <span className="text-gray-400">{loading ? "Loading..." : placeholder}</span>
         ) : (
           selectedLabels.slice(0, 3).map((label) => (
-            <span key={label} className="inline-flex items-center gap-1 rounded-md bg-[#1a1a2e]/10 px-2 py-0.5 text-xs font-medium text-[#1a1a2e]">
+            <span
+              key={label}
+              className="inline-flex items-center gap-1 rounded-md bg-[#1a1a2e]/10 px-2 py-0.5 text-xs font-medium text-[#1a1a2e]"
+            >
               {label}
               <button
                 onClick={(e) => {
@@ -492,7 +680,9 @@ function SearchableMultiSelect({
         {selectedLabels.length > 3 && (
           <span className="text-xs text-gray-500">+{selectedLabels.length - 3} more</span>
         )}
-        <ChevronDown className={`ml-auto h-4 w-4 text-gray-400 transition-transform ${open ? "rotate-180" : ""}`} />
+        <ChevronDown
+          className={`ml-auto h-4 w-4 text-gray-400 transition-transform ${open ? "rotate-180" : ""}`}
+        />
       </div>
 
       {open && (
@@ -520,9 +710,11 @@ function SearchableMultiSelect({
                     selected.has(item.id) ? "bg-[#9C544D]/5 font-medium" : ""
                   }`}
                 >
-                  <div className={`flex h-4 w-4 items-center justify-center rounded border ${
-                    selected.has(item.id) ? "border-[#9C544D] bg-[#9C544D]" : "border-gray-300"
-                  }`}>
+                  <div
+                    className={`flex h-4 w-4 items-center justify-center rounded border ${
+                      selected.has(item.id) ? "border-[#9C544D] bg-[#9C544D]" : "border-gray-300"
+                    }`}
+                  >
                     {selected.has(item.id) && <Check className="h-3 w-3 text-white" />}
                   </div>
                   {item.label}

@@ -30,9 +30,11 @@ function ContactPage() {
     const newErrors: Record<string, string> = {};
     if (!formData.name.trim()) newErrors.name = "Name is required";
     if (!formData.email.trim()) newErrors.email = "Email is required";
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) newErrors.email = "Invalid email format";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email))
+      newErrors.email = "Invalid email format";
     if (!formData.phone.trim()) newErrors.phone = "Phone is required";
-    else if (!/^[\d\s\-\+\(\)]{10,}$/.test(formData.phone)) newErrors.phone = "Invalid phone number";
+    else if (!/^[\d\s\-\+\(\)]{10,}$/.test(formData.phone))
+      newErrors.phone = "Invalid phone number";
     if (!formData.message.trim()) newErrors.message = "Message is required";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -64,11 +66,19 @@ function ContactPage() {
 
   return (
     <PageShell>
-      <PageHeader eyebrow="Reach Us" title="We'd Love to Hear From You" subtitle="Book an appointment, ask about custom pieces, or simply say hello." />
+      <PageHeader
+        eyebrow="Reach Us"
+        title="We'd Love to Hear From You"
+        subtitle="Book an appointment, ask about custom pieces, or simply say hello."
+      />
 
       <section className="mx-auto grid max-w-[1100px] gap-10 px-6 py-16 lg:grid-cols-2">
         <div className="space-y-5">
-          <Info icon={MapPin} title="Visit Us" text="GF-3/4, Vidhi Square Complex, BPC Road, Anand Nagar, Vadodara – 390020" />
+          <Info
+            icon={MapPin}
+            title="Visit Us"
+            text="GF-3/4, Vidhi Square Complex, BPC Road, Anand Nagar, Vadodara – 390020"
+          />
           <Info icon={Phone} title="Call / WhatsApp" text="+91 90337 79867" />
           <Info icon={Mail} title="Email" text="hello@creativemuse.in" />
           <div className="rounded-[24px] bg-white p-6 shadow-[0_4px_24px_rgba(0,0,0,0.05)]">
@@ -80,7 +90,10 @@ function ContactPage() {
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4 rounded-[28px] bg-white p-7 shadow-[0_8px_32px_rgba(0,0,0,0.06)]">
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-4 rounded-[28px] bg-white p-7 shadow-[0_8px_32px_rgba(0,0,0,0.06)]"
+        >
           <h3 className="font-display text-xl font-semibold text-[#1a1a2e]">Send us a message</h3>
 
           <Field
@@ -115,7 +128,9 @@ function ContactPage() {
             disabled={status === "submitting"}
           />
           <div>
-            <label className="mb-1.5 block text-xs font-semibold tracking-wider text-[#7a6e64] uppercase">Message</label>
+            <label className="mb-1.5 block text-xs font-semibold tracking-wider text-[#7a6e64] uppercase">
+              Message
+            </label>
             <textarea
               rows={4}
               value={formData.message}
@@ -143,9 +158,15 @@ function ContactPage() {
             </div>
           )}
 
-          <button type="submit" className="btn-primary w-full" disabled={status === "submitting" || status === "success"}>
+          <button
+            type="submit"
+            className="btn-primary w-full"
+            disabled={status === "submitting" || status === "success"}
+          >
             {status === "submitting" && <Loader2 className="h-4 w-4 animate-spin" />}
-            {status === "submitting" ? "Submitting..." : status === "success" ? (
+            {status === "submitting" ? (
+              "Submitting..."
+            ) : status === "success" ? (
               <>
                 <CheckCircle className="h-4 w-4" /> Sent — we'll reply soon
               </>
@@ -158,7 +179,7 @@ function ContactPage() {
         </form>
       </section>
 
-      <style jsx>{`
+      <style>{`
         .animate-fade-in {
           animation: fadeIn 0.3s ease-out;
         }
@@ -188,7 +209,9 @@ function Field({
 }) {
   return (
     <div>
-      <label className="mb-1.5 block text-xs font-semibold tracking-wider text-[#7a6e64] uppercase">{label}</label>
+      <label className="mb-1.5 block text-xs font-semibold tracking-wider text-[#7a6e64] uppercase">
+        {label}
+      </label>
       <input
         type={type}
         value={value}

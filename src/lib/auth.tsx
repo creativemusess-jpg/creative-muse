@@ -63,10 +63,11 @@ async function ensureCustomer(authUser: any): Promise<{ customer: CustomerInfo |
   ).catch(() => ({ data: null } as any));
 
   if (existing) {
-    const { error: updErr } = await (supabase as any)
-      .from("customers")
-      .update({ last_login_at: new Date().toISOString(), updated_at: new Date().toISOString() })
-      .eq("id", existing.id);
+    const { error: updErr } = await withTimeout(
+      (supabase as any).from("customers").update({ last_login_at: new Date().toISOString(), updated_at: new Date().toISOString() }).eq("id", existing.id) as Promise<any>,
+      4000,
+      "last_login update"
+    ).catch((e: any) => ({ error: e } as any));
     if (updErr) console.error("Failed to update last_login:", updErr);
 
     return { customer: {
@@ -120,9 +121,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const refreshCustomer = useCallback(async () => {
     try {
-      const { data: { session } } = await supabase.auth.getSession();
+      const sessionResult = await withTimeout(supabase.auth.getSession() as Promise<any>, 7000, "getSession").catch(() => ({ data: { session: null } } as any));
+      const session = sessionResult?.data?.session || null;
+      console.info("[AUTH] refreshCustomer", { hasSession: !!session, hasUser: !!session?.user });
       if (session?.user) {
         const { customer } = await ensureCustomer(session.user);
+        console.info("[CHECKOUT_DIAG] customer", { found: !!customer });
         setUser(customer);
       } else {
         setUser(null);
@@ -136,11 +140,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
+    console.info("[CHECKOUT_DIAG] AuthProvider init");
     refreshCustomer();
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      console.info("[CHECKOUT_DIAG] onAuthStateChange", { event: _event, hasSession: !!session });
       try {
         if (session?.user) {
-          const { customer } = await ensureCustomer(session.user);
+          const { customer } = await withTimeout(ensureCustomer(session.user), 8000, "ensureCustomer:authChange").catch(() => ({ customer: null } as any));
           setUser(customer);
         } else {
           setUser(null);
@@ -152,7 +158,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setLoading(false);
       }
     });
-    return () => subscription.unsubscribe();
+    const safety = setTimeout(() => {
+      setLoading((prev) => {
+        if (prev) console.error("[AUTH] safety timeout forced loading false");
+        return false;
+      });
+    }, 8000);
+    return () => {
+      clearTimeout(safety);
+      subscription.unsubscribe();
+    };
   }, [refreshCustomer]);
 
   const signIn = useCallback(async (email: string, password: string) => {

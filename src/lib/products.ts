@@ -24,6 +24,7 @@ export type Product = {
   emoji: string;
   image: string;
   bg: string;
+  badge?: string | null;
   stock?: number;
   category: string;
   collection?: string;
@@ -349,6 +350,7 @@ export function productFromDb(product: ProductWithImages): Product {
     emoji: fallback?.emoji || "",
     image: mainImage,
     bg: fallback?.bg || gradientByCategory[category] || "from-[#faf3e8] to-[#f0e4d1]",
+    badge: product.badge || null,
     stock: product.stock_quantity ?? fallback?.stock,
     category,
     collection: fallback?.collection,
@@ -363,7 +365,7 @@ export function productFromDb(product: ProductWithImages): Product {
     care: fallback?.care,
     shippingInfo: fallback?.shippingInfo,
     cardLabel: product.card_label?.trim() || undefined,
-    specifications: (product.specifications || []).map((s: any) => ({
+    specifications: (product.specifications || []).map((s) => ({
       name: s.name || s.attribute_definition?.name || "",
       value: s.value,
     })),

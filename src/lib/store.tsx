@@ -81,7 +81,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const [giftPackagingEnabled, setGiftPackagingEnabled] = useState(false);
   const [giftMessage, setGiftMessage] = useState("");
   const { products, isLoading: productsLoading } = useStorefrontProducts();
-  const cartReady = hydrated;
+  const cartReady = hydrated && !productsLoading;
 
   useEffect(() => {
     setCart(readJSON<CartLine[]>(CART_KEY, []));
@@ -93,14 +93,18 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     if (!hydrated) return;
     try {
       window.localStorage.setItem(CART_KEY, JSON.stringify(cart));
-    } catch {}
+    } catch {
+      // localStorage can fail in private mode or restricted browsers.
+    }
   }, [cart, hydrated]);
 
   useEffect(() => {
     if (!hydrated) return;
     try {
       window.localStorage.setItem(WISH_KEY, JSON.stringify(wishlist));
-    } catch {}
+    } catch {
+      // localStorage can fail in private mode or restricted browsers.
+    }
   }, [wishlist, hydrated]);
 
   useEffect(() => {
@@ -141,9 +145,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   const setQty = useCallback((id: string, qty: number) => {
     setCart((prev) =>
-      prev
-        .map((l) => (l.id === id ? { ...l, qty: Math.max(1, qty) } : l))
-        .filter((l) => l.qty > 0),
+      prev.map((l) => (l.id === id ? { ...l, qty: Math.max(1, qty) } : l)).filter((l) => l.qty > 0),
     );
   }, []);
 
@@ -156,15 +158,10 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const toggleWishlist = useCallback((id: string) => {
-    setWishlist((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
-    );
+    setWishlist((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
   }, []);
 
-  const isWishlisted = useCallback(
-    (id: string) => wishlist.includes(id),
-    [wishlist],
-  );
+  const isWishlisted = useCallback((id: string) => wishlist.includes(id), [wishlist]);
 
   const { cartCount, cartSubtotal } = useMemo(() => {
     let count = 0;
@@ -225,14 +222,37 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       setGiftMessage,
     }),
     [
-      cart, cartReady, cartCount, cartSubtotal, addToCart, removeFromCart, setQty, clearCart, cartOpen,
-      openCart, closeCart,
-      wishlist, wishlistCount, toggleWishlist, isWishlisted, wishlistOpen,
-      openWishlist, closeWishlist,
-      quickViewId, closeQuickView,
-      couponCode, setCouponCode, discountAmount, setDiscountAmount, appliedCouponId,
-      setAppliedCouponId, clearCoupon,
-      giftPackagingEnabled, setGiftPackagingEnabled, giftMessage, setGiftMessage,
+      cart,
+      cartReady,
+      cartCount,
+      cartSubtotal,
+      addToCart,
+      removeFromCart,
+      setQty,
+      clearCart,
+      cartOpen,
+      openCart,
+      closeCart,
+      wishlist,
+      wishlistCount,
+      toggleWishlist,
+      isWishlisted,
+      wishlistOpen,
+      openWishlist,
+      closeWishlist,
+      quickViewId,
+      closeQuickView,
+      couponCode,
+      setCouponCode,
+      discountAmount,
+      setDiscountAmount,
+      appliedCouponId,
+      setAppliedCouponId,
+      clearCoupon,
+      giftPackagingEnabled,
+      setGiftPackagingEnabled,
+      giftMessage,
+      setGiftMessage,
     ],
   );
 
@@ -264,10 +284,7 @@ export function useWishlistProducts(): Product[] {
   const { wishlist } = useStore();
   const { products } = useStorefrontProducts();
   return useMemo(
-    () =>
-      wishlist
-        .map((id) => products.find((p) => p.id === id))
-        .filter((p): p is Product => !!p),
+    () => wishlist.map((id) => products.find((p) => p.id === id)).filter((p): p is Product => !!p),
     [wishlist, products],
   );
 }

@@ -25,6 +25,7 @@ export type StoreEmailSettings = {
   supportPhone: string;
   websiteUrl: string;
   businessAddress: string;
+  gstin: string;
   returnPolicyUrl: string;
   privacyPolicyUrl: string;
   instagramUrl: string;

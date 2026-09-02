@@ -1,6 +1,11 @@
 import { useState, useEffect } from "react";
 import { createFileRoute, Link, Outlet, useLocation } from "@tanstack/react-router";
-import { AdminLayout, AdminPageHeader, AdminLoading, AdminEmpty } from "@/components/admin/AdminLayout";
+import {
+  AdminLayout,
+  AdminPageHeader,
+  AdminLoading,
+  AdminEmpty,
+} from "@/components/admin/AdminLayout";
 import { ordersApi } from "@/lib/api/orders";
 import type { OrderRow } from "@/lib/db/types";
 import { Search, Filter, X } from "lucide-react";
@@ -57,7 +62,9 @@ function AdminOrders() {
     }
   };
 
-  useEffect(() => { fetchOrders(); }, [search, statusFilter]);
+  useEffect(() => {
+    fetchOrders();
+  }, [search, statusFilter]);
 
   const handleStatusUpdate = async (id: string, status: string) => {
     try {
@@ -87,18 +94,26 @@ function AdminOrders() {
         </div>
         <select
           value={statusFilter}
-          onChange={(e) => { setStatusFilter(e.target.value); setSearch(""); }}
+          onChange={(e) => {
+            setStatusFilter(e.target.value);
+            setSearch("");
+          }}
           className="mt-2 rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#9C544D]"
         >
           <option value="">All Status</option>
           {Object.keys(statusColors).map((s) => (
-            <option key={s} value={s}>{s.replace(/_/g, " ")}</option>
+            <option key={s} value={s}>
+              {s.replace(/_/g, " ")}
+            </option>
           ))}
         </select>
       </div>
 
       {count === 0 ? (
-        <AdminEmpty title="No orders yet" description="Orders will appear here when customers make purchases" />
+        <AdminEmpty
+          title="No orders yet"
+          description="Orders will appear here when customers make purchases"
+        />
       ) : (
         <div className="space-y-4">
           {orders.map((order) => (
@@ -121,9 +136,7 @@ function AdminOrders() {
                   </span>
                 </div>
 
-                <p className="text-gray-500 line-clamp-1">
-                  {order.customer_phone || "—"}
-                </p>
+                <p className="text-gray-500 line-clamp-1">{order.customer_phone || "—"}</p>
 
                 {(order as any)?._items?.length > 0 ? (
                   <div className="flex items-center gap-2">
@@ -146,7 +159,9 @@ function AdminOrders() {
                       </div>
                     ))}
                     {(order as any)?._items.length > 1 && (
-                      <p className="text-[11px] text-gray-500 ml-2">+{(order as any)?._items.length - 1} more</p>
+                      <p className="text-[11px] text-gray-500 ml-2">
+                        +{(order as any)?._items.length - 1} more
+                      </p>
                     )}
                   </div>
                 ) : (
@@ -154,7 +169,9 @@ function AdminOrders() {
                 )}
 
                 <div className="flex items-center gap-2">
-                  <span className="font-medium text-gray-900">{formatPrice(order.total_amount)}</span>
+                  <span className="font-medium text-gray-900">
+                    {formatPrice(order.total_amount)}
+                  </span>
                   {order.payment_status === "paid" && (
                     <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold text-green-600">
                       PAID
@@ -168,7 +185,8 @@ function AdminOrders() {
 
                 <div className="mt-3 flex items-center gap-2">
                   <Link
-                    to={`/admin/orders/${order.id}`}
+                    to="/admin/orders/$id"
+                    params={{ id: order.id }}
                     className="flex-1 rounded-lg p-2.5 text-sm font-medium text-[#9C544D] hover:bg-[#fdf8f3] transition-colors"
                     aria-label="View order details"
                   >

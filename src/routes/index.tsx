@@ -468,7 +468,8 @@ function ShopByCategory() {
     const img = cat.imageUrl || CATEGORY_IMAGES[cat.name] || null;
     return (
       <Link
-        to={`/category/${cat.slug}`}
+        to="/category/$slug"
+        params={{ slug: cat.slug }}
         className="group relative flex h-full flex-col items-center rounded-[24px] border border-transparent bg-white p-3 pb-4 text-center shadow-[0_4px_24px_rgba(0,0,0,0.04)] transition-all duration-500 hover:z-10 hover:-translate-y-2 hover:border-[#9C544D]/50 hover:shadow-[0_20px_60px_rgba(156,84,77,0.22)] active:scale-[0.97] md:p-4 md:pb-5"
       >
         <div className="relative aspect-square w-full rounded-[18px] bg-gradient-to-br from-[#fdf8f3] to-[#f0e4cd]">
