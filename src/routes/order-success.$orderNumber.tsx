@@ -43,8 +43,8 @@ function OrderSuccessPage() {
               gift_message: parsed.giftMessage || "",
               coupon_code: parsed.couponCode,
               payment_method: parsed.paymentMethod,
-              payment_status: "paid",
-              order_status: "confirmed",
+              payment_status: "pending",
+              order_status: parsed.paymentMethod === "cod" ? "confirmed" : "pending",
               created_at: parsed.created_at,
             });
             if (parsed.items) setItems(parsed.items.map((i: any) => ({
@@ -98,12 +98,12 @@ function OrderSuccessPage() {
               <div className="space-y-3 text-sm">
                 <InfoRow label="Order" value={order.order_number} />
                 <InfoRow label="Status" value={order.order_status} />
-                <InfoRow label="Payment" value={order.payment_status === "paid" ? "Paid (Demo)" : "Pending"} />
+                <InfoRow label="Payment" value={order.payment_status === "paid" ? "Paid" : "Pending"} />
                 <InfoRow label="Subtotal" value={formatPrice(order.subtotal)} />
                 {order.shipping_amount > 0 && <InfoRow label="Shipping" value={formatPrice(order.shipping_amount)} />}
                 {order.gift_packaging_enabled && <InfoRow label={order.gift_packaging_name || "Gift Packaging"} value={formatPrice(order.gift_packaging_price || 0)} />}
                 <div className="border-t border-[#e0d8cc] pt-2" />
-                <InfoRow label="Total Paid" value={formatPrice(order.total_amount)} bold />
+                <InfoRow label={order.payment_status === "paid" ? "Total Paid" : "Order Total"} value={formatPrice(order.total_amount)} bold />
                 {order.delivery_method && <InfoRow label="Delivery" value={order.delivery_method === "express" ? "Express" : "Standard"} />}
                 <InfoRow label="Email" value={order.customer_email} />
               </div>

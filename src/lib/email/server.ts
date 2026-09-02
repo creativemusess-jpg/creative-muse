@@ -121,14 +121,21 @@ async function requireActor(accessToken?: string) {
 async function requireEmailTestingPermission(accessToken?: string) {
   const user = await requireActor(accessToken);
   if (!user) throw new Error("Admin authentication is required.");
+  if (!(await hasEmailTestingPermission(user, accessToken))) {
+    throw new Error("You do not have permission to send test emails.");
+  }
+  return user;
+}
+
+async function hasEmailTestingPermission(user: any, accessToken?: string) {
   const db = getSupabase(accessToken);
   const { data: assignments, error } = await db
     .from("admin_role_assignments")
     .select("admin_roles(name, permissions)")
     .eq("user_id", user.id);
-  if (error) throw new Error("Unable to verify admin permissions.");
+  if (error) return false;
   const roles = (assignments || []).map((a: any) => a.admin_roles).filter(Boolean);
-  const allowed = roles.some((role: any) => {
+  return roles.some((role: any) => {
     const permissions = role.permissions || [];
     return (
       permissions.includes("*") ||
@@ -136,8 +143,28 @@ async function requireEmailTestingPermission(accessToken?: string) {
       ["super_admin", "admin"].includes(role.name)
     );
   });
-  if (!allowed) throw new Error("You do not have permission to send test emails.");
-  return user;
+}
+
+async function requireEmailTargetAccess(
+  actor: any,
+  accessToken: string | undefined,
+  orderData?: OrderEmailData,
+  customerData?: any,
+) {
+  if (await hasEmailTestingPermission(actor, accessToken)) return;
+
+  const db = getServiceSupabase();
+  const customerId = orderData?.order.customer_id || customerData?.customer?.id;
+  if (!customerId) throw new Error("Email target authorization failed.");
+
+  const { data: customer } = await db
+    .from("customers")
+    .select("auth_user_id")
+    .eq("id", customerId)
+    .maybeSingle();
+  if (customer?.auth_user_id !== actor.id) {
+    throw new Error("Email target authorization failed.");
+  }
 }
 
 async function loadStoreSettings(db: any) {
@@ -377,6 +404,7 @@ export const getEmailTestingConfig = createServerFn({ method: "GET" }).handler(a
 export const previewTransactionalEmail = createServerFn({ method: "POST" })
   .validator((data: PreviewRequest) => data)
   .handler(async ({ data }) => {
+    await requireEmailTestingPermission(data.accessToken);
     const isOrder = ORDER_TEMPLATES.has(data.template);
     const orderData = isOrder
       ? await loadOrderEmailData(data.orderId || "", data.accessToken)
@@ -403,6 +431,7 @@ export const sendTransactionalEmail = createServerFn({ method: "POST" })
       data.source === "admin_settings" || data.isTest
         ? await requireEmailTestingPermission(data.accessToken)
         : await requireActor(data.accessToken);
+    if (!actor) throw new Error("Authentication is required.");
 
     const isOrder = ORDER_TEMPLATES.has(data.template);
     const orderData = isOrder
@@ -413,6 +442,9 @@ export const sendTransactionalEmail = createServerFn({ method: "POST" })
         ? await loadCustomerEmailData(data.customerId, data.accessToken)
         : undefined;
     const warnings = validateTemplateData(data.template, orderData);
+    if (data.source !== "admin_settings" && !data.isTest) {
+      await requireEmailTargetAccess(actor, data.accessToken, orderData, customerData);
+    }
     const intendedRecipient =
       orderData?.order.customer_email || customerData?.customer?.email || data.recipient || "";
     const testMode = env("EMAIL_TEST_MODE") === "true" || data.isTest === true;

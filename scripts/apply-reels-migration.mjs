@@ -16,8 +16,12 @@ const envVars = Object.fromEntries(
 
 const SUPABASE_URL = envVars.VITE_SUPABASE_URL;
 const SUPABASE_ANON_KEY = envVars.VITE_SUPABASE_ANON_KEY;
-const ADMIN_EMAIL = "padariyaarth@gmail.com";
-const ADMIN_PASSWORD = "12345678";
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || envVars.ADMIN_EMAIL;
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || envVars.ADMIN_PASSWORD;
+if (!ADMIN_EMAIL || !ADMIN_PASSWORD) {
+  console.error("ADMIN_EMAIL and ADMIN_PASSWORD must be set in the environment.");
+  process.exit(1);
+}
 
 async function main() {
   const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {

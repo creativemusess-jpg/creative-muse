@@ -353,8 +353,8 @@ function buildOrderPayload(
     total_amount: overrides?.total ?? params.total,
     tax_snapshot: overrides?.taxSnapshot ?? params.taxSnapshot ?? null,
     payment_method: params.paymentMethod,
-    payment_status: params.paymentMethod === "cod" ? "pending" : "paid",
-    order_status: "confirmed",
+    payment_status: "pending",
+    order_status: params.paymentMethod === "cod" ? "confirmed" : "pending",
     gift_packaging_enabled: params.giftPackagingEnabled || false,
     gift_packaging_price: params.giftPackagingPrice || 0,
     gift_packaging_name: params.giftPackagingName || "",
@@ -500,7 +500,7 @@ export async function createOrder(
         transaction_reference: txRef,
         amount: paymentAmount,
         currency: "INR",
-        status: params.paymentMethod === "cod" ? "pending" : "paid",
+        status: "pending",
         is_demo: true,
         safe_metadata: {
           method: params.paymentMethod,
@@ -560,7 +560,7 @@ export async function createOrder(
         }),
       );
 
-      const isPaidOrder = (order as any).payment_status === "paid" || params.paymentMethod !== "cod";
+      const isPaidOrder = (order as any).payment_status === "paid";
       if (isPaidOrder) {
         sendTransactionalEmail({
           data: {
