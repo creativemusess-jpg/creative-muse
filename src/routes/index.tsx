@@ -831,12 +831,12 @@ function BestSellers() {
         <SectionHeading eyebrow="Our Jewellery" title="Handpicked Best Sellers" />
 
         <div className="mb-8 flex justify-center md:mb-10">
-          <div className="scrollbar-hide inline-flex max-w-full gap-1.5 overflow-x-auto whitespace-nowrap rounded-full bg-white p-1.5 shadow-[0_4px_16px_rgba(0,0,0,0.06)] snap-x snap-mandatory md:gap-1 md:overflow-visible md:snap-none">
+          <div className="scrollbar-hide flex w-full max-w-full gap-1 overflow-x-auto whitespace-nowrap rounded-full bg-white p-1.5 shadow-[0_4px_16px_rgba(0,0,0,0.06)] snap-x snap-mandatory sm:inline-flex sm:w-auto sm:max-w-none sm:justify-center sm:gap-1.5 sm:overflow-visible sm:snap-none">
             {tabs.map((t) => (
               <button
                 key={t}
                 onClick={() => setActive(t)}
-                className={`flex h-[42px] shrink-0 snap-start items-center justify-center rounded-full px-5 text-[11px] font-semibold tracking-[0.08em] uppercase transition-all duration-300 sm:px-5 sm:text-[12px] sm:tracking-[0.1em] md:h-auto md:py-2.5 ${
+                className={`flex h-[42px] shrink-0 snap-start items-center justify-center rounded-full px-4 text-[11px] font-semibold tracking-[0.08em] uppercase transition-all duration-300 max-sm:min-w-[calc(50%-4px)] max-sm:flex-[0_0_calc(50%-4px)] sm:min-w-0 sm:px-5 sm:text-[11px] md:h-auto md:py-2.5 md:text-[12px] md:tracking-[0.1em] ${
                   active === t
                     ? "bg-[#9C544D] text-white shadow-[0_6px_16px_rgba(156,84,77,0.35)]"
                     : "text-[#7a6e64] hover:text-[#1a1a2e]"
