@@ -345,6 +345,7 @@ function MobileDrawer({ items, onClose }: { items: NavItem[]; onClose: () => voi
 
           {[
             { label: "FAQs", to: "/faq" as const },
+            { label: "About Us", to: "/about" as const },
             { label: "Wishlist", to: "/wishlist" as const },
             { label: "Shop All", to: "/shop" as const },
             { label: "Collections", to: "/collections" as const },
