@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { PageShell } from "@/components/site/PageHeader";
 import { useAuth } from "@/lib/auth";
+import { safeInternalRedirect } from "@/lib/auth-redirect";
 
 export const Route = createFileRoute("/login")({
   component: LoginPage,
@@ -12,12 +13,7 @@ function LoginPage() {
   const { signIn, signInWithGoogle } = useAuth();
   const navigate = useNavigate();
   const search: any = useSearch({ from: "/login" });
-  const redirect =
-    typeof search.redirect === "string" &&
-    search.redirect.startsWith("/") &&
-    !search.redirect.startsWith("//")
-      ? search.redirect
-      : "/account";
+  const redirect = safeInternalRedirect(search.redirect);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

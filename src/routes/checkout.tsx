@@ -84,7 +84,7 @@ class CheckoutErrorBoundary extends Component<{ children: ReactNode }, { error: 
 }
 
 function CheckoutPage() {
-  const { user, loading: authLoading, refreshCustomer } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const lines = useCartLines();
   const {
     cartReady,
@@ -150,22 +150,15 @@ function CheckoutPage() {
       .then(setGiftCfg)
       .catch(() => {});
   }, []);
-  const [checkoutError, setCheckoutError] = useState<{ code: string } | null>(null);
   useEffect(() => {
     console.info("[CHECKOUT_DIAG] init", { authLoading, hasUser: !!user, cartReady, lines: lines.length, addressesLoading });
     if (!authLoading) {
-      setCheckoutError(null);
       if (user) console.info("[CHECKOUT_DIAG] AUTH_READY", { user: user.id });
       else console.info("[CHECKOUT_DIAG] UNAUTHENTICATED");
       if (cartReady) console.info("[CHECKOUT_DIAG] CART_READY", { count: lines.length });
       return;
     }
     console.info("[CHECKOUT_DIAG] AUTH_LOADING");
-    const t = setTimeout(() => {
-      console.error("[CHECKOUT_DIAG] AUTH_TIMEOUT", { authLoading, hasUser: !!user });
-      setCheckoutError({ code: "AUTH_TIMEOUT" });
-    }, 8000);
-    return () => clearTimeout(t);
   }, [authLoading, user, cartReady, lines.length, addressesLoading]);
 
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
@@ -317,11 +310,6 @@ function CheckoutPage() {
     setShowSavedAddresses(false);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [clearForm]);
-
-  const retryCheckout = useCallback(() => {
-    setCheckoutError(null);
-    refreshCustomer();
-  }, [refreshCustomer]);
 
   useEffect(() => {
     if (addressesLoading) return;
@@ -516,22 +504,6 @@ function CheckoutPage() {
     navigate({ to: "/payment" });
   };
 
-  if (checkoutError) {
-    return (
-      <PageShell>
-        <CheckoutNotice
-          icon={<AlertCircle className="h-10 w-10 text-[#9C544D]" />}
-          title="Unable to load checkout."
-          message="Please try again in a moment."
-          action={
-            <button onClick={retryCheckout} className="btn-primary mt-2">
-              Retry
-            </button>
-          }
-        />
-      </PageShell>
-    );
-  }
   if (authLoading || !user) {
     return (
       <PageShell>

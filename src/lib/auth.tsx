@@ -6,6 +6,7 @@ import {
   useCallback,
   type ReactNode,
 } from "react";
+import { authCallbackUrl, safeInternalRedirect, storeOAuthRedirect } from "./auth-redirect";
 import { storefrontSupabase as supabase } from "./supabase-storefront";
 
 export type CustomerInfo = {
@@ -158,14 +159,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setLoading(false);
       }
     });
-    const safety = setTimeout(() => {
-      setLoading((prev) => {
-        if (prev) console.error("[AUTH] safety timeout forced loading false");
-        return false;
-      });
-    }, 8000);
     return () => {
-      clearTimeout(safety);
       subscription.unsubscribe();
     };
   }, [refreshCustomer]);
@@ -220,14 +214,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const signInWithGoogle = useCallback(async (redirectTo?: string) => {
-    if (redirectTo) {
-      try { sessionStorage.setItem("cm_oauth_redirect", redirectTo); } catch {}
-    }
+    const destination = safeInternalRedirect(redirectTo);
+    try { storeOAuthRedirect(destination); } catch {}
     const origin = canonicalOrigin();
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${origin}/auth/callback`,
+        redirectTo: authCallbackUrl(origin, destination),
       },
     });
     if (error) return { error: error.message };

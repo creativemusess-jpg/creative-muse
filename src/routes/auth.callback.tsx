@@ -1,97 +1,73 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef, useState } from "react";
+import { safeInternalRedirect, takeStoredOAuthRedirect } from "@/lib/auth-redirect";
 import { storefrontSupabase } from "@/lib/supabase-storefront";
 
 export const Route = createFileRoute("/auth/callback")({
-  head: () => ({ meta: [{ title: "Signing you in — Creative Muse" }] }),
+  head: () => ({ meta: [{ title: "Signing you in - Creative Muse" }] }),
   component: AuthCallbackPage,
 });
-
-function getStoredRedirect(): string | null {
-  try {
-    const v = sessionStorage.getItem("cm_oauth_redirect");
-    sessionStorage.removeItem("cm_oauth_redirect");
-    return v && v.startsWith("/") && !v.startsWith("//") ? v : null;
-  } catch {
-    return null;
-  }
-}
 
 function AuthCallbackPage() {
   const navigate = useNavigate();
   const handled = useRef(false);
-
-  const goToDestination = useCallback(() => {
-    if (handled.current) return;
-    handled.current = true;
-    const redirect = getStoredRedirect();
-    navigate({ to: redirect || "/account" });
-  }, [navigate]);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     if (handled.current) return;
-
-    let timeout: ReturnType<typeof setTimeout>;
+    let cancelled = false;
 
     const exchangeAndNavigate = async () => {
-      if (handled.current) return;
-
       const url = new URL(window.location.href);
+      const storedRedirect = takeStoredOAuthRedirect();
+      const destination = safeInternalRedirect(
+        url.searchParams.get("redirect") || storedRedirect,
+      );
       const code = url.searchParams.get("code");
 
       if (code) {
         const { error } = await storefrontSupabase.auth.exchangeCodeForSession(code);
-        if (!error) {
-          window.history.replaceState({}, "", url.pathname);
-          if (timeout) clearTimeout(timeout);
-          goToDestination();
+        if (error) {
+          if (!cancelled) setError(error.message || "Google sign-in could not be completed.");
           return;
         }
+        window.history.replaceState({}, "", url.pathname);
       }
 
-      const { data: { session } } = await storefrontSupabase.auth.getSession();
-      if (session?.user && !handled.current) {
-        if (timeout) clearTimeout(timeout);
-        goToDestination();
+      const {
+        data: { session },
+      } = await storefrontSupabase.auth.getSession();
+      if (!session?.user) {
+        if (!cancelled) setError("Google sign-in could not restore your session. Please try again.");
+        return;
       }
+
+      if (cancelled) return;
+      handled.current = true;
+      navigate({ to: destination });
     };
 
-    const { data: { subscription } } = storefrontSupabase.auth.onAuthStateChange(
-      async (_event, session) => {
-        if (session?.user && !handled.current) {
-          if (timeout) clearTimeout(timeout);
-          goToDestination();
-        }
-      },
-    );
-
-    exchangeAndNavigate();
-
-    timeout = setTimeout(() => {
-      if (!handled.current) {
-        storefrontSupabase.auth.getSession().then(({ data: { session } }) => {
-          if (session?.user) {
-            goToDestination();
-          } else {
-            handled.current = true;
-            navigate({ to: "/login" });
-          }
-        });
+    exchangeAndNavigate().catch((err) => {
+      if (!cancelled) {
+        setError(err instanceof Error ? err.message : "Google sign-in could not be completed.");
       }
-    }, 10000);
+    });
 
     return () => {
-      if (timeout) clearTimeout(timeout);
-      subscription.unsubscribe();
+      cancelled = true;
     };
-  }, [goToDestination, navigate]);
+  }, [navigate]);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#fdf8f3]">
       <div className="text-center">
         <div className="mx-auto h-10 w-10 animate-spin rounded-full border-[3px] border-[#9C544D] border-t-transparent" />
-        <p className="mt-4 font-display text-lg font-semibold text-[#1a1a2e]">Completing sign in…</p>
-        <p className="mt-1 text-sm text-[#7a6e64]">You'll be redirected shortly.</p>
+        <p className="mt-4 font-display text-lg font-semibold text-[#1a1a2e]">
+          Completing sign in...
+        </p>
+        <p className="mt-1 text-sm text-[#7a6e64]">
+          {error || "You'll be redirected shortly."}
+        </p>
       </div>
     </div>
   );
