@@ -1271,7 +1271,7 @@ function Newsletter() {
   }
 
   return (
-    <section className="mt-10 px-4 sm:px-6">
+    <section className="mt-10 mb-10 px-4 sm:mb-14 sm:px-6 lg:mb-16">
       <div className="relative mx-auto max-w-[1320px] overflow-hidden rounded-[40px] bg-gradient-to-br from-[#C9A96E] via-[#c9a96e] to-[#B8860B] px-6 py-16 text-center shadow-[0_24px_64px_rgba(201,169,110,0.3)] sm:py-20">
         <div className="pointer-events-none absolute -top-20 -right-20 h-[300px] w-[300px] rounded-full bg-white/15 blur-[100px]" />
         <Leaf className="absolute top-8 left-10 hidden h-5 w-5 text-white/40 sm:block" />
