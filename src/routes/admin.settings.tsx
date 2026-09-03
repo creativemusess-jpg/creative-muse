@@ -360,11 +360,13 @@ function AdminSettings() {
               >
                 <option value="welcome">Welcome Email</option>
                 <option value="order_confirmation">Order Confirmation</option>
+                <option value="invoice">Invoice Email</option>
                 <option value="payment_confirmation">Payment Confirmation</option>
                 <option value="shipped">Shipped Email</option>
                 <option value="delivered">Delivered Email</option>
                 <option value="cancellation">Cancellation Email</option>
                 <option value="refund">Refund Email</option>
+                <option value="payment_failed">Payment Failed Email</option>
               </select>
             </div>
 
